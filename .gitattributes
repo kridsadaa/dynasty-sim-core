@@ -1,0 +1,7 @@
+# บังคับ LF ทุกไฟล์ข้อความ — lore:compile เขียน names.json เป็น LF; ไม่งั้นบน Windows (autocrlf) build แล้วไฟล์ขึ้น modified
+* text=auto eol=lf
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.jfif binary
