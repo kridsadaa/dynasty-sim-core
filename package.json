@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "demo": "tsx src/demo.ts",
     "lore:check": "tsx src/lore/validate.ts",
-    "lore:compile": "tsx src/lore/compile.ts"
+    "lore:compile": "tsx src/lore/compile.ts",
+    "sim:check": "tsx src/simcheck.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
