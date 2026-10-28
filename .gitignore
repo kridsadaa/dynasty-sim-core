@@ -1,2 +1,13 @@
 node_modules/
 dist/
+
+# ภาพผลทดสอบ (ใหญ่ และไม่ใช่ asset ของเกม)
+art/rounds/**/*.jfif
+art/rounds/**/*.jpg
+art/rounds/**/*.jpeg
+art/rounds/**/*.png
+art/rounds/**/*.webp
+art/rounds/*.jfif
+art/rounds/*.jpg
+art/rounds/*.png
+art/rounds/*.webp
