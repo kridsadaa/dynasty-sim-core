@@ -31,15 +31,33 @@ const migrations: Record<number, (s: GameState) => void> = {};
 let dbPromise: Promise<IDBDatabase> | null = null;
 
 function openDb(): Promise<IDBDatabase> {
-  dbPromise ??= new Promise((resolve, reject) => {
+  dbPromise ??= new Promise<IDBDatabase>((resolve, reject) => {
+    let blocked = false;
     const r = indexedDB.open(DB_NAME, DB_VERSION);
     r.onupgradeneeded = () => {
       const db = r.result;
       if (!db.objectStoreNames.contains('slots')) db.createObjectStore('slots', { keyPath: 'slot' });
       if (!db.objectStoreNames.contains('tables')) db.createObjectStore('tables');
     };
-    r.onsuccess = () => resolve(r.result);
+    r.onsuccess = () => {
+      const db = r.result;
+      if (blocked) return db.close(); // reject ไปแล้ว — การเปิดที่สำเร็จทีหลังไม่มีใครถือ ต้องปิดทิ้ง
+      // แท็บอื่น (เวอร์ชันใหม่) ขออัปเกรด DB → ปิดของเราเพื่อไม่ขวาง แล้วเปิดใหม่ครั้งหน้า
+      db.onversionchange = () => {
+        db.close();
+        dbPromise = null;
+      };
+      resolve(db);
+    };
     r.onerror = () => reject(r.error);
+    // แท็บเก่ายังเปิด DB เวอร์ชันเดิมค้างอยู่ → อัปเกรดไม่ได้ (ไม่งั้น save/load ค้างเงียบ)
+    r.onblocked = () => {
+      blocked = true;
+      reject(new Error('ฐานข้อมูลเซฟถูกแท็บอื่นของเกมใช้อยู่ — ปิดแท็บอื่นแล้วลองใหม่'));
+    };
+  }).catch((err) => {
+    dbPromise = null; // ไม่ cache ความล้มเหลว → ลองเปิดใหม่ได้
+    throw err;
   });
   return dbPromise;
 }
@@ -57,6 +75,11 @@ const result = <T>(r: IDBRequest<T>) =>
     r.onerror = () => reject(r.error);
   });
 
+/** ':' เป็นตัวคั่น key — ถ้ายอมให้ชื่อ slot มี ':' ช่วงของ slot "a" จะกินเซฟของ "a:b" ด้วย */
+function checkSlot(slot: string): void {
+  if (!slot || slot.includes(':')) throw new Error(`ชื่อช่องเซฟไม่ถูกต้อง: "${slot}" (ห้ามว่างหรือมี ':')`);
+}
+
 const slotRange = (slot: string) => IDBKeyRange.bound(`${slot}:`, `${slot}:￿`);
 
 export interface SavedGame {
@@ -67,6 +90,7 @@ export interface SavedGame {
 export async function saveState(
   slot: string, { state, pending }: SavedGame, info: Pick<SaveSlotInfo, 'year' | 'playerName' | 'dynastyName'>,
 ): Promise<SaveSlotInfo> {
+  checkSlot(slot);
   const full: SaveSlotInfo = {
     ...info,
     slot,
@@ -95,6 +119,7 @@ export async function saveState(
 }
 
 export async function loadState(slot: string): Promise<SavedGame | null> {
+  checkSlot(slot);
   const db = await openDb();
   const tx = db.transaction('tables', 'readonly');
   const store = tx.objectStore('tables');
@@ -116,6 +141,7 @@ export async function listSlots(): Promise<SaveSlotInfo[]> {
 }
 
 export async function deleteSlot(slot: string): Promise<void> {
+  checkSlot(slot);
   const db = await openDb();
   const tx = db.transaction(['slots', 'tables'], 'readwrite');
   tx.objectStore('tables').delete(slotRange(slot));

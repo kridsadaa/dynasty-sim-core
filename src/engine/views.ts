@@ -14,24 +14,31 @@ const fill = (tpl: string, vars: Record<string, string>) => tpl.replace(/\{(\w+)
 
 const CAPS: CapabilityId[] = ['manipulation.fine', 'manipulation.gross', 'mobility', 'sight'];
 
-export function playerView(ctx: Ctx): CharacterView {
+/** ข้อความจากตาราง text.th — ไม่มีคีย์ให้คืนค่าดิบ (เห็นชัดว่าลืมใส่คำแปล) */
+const t = (text: TextTable, prefix: string, id: string) => text[`${prefix}.${id}`] ?? id;
+
+/** UI ไม่ควรเห็นคีย์ภายใน ("noble", "finger.index.l", "manipulation.fine") — แปลงเป็นคำไทยที่นี่ */
+export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
   const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
   const anatomy = ctx.content.anatomies[ch.anatomyId];
+  const partLabel = (partDefId: string) => anatomy?.parts[partDefId]?.label.th ?? partDefId;
+  const estateTag = `estate:${ch.social.estate}` as const;
   return {
     name: ch.name,
     age: ageOf(ctx, ch),
     year: yearOf(ctx, ctx.state.meta.day),
-    estate: ch.social.estate,
+    estate: ctx.tags.def(estateTag) ? ctx.tags.label(estateTag) : ch.social.estate,
     title: ch.social.title,
     wealth: Math.round(ch.social.wealth),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: ch.bodyPartIds.flatMap((pid) => {
       const p = ctx.state.bodyParts[pid];
-      const label = p ? anatomy?.parts[p.partDefId]?.label.th ?? p.partDefId : '';
-      return p ? [...p.scars.map((s) => `แผลเป็น(${s.kind})ที่${label}`), ...(p.status === 'missing' ? [`สูญเสีย${label}`] : [])] : [];
+      const label = p ? partLabel(p.partDefId) : '';
+      return p ? [...p.scars.map((s) => `แผลเป็น(${t(text, 'scar.kind', s.kind)})ที่${label}`), ...(p.status === 'missing' ? [`สูญเสีย${label}`] : [])] : [];
     }),
-    wounds: ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${w!.partDefId}: ${w!.stage}`),
-    capabilities: Object.fromEntries(CAPS.map((c) => [c, Math.round(capability(ctx, ch, c) * 100) / 100])),
+    wounds: ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${partLabel(w!.partDefId)}: ${t(text, 'wound.stage', w!.stage)}`),
+    // คีย์เป็นคำไทยเพราะ UI แสดงคีย์ตรงๆ
+    capabilities: Object.fromEntries(CAPS.map((c) => [t(text, 'capability', c), Math.round(capability(ctx, ch, c) * 100) / 100])),
   };
 }
 

@@ -46,7 +46,8 @@ export type Push =
   | { type: 'log'; year: number; lines: string[] }
   | { type: 'progress'; day: number; year: number }
   | { type: 'pendingEvent'; event: EventView }
-  | { type: 'handover'; deceased: string; heir: string; lines: string[] };
+  | { type: 'handover'; deceased: string; heir: string; lines: string[] }
+  | { type: 'error'; message: string }; // ผิดพลาดที่ไม่ผูกกับ request ใด (เช่น โหลด content ไม่ได้, worker พัง)
 
 export type WorkerMessage = { kind: 'reply'; reply: Reply } | { kind: 'push'; push: Push };
 

@@ -26,10 +26,16 @@ export class EngineClient {
       if (m.reply.ok) w.resolve(m.reply.data);
       else w.reject(new Error(m.reply.error));
     };
-    this.worker.onerror = (e) => {
-      for (const w of this.waiting.values()) w.reject(new Error(e.message));
-      this.waiting.clear();
-    };
+    // module worker โหลดไม่ขึ้น → ErrorEvent ไม่มี message; แจ้งทั้ง request ที่รออยู่และ UI (push 'error')
+    this.worker.onerror = (e) => this.fail(e.message || 'โหลดตัวจำลองเกม (worker) ไม่ได้ — ลองรีเฟรชหน้า');
+    // reply ถอด structured clone ไม่ได้ → ไม่รู้ id ว่าเป็นของ request ไหน: reject ทั้งหมดดีกว่าค้างตลอดไป
+    this.worker.onmessageerror = () => this.fail('รับข้อมูลจากตัวจำลองเกมไม่ได้');
+  }
+
+  private fail(message: string): void {
+    for (const w of this.waiting.values()) w.reject(new Error(message));
+    this.waiting.clear();
+    for (const l of this.listeners) l({ type: 'error', message });
   }
 
   request<T extends Command['type']>(cmd: Extract<Command, { type: T }>): Promise<ReplyData[T]> {

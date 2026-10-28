@@ -128,6 +128,9 @@ engine.onPush((p) => {
       write(`สิ้น${p.deceased} — ${p.heir} สืบทอดตระกูล`, 'year');
       for (const l of p.lines) write(l, 'handover');
       break;
+    case 'error':
+      status.textContent = p.message;
+      break;
   }
 });
 

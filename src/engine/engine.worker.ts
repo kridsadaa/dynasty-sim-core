@@ -42,6 +42,10 @@ const contentReady = (async () => {
   text = th;
   push({ type: 'ready' });
 })();
+// โหลด content ไม่ได้ → แจ้ง UI ทันที (ไม่งั้นสถานะค้าง "กำลังโหลด…") — ทุก command จะ reject ด้วย error เดียวกัน
+contentReady.catch((err: unknown) =>
+  push({ type: 'error', message: `เริ่มเกมไม่ได้: ${err instanceof Error ? err.message : String(err)}` }),
+);
 
 const need = (): Ctx => must(ctx, 'ยังไม่ได้เริ่มเกม');
 const yieldNow = () => new Promise<void>((r) => setTimeout(r, 0));
@@ -121,15 +125,19 @@ async function advance(days: number): Promise<ReplyData['advance']> {
   return { stoppedBy, day: c.state.meta.day };
 }
 
+const ALLOWED_WHILE_RUNNING = new Set<Command['type']>(['pause', 'viewPlayer', 'viewDynasty', 'viewPending', 'listSaves']);
+
 async function handle(cmd: Command): Promise<unknown> {
   await contentReady;
+  // เช็คหลัง await: คำสั่งที่ส่งมาก่อน content พร้อมจะถูกปล่อยพร้อมกัน — advance ตัวแรกตั้ง running แบบ sync ก่อนตัวถัดไปมาถึงบรรทัดนี้
+  if (running && !ALLOWED_WHILE_RUNNING.has(cmd.type)) throw new Error('กำลังจำลองอยู่ — กดหยุดก่อน');
   switch (cmd.type) {
     case 'newGame': {
       await acquireSessionLock();
       ctx = makeCtx(emptyState(cmd.seed), must(content, 'content'));
       bootstrapScenario(ctx, cmd.heroName);
       pending.clear();
-      return playerView(ctx);
+      return playerView(ctx, text);
     }
     case 'load': {
       await acquireSessionLock();
@@ -141,7 +149,7 @@ async function handle(cmd: Command): Promise<unknown> {
         const p = restoreEvent(c, s);
         if (p) pending.set(p.instance.id, p);
       }
-      return playerView(c);
+      return playerView(c, text);
     }
     case 'viewPending':
       return [...pending.values()].map((p) => eventView(need(), p, text)) satisfies ReplyData['viewPending'];
@@ -169,18 +177,15 @@ async function handle(cmd: Command): Promise<unknown> {
       return { lines } satisfies ReplyData['choose'];
     }
     case 'viewPlayer':
-      return playerView(need());
+      return playerView(need(), text);
     case 'viewDynasty':
       return dynastyView(need());
   }
 }
 
-const ALLOWED_WHILE_RUNNING = new Set<Command['type']>(['pause', 'viewPlayer', 'viewDynasty', 'viewPending', 'listSaves']);
-
 self.onmessage = async (e: MessageEvent<Request>) => {
   const { id, cmd } = e.data;
   try {
-    if (running && !ALLOWED_WHILE_RUNNING.has(cmd.type)) throw new Error('กำลังจำลองอยู่ — กดหยุดก่อน');
     post({ kind: 'reply', reply: { id, ok: true, data: await handle(cmd) } });
   } catch (err) {
     post({ kind: 'reply', reply: { id, ok: false, error: err instanceof Error ? err.message : String(err) } });
