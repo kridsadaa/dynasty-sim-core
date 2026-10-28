@@ -1,4 +1,4 @@
-import { must, newId, type Ctx } from '../core/ctx';
+import { dayOfYear, must, newId, yearOf, type Ctx } from '../core/ctx';
 import type {
   Character, Dynasty, DynastyId, Estate, FamilyNode, GameState, Household, HouseholdId, Parentage, Personality,
 } from '../core/types';
@@ -54,11 +54,16 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     spouseIds: [],
     childIds: [],
     parentage: o.parentage ?? (fatherNode ? 'principal_wife' : 'unknown'),
-    generation: (fatherNode?.generation ?? motherNode?.generation ?? -1) + 1,
+    // ใช้รุ่นที่ลึกกว่าของพ่อ/แม่ — เขยคนนอกเป็นรุ่น 0 ถ้าใช้ของพ่ออย่างเดียว ลูกของลูกสาวจะรุ่นผิด
+    generation: Math.max(fatherNode?.generation ?? -1, motherNode?.generation ?? -1) + 1,
     summary: null,
     legendIds: [],
     pruneLevel: 0,
   };
+  // คนที่เกิดในปีนี้หรือก่อนหน้า: วันเกิดของปีนี้ต้องผ่านมาแล้ว → เด็กเกิดใหม่ไม่มีวันเกิดในอนาคต (อายุ -1)
+  // และคู่ครองที่สร้างด้วย birthYear = ปีนี้ − อายุ ได้อายุตรงตามที่ตั้งใจ (ทอยสุ่มครั้งเดียวเท่าเดิม)
+  const now = ctx.state.meta.day;
+  const birthDaySpan = o.birthYear <= yearOf(ctx, now) ? dayOfYear(ctx, now) + 1 : B.daysPerYear;
   const ch: Character = {
     id: newId(ctx, 'chr'),
     familyNodeId: node.id,
@@ -67,7 +72,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     name: o.name,
     sex: o.sex,
     handedness: ctx.rng.chance(0.1) ? 'l' : 'r',
-    birthDay: (o.birthYear - B.epochYear) * B.daysPerYear + Math.floor(ctx.rng.range(0, B.daysPerYear)),
+    birthDay: (o.birthYear - B.epochYear) * B.daysPerYear + Math.floor(ctx.rng.range(0, birthDaySpan)),
     deathDay: null,
     deathCause: null,
     anatomyId: 'human',

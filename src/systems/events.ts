@@ -143,12 +143,21 @@ function inject(ctx: Ctx, p: PreparedEvent): void {
   const optionHits = p.options.flatMap((o) => matchTraits(ctx, actor, o.tags, 'option', o.id));
 
   // ปมแฝง "ตื่น" ด้วยโอกาสเท่ากับความแรง — ครั้งแรกที่เด็กที่เคยโดนตอน 2 ขวบเห็นฟักทองแล้วร้องไห้โดยไม่รู้สาเหตุ
+  // ทอยครั้งเดียวต่อปมต่อ event (ใช้ hit ที่แรงที่สุด) — ไม่ให้ชนทั้ง context และตัวเลือกแล้วได้ทอยสองรอบ
+  const allHits = [...contextHits, ...optionHits];
+  const strongest = new Map<Trait['id'], number>();
+  for (const h of allHits) strongest.set(h.trait.id, Math.max(strongest.get(h.trait.id) ?? 0, h.strength));
+  const woke = new Map<Trait['id'], boolean>();
   const awake = (h: TraitHit): boolean => {
-    if (h.trait.latent && !ctx.rng.chance(h.strength)) return false;
-    h.trait.latent = false;
-    return true;
+    let ok = woke.get(h.trait.id);
+    if (ok === undefined) {
+      ok = !h.trait.latent || ctx.rng.chance(strongest.get(h.trait.id) ?? h.strength);
+      if (ok) h.trait.latent = false;
+      woke.set(h.trait.id, ok);
+    }
+    return ok;
   };
-  p.hits = [...contextHits, ...optionHits].filter(awake);
+  p.hits = allHits.filter(awake);
   for (const h of p.hits) {
     if (h.trait.lastTriggeredDay !== day) h.trait.triggerCount++;
     h.trait.lastTriggeredDay = day;
@@ -156,8 +165,10 @@ function inject(ctx: Ctx, p: PreparedEvent): void {
 
   const expanded = ctx.tags.expand(p.instance.resolvedTags);
   const apply = (ruleId: string, params: Record<string, string>) => {
+    // กฎแต่ละข้อมีผลครั้งเดียวต่อ event — ปมหลายอันชนกฎเดียวกันไม่ซ้อน effect (เช่น stress +0.1 สองรอบ)
+    if (p.instance.injectedRuleIds.includes(ruleId)) return;
     const rule = must(ctx.content.injectionRules.find((r) => r.id === ruleId), ruleId);
-    if (!p.instance.injectedRuleIds.includes(ruleId)) p.instance.injectedRuleIds.push(ruleId);
+    p.instance.injectedRuleIds.push(ruleId);
     for (const o of rule.addOptions ?? []) {
       if (!p.options.some((x) => x.id === o.id)) p.options.push({ ...o, tags: [], injectedBy: ruleId, params });
     }

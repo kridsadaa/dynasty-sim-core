@@ -1,4 +1,4 @@
-import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, Relation, TagId } from '../core/types';
 import { livingSpouse, pickCaregiverChild } from './factory';
@@ -96,11 +96,7 @@ export function performHandover(
   const heirNode = must(ctx.state.familyNodes[heir.familyNodeId], 'heir node');
 
   // [4] funeral
-  const funeral = dead.social.wealth * B.funeralCostRate[dead.social.estate];
-  dead.social.wealth -= funeral;
-  dyn.prestige += funeral * B.funeralPrestigePerTamlueng;
-  dead.merit += funeral * 0.01;
-  log.push(`งานศพ ${dead.name} ใช้ ${funeral.toFixed(0)} ตำลึง → บารมีตระกูล +${(funeral * B.funeralPrestigePerTamlueng).toFixed(1)}`);
+  log.push(holdFuneral(ctx, dead));
 
   // [5] estate
   const estate = distributeEstate(ctx, dead, candidates.map((c) => c.ch), heir);
@@ -108,7 +104,10 @@ export function performHandover(
 
   // [6] social
   dyn.prestige *= 1 - B.prestigeDecay;
-  dyn.headNodeId = heirNode.id;
+  // ผู้เล่นตายขณะที่ผู้นำตระกูล (เช่น บิดา) ยังอยู่ → ตำแหน่งผู้นำไม่เปลี่ยนมือ
+  const headNode = ctx.state.familyNodes[dyn.headNodeId];
+  const headAlive = isAlive(headNode?.characterId ? ctx.state.characters[headNode.characterId] : undefined);
+  if (dyn.headNodeId === dead.familyNodeId || !headAlive) dyn.headNodeId = heirNode.id;
   log.push(...carryRelations(ctx, dead, heir));
   if (dead.social.title) log.push(`บรรดาศักดิ์ "${dead.social.title}" ไม่ตกทอด — ${heir.name} ต้องถวายตัวรับราชการเอง`);
 
@@ -128,18 +127,7 @@ export function performHandover(
   }
 
   // household: กฎส่วนตัวของผู้ตายหายไป เหลือเฉพาะที่ตกผลึกเป็นข้อห้ามตระกูลแล้ว (ปฏิบัติต่อในเรือนทายาท)
-  const deadHh = dead.householdId ? ctx.state.households[dead.householdId] : undefined;
-  if (deadHh) {
-    deadHh.memberIds = deadHh.memberIds.filter((id) => id !== dead.id);
-    deadHh.rules = [];
-    // หัวเรือนคนต่อไป: คู่ครองที่ยังอยู่ → ลูกที่ได้เรือน → ทายาทหลัก → คนแก่สุดในเรือน
-    const inHouse = (c: Character | undefined): c is Character => !!c && deadHh.memberIds.includes(c.id);
-    const widow = livingSpouse(ctx, dead);
-    const nextHead = [widow, estate.houseHeir, heir].find(inHouse)
-      ?? deadHh.memberIds.map((id) => ctx.state.characters[id]).filter(isAlive).sort((a, b) => a.birthDay - b.birthDay)[0];
-    if (nextHead) deadHh.headId = nextHead.id;
-    else delete ctx.state.households[deadHh.id];
-  }
+  leaveHousehold(ctx, dead, [estate.houseHeir, heir]);
   const heirHh = heir.householdId ? ctx.state.households[heir.householdId] : undefined;
   if (heirHh) {
     heirHh.rules = heirHh.rules.filter((r) => r.originTraitId || dyn.taboos.some((t) => t.target === r.target));
@@ -164,6 +152,47 @@ export function performHandover(
 }
 
 /**
+ * ผู้ตายที่ไม่ใช่ผู้นำตระกูล (ลูกหลานสายรอง คู่ครองคนนอก) — งานศพ + แบ่งมรดกให้ลูก + ออกจากเรือน
+ * ไม่แตะตำแหน่งผู้นำ ตำนาน หรือข้อห้ามตระกูล; ต้องเรียกก่อน prune ไม่งั้นทรัพย์ค้างอยู่กับตัวละครที่ถูกลบ
+ */
+export function settleDeath(ctx: Ctx, dead: Character): { lines: string[]; heirIds: Array<Character['id']> } {
+  const heirs = heirCandidates(ctx, dead).map((c) => c.ch);
+  const lines = [holdFuneral(ctx, dead)];
+  const estate = distributeEstate(ctx, dead, heirs, undefined);
+  lines.push(...estate.lines);
+  leaveHousehold(ctx, dead, [estate.houseHeir]);
+  return { lines, heirIds: heirs.map((h) => h.id) };
+}
+
+/** งานศพแปลงเงินสดเป็นบารมีตระกูล/บุญ ← anti-snowball */
+function holdFuneral(ctx: Ctx, dead: Character): string {
+  const B = ctx.content.balance.inheritance;
+  const funeral = dead.social.wealth * B.funeralCostRate[dead.social.estate];
+  dead.social.wealth -= funeral;
+  const dyn = dead.dynastyId ? ctx.state.dynasties[dead.dynastyId] : undefined;
+  if (dyn) dyn.prestige += funeral * B.funeralPrestigePerTamlueng;
+  dead.merit += funeral * 0.01;
+  return `งานศพ ${dead.name} ใช้ ${funeral.toFixed(0)} ตำลึง → บารมีตระกูล +${(dyn ? funeral * B.funeralPrestigePerTamlueng : 0).toFixed(1)}`;
+}
+
+/**
+ * เอาผู้ตายออกจากเรือน: กฎที่ผู้ตายตั้งไว้หายไปด้วย (กฎของสมาชิกคนอื่นยังอยู่)
+ * ถ้าผู้ตายเป็นหัวเรือน → หัวเรือนคนต่อไป: คู่ครองที่ยังอยู่ → preferred (ลูกที่ได้เรือน, ทายาทหลัก) → คนแก่สุดในเรือน
+ */
+function leaveHousehold(ctx: Ctx, dead: Character, preferred: Array<Character | undefined>): void {
+  const hh = dead.householdId ? ctx.state.households[dead.householdId] : undefined;
+  if (!hh) return;
+  hh.memberIds = hh.memberIds.filter((id) => id !== dead.id);
+  hh.rules = hh.rules.filter((r) => r.imposedBy !== dead.id);
+  if (hh.headId !== dead.id) return;
+  const inHouse = (c: Character | undefined): c is Character => !!c && hh.memberIds.includes(c.id);
+  const nextHead = [livingSpouse(ctx, dead), ...preferred].find(inHouse)
+    ?? hh.memberIds.map((id) => ctx.state.characters[id]).filter(isAlive).sort((a, b) => a.birthDay - b.birthDay)[0];
+  if (nextHead) hh.headId = nextHead.id;
+  else delete ctx.state.households[hh.id];
+}
+
+/**
  * แบ่งมรดกแบบ partible: น้ำหนักตามสถานะแม่ + โบนัสทายาทหลัก
  * - เรือน → ลูกที่อยู่เรือนเดียวกันและดูแลพ่อแม่ (ลูกสาวคนสุดท้องก่อน) (lore: kinship.youngest_daughter_house)
  *   ถ้าไม่มีลูกอยู่ในเรือน → ทายาทหลัก; มูลค่าเรือนนับรวมในส่วนแบ่งของคนที่ได้
@@ -172,14 +201,19 @@ export function performHandover(
  * - ของประจำตระกูล (ownerDynastyId) ไม่ถูกแบ่ง — ผู้นำตระกูลถือครองแทน
  */
 function distributeEstate(
-  ctx: Ctx, dead: Character, heirs: Character[], main: Character,
+  ctx: Ctx, dead: Character, heirs: Character[], main: Character | undefined,
 ): { lines: string[]; houseHeir: Character | undefined } {
   const B = ctx.content.balance.inheritance;
-  if (!heirs.length) return { lines: ['ไม่มีทายาท — ทรัพย์ตกเป็นของหลวง'], houseHeir: undefined };
+  if (!heirs.length) {
+    for (const it of Object.values(ctx.state.items)) if (it.ownerCharacterId === dead.id) delete ctx.state.items[it.id];
+    dead.social.wealth = 0;
+    dead.social.debt = 0;
+    return { lines: ['ไม่มีทายาท — ทรัพย์ตกเป็นของหลวง'], houseHeir: undefined };
+  }
   const weight = new Map(
     heirs.map((h) => {
       const n = must(ctx.state.familyNodes[h.familyNodeId], 'node');
-      return [h.id, B.shareByParentage[n.parentage] + (h.id === main.id ? B.mainHeirBonus : 0)] as const;
+      return [h.id, B.shareByParentage[n.parentage] + (h.id === main?.id ? B.mainHeirBonus : 0)] as const;
     }),
   );
   const totalW = [...weight.values()].reduce((a, b) => a + b, 0);
@@ -194,7 +228,7 @@ function distributeEstate(
   };
 
   const caregiver = pickCaregiverChild(heirs.filter((h) => dead.householdId && h.householdId === dead.householdId));
-  const houseHeir = caregiver ?? main;
+  const houseHeir = caregiver ?? main ?? heirs[0];
   const houses = items.filter((i) => i.kind === 'house');
   for (const it of houses) give(it, houseHeir);
   for (const it of items.filter((i) => i.kind !== 'house').sort((a, b) => b.value - a.value)) {
@@ -203,14 +237,21 @@ function distributeEstate(
     );
     give(it, best);
   }
+  // เงินสดชดเชยคนที่ได้ของชิ้นใหญ่ต่ำกว่าสิทธิ์ก่อน (เรือน/ที่ดินแบ่งครึ่งไม่ได้) — เงินติดลบแบ่งตามสิทธิ์ตรงๆ
+  const cash = dead.social.wealth;
+  const gap = (h: Character) => Math.max(0, share(h) * totalValue - (received.get(h.id) ?? 0));
+  const totalGap = heirs.reduce((a, h) => a + gap(h), 0);
+  const cashFor = new Map(heirs.map((h) => [h.id, cash > 0 && totalGap > 0 ? cash * gap(h) / totalGap : cash * share(h)]));
   for (const h of heirs) {
-    h.social.wealth += dead.social.wealth * share(h);
+    h.social.wealth += cashFor.get(h.id) ?? 0;
     h.social.debt += dead.social.debt * share(h);
   }
-  const lines = heirs.map(
-    (h) => `${h.name} ได้ ${((received.get(h.id) ?? 0) + dead.social.wealth * share(h)).toFixed(0)} ตำลึง (${Math.round(share(h) * 100)}%)` +
-      (dead.social.debt ? `, รับหนี้ ${(dead.social.debt * share(h)).toFixed(0)}` : ''),
-  );
+  const lines = heirs.map((h) => {
+    const got = (received.get(h.id) ?? 0) + (cashFor.get(h.id) ?? 0);
+    const actual = totalValue > 0 ? ` = ${Math.round((got / totalValue) * 100)}%` : '';
+    return `${h.name} ได้ ${got.toFixed(0)} ตำลึง (สิทธิ์ ${Math.round(share(h) * 100)}%${actual})` +
+      (dead.social.debt ? `, รับหนี้ ${(dead.social.debt * share(h)).toFixed(0)}` : '');
+  });
   if (houses.length) {
     lines.unshift(`เรือนตกแก่${houseHeir.name}${caregiver ? ' ลูกที่อยู่ดูแลพ่อแม่' : ' (ไม่มีลูกอยู่ในเรือน)'}`);
   }
@@ -236,6 +277,8 @@ function carryRelations(ctx: Ctx, dead: Character, heir: Character): string[] {
       strength: r.strength * factor,
       sinceDay: ctx.state.meta.day,
     };
+    // ทายาทมีความสัมพันธ์แบบเดียวกันกับคนนี้อยู่แล้วและแรงกว่า → ไม่เขียนทับ
+    if ((ctx.state.relations[inherited.id]?.strength ?? -Infinity) >= inherited.strength) continue;
     ctx.state.relations[inherited.id] = inherited;
     out.push(`${heir.name} รับ ${r.kind} กับ ${ctx.state.characters[other]?.name} (${inherited.strength.toFixed(2)})`);
   }
@@ -256,6 +299,13 @@ function crystallizeTaboos(ctx: Ctx, dead: Character, heir: Character, heirNode:
       const up = ctx.rng.pick(ups);
       if (up && ctx.rng.chance(0.5)) {
         out.push(`ข้อห้ามกลายพันธุ์: ${ctx.tags.label(t.target)} → ${ctx.tags.label(up)}`);
+        // กลายไปซ้ำกับข้อห้ามที่มีอยู่แล้ว → รวมเป็นข้อเดียว เก็บความแรงที่มากกว่า
+        const dup = dyn.taboos.find((x) => x !== t && x.target === up && x.kind === t.kind);
+        if (dup) {
+          dup.strength = Math.max(dup.strength, t.strength);
+          dyn.taboos = dyn.taboos.filter((x) => x !== t);
+          continue;
+        }
         t.target = up;
       } else if (t.kind === 'ban') {
         t.kind = 'ritual';
@@ -285,8 +335,10 @@ function crystallizeTaboos(ctx: Ctx, dead: Character, heir: Character, heirNode:
       continue;
     }
     const imposer = ctx.state.characters[rule.imposedBy];
+    // id เดิมอาจยังถูกข้อห้ามที่กลายพันธุ์ไปแล้วใช้อยู่ (trait origin อ้าง tabooId)
+    const baseId = `taboo_${dyn.id}_${rule.target}`;
     const taboo: FamilyTaboo = {
-      id: `taboo_${dyn.id}_${rule.target}`,
+      id: dyn.taboos.some((x) => x.id === baseId) ? newId(ctx, baseId) : baseId,
       kind: rule.kind,
       target: rule.target,
       strength: clamp01(0.5 + 0.04 * Math.min(years, 12)),

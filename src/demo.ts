@@ -9,7 +9,7 @@ import type { Character, ContentDB, Dynasty, TagId } from './core/types';
 import { capability, tickWounds } from './systems/body';
 import { chooseOption, prepareEvent } from './systems/events';
 import { createDynasty, createHousehold, emptyState, livingChildren, marry, spawnCharacter } from './systems/factory';
-import { applyHistoricalShocks, markDead, performHandover } from './systems/handover';
+import { applyHistoricalShocks, markDead, performHandover, settleDeath } from './systems/handover';
 import { renderLegend } from './systems/legend';
 import { householdYearTick } from './systems/socialLearning';
 import { describeTrait } from './systems/traits';
@@ -185,6 +185,7 @@ function story(seed: number, verbose: boolean): boolean {
     for (const c of Object.values(ctx.state.characters)) {
       if (isAlive(c) && c.id !== player.id && c.id !== father.id && ageOf(ctx, c) > 55 && ctx.rng.chance(0.12)) {
         markDead(ctx, c, 'situation:old_age');
+        settleDeath(ctx, c);
       }
     }
 

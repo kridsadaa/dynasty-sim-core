@@ -55,32 +55,31 @@ export function pruneState(ctx: Ctx): PruneReport {
   }
 
   // L1 → BranchSummary
+  const pinned = pinnedNodes(ctx);
+  const canDrop = (n: FamilyNode) => n.characterId === null && n.legendIds.length === 0 && !ancestors.has(n.id) && !pinned.has(n.id);
   for (const node of Object.values(S.familyNodes)) {
     if (!S.familyNodes[node.id]) continue; // ถูกยุบไปแล้วในรอบนี้
     if (ancestors.has(node.id) || (dist.get(node.id) ?? Infinity) <= B.keepKinDistance) continue;
-    const subtree = collectSubtree(ctx, node);
-    const removable = subtree.every((n) => n.characterId === null && n.legendIds.length === 0 && !ancestors.has(n.id));
-    if (!removable) continue;
-    const parentId = node.fatherId ?? node.motherId;
-    const parent = parentId ? S.familyNodes[parentId] : undefined;
+    // ผูกสรุปสายไว้กับพ่อแม่ฝ่ายที่เป็นสายเลือด (ลูกสาวแต่งเขยคนนอก → ผูกกับแม่ ไม่ใช่เขยซึ่งอาจถูกยุบไปทีหลัง)
+    const parents = [node.fatherId, node.motherId].map((id) => (id ? S.familyNodes[id] : undefined)).filter((n): n is FamilyNode => !!n);
+    const parent = parents.find((n) => !isMarriedIn(ctx, n)) ?? parents[0];
     const dyn = node.dynastyId ? S.dynasties[node.dynastyId] : undefined;
-    if (!parent || !dyn) continue;
+    if (!parent || !dyn) continue; // คู่ครองคนนอก (ไม่มีพ่อแม่ในผัง) ยุบพร้อมสายของคู่ ไม่ยุบเดี่ยว
+    const subtree = collectSubtree(ctx, node);
+    const inLaws = marriedInOf(ctx, subtree);
+    // สายที่ตายหมด — รวมคู่ครองคนนอกของสายด้วย (เขย/สะใภ้ที่ยังมีชีวิตอยู่ = สายยังไม่จบ)
+    if (!subtree.every(canDrop) || !inLaws.every(canDrop)) continue;
     dyn.branchSummaries.push({
       rootNodeId: parent.id,
       label: `สายของ${node.name}`,
-      memberCount: subtree.length,
+      memberCount: subtree.length + inLaws.length,
       generations: Math.max(...subtree.map((n) => n.generation)) - node.generation + 1,
     });
-    parent.childIds = parent.childIds.filter((id) => id !== node.id);
-    for (const n of subtree) {
-      for (const sid of n.spouseIds) {
-        const sp = S.familyNodes[sid];
-        if (sp) sp.spouseIds = sp.spouseIds.filter((id) => id !== n.id);
-      }
-      delete S.familyNodes[n.id];
-    }
-    report.nodesMerged += subtree.length;
+    for (const n of [...subtree, ...inLaws]) delete S.familyNodes[n.id];
+    report.nodesMerged += subtree.length + inLaws.length;
   }
+  // เก็บกวาดเสมอ (ไม่ใช่เฉพาะรอบที่ยุบ) — เซฟเก่าอาจมีคู่ครองคนนอกค้างอยู่จากก่อนแก้
+  dropDanglingKin(ctx, (n) => canDrop(n) && (dist.get(n.id) ?? Infinity) > B.keepKinDistance, report);
 
   // Event log
   for (const ev of Object.values(S.eventLog)) {
@@ -143,6 +142,56 @@ function ancestorSet(ctx: Ctx, from: FamilyNodeId): Set<FamilyNodeId> {
     if (n.motherId) stack.push(n.motherId);
   }
   return out;
+}
+
+/** คู่ครองคนนอก = ไม่มีพ่อแม่อยู่ในผัง (แต่งเข้ามา) */
+function isMarriedIn(ctx: Ctx, n: FamilyNode): boolean {
+  const S = ctx.state;
+  return !(n.fatherId && S.familyNodes[n.fatherId]) && !(n.motherId && S.familyNodes[n.motherId]);
+}
+
+/** node ที่ห้ามยุบเพราะ Dynasty อ้างอิงอยู่ (ต้นตระกูล/หัวหน้าตระกูล — ต้นตระกูลก็ไม่มีพ่อแม่ในผังเหมือนคนนอก) */
+function pinnedNodes(ctx: Ctx): Set<FamilyNodeId> {
+  const out = new Set<FamilyNodeId>();
+  for (const d of Object.values(ctx.state.dynasties)) out.add(d.founderNodeId).add(d.headNodeId);
+  return out;
+}
+
+/**
+ * คู่ครองคนนอกที่ผูกกับสายนี้สายเดียว (คู่ครองทุกคนและลูกทุกคนอยู่ใน subtree) → เป็นส่วนหนึ่งของสาย ยุบไปพร้อมกัน
+ * คู่ครองที่มีพ่อแม่ในผัง (ญาติแต่งกันเอง) หรือมีคู่/ลูกนอกสาย ไม่นับ — แค่ตัด reference ทิ้งตอนเก็บกวาด
+ */
+function marriedInOf(ctx: Ctx, subtree: FamilyNode[]): FamilyNode[] {
+  const S = ctx.state;
+  const ids = new Set(subtree.map((n) => n.id));
+  const inside = (id: FamilyNodeId) => ids.has(id) || !S.familyNodes[id];
+  const out = new Map<FamilyNodeId, FamilyNode>();
+  for (const n of subtree) {
+    for (const sid of n.spouseIds) {
+      const sp = S.familyNodes[sid];
+      if (!sp || ids.has(sid) || out.has(sid) || !isMarriedIn(ctx, sp)) continue;
+      if (sp.spouseIds.every(inside) && sp.childIds.every(inside)) out.set(sid, sp);
+    }
+  }
+  return [...out.values()];
+}
+
+/**
+ * ตัด childIds/spouseIds ที่ชี้ไป node ที่ถูกลบแล้ว (เช่น ลูกที่ยุบไปกับสายของอีกฝ่าย)
+ * แล้วลบ node ที่เหลือโดดเดี่ยว (ไม่มีพ่อแม่ คู่ครอง หรือลูกเหลือในผัง) ซึ่ง drop ได้ — เช่นคู่ครองคนนอกค้างจากเซฟเก่า
+ */
+function dropDanglingKin(ctx: Ctx, droppable: (n: FamilyNode) => boolean, report: PruneReport): void {
+  const S = ctx.state;
+  const exists = (id: FamilyNodeId) => !!S.familyNodes[id];
+  for (const n of Object.values(S.familyNodes)) {
+    if (!n.childIds.every(exists)) n.childIds = n.childIds.filter(exists);
+    if (!n.spouseIds.every(exists)) n.spouseIds = n.spouseIds.filter(exists);
+  }
+  for (const n of Object.values(S.familyNodes)) {
+    if (!isMarriedIn(ctx, n) || n.spouseIds.length > 0 || n.childIds.length > 0 || !droppable(n)) continue;
+    delete S.familyNodes[n.id];
+    report.nodesMerged++;
+  }
 }
 
 function collectSubtree(ctx: Ctx, root: FamilyNode): FamilyNode[] {

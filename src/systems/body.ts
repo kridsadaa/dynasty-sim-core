@@ -67,6 +67,17 @@ export function scarModifiers(ctx: Ctx, ch: Character, context: Set<string>): Mo
   return out;
 }
 
+/** อวัยวะนี้หรือ ancestor ตัวใดตัวหนึ่งขาดไปแล้ว (มือขาด → นิ้วบนมือนั้นไม่มีอยู่ให้บาดอีก) */
+export function isSevered(ctx: Ctx, ch: Character, partDefId: PartDefId): boolean {
+  const anatomy = anatomyOf(ctx, ch);
+  let cur: PartDefId | null = partDefId;
+  while (cur) {
+    if (getPart(ctx, ch, cur)?.status === 'missing') return true;
+    cur = anatomy.parts[cur]?.parent ?? null;
+  }
+  return false;
+}
+
 /** สุ่มอวัยวะตาม selector — "นิ้วของมือที่ไม่ถนัด" (มือที่จับผักขณะหั่น) */
 export function selectPart(ctx: Ctx, ch: Character, sel: PartSelector): PartDefId | null {
   const anatomy = anatomyOf(ctx, ch);
@@ -76,7 +87,7 @@ export function selectPart(ctx: Ctx, ch: Character, sel: PartSelector): PartDefI
     (d) =>
       d.tags.some((t) => ctx.tags.isA(t, sel.tag)) &&
       (!side || d.side === side) &&
-      getPart(ctx, ch, d.id)?.status !== 'missing',
+      !isSevered(ctx, ch, d.id),
   );
   return ctx.rng.weighted(candidates, (d) => d.hitWeight)?.id ?? null;
 }

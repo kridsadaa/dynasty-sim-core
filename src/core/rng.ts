@@ -27,15 +27,24 @@ export class Rng {
   }
 
   weighted<T>(items: readonly T[], weight: (t: T) => number): T | undefined {
+    // น้ำหนัก ≤ 0 (หรือ NaN) = ไม่มีสิทธิ์ถูกเลือกเลย
+    const w = (t: T): number => {
+      const x = weight(t);
+      return x > 0 ? x : 0;
+    };
     let total = 0;
-    for (const it of items) total += Math.max(0, weight(it));
+    for (const it of items) total += w(it);
     if (total <= 0) return undefined;
-    let r = this.next() * total;
+    let r = this.next() * total; // [0, total)
+    let last: T | undefined;
     for (const it of items) {
-      r -= Math.max(0, weight(it));
-      if (r <= 0) return it;
+      const x = w(it);
+      if (x === 0) continue; // ข้ามตัวน้ำหนักศูนย์ — ถ้า next() ได้ 0 พอดีจะไม่หยิบตัวแรกที่น้ำหนักศูนย์
+      last = it;
+      r -= x;
+      if (r < 0) return it;
     }
-    return items[items.length - 1];
+    return last; // กัน floating error สะสม: คืนตัวสุดท้ายที่น้ำหนัก > 0
   }
 }
 

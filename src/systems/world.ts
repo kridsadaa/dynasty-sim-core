@@ -1,12 +1,12 @@
 import { ageOf, isAlive, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef } from '../core/types';
-import { tickWounds } from './body';
+import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import {
   createHousehold, joinHousehold, livingChildren, livingSpouse, marry, pickCaregiverChild, pickName, relativeNames,
   spawnCharacter,
 } from './factory';
-import { applyHistoricalShocks, heirCandidates, markDead, performHandover } from './handover';
+import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
 import { householdYearTick } from './socialLearning';
 
 // ============================================================================
@@ -18,6 +18,13 @@ export type WorldSignal =
   | { type: 'log'; line: string }
   | { type: 'event'; prepared: PreparedEvent }
   | { type: 'playerDied' };
+
+const WOUND_RESULT_TH: Record<WoundOutcome['result'], string> = {
+  healed_clean: 'หายสนิท',
+  scarred: 'หายแล้ว',
+  impaired: 'หายแต่ใช้การได้ไม่เต็มที่',
+  lost_part: 'ลุกลามจนเสียอวัยวะ',
+};
 
 export function advanceDay(ctx: Ctx): WorldSignal[] {
   const S = ctx.state;
@@ -34,7 +41,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const ch = S.characters[cid];
     if (!ch) continue;
     for (const o of tickWounds(ctx, ch)) {
-      if (ch.id === player?.id) out.push({ type: 'log', line: `แผลของ${ch.name}: ${o.result}${o.scar ? ' (กลายเป็นแผลเป็น)' : ''}` });
+      if (ch.id === player?.id) out.push({ type: 'log', line: `แผลของ${ch.name}${WOUND_RESULT_TH[o.result]}${o.scar ? ' (กลายเป็นแผลเป็น)' : ''}` });
     }
   }
 
@@ -54,12 +61,23 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
         if (ch.id !== player?.id) out.push({ type: 'log', line: `${ch.name} ถึงแก่กรรม` });
       }
     }
-    // หัวหน้าตระกูลที่เป็น NPC ตาย (แก่ / ศึกสงคราม) → แบ่งมรดกทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
-    for (const ch of Object.values(S.characters)) {
-      if (!S.characters[ch.id] || ch.deathDay !== S.meta.day || ch.id === player?.id || !ch.dynastyId) continue;
-      if (S.dynasties[ch.dynastyId]?.headNodeId !== ch.familyNodeId) continue;
+    // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
+    const diedToday = Object.values(S.characters).filter((ch) => ch.deathDay === S.meta.day && ch.id !== player?.id);
+    const isHeadWithHeir = (ch: Character) =>
+      !!ch.dynastyId && S.dynasties[ch.dynastyId]?.headNodeId === ch.familyNodeId && heirCandidates(ctx, ch).length > 0;
+    // คนทั่วไป → งานศพ แบ่งมรดก ออกจากเรือน; ทำก่อน handover เพราะ handover prune ตัวละครที่ตายแล้วทิ้ง
+    for (const ch of diedToday.filter((c) => !isHeadWithHeir(c))) {
+      const r = settleDeath(ctx, ch);
+      if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', line });
+    }
+    // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
+    for (const ch of diedToday.filter(isHeadWithHeir)) {
+      if (!S.characters[ch.id]) continue;
       const cands = heirCandidates(ctx, ch);
-      if (!cands.length) continue;
+      if (!cands.length) {
+        settleDeath(ctx, ch);
+        continue;
+      }
       const heirId = cands.some((c) => c.ch.id === player?.id) ? player!.id : undefined;
       const r = performHandover(ctx, ch.id, heirId, { asPlayer: false });
       out.push({ type: 'log', line: `มรดกของ${r.deceased} ตกถึง${r.heir} ผู้นำตระกูลคนใหม่` });
@@ -92,11 +110,14 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
       if (recent) continue;
     }
     const bindings: Record<string, Character['id']> = { actor: actor.id };
-    let ok = true;
+    const ageOk = (ch: Character, range: [number, number] | undefined) =>
+      !range || (ageOf(ctx, ch) >= range[0] && ageOf(ctx, ch) <= range[1]);
+    let ok = ageOk(actor, def.roles.actor?.ageRange);
     for (const [role, f] of Object.entries(def.roles)) {
+      if (!ok) break;
       if (role === 'actor') continue;
       const who = resolveRole(ctx, actor, f.relationToActor);
-      if (!who) {
+      if (!who || !ageOk(who, f.ageRange)) {
         ok = false;
         break;
       }
