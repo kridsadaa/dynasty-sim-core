@@ -1,0 +1,13 @@
+[
+  {
+    "id": "naming.no_surname_pre_2456",
+    "domain": "naming",
+    "title": "ยังไม่มีนามสกุลก่อน พ.ศ. 2456",
+    "period": [1893, 2455],
+    "claim": { "hasSurname": false },
+    "summary": "คนสยามเริ่มมีนามสกุลตามพระราชบัญญัติขนานนามสกุล พ.ศ. 2456 ตัวละครในเกมจึงระบุตัวตนด้วยชื่อตัว บรรดาศักดิ์ และ 'บ้าน/สังกัด' แทน",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.surname_act_2456", "locator": "TODO: ราชกิจจานุเบกษา เล่ม/หน้า" }],
+    "verified": false
+  }
+]

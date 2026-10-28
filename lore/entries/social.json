@@ -1,0 +1,17 @@
+[
+  {
+    "id": "social.inheritance_by_mother_status",
+    "domain": "social",
+    "title": "ส่วนแบ่งมรดกขึ้นกับสถานะของมารดา",
+    "period": [2275, 2348],
+    "claim": {
+      "principle": "บุตรได้ส่วนแบ่งมรดกต่างกันตามสถานะของมารดา",
+      "gameBalanceKey": "inheritance.shareByParentage",
+      "gameValuesAre": "ค่าสมมุติ — ต้องปรับตามสัดส่วนจริงในลักษณะมรดก"
+    },
+    "summary": "ระบบแบ่งมรดกในเกม (handover.ts) ถ่วงน้ำหนักตามสถานะแม่ ต้องตรวจกับลักษณะมรดกในกฎหมายตราสามดวง ทั้งหลักการและสัดส่วน",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.three_seals_law", "locator": "TODO: ลักษณะมรดก" }],
+    "verified": false
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "event.fall_of_ayutthaya_2310",
+    "domain": "event",
+    "title": "เสียกรุงศรีอยุธยาครั้งที่สอง",
+    "period": [2310, 2310],
+    "claim": { "year": 2310, "kind": "war", "outcome": "กรุงศรีอยุธยาแตกแก่กองทัพพม่า" },
+    "summary": "กรุงศรีอยุธยาเสียแก่พม่าใน พ.ศ. 2310 เกมใช้เป็น shock ล้างทรัพย์และจุดยึดของตำนานตระกูล",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.phongsawadan_phan_chanthanumat", "locator": "TODO: ตอนเสียกรุง" }],
+    "verified": false,
+    "gameRefs": { "tags": ["history:fall_of_ayutthaya"] }
+  }
+]

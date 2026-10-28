@@ -58,6 +58,8 @@ export interface TagDef {
   narrativeUpgrades?: TagId[];
   /** ถ้า tag นี้โผล่ในเรื่องเล่า ต้องเติม slot อื่นให้เข้าเค้า (ดาบ → ต้องมีคู่ต่อสู้) */
   narrativeImplies?: Partial<Record<ClaimSlot, TagId>>;
+  /** id ใน lore/entries — หลักฐานทางประวัติศาสตร์ของสิ่งนี้ (ตรวจโดย npm run lore:check) */
+  loreRefs?: string[];
 }
 
 // ============================================================================

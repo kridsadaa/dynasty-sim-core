@@ -17,7 +17,7 @@
   { "id": "food:vegetable", "parents": ["food:any"], "label": { "th": "ผัก" } },
   { "id": "food:gourd", "parents": ["food:vegetable"], "label": { "th": "พืชตระกูลแตงและฟัก" } },
   { "id": "food:cucumber", "parents": ["food:gourd"], "label": { "th": "แตงกวา" }, "salience": 0.5, "prestige": -0.4 },
-  { "id": "food:pumpkin", "parents": ["food:gourd"], "label": { "th": "ฟักทอง" }, "salience": 0.85, "prestige": -0.4,
+  { "id": "food:pumpkin", "parents": ["food:gourd"], "label": { "th": "ฟักทอง" }, "salience": 0.85, "prestige": -0.4, "loreRefs": ["material.pumpkin_availability"],
     "narrativeUpgrades": ["person:enemy_soldier"] },
   { "id": "food:wax_gourd", "parents": ["food:gourd"], "label": { "th": "ฟักเขียว" }, "salience": 0.4 },
   { "id": "food:luffa", "parents": ["food:gourd"], "label": { "th": "บวบ" }, "salience": 0.35 },
@@ -50,7 +50,8 @@
   { "id": "situation:craft", "parents": ["situation:any"], "label": { "th": "งานช่าง" } },
   { "id": "situation:old_age", "parents": ["situation:any"], "label": { "th": "ชราภาพ" } },
 
-  { "id": "history:fall_of_ayutthaya", "parents": ["situation:war"], "label": { "th": "ศึกเสียกรุงครั้งที่สอง" }, "prestige": 0.9 },
+  { "id": "history:fall_of_ayutthaya", "parents": ["situation:war"], "label": { "th": "ศึกเสียกรุงครั้งที่สอง" }, "prestige": 0.9,
+    "loreRefs": ["event.fall_of_ayutthaya_2310"] },
   { "id": "history:thonburi_succession", "parents": ["situation:any"], "label": { "th": "การผลัดแผ่นดินกรุงธนบุรี" } },
 
   { "id": "supernatural:omen", "parents": [], "label": { "th": "นิมิตประหลาด" } },

@@ -1,0 +1,15 @@
+[
+  {
+    "id": "material.pumpkin_availability",
+    "domain": "material",
+    "title": "ฟักทองในอยุธยาตอนปลาย",
+    "period": [2275, 2310],
+    "claim": { "item": "ฟักทอง", "availableInSlice": "unknown" },
+    "summary": "ฟักทองเป็นพืชที่มาจากทวีปอเมริกา ยังไม่มีหลักฐานในคลังว่าแพร่หลายในอยุธยาตอนปลาย — event ตัวอย่างใช้อยู่ ถ้าหาหลักฐานไม่พบให้เปลี่ยนเป็นพืชพื้นถิ่นตระกูลเดียวกัน เช่น ฟักเขียว หรือน้ำเต้า",
+    "status": "invented",
+    "rationale": "ใช้ชั่วคราวในต้นแบบระบบ trauma เพราะสีสะดุดตาเหมาะกับกลไก misattribution",
+    "citations": [],
+    "verified": false,
+    "gameRefs": { "tags": ["food:pumpkin"] }
+  }
+]

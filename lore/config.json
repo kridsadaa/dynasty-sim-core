@@ -1,0 +1,10 @@
+{
+  "gamePeriod": [2275, 2400],
+  "currentSlice": {
+    "label": "ครัวเรือนขุนนางชั้นผู้น้อยในกรุงศรีอยุธยาตอนปลาย",
+    "period": [2295, 2315],
+    "estates": ["noble", "phrai_luang", "that"],
+    "region": "กรุงศรีอยุธยาและชานพระนคร"
+  },
+  "lateCompilationWarnYears": 30
+}

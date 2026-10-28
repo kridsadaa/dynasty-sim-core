@@ -1,0 +1,13 @@
+[
+  {
+    "id": "attire.wat_ko_kaeo_reference",
+    "domain": "attire",
+    "title": "จิตรกรรมวัดเกาะแก้วสุทธารามเป็นภาพอ้างอิงการแต่งกายร่วมยุค",
+    "period": [2270, 2280],
+    "claim": { "use": "visualReference", "subjects": ["ชาวสยามหลายชนชั้น", "ชาวต่างชาติ"] },
+    "summary": "ใช้เป็นแหล่งหลักของ visual bible สำหรับอยุธยาตอนปลาย — เมื่อตรวจภาพแล้วให้แตกเป็นรายการ attire ย่อย (เครื่องนุ่งห่ม ทรงผม ตามชนชั้น/เพศ/วัย) พร้อม visualDescriptor",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.wat_ko_kaeo_murals", "locator": "TODO: ระบุผนัง/ห้องภาพ" }],
+    "verified": false
+  }
+]

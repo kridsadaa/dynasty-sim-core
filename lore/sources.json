@@ -1,0 +1,49 @@
+[
+  {
+    "id": "src.phongsawadan_phan_chanthanumat",
+    "title": "พระราชพงศาวดารกรุงศรีอยุธยา ฉบับพันจันทนุมาศ (เจิม)",
+    "kind": "primary",
+    "describesPeriod": [1893, 2310],
+    "reliability": 4,
+    "url": "https://vajirayana.org",
+    "notes": "ชำระสมัยรัตนโกสินทร์ตอนต้น — ตรวจปีที่ชำระแล้วเติม composedYear; ฉบับพิมพ์อยู่ในประชุมพงศาวดาร"
+  },
+  {
+    "id": "src.three_seals_law",
+    "title": "กฎหมายตราสามดวง",
+    "kind": "primary",
+    "composedYear": 2348,
+    "describesPeriod": [1893, 2348],
+    "reliability": 4,
+    "notes": "ชำระสมัยรัชกาลที่ 1 จากกฎหมายสมัยอยุธยา — เนื้อหาบางส่วนอาจถูกปรับแก้ระหว่างชำระ ระวังเมื่อใช้กับอยุธยาตอนปลาย"
+  },
+  {
+    "id": "src.la_loubere",
+    "title": "Du Royaume de Siam (จดหมายเหตุลา ลูแบร์)",
+    "author": "Simon de La Loubère",
+    "kind": "primary",
+    "composedYear": 2234,
+    "describesPeriod": [2230, 2231],
+    "reliability": 4,
+    "notes": "ทูตฝรั่งเศสสมัยสมเด็จพระนารายณ์ (ค.ศ. 1687–88) — เก่ากว่าอยุธยาตอนปลายราว 70 ปี และเป็นมุมมองชาวต่างชาติ"
+  },
+  {
+    "id": "src.surname_act_2456",
+    "title": "พระราชบัญญัติขนานนามสกุล พ.ศ. 2456",
+    "kind": "primary",
+    "composedYear": 2456,
+    "describesPeriod": [2456, 2456],
+    "reliability": 5,
+    "notes": "ประกาศในราชกิจจานุเบกษา — เติมเล่ม/หน้า"
+  },
+  {
+    "id": "src.wat_ko_kaeo_murals",
+    "title": "จิตรกรรมฝาผนังอุโบสถวัดเกาะแก้วสุทธาราม จังหวัดเพชรบุรี",
+    "kind": "visual",
+    "composedYear": 2277,
+    "describesPeriod": [2270, 2280],
+    "reliability": 4,
+    "license": "ตัวงานเป็นสมบัติสาธารณะ — ภาพถ่ายต้องตรวจลิขสิทธิ์รายภาพก่อนใช้เป็นภาพอ้างอิง",
+    "notes": "มีจารึกระบุปี พ.ศ. 2277 — ร่วมยุคกับอยุธยาตอนปลายโดยตรง"
+  }
+]
