@@ -97,7 +97,7 @@ In the style of an 18th-century Thai temple mural painting: flat colors without 
 ## บันทึกผล
 
 โมเดล/เวอร์ชันที่ Gemini แสดง: `Gemini 4 argon` (ตามที่ผู้ทดสอบแจ้ง)  วันที่: `2569-10-28`
-สร้างโจทย์ละ 1 ครั้ง (ยังไม่ได้ทดสอบ a/b) — ไฟล์ `art/rounds/S1.jfif` … `S11.jfif`
+สร้างโจทย์ละ 1 ครั้ง (ยังไม่ได้ทดสอบ a/b) — ไฟล์ `art/rounds/01/S1.jfif` … `S11.jfif`
 
 | # | ตรง lore (1–5) | ทรงผมตรงไหม | ของผิดยุค/ผิด lore | ที่ทำได้ดี |
 |---|---|---|---|---|

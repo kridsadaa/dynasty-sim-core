@@ -1,0 +1,90 @@
+{
+  "version": "0.1",
+  "lockedOn": "2569-10-28",
+  "status": "locked",
+  "notes": "ตรึงจากรอบทดสอบ 00–02 (art/rounds/) — แก้ข้อความใน styles ต้องขึ้นเวอร์ชันใหม่และรันชุดทดสอบ art/README.md ข้อ 4.2 ซ้ำ",
+  "tool": {
+    "name": "Gemini",
+    "model": "Gemini 4 argon",
+    "modelNote": "รอบ 01 ระบุ Gemini 4 argon; รอบ 02 ไม่ได้จด — ถือว่าเป็นรุ่นเดียวกันจนกว่าจะยืนยัน",
+    "negativePrompt": "ไม่มีช่อง negative แยก — คำห้ามอยู่ในท้าย style block ขึ้นต้นด้วย 'Avoid:'",
+    "versionPinning": "ล็อกรุ่นเองไม่ได้ → จดรุ่นทุกครั้งที่สร้างภาพ และรัน regression เมื่อรุ่นเปลี่ยน",
+    "termsToCheck": "ตรวจเงื่อนไขการใช้ภาพที่สร้างของ Google (เชิงพาณิชย์ / นำไปเทรน) ก่อนใช้เป็น asset จริง"
+  },
+  "output": {
+    "aspectRatio": "16:9",
+    "observedSize": [2752, 1536],
+    "approvedCopySize": [1376, 768]
+  },
+  "promptLayers": ["STYLE", "SUBJECT", "STATE", "SCENE"],
+  "styles": {
+    "reality": {
+      "use": "portrait, event, ฉากชีวิตประจำวัน, ร่องรอยบนร่างกาย, Legend.truth",
+      "testedIn": "รอบ 02 (style block v0.3)",
+      "prompt": "Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.",
+      "loreRefs": [
+        "attire.hair_1680s", "attire.commoner_men_1680s", "attire.women_1680s",
+        "material.houses_1680s", "ritual.month_old_tham_khwan", "ritual.topknot_cutting"
+      ]
+    },
+    "chronicle": {
+      "use": "ตำนานตระกูล (Legend.current), พงศาวดาร",
+      "testedIn": "รอบ 01 (style block v0.2)",
+      "prompt": "In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.",
+      "loreRefs": ["attire.wat_ko_kaeo_reference"]
+    }
+  },
+  "subjectRules": [
+    {
+      "id": "framing.adult_commoner_women",
+      "rule": "หญิงสามัญตามหลักฐานไม่มีผ้าคลุมอก — ใช้ portrait ครอปไหล่ / มุมข้าง / มุมหลัง / ระยะไกล; ไม่ใช้ภาพเปลือยด้านหน้า; ห้ามเน้นเชิงเพศ",
+      "source": "art/README.md ข้อ 6"
+    },
+    {
+      "id": "framing.children",
+      "rule": "เด็กไม่ใส่เสื้อได้ แต่ท่อนล่างต้องมีผ้านุ่งและเห็นชัด; ถ้าถูกบังจนไม่แน่ใจให้ถือว่าภาพไม่ผ่าน",
+      "source": "art/README.md ข้อ 6"
+    },
+    {
+      "id": "closeup.no_shirt",
+      "rule": "ภาพระยะใกล้ของชายสามัญต้องระบุ 'bare-chested, no shirt' ในชั้น SUBJECT เสมอ ไม่เช่นนั้นเครื่องมือเติมเสื้อ",
+      "source": "art/rounds/01-style.md (S5)"
+    }
+  ],
+  "knownLimitations": [
+    {
+      "id": "breast_cloth_drape",
+      "issue": "ผ้าห่มพาดสองไหล่สำเร็จราว 1 ใน 2 — บางภาพยังเป็นสไบเฉียงไหล่เดียว",
+      "mitigation": "สร้างอย่างน้อย 2 ภาพแล้วคัด"
+    },
+    {
+      "id": "left_right",
+      "issue": "ไม่ทำตามข้างซ้าย/ขวาที่สั่ง (แผลเป็นผิดมือสองรอบติด)",
+      "mitigation": "prompt builder ไม่พึ่งการระบุข้าง; ถ้าข้างสำคัญต่อเกม (เช่น แผลมือที่ไม่ถนัด) ให้กลับภาพแนวนอนหลังสร้าง"
+    },
+    {
+      "id": "basket_hearth_fire",
+      "issue": "วาดไฟใต้ตะกร้าดินแม้สั่งห้าม",
+      "mitigation": "ใช้มุมที่ไม่เห็นใต้เตา หรือยอมรับในภาพระยะไกล"
+    },
+    {
+      "id": "hanging_ladder",
+      "issue": "บันไดผูกเชือกห้อยจากประตูได้ แต่ปลายยังแตะพื้น",
+      "mitigation": "ยอมรับ — ถือว่าผ่าน"
+    },
+    {
+      "id": "gable_finials",
+      "issue": "ปั้นลมหางหงส์โผล่บนเรือนชาวบ้านบางภาพ",
+      "mitigation": "คัดทิ้ง; v0.2 ควรเพิ่มคำห้ามให้เจาะจงขึ้น (เช่น 'no curved horn-shaped gable ornaments')"
+    }
+  ],
+  "approved": "art/approved/manifest.json",
+  "regression": {
+    "suite": "art/README.md ข้อ 4.2 (10 โจทย์)",
+    "rerunWhen": ["รุ่นโมเดลเปลี่ยน", "แก้ style block", "ทุกครั้งก่อนสร้าง asset ชุดใหญ่"],
+    "passCriteria": "ตรง lore ≥ 4 อย่างน้อย 8/10 และสไตล์ภาพคงที่เมื่อสร้างซ้ำ"
+  },
+  "history": [
+    { "version": "0.1", "date": "2569-10-28", "change": "ตรึงครั้งแรก — Reality จาก block v0.3 (รอบ 02), Chronicle จาก block v0.2 (รอบ 01)" }
+  ]
+}

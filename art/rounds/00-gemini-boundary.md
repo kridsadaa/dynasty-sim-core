@@ -83,7 +83,7 @@ In the style of an 18th-century Thai temple mural painting: flat colors without 
 ## บันทึกผล
 
 โมเดล/เวอร์ชันที่ Gemini แสดง: `__________` (ยังไม่ได้จด)  วันที่: `2569-10-28`
-ภาพผลลัพธ์: `art/rounds/*.jfif` (2752×1536, 16:9) — เก็บไว้ในเครื่อง ไม่ commit (ดู .gitignore)
+ภาพผลลัพธ์: `art/rounds/00/*.jfif` (2752×1536, 16:9) — เก็บไว้ในเครื่อง ไม่ commit (ดู .gitignore)
 
 | ระดับ | ผล | ความแม่น (1–5) | ของผิดยุค/ผิด lore ที่เห็น | หมายเหตุ |
 |---|---|---|---|---|

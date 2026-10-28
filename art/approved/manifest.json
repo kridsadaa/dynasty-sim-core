@@ -1,0 +1,14 @@
+{
+  "styleVersion": "0.1",
+  "notes": "ภาพที่อนุมัติเป็นตัวอย่างสไตล์ v0.1 — ย่อเหลือ 1376×768 จากต้นฉบับใน art/rounds/ (ไม่ขึ้น git); ใช้เป็นภาพอ้างอิงสไตล์ได้ และเป็นชุดเปรียบเทียบตอน regression",
+  "license": "สร้างด้วย Gemini — ตรวจเงื่อนไขการใช้ของ Google ก่อนใช้เชิงพาณิชย์หรือนำไปเทรน",
+  "images": [
+    { "file": "reality-official-lomphok.jpg", "style": "reality", "from": "art/rounds/02/S1.jfif", "promptRef": "art/rounds/02-fixes.md#S1", "loreRefs": ["attire.officials_1680s"], "score": 5, "notes": "ลอมพอกทรงกรวยไม่มีปีก แถบทอง สายรัดคาง" },
+    { "file": "reality-commoner-man.jpg", "style": "reality", "from": "art/rounds/02/S2-a.jfif", "promptRef": "art/rounds/02-fixes.md#S2", "loreRefs": ["attire.commoner_men_1680s", "attire.hair_1680s", "material.houses_1680s"], "score": 5, "notes": "ผ้านุ่งแบบโจง ทรงผม บันไดผูกเชือก; สร้างซ้ำ (S2-b) ได้ภาพเกือบเหมือนเดิม" },
+    { "file": "reality-wellborn-woman.jpg", "style": "reality", "from": "art/rounds/02/S3-a.jfif", "promptRef": "art/rounds/02-fixes.md#S3", "loreRefs": ["attire.women_1680s"], "score": 5, "notes": "ผ้าห่มข้ามสองไหล่ ฟันดำ ต่างหูหยดน้ำ เด็กไว้จุก — สร้างซ้ำสำเร็จราวครึ่งเดียว" },
+    { "file": "reality-elder-woman-portrait.jpg", "style": "reality", "from": "art/rounds/02/S6-a.jfif", "promptRef": "art/rounds/02-fixes.md#S6", "loreRefs": ["attire.hair_1680s"], "score": 5, "notes": "portrait ครอปไหล่ — ต้นแบบภาพตัวละครใน UI" },
+    { "file": "reality-stilt-house.jpg", "style": "reality", "from": "art/rounds/01/S7.jfif", "promptRef": "art/rounds/01-style.md#S7", "loreRefs": ["material.houses_1680s"], "score": 4, "notes": "สร้างด้วย block v0.2 — บันไดยังพิงพื้น หลังคามุงจาก" },
+    { "file": "reality-meal-tray.jpg", "style": "reality", "from": "art/rounds/01/S9.jfif", "promptRef": "art/rounds/01-style.md#S9", "loreRefs": ["material.food_1680s", "material.household_objects_1680s"], "score": 5, "notes": "สร้างด้วย block v0.2" },
+    { "file": "chronicle-legend-warrior.jpg", "style": "chronicle", "from": "art/rounds/01/S10.jfif", "promptRef": "art/rounds/01-style.md#S10", "loreRefs": ["attire.wat_ko_kaeo_reference"], "score": 5, "notes": "ผนังปูนร้าว เทวดามือเปล่า ผ้าพันมือซ้าย — ต้นแบบภาพตำนาน" }
+  ]
+}
