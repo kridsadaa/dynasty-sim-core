@@ -1,4 +1,5 @@
 import type { GameState } from '../core/types';
+import type { PendingEventSnapshot } from '../systems/events';
 import type { SaveSlotInfo } from './protocol';
 
 // ============================================================================
@@ -7,6 +8,7 @@ import type { SaveSlotInfo } from './protocol';
 // DB "dynasty-sim"
 //   slots  : keyPath 'slot' → SaveSlotInfo (สำหรับหน้า Load โดยไม่ต้องอ่านเซฟทั้งก้อน)
 //   tables : key `${slot}:${table}` → Record<id, entity> ของตารางนั้น
+//            key `${slot}:pending` → PendingEventSnapshot[] (event ที่รอผู้เล่น — ไม่ใช่ส่วนของ GameState)
 //
 // - เขียนทุกตารางใน transaction เดียว → atomic: ปิดแท็บกลางคันไม่มีวันได้เซฟครึ่งๆ กลางๆ
 // - เก็บเป็น structured clone ตรงๆ (ไม่ JSON.stringify) → เร็วและไม่มี parse cost ตอนโหลด
@@ -57,15 +59,14 @@ const result = <T>(r: IDBRequest<T>) =>
 
 const slotRange = (slot: string) => IDBKeyRange.bound(`${slot}:`, `${slot}:￿`);
 
+export interface SavedGame {
+  state: GameState;
+  pending: PendingEventSnapshot[]; // event ที่รอผู้เล่นตัดสินใจ ณ ตอนเซฟ
+}
+
 export async function saveState(
-  slot: string, state: GameState, info: Pick<SaveSlotInfo, 'year' | 'playerName' | 'dynastyName'>,
+  slot: string, { state, pending }: SavedGame, info: Pick<SaveSlotInfo, 'year' | 'playerName' | 'dynastyName'>,
 ): Promise<SaveSlotInfo> {
-  const db = await openDb();
-  const tx = db.transaction(['slots', 'tables'], 'readwrite');
-  const tables = tx.objectStore('tables');
-  tables.delete(slotRange(slot));
-  tables.put(state.meta, `${slot}:meta`);
-  for (const t of TABLES) tables.put(state[t], `${slot}:${t}`);
   const full: SaveSlotInfo = {
     ...info,
     slot,
@@ -73,21 +74,39 @@ export async function saveState(
     bytes: new Blob([JSON.stringify(state)]).size, // ขนาดโดยประมาณ แสดงใน UI
     schemaVersion: state.meta.schemaVersion,
   };
-  tx.objectStore('slots').put(full);
-  await done(tx);
+  const db = await openDb();
+  const tx = db.transaction(['slots', 'tables'], 'readwrite');
+  const committed = done(tx);
+  try {
+    const tables = tx.objectStore('tables');
+    tables.delete(slotRange(slot));
+    tables.put(state.meta, `${slot}:meta`);
+    for (const t of TABLES) tables.put(state[t], `${slot}:${t}`);
+    tables.put(pending, `${slot}:pending`);
+    tx.objectStore('slots').put(full);
+  } catch (err) {
+    // put โยน error แบบ sync ได้ (เช่น DataCloneError) — ต้อง abort เอง ไม่งั้น delete + put ที่ผ่านแล้วจะ commit
+    tx.abort();
+    committed.catch(() => {});
+    throw err;
+  }
+  await committed;
   return full;
 }
 
-export async function loadState(slot: string): Promise<GameState | null> {
+export async function loadState(slot: string): Promise<SavedGame | null> {
   const db = await openDb();
   const tx = db.transaction('tables', 'readonly');
   const store = tx.objectStore('tables');
   const meta = await result(store.get(`${slot}:meta`) as IDBRequest<GameState['meta'] | undefined>);
   if (!meta) return null;
   const state = { meta } as GameState;
-  const parts = await Promise.all(TABLES.map((t) => result(store.get(`${slot}:${t}`))));
+  const [pending, ...parts] = await Promise.all([
+    result(store.get(`${slot}:pending`) as IDBRequest<PendingEventSnapshot[] | undefined>),
+    ...TABLES.map((t) => result(store.get(`${slot}:${t}`))),
+  ]);
   TABLES.forEach((t, i) => ((state as unknown as Record<string, unknown>)[t] = parts[i] ?? {}));
-  return migrate(state);
+  return { state: migrate(state), pending: pending ?? [] };
 }
 
 export async function listSlots(): Promise<SaveSlotInfo[]> {

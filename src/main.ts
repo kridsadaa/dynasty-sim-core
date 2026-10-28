@@ -27,6 +27,7 @@ function setBusy(busy: boolean, hasGame = true) {
   $<HTMLButtonElement>('pause').disabled = !busy;
   $<HTMLButtonElement>('new').disabled = busy;
   $<HTMLButtonElement>('load').disabled = busy;
+  $<HTMLButtonElement>('loadSlot').disabled = busy;
 }
 
 function renderPlayer(v: CharacterView) {
@@ -74,16 +75,35 @@ function renderEvent(ev: EventView) {
     b.disabled = o.locked;
     b.onclick = async () => {
       box.replaceChildren();
-      write(`→ ${o.text}`);
-      const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id });
-      for (const l of r.lines) write(l);
-      setBusy(false);
-      await refresh();
+      try {
+        const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id });
+        write(`→ ${o.text}`);
+        for (const l of r.lines) write(l);
+        setBusy(false);
+        await refresh();
+      } catch (e) {
+        // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
+        status.textContent = (e as Error).message;
+        await showPending();
+      }
     };
     box.append(b);
   }
   setBusy(false);
   for (const b of timeButtons) b.disabled = true; // ต้องตัดสินใจก่อน
+}
+
+/** แสดง event ที่ worker ยังรออยู่ (หลังโหลดเซฟ หรือหลังเลือกตัวเลือกไม่สำเร็จ) */
+async function showPending() {
+  try {
+    const events = await engine.request({ type: 'viewPending' });
+    if (events[0]) {
+      renderEvent(events[0]);
+      status.textContent = 'รอการตัดสินใจ';
+    } else setBusy(false);
+  } catch (e) {
+    status.textContent = (e as Error).message;
+  }
 }
 
 engine.onPush((p) => {
@@ -124,17 +144,20 @@ async function run(days: number) {
   }
 }
 
-async function start(kind: 'new' | 'load') {
+const MANUAL_SLOT = 'slot1';
+
+async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT) {
   try {
-    const v = kind === 'new'
+    const v = from === 'new'
       ? await engine.request({ type: 'newGame', seed: Math.floor(Math.random() * 2 ** 31) })
-      : await engine.request({ type: 'load', slot: 'autosave' });
+      : await engine.request({ type: 'load', slot: from });
     log.replaceChildren();
     $('event').replaceChildren();
-    write(kind === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ: ${v.name}`);
+    write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ: ${v.name}`);
     renderPlayer(v);
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
-    setBusy(false);
+    status.textContent = 'พร้อม';
+    await showPending();
     void requestPersistentStorage();
   } catch (e) {
     status.textContent = (e as Error).message;
@@ -142,12 +165,17 @@ async function start(kind: 'new' | 'load') {
 }
 
 $('new').onclick = () => start('new');
-$('load').onclick = () => start('load');
+$('load').onclick = () => start('autosave');
+$('loadSlot').onclick = () => start(MANUAL_SLOT);
 $('month').onclick = () => run(30);
 $('year').onclick = () => run(360);
 $('decade').onclick = () => run(3600);
-$('pause').onclick = () => engine.request({ type: 'pause' });
+$('pause').onclick = () => engine.request({ type: 'pause' }).catch((e: Error) => (status.textContent = e.message));
 $('save').onclick = async () => {
-  const s = await engine.request({ type: 'save', slot: 'slot1' });
-  status.textContent = `บันทึกแล้ว (${(s.bytes / 1024).toFixed(1)} KB)`;
+  try {
+    const s = await engine.request({ type: 'save', slot: MANUAL_SLOT });
+    status.textContent = `บันทึกแล้ว (${(s.bytes / 1024).toFixed(1)} KB)`;
+  } catch (e) {
+    status.textContent = `บันทึกไม่สำเร็จ: ${(e as Error).message}`;
+  }
 };

@@ -36,6 +36,44 @@ export interface PreparedEvent {
   hits: TraitHit[];
 }
 
+/** PreparedEvent แบบ plain data — เซฟคู่กับ GameState เพื่อให้ event ที่รอผู้เล่นอยู่ไม่หายเมื่อโหลดเซฟ */
+export interface PendingEventSnapshot {
+  instanceId: EventInstance['id'];
+  options: ResolvedOption[];
+  locked: Array<[string, string]>;
+  extraEffects: Effect[];
+  hits: Array<{ traitId: Trait['id']; strength: number; scope: TraitHit['scope']; optionId?: string }>;
+}
+
+export function snapshotEvent(p: PreparedEvent): PendingEventSnapshot {
+  return {
+    instanceId: p.instance.id,
+    options: p.options,
+    locked: [...p.locked],
+    extraEffects: p.extraEffects,
+    hits: p.hits.map((h) => ({ traitId: h.trait.id, strength: h.strength, scope: h.scope, optionId: h.optionId })),
+  };
+}
+
+/** คืน PreparedEvent จาก snapshot (ไม่สุ่มใหม่) — null ถ้า instance/actor ไม่อยู่ใน state แล้ว */
+export function restoreEvent(ctx: Ctx, s: PendingEventSnapshot): PreparedEvent | null {
+  const instance = ctx.state.eventLog[s.instanceId];
+  const def = instance && ctx.content.events[instance.defId];
+  const actorId = instance?.bindings.actor;
+  const actor = actorId ? ctx.state.characters[actorId] : undefined;
+  if (!instance || instance.optionId !== null || !def || !actor) return null;
+  return {
+    def, instance, actor,
+    options: s.options,
+    locked: new Map(s.locked),
+    extraEffects: s.extraEffects,
+    hits: s.hits.flatMap((h) => {
+      const trait = ctx.state.traits[h.traitId];
+      return trait ? [{ trait, strength: h.strength, scope: h.scope, optionId: h.optionId }] : [];
+    }),
+  };
+}
+
 const isVar = (t: string): t is VarRef => t.startsWith('$');
 
 export function prepareEvent(

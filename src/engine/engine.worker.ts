@@ -1,7 +1,7 @@
 import { buildContentDB } from '../content';
 import { makeCtx, commitRng, must, yearOf, type Ctx } from '../core/ctx';
 import type { ContentDB } from '../core/types';
-import { chooseOption, type PreparedEvent } from '../systems/events';
+import { chooseOption, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { emptyState } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario } from '../systems/scenario';
@@ -23,7 +23,7 @@ const push = (p: Push) => post({ kind: 'push', push: p });
 let content: ContentDB | null = null;
 let text: TextTable = {};
 let ctx: Ctx | null = null;
-const pending = new Map<string, PreparedEvent>(); // ไม่ถูกเซฟ: โหลดเซฟแล้ว event ที่ค้างจะหายไป
+const pending = new Map<string, PreparedEvent>(); // เซฟเป็น snapshot ไปกับทุกเซฟ → โหลดแล้วต้องตัดสินใจ event เดิมต่อ
 let running = false;
 let pauseRequested = false;
 let sessionLock: Promise<void> | null = null;
@@ -67,7 +67,7 @@ async function save(slot: string) {
   const c = need();
   commitRng(c);
   const player = c.state.characters[c.state.meta.playerCharacterId];
-  return saveState(slot, c.state, {
+  return saveState(slot, { state: c.state, pending: [...pending.values()].map(snapshotEvent) }, {
     year: yearOf(c, c.state.meta.day),
     playerName: player?.name ?? '-',
     dynastyName: c.state.dynasties[c.state.meta.playerDynastyId]?.name ?? '-',
@@ -116,7 +116,8 @@ async function advance(days: number): Promise<ReplyData['advance']> {
     flush();
   }
   for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
-  await save('autosave');
+  // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
+  if (stoppedBy !== 'gameOver') await save('autosave');
   return { stoppedBy, day: c.state.meta.day };
 }
 
@@ -132,11 +133,18 @@ async function handle(cmd: Command): Promise<unknown> {
     }
     case 'load': {
       await acquireSessionLock();
-      const state = must(await loadState(cmd.slot), `ไม่พบเซฟ ${cmd.slot}`);
-      ctx = makeCtx(state, must(content, 'content'));
+      const saved = must(await loadState(cmd.slot), `ไม่พบเซฟ ${cmd.slot}`);
+      const c = makeCtx(saved.state, must(content, 'content'));
+      ctx = c;
       pending.clear();
-      return playerView(ctx);
+      for (const s of saved.pending) {
+        const p = restoreEvent(c, s);
+        if (p) pending.set(p.instance.id, p);
+      }
+      return playerView(c);
     }
+    case 'viewPending':
+      return [...pending.values()].map((p) => eventView(need(), p, text)) satisfies ReplyData['viewPending'];
     case 'save':
       return save(cmd.slot);
     case 'listSaves':
@@ -167,7 +175,7 @@ async function handle(cmd: Command): Promise<unknown> {
   }
 }
 
-const ALLOWED_WHILE_RUNNING = new Set<Command['type']>(['pause', 'viewPlayer', 'viewDynasty', 'listSaves']);
+const ALLOWED_WHILE_RUNNING = new Set<Command['type']>(['pause', 'viewPlayer', 'viewDynasty', 'viewPending', 'listSaves']);
 
 self.onmessage = async (e: MessageEvent<Request>) => {
   const { id, cmd } = e.data;

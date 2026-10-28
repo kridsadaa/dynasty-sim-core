@@ -15,7 +15,8 @@ export type Command =
   | { type: 'pause' }
   | { type: 'choose'; instanceId: string; optionId: string }
   | { type: 'viewPlayer' }
-  | { type: 'viewDynasty' };
+  | { type: 'viewDynasty' }
+  | { type: 'viewPending' };
 
 export interface ReplyData {
   newGame: CharacterView;
@@ -28,6 +29,7 @@ export interface ReplyData {
   choose: { lines: string[] };
   viewPlayer: CharacterView;
   viewDynasty: DynastyView;
+  viewPending: EventView[];
 }
 
 export type StopReason = 'done' | 'event' | 'paused' | 'gameOver';
