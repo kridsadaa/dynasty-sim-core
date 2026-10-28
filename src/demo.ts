@@ -8,11 +8,12 @@ import { ageOf, isAlive, makeCtx, must, yearOf, type Ctx } from './core/ctx';
 import type { Character, ContentDB, Dynasty, TagId } from './core/types';
 import { capability, tickWounds } from './systems/body';
 import { chooseOption, prepareEvent } from './systems/events';
-import { createDynasty, createHousehold, emptyState, joinHousehold, marry, spawnCharacter } from './systems/factory';
+import { createDynasty, createHousehold, emptyState, livingChildren, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, markDead, performHandover } from './systems/handover';
 import { renderLegend } from './systems/legend';
 import { householdYearTick } from './systems/socialLearning';
 import { describeTrait } from './systems/traits';
+import { lifeMilestones } from './systems/world';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
 const content: ContentDB = buildContentDB({
@@ -190,44 +191,17 @@ function story(seed: number, verbose: boolean): boolean {
     // ชีวิตผู้เล่น
     const age = ageOf(ctx, player);
     if (!deathAge.has(player.id)) deathAge.set(player.id, Math.max(age + 30, Math.round(ctx.rng.range(52, 66))));
-    // ผู้ชายทุกคนในตระกูล: แต่งงานตอน 20, มีบุตรตอน 22/25
-    const names = [['บุญมา', 'บุญมี'], ['ทองดี', 'ทองอยู่'], ['เจิม', 'จวน'], ['สมบุญ', 'สมใจ'], ['ขาว', 'คำ']];
-    for (const man of Object.values(ctx.state.characters)) {
-      if (!isAlive(man) || man.sex !== 'm' || man.dynastyId !== dyn.id) continue;
-      const a = ageOf(ctx, man);
-      if (a === 20) {
-        let home = man.householdId ? ctx.state.households[man.householdId] : undefined;
-        if (!home || home.headId !== man.id) home = createHousehold(ctx, man);
-        for (const other of Object.values(ctx.state.households)) {
-          if (other.id !== home.id) other.memberIds = other.memberIds.filter((id) => id !== man.id);
-        }
-        const wife = spawnCharacter(ctx, { name: `ภรรยาของ${man.name}`, sex: 'f', birthYear: year - 17, estate: man.social.estate, householdId: home.id });
-        marry(ctx, man, wife);
-        say(`[${year}] ${man.name} แต่งงาน ตั้งเรือนของตนเอง`);
-      }
-      if (a !== 22 && a !== 25) continue;
-      const wife = ctx.state.familyNodes[man.familyNodeId]!.spouseIds
-        .map((n) => ctx.state.familyNodes[n]?.characterId)
-        .map((id) => (id ? ctx.state.characters[id] : undefined))
-        .find(isAlive);
-      if (!wife) continue;
-      const gen = ctx.state.familyNodes[man.familyNodeId]!.generation + 1;
-      const pair = names[gen % names.length]!;
-      const kid = spawnCharacter(ctx, {
-        name: pair[a === 22 ? 0 : 1]!, sex: 'm', birthYear: year,
-        estate: man.social.estate, father: man, mother: wife,
-      });
-      if (man.id === player.id) say(`[${year}] ${man.name} มีบุตร: ${kid.name}`);
-    }
+    // แต่งงาน ที่อยู่หลังแต่งงาน แยกเรือน มีบุตร เป็นเณร — ใช้กลไกเดียวกับตัวเกม (world.ts)
+    const family = new Set([player.name, ...livingChildren(ctx, player).map((c) => c.name)]);
+    for (const l of lifeMilestones(ctx)) if ([...family].some((n) => l.startsWith(n))) say(`[${year}] ${l}`);
     if (year === 2315 && age >= 25 && !player.social.title) {
       player.social.title = 'ขุนศรีสงคราม';
       say(`\n[${year}] ${player.name} ได้รับบรรดาศักดิ์ ${player.social.title} จากความชอบในการกู้ชาติ`);
     }
 
-    // เด็กในเรือน: เป็นเณรเรียนหนังสือที่วัดตอน 7–8 ขวบ (lore: ritual.novice_schooling_1680s) / โดนมีดบาดตอน 7 ขวบ
+    // เด็กในเรือน: โดนมีดบาดตอน 7 ขวบ
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c)) continue;
-      if (c.sex === 'm' && ageOf(ctx, c) === B.world.noviceAge && ctx.rng.chance(B.world.noviceChance)) c.skills['literacy'] = 40;
       if (ageOf(ctx, c) === 7 && c.householdId === player.householdId && c.id !== player.id && ctx.rng.chance(0.5)) {
         const mom = c.caregiverIds.map((id) => ctx.state.characters[id]).find((x) => isAlive(x) && x.sex === 'f');
         if (!mom) continue;

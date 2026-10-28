@@ -1,6 +1,7 @@
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, Relation, TagId } from '../core/types';
+import { livingSpouse, pickCaregiverChild } from './factory';
 import { retellLegend, seedLegendsFromLife } from './legend';
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
@@ -102,7 +103,8 @@ export function performHandover(
   log.push(`งานศพ ${dead.name} ใช้ ${funeral.toFixed(0)} ตำลึง → บารมีตระกูล +${(funeral * B.funeralPrestigePerTamlueng).toFixed(1)}`);
 
   // [5] estate
-  log.push(...distributeEstate(ctx, dead, candidates.map((c) => c.ch), heir));
+  const estate = distributeEstate(ctx, dead, candidates.map((c) => c.ch), heir);
+  log.push(...estate.lines);
 
   // [6] social
   dyn.prestige *= 1 - B.prestigeDecay;
@@ -130,9 +132,11 @@ export function performHandover(
   if (deadHh) {
     deadHh.memberIds = deadHh.memberIds.filter((id) => id !== dead.id);
     deadHh.rules = [];
-    const nextHead = deadHh.memberIds.includes(heir.id)
-      ? heir
-      : deadHh.memberIds.map((id) => ctx.state.characters[id]).filter(isAlive).sort((a, b) => a.birthDay - b.birthDay)[0];
+    // หัวเรือนคนต่อไป: คู่ครองที่ยังอยู่ → ลูกที่ได้เรือน → ทายาทหลัก → คนแก่สุดในเรือน
+    const inHouse = (c: Character | undefined): c is Character => !!c && deadHh.memberIds.includes(c.id);
+    const widow = livingSpouse(ctx, dead);
+    const nextHead = [widow, estate.houseHeir, heir].find(inHouse)
+      ?? deadHh.memberIds.map((id) => ctx.state.characters[id]).filter(isAlive).sort((a, b) => a.birthDay - b.birthDay)[0];
     if (nextHead) deadHh.headId = nextHead.id;
     else delete ctx.state.households[deadHh.id];
   }
@@ -161,13 +165,17 @@ export function performHandover(
 
 /**
  * แบ่งมรดกแบบ partible: น้ำหนักตามสถานะแม่ + โบนัสทายาทหลัก
- * - เรือน → ทายาทหลัก, ที่ดิน/ทอง → greedy ให้คนที่ยังได้น้อยกว่าสิทธิ์มากที่สุด
+ * - เรือน → ลูกที่อยู่เรือนเดียวกันและดูแลพ่อแม่ (ลูกสาวคนสุดท้องก่อน) (lore: kinship.youngest_daughter_house)
+ *   ถ้าไม่มีลูกอยู่ในเรือน → ทายาทหลัก; มูลค่าเรือนนับรวมในส่วนแบ่งของคนที่ได้
+ * - ที่ดิน/ทอง → greedy ให้คนที่ยังได้น้อยกว่าสิทธิ์มากที่สุด
  * - เงินสดและหนี้ แบ่งตามสัดส่วนเดียวกัน (ลูกอาจตกเป็นหนี้จนต้องขายตัวเป็นทาส)
  * - ของประจำตระกูล (ownerDynastyId) ไม่ถูกแบ่ง — ผู้นำตระกูลถือครองแทน
  */
-function distributeEstate(ctx: Ctx, dead: Character, heirs: Character[], main: Character): string[] {
+function distributeEstate(
+  ctx: Ctx, dead: Character, heirs: Character[], main: Character,
+): { lines: string[]; houseHeir: Character | undefined } {
   const B = ctx.content.balance.inheritance;
-  if (!heirs.length) return ['ไม่มีทายาท — ทรัพย์ตกเป็นของหลวง'];
+  if (!heirs.length) return { lines: ['ไม่มีทายาท — ทรัพย์ตกเป็นของหลวง'], houseHeir: undefined };
   const weight = new Map(
     heirs.map((h) => {
       const n = must(ctx.state.familyNodes[h.familyNodeId], 'node');
@@ -185,7 +193,10 @@ function distributeEstate(ctx: Ctx, dead: Character, heirs: Character[], main: C
     received.set(to.id, (received.get(to.id) ?? 0) + item.value);
   };
 
-  for (const it of items.filter((i) => i.kind === 'house')) give(it, main);
+  const caregiver = pickCaregiverChild(heirs.filter((h) => dead.householdId && h.householdId === dead.householdId));
+  const houseHeir = caregiver ?? main;
+  const houses = items.filter((i) => i.kind === 'house');
+  for (const it of houses) give(it, houseHeir);
   for (const it of items.filter((i) => i.kind !== 'house').sort((a, b) => b.value - a.value)) {
     const best = heirs.reduce((a, b) =>
       share(b) * totalValue - (received.get(b.id) ?? 0) > share(a) * totalValue - (received.get(a.id) ?? 0) ? b : a,
@@ -200,9 +211,12 @@ function distributeEstate(ctx: Ctx, dead: Character, heirs: Character[], main: C
     (h) => `${h.name} ได้ ${((received.get(h.id) ?? 0) + dead.social.wealth * share(h)).toFixed(0)} ตำลึง (${Math.round(share(h) * 100)}%)` +
       (dead.social.debt ? `, รับหนี้ ${(dead.social.debt * share(h)).toFixed(0)}` : ''),
   );
+  if (houses.length) {
+    lines.unshift(`เรือนตกแก่${houseHeir.name}${caregiver ? ' ลูกที่อยู่ดูแลพ่อแม่' : ' (ไม่มีลูกอยู่ในเรือน)'}`);
+  }
   dead.social.wealth = 0;
   dead.social.debt = 0;
-  return lines;
+  return { lines, houseHeir };
 }
 
 /** ความแค้นตกทอดแรงกว่าบุญคุณ — asymmetry นี้ทำให้ศัตรูเก่าตามหลอกหลอนรุ่นลูก */

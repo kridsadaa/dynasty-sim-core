@@ -2,7 +2,10 @@ import { ageOf, isAlive, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef } from '../core/types';
 import { tickWounds } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
-import { createHousehold, marry, pickName, spawnCharacter } from './factory';
+import {
+  createHousehold, joinHousehold, livingChildren, livingSpouse, marry, pickCaregiverChild, pickName, relativeNames,
+  spawnCharacter,
+} from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover } from './handover';
 import { householdYearTick } from './socialLearning';
 
@@ -118,47 +121,95 @@ function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Chara
 }
 
 /**
- * Placeholder จนกว่าจะมี event แต่งงาน/คลอดใน content:
- * ผู้ชายในตระกูลแต่งงานตาม marriageAge และมีบุตรตาม childAtAges
+ * Placeholder จนกว่าจะมี event สู่ขอ/แต่งงาน/คลอดใน content — รันปีละครั้ง
+ *
+ * ที่อยู่หลังแต่งงาน (lore: kinship.uxorilocal_then_neolocal_1680s, kinship.marriage_law_three_seals,
+ * kinship.residence_mixed_census, kinship.youngest_daughter_house):
+ *  - ลูกสาวในตระกูลแต่งงาน → เขยคนนอกย้ายมาอยู่เรือนพ่อแม่ฝ่ายหญิง
+ *  - ลูกชายในตระกูลแต่งงาน → ส่วนใหญ่ไปอยู่กับครอบครัวภรรยา (นอกฉาก = ตั้งเรือนใหม่), บางส่วนพาภรรยามาอยู่บ้านพ่อแม่
+ *  - ครบ stayYears คู่ที่อยู่บ้านพ่อแม่แยกเรือนออกไป ยกเว้นลูกที่อยู่ดูแลพ่อแม่ (ลูกสาวคนสุดท้อง)
  */
-function lifeMilestones(ctx: Ctx): string[] {
+export function lifeMilestones(ctx: Ctx): string[] {
   const W = ctx.content.balance.world;
-  const year = ctx.content.balance.epochYear + Math.floor(ctx.state.meta.day / ctx.content.balance.daysPerYear);
+  const dpy = ctx.content.balance.daysPerYear;
+  const day = ctx.state.meta.day;
+  const year = ctx.content.balance.epochYear + Math.floor(day / dpy);
   const out: string[] = [];
-  for (const man of Object.values(ctx.state.characters)) {
-    if (!isAlive(man) || man.sex !== 'm' || !man.dynastyId) continue;
-    const age = ageOf(ctx, man);
-    const node = ctx.state.familyNodes[man.familyNodeId];
-    if (!node) continue;
+  for (const ch of Object.values(ctx.state.characters)) {
+    // คนในตระกูลเท่านั้น — คู่ครองคนนอกตามคู่ของตัวเอง
+    if (!isAlive(ch) || !ch.dynastyId) continue;
+    const age = ageOf(ctx, ch);
+    const spouse = livingSpouse(ctx, ch);
+
     // เป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) → อ่านออกเขียนได้ จดตำนานลงสมุดข่อยได้ตอนสืบทอด
-    if (age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
-      man.skills['literacy'] = Math.max(man.skills['literacy'] ?? 0, 40);
-      out.push(`${man.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
+    if (ch.sex === 'm' && age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
+      ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, 40);
+      out.push(`${ch.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
     }
-    if (age === W.marriageAge && node.spouseIds.length === 0) {
-      let home = man.householdId ? ctx.state.households[man.householdId] : undefined;
-      if (home && home.headId !== man.id) home.memberIds = home.memberIds.filter((id) => id !== man.id);
-      if (!home || home.headId !== man.id) home = createHousehold(ctx, man);
-      const wife = spawnCharacter(ctx, {
-        name: `ภรรยาของ${man.name}`, sex: 'f', birthYear: year - 17, estate: man.social.estate, householdId: home.id,
-      });
-      marry(ctx, man, wife);
-      out.push(`${man.name} แต่งงาน ตั้งเรือนของตนเอง`);
+
+    const marriageAge = ch.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
+    const neverMarried = (ctx.state.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0;
+    if (age === marriageAge && neverMarried) out.push(marryOut(ctx, ch, year));
+
+    // แยกเรือนเมื่อครบกำหนด — ลูกที่อยู่ดูแลพ่อแม่ไม่ย้าย
+    if (ch.moveOutDay !== undefined && day >= ch.moveOutDay) {
+      ch.moveOutDay = undefined;
+      const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+      const head = hh ? ctx.state.characters[hh.headId] : undefined;
+      if (hh && head && livingChildren(ctx, head).some((c) => c.id === ch.id)) {
+        const siblingsAtHome = livingChildren(ctx, head).filter((c) => c.householdId === hh.id);
+        if (pickCaregiverChild(siblingsAtHome)?.id === ch.id) {
+          out.push(`${ch.name} อยู่ดูแล${head.name}ต่อที่เรือนเดิม`);
+        } else {
+          const home = createHousehold(ctx, ch);
+          for (const m of [spouse, ...livingChildren(ctx, ch)]) if (m && m.householdId === hh.id) joinHousehold(ctx, m, home);
+          out.push(`${ch.name} แยกเรือนออกจากบ้าน${head.name}`);
+        }
+      }
     }
-    if (W.childAtAges.includes(age)) {
-      const wife = node.spouseIds
-        .map((n) => ctx.state.familyNodes[n]?.characterId)
-        .map((id) => (id ? ctx.state.characters[id] : undefined))
-        .find(isAlive);
-      if (!wife) continue;
+
+    // มีบุตรตามปีหลังแต่งงาน — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ
+    if (spouse && ch.marriedDay !== undefined && W.childAfterMarriageYears.includes(Math.floor((day - ch.marriedDay) / dpy))) {
+      const mother = ch.sex === 'f' ? ch : spouse;
+      const father = ch.sex === 'm' ? ch : spouse;
       const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
-      const family = new Set([man.name, wife.name, ...node.childIds.map((id) => ctx.state.familyNodes[id]?.name ?? '')]);
       const kid = spawnCharacter(ctx, {
-        name: pickName(ctx, sex, man.social.estate, family),
-        sex, birthYear: year, estate: man.social.estate, father: man, mother: wife,
+        name: pickName(ctx, sex, ch.social.estate, relativeNames(ctx, ch, spouse)),
+        sex, birthYear: year, estate: ch.social.estate, father, mother,
       });
-      out.push(`${man.name} มีบุตร: ${kid.name}`);
+      out.push(`${ch.name} มีบุตร: ${kid.name}`);
     }
   }
   return out;
+}
+
+function marryOut(ctx: Ctx, ch: Character, year: number): string {
+  const W = ctx.content.balance.world;
+  const day = ctx.state.meta.day;
+  const spouseSex = ch.sex === 'm' ? 'f' : 'm';
+  const spouseAge = spouseSex === 'm' ? W.marriageAge : W.marriageAgeFemale;
+  const spouse = spawnCharacter(ctx, {
+    name: pickName(ctx, spouseSex, ch.social.estate, new Set([ch.name])),
+    sex: spouseSex, birthYear: year - spouseAge, estate: ch.social.estate, dynastyId: null, householdId: null,
+  });
+  marry(ctx, ch, spouse);
+  ch.marriedDay = day;
+  const stay = Math.round(ctx.rng.range(W.stayYears[0], W.stayYears[1])) * ctx.content.balance.daysPerYear;
+
+  const parentsHome = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+  if (ch.sex === 'f') {
+    // เขยเข้าเรือนพ่อแม่ฝ่ายหญิง (ลักษณผัวเมีย ม.61 รองรับชายที่ไปอยู่บ้านฝ่ายหญิง)
+    joinHousehold(ctx, spouse, parentsHome ?? createHousehold(ctx, ch));
+    ch.moveOutDay = day + stay;
+    return `${ch.name} แต่งงานกับ${spouse.name} เขยเข้ามาอยู่เรือนพ่อแม่ฝ่ายหญิง`;
+  }
+  if (parentsHome && ctx.rng.chance(W.patrilocalChance)) {
+    joinHousehold(ctx, spouse, parentsHome);
+    ch.moveOutDay = day + stay;
+    return `${ch.name} แต่งงานกับ${spouse.name} พาภรรยามาอยู่เรือนพ่อแม่`;
+  }
+  // ไปอยู่กับครอบครัวภรรยา — ครอบครัวฝ่ายหญิงไม่ได้จำลอง จึงนับเป็นเรือนใหม่ของคู่นี้
+  const home = createHousehold(ctx, ch);
+  joinHousehold(ctx, spouse, home);
+  return `${ch.name} แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวภรรยา`;
 }

@@ -201,6 +201,11 @@ export interface Character {
 
   /** Level-of-detail: NPC ไกลตัวเก็บเฉพาะความทรงจำฝังใจ */
   lod: 'full' | 'light';
+
+  /** วันแต่งงาน — นับปีสำหรับการมีบุตรและการแยกเรือน (optional: เซฟเก่าไม่มี) */
+  marriedDay?: Day;
+  /** วันที่คู่นี้จะแยกเรือนออกจากบ้านพ่อแม่ (ยกเว้นลูกที่อยู่ดูแลพ่อแม่) */
+  moveOutDay?: Day;
 }
 
 // ============================================================================
@@ -590,7 +595,13 @@ export interface Balance {
     oldAgeStart: number;
     oldAgeYearlyRisk: number; // ต่อปีที่เกิน oldAgeStart
     marriageAge: number;
-    childAtAges: number[];
+    marriageAgeFemale: number;
+    /** มีบุตรเมื่อแต่งงานได้กี่ปี */
+    childAfterMarriageYears: number[];
+    /** อยู่บ้านพ่อแม่ (ฝ่ายหญิงหรือฝ่ายชาย) กี่ปีก่อนแยกเรือน (lore: kinship.uxorilocal_then_neolocal_1680s) */
+    stayYears: [number, number];
+    /** โอกาสที่ลูกชายพาภรรยามาอยู่บ้านพ่อแม่ตัวเอง แทนไปอยู่บ้านฝ่ายหญิง (lore: kinship.residence_mixed_census) */
+    patrilocalChance: Unit;
     /** เด็กชายไปเป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) */
     noviceAge: number;
     noviceChance: Unit;

@@ -38,7 +38,8 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
   };
   const fatherNode = o.father ? ctx.state.familyNodes[o.father.familyNodeId] : undefined;
   const motherNode = o.mother ? ctx.state.familyNodes[o.mother.familyNodeId] : undefined;
-  const dynastyId = o.dynastyId ?? o.father?.dynastyId ?? null;
+  // นับญาติทั้งสองฝ่าย (lore: kinship.*): ลูกของลูกสาวกับเขยคนนอกยังเป็นคนของตระกูล
+  const dynastyId = o.dynastyId ?? o.father?.dynastyId ?? o.mother?.dynastyId ?? null;
 
   const node: FamilyNode = {
     id: newId(ctx, 'fam'),
@@ -62,7 +63,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     id: newId(ctx, 'chr'),
     familyNodeId: node.id,
     dynastyId,
-    householdId: o.householdId ?? o.father?.householdId ?? null,
+    householdId: o.householdId ?? o.mother?.householdId ?? o.father?.householdId ?? null,
     name: o.name,
     sex: o.sex,
     handedness: ctx.rng.chance(0.1) ? 'l' : 'r',
@@ -125,10 +126,51 @@ export function createDynasty(ctx: Ctx, name: string, founder: Character, factio
 }
 
 export function createHousehold(ctx: Ctx, head: Character): Household {
-  const hh: Household = { id: newId(ctx, 'hh'), headId: head.id, memberIds: [head.id], dynastyId: head.dynastyId, rules: [] };
+  const hh: Household = { id: newId(ctx, 'hh'), headId: head.id, memberIds: [], dynastyId: head.dynastyId, rules: [] };
   ctx.state.households[hh.id] = hh;
-  head.householdId = hh.id;
+  joinHousehold(ctx, head, hh);
   return hh;
+}
+
+export function livingSpouse(ctx: Ctx, ch: Character): Character | undefined {
+  return ctx.state.familyNodes[ch.familyNodeId]?.spouseIds
+    .map((n) => ctx.state.familyNodes[n]?.characterId)
+    .map((id) => (id ? ctx.state.characters[id] : undefined))
+    .find((c): c is Character => !!c && c.deathDay === null);
+}
+
+export function livingParents(ctx: Ctx, ch: Character): Character[] {
+  const node = ctx.state.familyNodes[ch.familyNodeId];
+  return [node?.fatherId, node?.motherId]
+    .map((n) => (n ? ctx.state.familyNodes[n]?.characterId : null))
+    .map((id) => (id ? ctx.state.characters[id] : undefined))
+    .filter((c): c is Character => !!c && c.deathDay === null);
+}
+
+/** ชื่อที่ไม่ควรตั้งให้ลูกคนใหม่ของ ch: ญาติใกล้ที่ยังมีชีวิต (พ่อแม่ ปู่ย่าตายาย ลุงป้าน้าอา พี่น้อง ลูกพี่ลูกน้อง) */
+export function relativeNames(ctx: Ctx, ch: Character, spouse: Character | undefined): Set<string> {
+  const people = [ch, ...(spouse ? [spouse] : []), ...livingChildren(ctx, ch)];
+  for (const parent of livingParents(ctx, ch)) {
+    people.push(parent);
+    for (const sib of livingChildren(ctx, parent)) people.push(sib, ...livingChildren(ctx, sib));
+  }
+  return new Set(people.map((p) => p.name));
+}
+
+export function livingChildren(ctx: Ctx, ch: Character): Character[] {
+  return (ctx.state.familyNodes[ch.familyNodeId]?.childIds ?? [])
+    .map((n) => ctx.state.familyNodes[n]?.characterId)
+    .map((id) => (id ? ctx.state.characters[id] : undefined))
+    .filter((c): c is Character => !!c && c.deathDay === null);
+}
+
+/**
+ * ลูกที่อยู่ดูแลพ่อแม่และได้เรือนไป: ลูกสาวคนสุดท้อง ถ้าไม่มีลูกสาวใช้ลูกชายคนสุดท้อง
+ * (lore: kinship.youngest_daughter_house)
+ */
+export function pickCaregiverChild(children: Character[]): Character | undefined {
+  const youngestFirst = [...children].sort((a, b) => b.birthDay - a.birthDay);
+  return youngestFirst.find((c) => c.sex === 'f') ?? youngestFirst[0];
 }
 
 export function joinHousehold(ctx: Ctx, ch: Character, hh: Household): void {
@@ -137,5 +179,5 @@ export function joinHousehold(ctx: Ctx, ch: Character, hh: Household): void {
     if (old) old.memberIds = old.memberIds.filter((id) => id !== ch.id);
   }
   ch.householdId = hh.id;
-  hh.memberIds.push(ch.id);
+  if (!hh.memberIds.includes(ch.id)) hh.memberIds.push(ch.id);
 }

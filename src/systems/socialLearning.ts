@@ -51,7 +51,9 @@ export function householdYearTick(ctx: Ctx, householdId: HouseholdId): string[] 
       if (imposer) transmit(ctx, imposer, child, kind, rule.target, 0.5, log);
     }
     // (c) ผู้ใหญ่ "สอน" ความกลัวโดยตั้งใจ — ขู่เด็กเล็กด้วยผีให้เชื่อฟัง (lore: psyche.frightening_children_with_ghosts)
-    if (age <= S.ghostScareMaxAge) {
+    // เกิดได้ครั้งเดียวต่อเด็ก — การฝังลึกต่อจากนั้นไปทางช่องทาง (a) ตามปกติ
+    const alreadyFearsPhi = child.traitIds.some((id) => ctx.state.traits[id]?.target === 'supernatural:phi');
+    if (age <= S.ghostScareMaxAge && !alreadyFearsPhi) {
       for (const adult of adults) {
         if (!child.caregiverIds.includes(adult.id) && hh.headId !== adult.id) continue;
         const superstitious = adult.traitIds.some((id) => ctx.state.traits[id]?.kind === 'superstition');
