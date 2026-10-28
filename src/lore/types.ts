@@ -9,6 +9,15 @@ import type { Estate, TagId } from '../core/types';
 
 export type YearRange = [number, number];
 
+// ค่าที่อนุญาตของฟิลด์ enum — validator ใช้ตรวจตอนรัน (type อ้างจากอาร์เรย์เหล่านี้เพื่อไม่ให้หลุดกัน)
+export const SOURCE_KINDS = ['primary', 'secondary', 'visual', 'ethnographic'] as const;
+export const LORE_DOMAINS = ['event', 'social', 'naming', 'vocab', 'belief', 'material', 'attire', 'place', 'kinship', 'ritual', 'psyche'] as const;
+export const LORE_STATUSES = ['attested', 'inferred', 'invented'] as const;
+export const APPLIES_AS = ['fact', 'pattern', 'mechanic'] as const;
+
+export type SourceKind = (typeof SOURCE_KINDS)[number];
+export type LoreStatus = (typeof LORE_STATUSES)[number];
+
 export interface Source {
   id: string; // "src.<slug>"
   title: string;
@@ -17,7 +26,7 @@ export interface Source {
    * primary = เอกสารร่วมยุค/ตัวบท, secondary = งานวิชาการประวัติศาสตร์,
    * visual = ภาพ, ethnographic = งานภาคสนามมานุษยวิทยา/สังคมวิทยา (สังเกตสังคมในยุคที่ศึกษา ไม่ใช่ยุคของเกม)
    */
-  kind: 'primary' | 'secondary' | 'visual' | 'ethnographic';
+  kind: SourceKind;
   /** ปีที่เขียน/ชำระ/สร้าง — ไม่ทราบให้เว้นไว้และบันทึกใน notes */
   composedYear?: number;
   /** ช่วงเวลาที่เอกสาร "บรรยายถึง" */
@@ -30,11 +39,12 @@ export interface Source {
   notes?: string;
 }
 
-export type LoreDomain =
-  | 'event' | 'social' | 'naming' | 'vocab' | 'belief' | 'material' | 'attire' | 'place'
-  | 'kinship' // เครือญาติ ที่อยู่หลังแต่งงาน ครัวเรือน
-  | 'ritual'  // พิธีตามช่วงชีวิต
-  | 'psyche'; // ขวัญ การเลี้ยงดู ความกลัวและการเยียวยาแบบพื้นบ้าน
+/**
+ * kinship = เครือญาติ ที่อยู่หลังแต่งงาน ครัวเรือน
+ * ritual  = พิธีตามช่วงชีวิต
+ * psyche  = ขวัญ การเลี้ยงดู ความกลัวและการเยียวยาแบบพื้นบ้าน
+ */
+export type LoreDomain = (typeof LORE_DOMAINS)[number];
 
 /**
  * ข้อมูลนี้ใช้ทำอะไรได้
@@ -42,7 +52,7 @@ export type LoreDomain =
  * pattern  = แบบแผนทางสังคมที่น่าจะเปลี่ยนช้า ใช้กำหนดพฤติกรรม NPC/ค่าความน่าจะเป็น แต่ไม่ยกไปเป็นรายละเอียดฉาก
  * mechanic = แนวคิด/ทฤษฎีที่ใช้ออกแบบกลไกเกม (เช่น บุญบารมีกับบริวาร)
  */
-export type AppliesAs = 'fact' | 'pattern' | 'mechanic';
+export type AppliesAs = (typeof APPLIES_AS)[number];
 
 export interface Citation {
   sourceId: string;
@@ -62,7 +72,7 @@ export interface LoreEntry {
   /** ข้อมูลแบบมีโครงสร้าง — ระบบเกมอ่านได้ (ดู claim types ด้านล่างเป็นแนวทาง) */
   claim: Record<string, unknown>;
   summary: string; // คำอธิบายภาษาคนสำหรับนักเขียน
-  status: 'attested' | 'inferred' | 'invented';
+  status: LoreStatus;
   /** บังคับเมื่อ status = 'invented' */
   rationale?: string;
   citations: Citation[];
