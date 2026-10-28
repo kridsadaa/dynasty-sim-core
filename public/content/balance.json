@@ -1,0 +1,44 @@
+{
+  "epochYear": 2280,
+  "daysPerYear": 360,
+  "trauma": {
+    "memoryThreshold": 0.2,
+    "formativeThreshold": 0.4,
+    "traitThreshold": 0.45,
+    "secondTraitThreshold": 0.72,
+    "causalWeight": { "instrument": 1.0, "agent": 0.9, "target": 0.35, "place": 0.2, "environment": 0.15, "witness": 0.1, "sensation": 0.3 },
+    "maxGeneralizeSteps": 2,
+    "comfortFactor": 0.7
+  },
+  "wound": {
+    "infection": { "cut": 0.25, "stab": 0.45, "burn": 0.35, "blunt": 0.1, "fracture": 0.15, "bite": 0.5 },
+    "scarChance": { "cut": 0.9, "stab": 1.0, "burn": 1.2, "blunt": 0.3, "fracture": 0.2, "bite": 0.9 },
+    "healDaysBase": 7,
+    "healDaysPerSeverity": 40,
+    "rainySeason": [120, 240],
+    "festerLossChance": 0.35
+  },
+  "social": {
+    "ruleThreshold": 0.5,
+    "transmitBase": 0.35,
+    "ruleTransmitBase": 0.15,
+    "targetDriftChance": 0.2,
+    "kindMutateChance": 0.2,
+    "susceptibleAge": [2, 14]
+  },
+  "legend": { "baseDrift": 0.8, "writtenRecordDamp": 0.3, "maxOpsPerGeneration": 3 },
+  "inheritance": {
+    "shareByParentage": { "principal_wife": 1.0, "minor_wife": 0.5, "slave_wife": 0.25, "adopted": 0.5, "unknown": 0.25 },
+    "mainHeirBonus": 0.5,
+    "funeralCostRate": { "royal": 0.3, "noble": 0.25, "phrai_luang": 0.15, "phrai_som": 0.15, "that": 0.05, "monk": 0.0, "merchant": 0.2, "foreigner": 0.1 },
+    "funeralPrestigePerTamlueng": 0.05,
+    "prestigeDecay": 0.2,
+    "relationCarry": { "grudge": 0.8, "gratitude": 0.6, "patron": 0.4, "rival": 0.5, "friend": 0.2 },
+    "tabooMinYears": 8,
+    "tabooDecay": 0.85,
+    "tabooForgetBelow": 0.15,
+    "tabooMutateChance": 0.15
+  },
+  "world": { "eventsPerYear": 3, "oldAgeStart": 50, "oldAgeYearlyRisk": 0.015, "marriageAge": 20, "childAtAges": [22, 25] },
+  "prune": { "keepKinDistance": 3, "eventLogMaxAgeDays": 3600, "lightMemoryKeep": 3 }
+}

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>หนึ่งตระกูล — Dynasty Sim</title>
+    <style>
+      :root { --bg: #f6f1e7; --fg: #2b2118; --muted: #7a6a58; --line: #d9ccb6; --accent: #8a3b12; --panel: #fffaf0; }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #1b1713; --fg: #eee3d2; --muted: #a8977f; --line: #3a3128; --accent: #e08a52; --panel: #241f1a; }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 "Sarabun", system-ui, sans-serif; }
+      main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: 1fr 320px; }
+      @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+      header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      header h1 { font-size: 20px; margin: 0 auto 0 0; }
+      button { font: inherit; padding: 6px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; cursor: pointer; }
+      button:hover:not(:disabled) { border-color: var(--accent); }
+      button:disabled { opacity: .45; cursor: not-allowed; }
+      section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+      h2 { font-size: 15px; margin: 0 0 8px; color: var(--muted); font-weight: 600; }
+      #log { height: 60vh; overflow-y: auto; font-size: 14px; }
+      #log p { margin: 2px 0; }
+      #log .year { color: var(--accent); font-weight: 600; margin-top: 8px; }
+      #log .handover { border-left: 3px solid var(--accent); padding-left: 8px; }
+      #event:empty { display: none; }
+      #event .opt { display: block; width: 100%; text-align: left; margin-top: 6px; }
+      #event .opt.injected { border-style: dashed; }
+      #event .triggered { color: var(--accent); font-size: 14px; }
+      ul { margin: 0; padding-left: 18px; font-size: 14px; }
+      #status { color: var(--muted); font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>หนึ่งตระกูล</h1>
+        <span id="status">กำลังโหลด…</span>
+        <button id="new">เริ่มใหม่</button>
+        <button id="load">โหลด autosave</button>
+        <button id="month" disabled>+1 เดือน</button>
+        <button id="year" disabled>+1 ปี</button>
+        <button id="decade" disabled>+10 ปี</button>
+        <button id="pause" disabled>หยุด</button>
+        <button id="save" disabled>บันทึก</button>
+      </header>
+      <div>
+        <section id="event"></section>
+        <section><h2>บันทึก</h2><div id="log"></div></section>
+      </div>
+      <aside>
+        <section id="player"><h2>ตัวละคร</h2></section>
+        <section id="dynasty" style="margin-top:16px"><h2>ตระกูล</h2></section>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

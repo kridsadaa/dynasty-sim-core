@@ -1,0 +1,32 @@
+{
+  "human": {
+    "id": "human",
+    "root": "torso",
+    "parts": {
+      "torso":   { "id": "torso", "parent": null, "label": { "th": "ลำตัว" }, "tags": ["body:any"], "visibility": "covered", "vital": true, "hitWeight": 4, "capabilities": {} },
+      "head":    { "id": "head", "parent": "torso", "label": { "th": "ศีรษะ" }, "tags": ["body:head"], "visibility": "exposed", "vital": true, "hitWeight": 1, "capabilities": {} },
+      "face":    { "id": "face", "parent": "head", "label": { "th": "ใบหน้า" }, "tags": ["body:face"], "visibility": "face", "vital": false, "hitWeight": 1, "capabilities": { "speech": 0.3 } },
+      "eye.l":   { "id": "eye.l", "parent": "face", "side": "l", "label": { "th": "ตาซ้าย" }, "tags": ["body:eye"], "visibility": "face", "vital": false, "hitWeight": 0.2, "capabilities": { "sight": 0.5 } },
+      "eye.r":   { "id": "eye.r", "parent": "face", "side": "r", "label": { "th": "ตาขวา" }, "tags": ["body:eye"], "visibility": "face", "vital": false, "hitWeight": 0.2, "capabilities": { "sight": 0.5 } },
+
+      "arm.l":   { "id": "arm.l", "parent": "torso", "side": "l", "label": { "th": "แขนซ้าย" }, "tags": ["body:arm"], "visibility": "exposed", "vital": false, "hitWeight": 2, "capabilities": { "manipulation.gross": 0.25 } },
+      "hand.l":  { "id": "hand.l", "parent": "arm.l", "side": "l", "label": { "th": "มือซ้าย" }, "tags": ["body:hand"], "visibility": "exposed", "vital": false, "hitWeight": 1, "capabilities": { "manipulation.gross": 0.25, "manipulation.fine": 0.1 } },
+      "finger.thumb.l":  { "id": "finger.thumb.l", "parent": "hand.l", "side": "l", "label": { "th": "นิ้วโป้งซ้าย" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 1.0, "capabilities": { "manipulation.fine": 0.1 } },
+      "finger.index.l":  { "id": "finger.index.l", "parent": "hand.l", "side": "l", "label": { "th": "นิ้วชี้ซ้าย" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 1.3, "capabilities": { "manipulation.fine": 0.09 } },
+      "finger.middle.l": { "id": "finger.middle.l", "parent": "hand.l", "side": "l", "label": { "th": "นิ้วกลางซ้าย" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 1.0, "capabilities": { "manipulation.fine": 0.07 } },
+      "finger.ring.l":   { "id": "finger.ring.l", "parent": "hand.l", "side": "l", "label": { "th": "นิ้วนางซ้าย" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 0.7, "capabilities": { "manipulation.fine": 0.05 } },
+      "finger.little.l": { "id": "finger.little.l", "parent": "hand.l", "side": "l", "label": { "th": "นิ้วก้อยซ้าย" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 0.6, "capabilities": { "manipulation.fine": 0.04 } },
+
+      "arm.r":   { "id": "arm.r", "parent": "torso", "side": "r", "label": { "th": "แขนขวา" }, "tags": ["body:arm"], "visibility": "exposed", "vital": false, "hitWeight": 2, "capabilities": { "manipulation.gross": 0.25 } },
+      "hand.r":  { "id": "hand.r", "parent": "arm.r", "side": "r", "label": { "th": "มือขวา" }, "tags": ["body:hand"], "visibility": "exposed", "vital": false, "hitWeight": 1, "capabilities": { "manipulation.gross": 0.25, "manipulation.fine": 0.1 } },
+      "finger.thumb.r":  { "id": "finger.thumb.r", "parent": "hand.r", "side": "r", "label": { "th": "นิ้วโป้งขวา" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 1.0, "capabilities": { "manipulation.fine": 0.1 } },
+      "finger.index.r":  { "id": "finger.index.r", "parent": "hand.r", "side": "r", "label": { "th": "นิ้วชี้ขวา" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 1.3, "capabilities": { "manipulation.fine": 0.09 } },
+      "finger.middle.r": { "id": "finger.middle.r", "parent": "hand.r", "side": "r", "label": { "th": "นิ้วกลางขวา" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 1.0, "capabilities": { "manipulation.fine": 0.07 } },
+      "finger.ring.r":   { "id": "finger.ring.r", "parent": "hand.r", "side": "r", "label": { "th": "นิ้วนางขวา" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 0.7, "capabilities": { "manipulation.fine": 0.05 } },
+      "finger.little.r": { "id": "finger.little.r", "parent": "hand.r", "side": "r", "label": { "th": "นิ้วก้อยขวา" }, "tags": ["body:finger"], "visibility": "exposed", "vital": false, "hitWeight": 0.6, "capabilities": { "manipulation.fine": 0.04 } },
+
+      "leg.l":   { "id": "leg.l", "parent": "torso", "side": "l", "label": { "th": "ขาซ้าย" }, "tags": ["body:leg"], "visibility": "covered", "vital": false, "hitWeight": 2, "capabilities": { "mobility": 0.5 } },
+      "leg.r":   { "id": "leg.r", "parent": "torso", "side": "r", "label": { "th": "ขาขวา" }, "tags": ["body:leg"], "visibility": "covered", "vital": false, "hitWeight": 2, "capabilities": { "mobility": 0.5 } }
+    }
+  }
+}

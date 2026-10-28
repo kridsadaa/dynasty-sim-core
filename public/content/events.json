@@ -1,0 +1,46 @@
+{
+  "childhood.kitchen_cut": {
+    "id": "childhood.kitchen_cut",
+    "textKey": "event.kitchen_cut",
+    "contextTags": ["situation:kitchen_work", "place:kitchen", "tool:kitchen_knife", "$target_food"],
+    "variables": { "target_food": { "oneOf": ["food:pumpkin", "food:cucumber"] } },
+    "roles": { "actor": { "ageRange": [4, 12] }, "caregiver": { "relationToActor": "caregiver" } },
+    "trigger": { "ageRange": [4, 12], "weight": 1, "cooldownDays": 720 },
+    "percepts": [
+      { "tag": "tool:kitchen_knife", "role": "instrument", "salience": 0.6 },
+      { "tag": "$target_food", "role": "target", "salience": 0.45 },
+      { "tag": "sensation:blood", "role": "sensation", "salience": 0.7 },
+      { "tag": "place:kitchen", "role": "place", "salience": 0.3 },
+      { "tag": "person:mother", "role": "witness", "salience": 0.4, "bindRole": "caregiver" }
+    ],
+    "options": [
+      { "id": "cry", "textKey": "event.kitchen_cut.cry",
+        "effects": [
+          { "op": "wound", "role": "actor", "part": { "tag": "body:finger", "side": "nondominant" }, "kind": "cut",
+            "severity": [0.3, 0.85], "treatedByRole": "caregiver", "treatmentQuality": 0.6 },
+          { "op": "trauma", "role": "actor", "baseImpact": 0.55, "comfortRole": "caregiver", "panicRole": "caregiver", "witnessPanic": 1.0 }
+        ] },
+      { "id": "hide", "textKey": "event.kitchen_cut.hide",
+        "effects": [
+          { "op": "wound", "role": "actor", "part": { "tag": "body:finger", "side": "nondominant" }, "kind": "cut", "severity": [0.3, 0.85] },
+          { "op": "trauma", "role": "actor", "baseImpact": 0.55 },
+          { "op": "skill", "role": "actor", "skill": "stoicism", "delta": 5 }
+        ] }
+    ]
+  },
+  "adult.court_feast": {
+    "id": "adult.court_feast",
+    "textKey": "event.court_feast",
+    "contextTags": ["situation:feast", "place:court", "$dish"],
+    "variables": { "dish": { "oneOf": ["food:pumpkin", "food:cucumber", "food:wax_gourd"] } },
+    "roles": { "actor": { "ageRange": [16, 80] } },
+    "trigger": { "ageRange": [16, 80], "estates": ["noble", "phrai_luang", "merchant"], "weight": 1, "cooldownDays": 1080 },
+    "percepts": [],
+    "options": [
+      { "id": "eat", "textKey": "event.court_feast.eat", "tags": ["$dish"],
+        "effects": [ { "op": "prestige", "role": "actor", "delta": 1 } ] },
+      { "id": "chat", "textKey": "event.court_feast.chat",
+        "effects": [ { "op": "prestige", "role": "actor", "delta": 0.5 } ] }
+    ]
+  }
+}

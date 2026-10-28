@@ -1,0 +1,65 @@
+import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
+import type { CapabilityId } from '../core/types';
+import { capability } from '../systems/body';
+import type { PreparedEvent } from '../systems/events';
+import { renderLegend } from '../systems/legend';
+import { describeTrait } from '../systems/traits';
+import type { CharacterView, DynastyView, EventView } from './protocol';
+
+// แปลง state → view model (plain data) ก่อนส่งข้ามเธรด
+
+export type TextTable = Record<string, string>;
+
+const fill = (tpl: string, vars: Record<string, string>) => tpl.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? `{${k}}`);
+
+const CAPS: CapabilityId[] = ['manipulation.fine', 'manipulation.gross', 'mobility', 'sight'];
+
+export function playerView(ctx: Ctx): CharacterView {
+  const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
+  const anatomy = ctx.content.anatomies[ch.anatomyId];
+  return {
+    name: ch.name,
+    age: ageOf(ctx, ch),
+    year: yearOf(ctx, ctx.state.meta.day),
+    estate: ch.social.estate,
+    title: ch.social.title,
+    wealth: Math.round(ch.social.wealth),
+    traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
+    scars: ch.bodyPartIds.flatMap((pid) => {
+      const p = ctx.state.bodyParts[pid];
+      const label = p ? anatomy?.parts[p.partDefId]?.label.th ?? p.partDefId : '';
+      return p ? [...p.scars.map((s) => `แผลเป็น(${s.kind})ที่${label}`), ...(p.status === 'missing' ? [`สูญเสีย${label}`] : [])] : [];
+    }),
+    wounds: ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${w!.partDefId}: ${w!.stage}`),
+    capabilities: Object.fromEntries(CAPS.map((c) => [c, Math.round(capability(ctx, ch, c) * 100) / 100])),
+  };
+}
+
+export function dynastyView(ctx: Ctx): DynastyView {
+  const dyn = must(ctx.state.dynasties[ctx.state.meta.playerDynastyId], 'dynasty');
+  return {
+    name: dyn.name,
+    prestige: Math.round(dyn.prestige * 10) / 10,
+    taboos: dyn.taboos.map((t) => `${t.kind === 'ban' ? 'ห้าม' : 'พิธีเกี่ยวกับ'}${ctx.tags.label(t.target)} (${Math.round(t.strength * 100)}%)`),
+    legends: dyn.legendIds.map((id) => ctx.state.legends[id]).filter((l) => !!l).map((l) => renderLegend(ctx, l!, 'current')),
+    livingMembers: Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c)).length,
+    familyNodes: Object.keys(ctx.state.familyNodes).length,
+  };
+}
+
+export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventView {
+  const vars: Record<string, string> = { actor: p.actor.name };
+  for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.label(v);
+  return {
+    instanceId: p.instance.id,
+    title: p.def.id,
+    text: fill(text[p.def.textKey] ?? p.def.textKey, vars),
+    options: p.options.map((o) => ({
+      id: o.id,
+      text: fill(text[o.textKey] ?? o.textKey, { ...vars, ...o.params }),
+      locked: p.locked.has(o.id),
+      injected: !!o.injectedBy,
+    })),
+    triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
+  };
+}

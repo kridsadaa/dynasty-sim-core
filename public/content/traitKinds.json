@@ -1,0 +1,25 @@
+{
+  "phobia": {
+    "id": "phobia", "label": { "th": "กลัว" },
+    "bias": 0.5, "personalityWeights": { "neuroticism": 2.0, "boldness": -1.5 },
+    "generalize": 0.8, "heritability": 0.6, "visibility": 0.8,
+    "imposesRule": "ban", "mutatesTo": ["aversion", "superstition"]
+  },
+  "aversion": {
+    "id": "aversion", "label": { "th": "รังเกียจ" },
+    "bias": 0.3, "personalityWeights": { "agreeableness": -1.5, "neuroticism": 0.5 }, "misattributionBias": 0.6,
+    "generalize": 0.4, "heritability": 0.5, "visibility": 0.6,
+    "imposesRule": "ban", "mutatesTo": ["phobia", "superstition"]
+  },
+  "obsession": {
+    "id": "obsession", "label": { "th": "หมกมุ่นกับ" },
+    "bias": -0.6, "personalityWeights": { "boldness": 2.0, "imagination": 0.8, "neuroticism": -0.5 },
+    "generalize": 0.2, "heritability": 0.3, "visibility": 0.5
+  },
+  "superstition": {
+    "id": "superstition", "label": { "th": "ถือเคล็ดเรื่อง" },
+    "bias": -0.4, "personalityWeights": { "piety": 2.2 }, "misattributionBias": 0.3,
+    "generalize": 0.3, "heritability": 0.9, "visibility": 0.9,
+    "imposesRule": "ritual", "mutatesTo": ["phobia"]
+  }
+}

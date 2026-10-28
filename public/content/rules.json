@@ -1,0 +1,66 @@
+{
+  "scarRules": [
+    { "match": { "visibility": ["face"], "minSeverity": 0.2 },
+      "modifiers": [
+        { "stat": "social:attraction", "op": "add", "value": -0.3 },
+        { "stat": "social:intimidation", "op": "add", "value": 0.4, "when": ["situation:combat"] }
+      ] },
+    { "match": { "partTag": "body:finger", "kind": ["cut", "stab", "burn"] },
+      "modifiers": [
+        { "stat": "skill:music", "op": "add", "value": -15 },
+        { "stat": "skill:goldsmith", "op": "add", "value": -10 }
+      ] },
+    { "match": { "visibility": ["face", "exposed"], "minSeverity": 0.4 },
+      "modifiers": [ { "stat": "social:story_hook", "op": "add", "value": 0.2 } ] }
+  ],
+  "injectionRules": [
+    { "id": "inj.phobia.panic",
+      "match": { "type": "trait", "kind": "phobia", "minStrength": 0.25 },
+      "lockOptionsMatchingTarget": true,
+      "addOptions": [ { "id": "inj.phobia.flee", "textKey": "inject.phobia.flee",
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.15 }, { "op": "prestige", "role": "actor", "delta": -1 } ] } ],
+      "appendEffects": [ { "op": "stress", "role": "actor", "delta": 0.1 } ] },
+    { "id": "inj.aversion.refuse",
+      "match": { "type": "trait", "kind": "aversion", "minStrength": 0.25 },
+      "lockOptionsMatchingTarget": true,
+      "addOptions": [ { "id": "inj.aversion.refuse", "textKey": "inject.aversion.refuse",
+        "effects": [ { "op": "prestige", "role": "actor", "delta": -0.5 } ] } ] },
+    { "id": "inj.superstition.ward",
+      "match": { "type": "trait", "kind": "superstition", "minStrength": 0.2 },
+      "addOptions": [ { "id": "inj.superstition.ward", "textKey": "inject.superstition.ward",
+        "effects": [ { "op": "stress", "role": "actor", "delta": -0.05 }, { "op": "prestige", "role": "actor", "delta": -0.2 } ] } ] },
+    { "id": "inj.obsession.fixate",
+      "match": { "type": "trait", "kind": "obsession", "minStrength": 0.3 },
+      "addOptions": [ { "id": "inj.obsession.fixate", "textKey": "inject.obsession.fixate",
+        "effects": [ { "op": "stress", "role": "actor", "delta": -0.1 } ] } ] },
+    { "id": "inj.scar.face.intimidate",
+      "match": { "type": "scar", "visibility": ["face"], "minSeverity": 0.3 },
+      "requireContext": ["situation:combat"],
+      "addOptions": [ { "id": "inj.scar.intimidate", "textKey": "inject.scar.intimidate", "effects": [] } ] },
+    { "id": "inj.capability.fine.craft",
+      "match": { "type": "capability", "capability": "manipulation.fine", "below": 0.9 },
+      "requireContext": ["situation:craft"],
+      "appendEffects": [ { "op": "skill", "role": "actor", "skill": "craft", "delta": -1 } ] }
+  ],
+  "claimTemplates": {
+    "acquired_scar": {
+      "base": "{subject}ได้แผลเป็นที่{part}",
+      "fragments": {
+        "era_event": "ในคราว{v}",
+        "place": "ที่{v}",
+        "adversary": "ขณะต่อสู้กับ{v}{magnitude}",
+        "magnitude": "ถึง {n} คน",
+        "target": "ขณะผ่า{v}",
+        "instrument": "ด้วย{v}",
+        "supernatural": "โดยมี{v}คุ้มครอง"
+      },
+      "order": ["era_event", "place", "adversary", "target", "instrument", "supernatural"]
+    }
+  },
+  "history": [
+    { "tag": "history:fall_of_ayutthaya", "year": 2310, "kind": "war",
+      "shock": { "wealthLoss": [0.5, 0.9], "deathRisk": 0.15 } },
+    { "tag": "history:thonburi_succession", "year": 2325, "kind": "succession",
+      "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.02, "purgeFactions": ["faction:taksin_loyalist"] } }
+  ]
+}

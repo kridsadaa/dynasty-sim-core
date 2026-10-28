@@ -1,0 +1,13 @@
+{
+  "event.kitchen_cut": "{actor}ช่วยแม่ผ่า{target_food}อยู่ในโรงครัว มีดลื่นพลาดเข้าที่นิ้ว เลือดไหลไม่หยุด",
+  "event.kitchen_cut.cry": "ร้องไห้วิ่งไปหาแม่",
+  "event.kitchen_cut.hide": "กัดฟันซ่อนแผลไว้ ไม่ให้ใครรู้",
+  "event.court_feast": "{actor}ได้รับเชิญไปงานเลี้ยงในวัง สำรับวันนี้มี{dish}",
+  "event.court_feast.eat": "รับประทานอย่างสำรวม",
+  "event.court_feast.chat": "ชวนขุนนางผู้ใหญ่สนทนา",
+  "inject.phobia.flee": "ใจสั่นจนทนไม่ไหว ขอตัวออกไปก่อน (กลัว{target})",
+  "inject.aversion.refuse": "ปฏิเสธ{target}อย่างไม่ไว้หน้าใคร",
+  "inject.superstition.ward": "แอบออกไปทำพิธีปัดรังควาน (ถือเคล็ดเรื่อง{target})",
+  "inject.obsession.fixate": "จ้องมอง{target}อย่างหลงใหลจนลืมตัว",
+  "inject.scar.intimidate": "เผยแผลเป็นบนใบหน้า ข่มขวัญอีกฝ่าย"
+}
