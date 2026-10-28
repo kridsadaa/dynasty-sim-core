@@ -28,17 +28,17 @@ let running = false;
 let pauseRequested = false;
 let sessionLock: Promise<void> | null = null;
 
-const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'balance', 'text.th'] as const;
+const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'balance', 'names', 'text.th'] as const;
 
 const contentReady = (async () => {
   const base = `${import.meta.env.BASE_URL}content/`;
-  const [tags, anatomy, traitKinds, events, rules, balance, th] = await Promise.all(
+  const [tags, anatomy, traitKinds, events, rules, balance, names, th] = await Promise.all(
     CONTENT_FILES.map((f) => fetch(`${base}${f}.json`).then((r) => {
       if (!r.ok) throw new Error(`โหลด content ${f} ไม่ได้ (${r.status})`);
       return r.json();
     })),
   );
-  content = buildContentDB({ tags, anatomy, traitKinds, events, rules, balance });
+  content = buildContentDB({ tags, anatomy, traitKinds, events, rules, balance, names });
   text = th;
   push({ type: 'ready' });
 })();

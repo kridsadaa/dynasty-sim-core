@@ -89,6 +89,20 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
   return ch;
 }
 
+/** ชื่อชั่วคราวจนกว่า lore จะมีรายชื่อพอ — ไม่ได้มาจากเอกสาร */
+const PLACEHOLDER_NAMES = ['ทอง', 'เงิน', 'บุญ', 'สุข', 'มั่น', 'เจิม', 'ปาน', 'อ่อน'];
+
+/**
+ * สุ่มชื่อจาก names.json (compile จาก lore) ตามเพศ/ชนชั้น โดยเลี่ยงชื่อใน avoid (พ่อแม่ พี่น้อง)
+ * ถ้าไม่มีที่ตรงเลยใช้ชื่อชั่วคราว
+ */
+export function pickName(ctx: Ctx, sex: 'm' | 'f', estate: Estate, avoid: ReadonlySet<string> = new Set()): string {
+  const fits = ctx.content.names.names.filter(
+    (n) => (n.sex === null || n.sex === sex) && (n.estates === null || n.estates.includes(estate)) && !avoid.has(n.name),
+  );
+  return ctx.rng.pick(fits)?.name ?? ctx.rng.pick(PLACEHOLDER_NAMES.filter((n) => !avoid.has(n))) ?? 'ทอง';
+}
+
 export function marry(ctx: Ctx, a: Character, b: Character): void {
   const na = must(ctx.state.familyNodes[a.familyNodeId], 'a');
   const nb = must(ctx.state.familyNodes[b.familyNodeId], 'b');

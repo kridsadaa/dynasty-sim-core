@@ -1,0 +1,57 @@
+[
+  {
+    "id": "belief.astrology_omens_1680s",
+    "domain": "belief",
+    "title": "โหราศาสตร์ ฤกษ์ยาม และลางร้าย",
+    "period": [2230, 2231],
+    "claim": {
+      "almanac": "พราหมณ์โหรทำปฏิทินประจำปีถวาย ระบุวันดีวันร้ายสำหรับกิจต่างๆ",
+      "auspiciousTime": "โหรกำหนดฤกษ์ — พระเจ้าแผ่นดินเสด็จออก/เข้าวังไม่ได้ถ้าโหรห้าม",
+      "luckier": ["วันอาทิตย์", "ข้างขึ้น"],
+      "badOmens": ["เสียงสัตว์หอน", "เสียงกวางและลิงร้อง", "งูเลื้อยตัดหน้า", "ฟ้าผ่าบ้าน"],
+      "horoscope": "มีการผูกดวงชะตาส่วนบุคคล"
+    },
+    "summary": "ป้อน trait แบบ superstition, ระบบดวงชะตา (Character.horoscope) และ event ลางร้าย",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XI", "quote": "A Serpent which crosses the way, the Thunderbolt which falls on a House" }],
+    "verified": false
+  },
+  {
+    "id": "belief.spirits_1680s",
+    "domain": "belief",
+    "title": "ความกลัวผี",
+    "period": [2230, 2231],
+    "claim": { "general": "ชาวสยามกลัวผีไม่น้อยกว่าชาวจีน", "caveat": "ข้อความเรื่องผีเรือนและวิญญาณบรรพบุรุษที่ลงโทษลูกหลานส่วนใหญ่พูดถึงชาวจีน" },
+    "summary": "ยืนยันความเชื่อเรื่องผีทั่วไป แต่ยังไม่มีหลักฐานเรื่อง 'ผีเรือน' โดยชื่อ — ผีบรรพบุรุษที่ใช้ในระบบข้อห้ามตระกูลยังเป็นการอนุมาน",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part III ch. XXIII", "quote": "The Siameses do not less dread Spirits, than the Chineses" }],
+    "verified": false,
+    "gameRefs": { "tags": ["supernatural:guardian_spirit"] }
+  },
+  {
+    "id": "belief.phi_in_three_seals",
+    "domain": "belief",
+    "title": "ผีในกฎหมายตราสามดวง",
+    "period": [2100, 2348],
+    "claim": { "topics": ["ผีที่ให้คุณและให้โทษ", "การเซ่นสรวง", "ความเชื่อเรื่องผีกับการเกษตร"] },
+    "summary": "แหล่งที่ควรอ่านฉบับเต็มเพื่อทำระบบผี/การเซ่นไหว้",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.suwannapha_2560_phi", "locator": "บทคัดย่อ (หน้า 19–29)" }],
+    "verified": false
+  },
+  {
+    "id": "belief.chronicle_omens",
+    "domain": "belief",
+    "title": "ลางบอกเหตุในพงศาวดาร",
+    "period": [1893, 2310],
+    "claim": {
+      "goodOmens": ["ปรากฏการณ์ธรรมชาติที่เป็นมงคล", "บุคคลรอดพ้นอันตราย", "สัตว์มงคล", "เทวดา"],
+      "badOmens": ["ปรากฏการณ์ธรรมชาติที่เป็นอัปมงคล", "สัตว์อัปมงคล", "ผี"]
+    },
+    "summary": "หมวดหมู่ลางใช้เป็น tag ของ event และ op 'supernatural' ในการบิดเบือนตำนาน",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.pathompong_2568_omens", "locator": "บทคัดย่อ" }],
+    "verified": false,
+    "gameRefs": { "tags": ["supernatural:omen"] }
+  }
+]

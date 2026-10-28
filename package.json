@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run lore:check && tsc --noEmit && vite build",
+    "build": "npm run lore:check && npm run lore:compile && tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "demo": "tsx src/demo.ts",
-    "lore:check": "tsx src/lore/validate.ts"
+    "lore:check": "tsx src/lore/validate.ts",
+    "lore:compile": "tsx src/lore/compile.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

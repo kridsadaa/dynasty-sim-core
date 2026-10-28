@@ -596,7 +596,14 @@ export interface Balance {
   };
 }
 
+/** generated จาก lore/ โดย npm run lore:compile */
+export interface NamePool {
+  generatedFrom: string[];
+  names: Array<{ name: string; sex: 'm' | 'f' | null; estates: Estate[] | null; loreRef: string }>;
+}
+
 export interface ContentDB {
+  names: NamePool;
   tags: Record<TagId, TagDef>;
   anatomies: Record<string, AnatomyTemplate>;
   scarRules: ScarRule[];

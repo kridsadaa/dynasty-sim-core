@@ -2,6 +2,7 @@ import type { ContentDB, TagDef } from './core/types';
 
 /** ประกอบ ContentDB จากไฟล์ JSON ดิบ — บนเว็บใช้ fetch, ใน Node ใช้ fs; logic ไม่ต้องรู้ */
 export function buildContentDB(raw: {
+  names: ContentDB['names'];
   tags: TagDef[];
   anatomy: ContentDB['anatomies'];
   traitKinds: ContentDB['traitKinds'];
@@ -15,6 +16,7 @@ export function buildContentDB(raw: {
     for (const u of t.narrativeUpgrades ?? []) if (!tags[u]) throw new Error(`tag ${t.id}: unknown upgrade ${u}`);
   }
   return {
+    names: raw.names,
     tags,
     anatomies: raw.anatomy,
     scarRules: raw.rules.scarRules,

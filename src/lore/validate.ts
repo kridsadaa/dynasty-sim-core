@@ -61,7 +61,8 @@ for (const e of entries) {
       const msg = `${at}: ${s.id} บรรยายช่วง ${s.describesPeriod.join('–')} ไม่ครอบคลุม ${e.period.join('–')}`;
       (e.status === 'attested' ? errors : warnings).push(msg);
     }
-    if (s.composedYear !== undefined && s.composedYear > e.period[1] + config.lateCompilationWarnYears) {
+    // งานวิชาการสมัยใหม่ (secondary) เขียนทีหลังเสมอ — เตือนเฉพาะเอกสารชั้นต้น/ภาพที่ชำระทีหลัง
+    if (s.kind !== 'secondary' && s.composedYear !== undefined && s.composedYear > e.period[1] + config.lateCompilationWarnYears) {
       warnings.push(`${at}: ${s.id} เขียน/ชำระ พ.ศ. ${s.composedYear} หลังช่วงข้อมูลเกิน ${config.lateCompilationWarnYears} ปี — ระวังยุคเหลื่อม`);
     }
   }

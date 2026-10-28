@@ -15,7 +15,47 @@
     "composedYear": 2348,
     "describesPeriod": [1893, 2348],
     "reliability": 4,
-    "notes": "ชำระสมัยรัชกาลที่ 1 จากกฎหมายสมัยอยุธยา — เนื้อหาบางส่วนอาจถูกปรับแก้ระหว่างชำระ ระวังเมื่อใช้กับอยุธยาตอนปลาย"
+    "url": "https://th.wikisource.org/wiki/หน้า:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(2).djvu/147",
+    "notes": "ชำระสมัยรัชกาลที่ 1 (จ.ศ. 1166) จากกฎหมายสมัยอยุธยา — เนื้อหาบางส่วนอาจถูกปรับแก้ระหว่างชำระ ระวังเมื่อใช้กับอยุธยาตอนปลาย. ฉบับที่ใช้: ประมวลกฎหมายรัชกาลที่ 1 จุลศักราช 1166 (พิมพ์ 2482) บนวิกิซอร์ซ — URL รูปแบบ หน้า:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(เล่ม).djvu/สแกน; ศักราชในตัวบทแต่ละฉบับไม่ระบุว่าเป็นศักราชใด และการแปลงยังเป็นที่ถกเถียง"
+  },
+  {
+    "id": "src.phongsawadan_royal_autograph",
+    "title": "พระราชพงศาวดาร ฉบับพระราชหัตถเลขา ภาค 2 (พิมพ์ 2455)",
+    "kind": "primary",
+    "composedYear": 2455,
+    "describesPeriod": [2200, 2310],
+    "reliability": 3,
+    "url": "https://th.wikisource.org/wiki/หน้า:พระราชพงษาวดาร_ฉบับพระราชหัดถเลขา_ภาค_๒_(๒๔๕๕)_b.pdf/320",
+    "notes": "ชำระสมัยรัตนโกสินทร์ (ปีที่ชำระต้องตรวจ — ใส่ปีพิมพ์ไว้ก่อน); ข้อความบนวิกิซอร์ซเป็น OCR ยังไม่พิสูจน์อักษร"
+  },
+  {
+    "id": "src.kritsada_2561_prefixes",
+    "title": "ความเป็นมาในการใช้คำนำหน้านามชายและหญิง (วารสารนิติพัฒน์ นิด้า 7(2))",
+    "author": "กฤษฎา บุณยสมิต",
+    "kind": "secondary",
+    "composedYear": 2561,
+    "describesPeriod": [2100, 2460],
+    "reliability": 4,
+    "url": "https://so04.tci-thaijo.org/index.php/nitipat/article/view/175122"
+  },
+  {
+    "id": "src.jit_sakdina",
+    "title": "โฉมหน้าศักดินาไทย",
+    "author": "จิตร ภูมิศักดิ์",
+    "kind": "secondary",
+    "composedYear": 2500,
+    "describesPeriod": [1893, 2475],
+    "reliability": 3,
+    "url": "https://vajirayana.org",
+    "notes": "งานเชิงวิเคราะห์แนวมาร์กซิสต์ ปี 2500 — ใช้ตัวเลขที่อ้างตัวบทได้ แต่ควรเทียบกับตัวบทเอง"
+  },
+  {
+    "id": "src.wiki_thai_nobility",
+    "title": "Thai nobility — Wikipedia",
+    "kind": "secondary",
+    "describesPeriod": [1893, 2475],
+    "reliability": 2,
+    "url": "https://en.wikipedia.org/wiki/Thai_nobility"
   },
   {
     "id": "src.la_loubere",
@@ -25,7 +65,160 @@
     "composedYear": 2234,
     "describesPeriod": [2230, 2231],
     "reliability": 4,
-    "notes": "ทูตฝรั่งเศสสมัยสมเด็จพระนารายณ์ (ค.ศ. 1687–88) — เก่ากว่าอยุธยาตอนปลายราว 70 ปี และเป็นมุมมองชาวต่างชาติ"
+    "url": "https://archive.org/details/LoubereSiamAmsterdam1691",
+    "notes": "ต้นฉบับฝรั่งเศส ฉบับ Amsterdam 1691 — ทูตฝรั่งเศสสมัยสมเด็จพระนารายณ์ (ค.ศ. 1687–88) เก่ากว่าอยุธยาตอนปลายราว 70 ปี และเป็นมุมมองชาวต่างชาติ"
+  },
+  {
+    "id": "src.la_loubere_en_1693",
+    "title": "A New Historical Relation of the Kingdom of Siam (ฉบับแปลอังกฤษ 1693)",
+    "author": "Simon de La Loubère",
+    "kind": "primary",
+    "composedYear": 2236,
+    "describesPeriod": [2230, 2231],
+    "reliability": 4,
+    "url": "https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam",
+    "notes": "ฉบับแปลร่วมสมัย อ่านง่ายและแบ่งบทชัด แต่บางตอนเพี้ยนจากต้นฉบับ (เช่นตอนสวนผัก ที่เครื่องหมายวรรคตอนหายจนความหมายกลับ) — ข้อความสำคัญให้เทียบกับ src.la_loubere"
+  },
+  {
+    "id": "src.prosea_benincasa",
+    "title": "PROSEA: Benincasa hispida (ฟัก)",
+    "kind": "secondary",
+    "describesPeriod": [1043, 2560],
+    "reliability": 4,
+    "url": "https://prosea.prota4u.org/view.aspx?id=2144",
+    "notes": "ฐานข้อมูลพืชเอเชียตะวันออกเฉียงใต้ — ข้อมูลถิ่นกำเนิดทั่วไป ไม่เฉพาะอยุธยา"
+  },
+  {
+    "id": "src.guy_1990_textiles",
+    "title": "Indian Textiles for the Thai Market: A Royal Prerogative?",
+    "author": "John Guy",
+    "kind": "secondary",
+    "composedYear": 2533,
+    "describesPeriod": [1893, 2310],
+    "reliability": 4,
+    "url": "https://digitalcommons.unl.edu/tsaconf/603",
+    "notes": "Textile Society of America Symposium 1990 — อ่านแค่บทคัดย่อแล้ว ยังไม่ได้อ่านฉบับเต็ม"
+  },
+  {
+    "id": "src.lim_2025_wat_ko_kaeo",
+    "title": "The Fat Men of Wat Ko Kaew Suttharam (SPAFA Journal vol. 9)",
+    "author": "Lim N.H.M. Winnie",
+    "kind": "secondary",
+    "composedYear": 2568,
+    "describesPeriod": [2277, 2277],
+    "reliability": 4,
+    "url": "https://spafajournal.org/index.php/spafajournal/article/view/955",
+    "license": "บทความ CC BY-NC-ND 4.0; ภาพจิตรกรรมในบทความเครดิต James Lao — ห้ามนำภาพไปใช้ต่อโดยไม่ขออนุญาต"
+  },
+  {
+    "id": "src.smb_traiphum_thonburi",
+    "title": "สมุดภาพไตรภูมิฉบับกรุงธนบุรี (Museum für Asiatische Kunst, Berlin, inv. II 650)",
+    "kind": "visual",
+    "composedYear": 2319,
+    "describesPeriod": [2319, 2319],
+    "reliability": 4,
+    "url": "https://www.smb.museum/en/museums-institutions/museum-fuer-asiatische-kunst/collection-research/research/six-metres-of-traiphum/",
+    "license": "ภาพบนเว็บพิพิธภัณฑ์ © Staatliche Museen zu Berlin / Hagen Immel — ไม่ใช่ open license",
+    "notes": "ฉบับ Berlin ใกล้เคียงงานช่างอยุธยาตอนปลายที่สุด; ฉบับหอสมุดแห่งชาติ (เลขที่ 10, 10/ก) น่าจะเป็นฉบับคัดลอกต้นรัตนโกสินทร์ — ดู src.areelertrat_2024_traiphum"
+  },
+  {
+    "id": "src.areelertrat_2024_traiphum",
+    "title": "บทความว่าด้วยสมุดภาพไตรภูมิฉบับกรุงธนบุรี (วารสารดำรงวิชาการ 23(1))",
+    "author": "Rapeepun Areelertrat",
+    "kind": "secondary",
+    "composedYear": 2567,
+    "describesPeriod": [2319, 2350],
+    "reliability": 4,
+    "url": "https://so01.tci-thaijo.org/index.php/damrong/article/view/265484",
+    "license": "CC BY-NC-ND"
+  },
+  {
+    "id": "src.commons_wat_ko_kaeo_12",
+    "title": "ภาพถ่าย วัดเกาะแก้วสุทธาราม จ.เพชรบุรี (12).jpg — Wikimedia Commons",
+    "author": "กสิณธร ราชโอรส (ผู้ถ่าย, 2558)",
+    "kind": "visual",
+    "composedYear": 2277,
+    "describesPeriod": [2270, 2280],
+    "reliability": 3,
+    "url": "https://commons.wikimedia.org/wiki/File:วัดเกาะแก้วสุทธาราม_จ.เพชรบุรี_(12).jpg",
+    "license": "CC BY-SA 4.0 (ภาพถ่าย) — ต้องให้เครดิตและแชร์แบบเดียวกัน",
+    "notes": "ยังไม่ได้เปิดดูภาพว่าเป็นผนังส่วนไหน; ไฟล์อื่นในหมวด Murals in Thailand ยังไม่ได้ตรวจ license"
+  },
+  {
+    "id": "src.kanokwan_2556_phom",
+    "title": "การกลายเป็นคำไวยากรณ์ของคำนาม 'ผม' (วรรณวิทัศน์)",
+    "author": "กนกวรรณ วารีเขตต์, วิภาส โพธิแพทย์",
+    "kind": "secondary",
+    "composedYear": 2556,
+    "describesPeriod": [1800, 2500],
+    "reliability": 4,
+    "url": "https://so06.tci-thaijo.org/index.php/VANNAVIDAS/article/download/48412/40221"
+  },
+  {
+    "id": "src.wiki_luang_prasoet",
+    "title": "Luang Prasoet Chronicle — Wikipedia (อ้าง ประชุมพงศาวดาร ฉบับกาญจนาภิเษก เล่ม 1 หน้า 211, กรมศิลปากร 2542)",
+    "kind": "secondary",
+    "describesPeriod": [2223, 2223],
+    "reliability": 3,
+    "url": "https://en.wikipedia.org/wiki/Luang_Prasoet_Chronicle",
+    "notes": "ควรเปิดต้นฉบับภาษาไทยในประชุมพงศาวดารยืนยันรูปแบบการลงศักราช"
+  },
+  {
+    "id": "src.wiki_th_lunar_calendar",
+    "title": "ปฏิทินจันทรคติไทย — วิกิพีเดีย (อ้าง ลอย ชุนพงษ์ทอง 2550, วารสารราชบัณฑิตยสถาน 32(2))",
+    "kind": "secondary",
+    "describesPeriod": [2325, 2560],
+    "reliability": 3,
+    "url": "https://th.wikipedia.org/wiki/ปฏิทินจันทรคติไทย",
+    "notes": "บรรยายระบบสมัยรัตนโกสินทร์/ปัจจุบัน — ยังไม่มีหลักฐานว่ากฎอธิกมาส/อธิกวารเหมือนกันในอยุธยา; ควรอ่าน Laurent (2000) 'Reading De La Loubère: The Chapter on the Siamese Calendar'"
+  },
+  {
+    "id": "src.wiki_six_hour_clock",
+    "title": "Thai six-hour clock — Wikipedia (อ้างราชกิจจานุเบกษา เล่ม 17 หน้า 206)",
+    "kind": "secondary",
+    "describesPeriod": [2444, 2560],
+    "reliability": 3,
+    "url": "https://en.wikipedia.org/wiki/Thai_six-hour_clock"
+  },
+  {
+    "id": "src.wiki_thai_baht",
+    "title": "Thai baht — Wikipedia (ส่วนประวัติ)",
+    "kind": "secondary",
+    "describesPeriod": [1893, 2560],
+    "reliability": 3,
+    "url": "https://en.wikipedia.org/wiki/Thai_baht"
+  },
+  {
+    "id": "src.suwannapha_2560_phi",
+    "title": "ผีในกฎหมายตราสามดวง (วารสารวิชาการมนุษยศาสตร์และสังคมศาสตร์ มรภ.พระนครศรีอยุธยา 5(2))",
+    "author": "สุวรรณภา กลิ่นอังกาบ, วิราวรรณ สมพงษ์เจริญ",
+    "kind": "secondary",
+    "composedYear": 2560,
+    "describesPeriod": [1893, 2348],
+    "reliability": 4,
+    "url": "https://so03.tci-thaijo.org/index.php/husoarujournal/article/view/260349",
+    "notes": "อ่านแค่บทคัดย่อ"
+  },
+  {
+    "id": "src.pathompong_2568_omens",
+    "title": "ลางบอกเหตุในพระราชพงศาวดารกรุงศรีอยุธยา ฉบับพันจันทนุมาศ (เจิม) (วารสารวิชาการอยุธยาศึกษา 17(1))",
+    "author": "ปฐมพงษ์ สุขเล็ก และคณะ",
+    "kind": "secondary",
+    "composedYear": 2568,
+    "describesPeriod": [1893, 2310],
+    "reliability": 4,
+    "url": "https://so02.tci-thaijo.org/index.php/jas/article/view/269985",
+    "notes": "อ่านแค่บทคัดย่อ"
+  },
+  {
+    "id": "src.ayutthaya_history_vandenberg",
+    "title": "ayutthaya-history.com (Tricky Vandenberg)",
+    "kind": "secondary",
+    "composedYear": 2554,
+    "describesPeriod": [2100, 2310],
+    "reliability": 2,
+    "url": "https://ayutthaya-history.com",
+    "notes": "เว็บไซต์ของผู้สนใจที่ได้รับการยอมรับ — ใช้เป็นตัวชี้ทาง ควรหาเอกสารชั้นต้นยืนยัน"
   },
   {
     "id": "src.surname_act_2456",

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "place.japanese_settlement",
+    "domain": "place",
+    "title": "หมู่บ้านญี่ปุ่น เกาะเรียน",
+    "period": [2100, 2310],
+    "region": "กรุงศรีอยุธยา",
+    "claim": { "location": "ฝั่งตะวันออกของแม่น้ำเจ้าพระยา ที่เกาะเรียน ตรงข้ามหมู่บ้านโปรตุเกส", "neighbors": "คลองสวนพลูคั่นกับย่านอังกฤษ/ฮอลันดาทางเหนือ" },
+    "summary": "ยังไม่รู้สภาพในศตวรรษที่ 18 — ต้องหาเอกสารชั้นต้น เช่น พรรณนาภูมิสถานพระนครศรีอยุธยา",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.ayutthaya_history_vandenberg", "locator": "หน้า Settlements_Japanese.html" }],
+    "verified": false
+  }
+]

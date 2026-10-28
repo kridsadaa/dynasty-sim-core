@@ -2,14 +2,109 @@
   {
     "id": "material.pumpkin_availability",
     "domain": "material",
-    "title": "ฟักทองในอยุธยาตอนปลาย",
-    "period": [2275, 2310],
-    "claim": { "item": "ฟักทอง", "availableInSlice": "unknown" },
-    "summary": "ฟักทองเป็นพืชที่มาจากทวีปอเมริกา ยังไม่มีหลักฐานในคลังว่าแพร่หลายในอยุธยาตอนปลาย — event ตัวอย่างใช้อยู่ ถ้าหาหลักฐานไม่พบให้เปลี่ยนเป็นพืชพื้นถิ่นตระกูลเดียวกัน เช่น ฟักเขียว หรือน้ำเต้า",
-    "status": "invented",
-    "rationale": "ใช้ชั่วคราวในต้นแบบระบบ trauma เพราะสีสะดุดตาเหมาะกับกลไก misattribution",
-    "citations": [],
+    "title": "ฟักทองในสยาม",
+    "period": [2230, 2310],
+    "claim": {
+      "item": "ฟักทอง",
+      "evidence": "ลา ลูแบร์พบ 'citrouilles เล็กๆ เนื้อในแดง' ในสวนของชาวสยามทศวรรษ 2230",
+      "interpretation": "citrouille ในภาษาฝรั่งเศสคือฟักทอง/สควอช และเนื้อแดงส้มเข้ากับสกุล Cucurbita — เป็นการตีความ ไม่ใช่ข้อความตรงของต้นฉบับ",
+      "availableInSlice": "likely"
+    },
+    "summary": "มีหลักฐานว่าปลูกในสยามตั้งแต่ราว 65 ปีก่อน slice จึงใช้ฟักทองใน event ได้ — ระวัง: ฉบับแปลอังกฤษ 1693 เครื่องหมายวรรคตอนหายจนอ่านได้ว่า 'ไม่มี' ให้อ้างต้นฉบับฝรั่งเศส",
+    "status": "inferred",
+    "citations": [
+      { "sourceId": "src.la_loubere", "locator": "เล่ม 1 ภาค 1 บทที่ 9 'Des Jardins des Siamois' (ราวหน้า 58)", "quote": "de petites citrouilles rouges en dedans, des melons d'eau" }
+    ],
     "verified": false,
     "gameRefs": { "tags": ["food:pumpkin"] }
+  },
+  {
+    "id": "material.cucumber_eaten_raw",
+    "domain": "material",
+    "title": "แตงกวากินดิบ",
+    "period": [2230, 2231],
+    "claim": { "item": "แตงกวา", "use": "กินดิบ", "note": "ชาวสยามเรียกว่าแตงโมชนิดหนึ่ง" },
+    "summary": "แตงกวาเป็นผักในสวนสยามสมัยพระนารายณ์",
+    "status": "attested",
+    "citations": [
+      { "sourceId": "src.la_loubere", "locator": "เล่ม 1 ภาค 1 บทที่ 9 'Des Jardins des Siamois'", "quote": "de petits concombres" },
+      { "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. IX 'Of the Gardens of the Siameses'" }
+    ],
+    "verified": false,
+    "gameRefs": { "tags": ["food:cucumber"] }
+  },
+  {
+    "id": "material.wax_gourd_origin",
+    "domain": "material",
+    "title": "ฟัก (ฟักเขียว) เป็นพืชเก่าแก่ของเอเชีย",
+    "period": [1043, 2310],
+    "claim": { "item": "ฟัก", "thaiNames": ["ฟัก", "แฟง", "มะแฟง (เหนือ)"], "origin": "ไม่ชัด — อินเดียและอินโดจีนมีความหลากหลายมากที่สุด; มีหลักฐานปลูกในจีนตั้งแต่ราว ค.ศ. 500" },
+    "summary": "ใช้ได้ในทุก slice แต่หลักฐานไม่เจาะจงอยุธยา",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.prosea_benincasa", "locator": "หัวข้อ 'Origin and geographic distribution', 'Vernacular names'" }],
+    "verified": false,
+    "gameRefs": { "tags": ["food:wax_gourd"] }
+  },
+  {
+    "id": "material.houses_1680s",
+    "domain": "material",
+    "title": "เรือนสามัญชนไม้ไผ่ยกสูง, เรือนขุนนางไม้จริง",
+    "period": [2230, 2231],
+    "claim": {
+      "commoner": "เรือนเล็ก พื้น ฝา หลังคาเป็นแผงไม้ไผ่สาน ยกบนเสาไผ่ 4–6 ต้น สูงราว 13 ฟุตเพราะน้ำท่วม ขึ้นด้วยบันไดไผ่แขวน",
+      "hearth": "เตาเป็นกระบะดินบนขาตั้งไม้สามขา ทำครัวที่ลานบ้าน",
+      "noble": "เรือนไม้จริง ชั้นเดียว ในรั้วไผ่ล้อมรอบ; ภรรยา ทาส และครอบครัวทาสแยกเรือนเล็กอยู่ในรั้วเดียวกัน",
+      "foreigners": "ชาวยุโรป จีน และแขกมัวร์สร้างเรือนอิฐ",
+      "visualDescriptor": "small Siamese stilt house of woven split-bamboo panels on tall bamboo piles, hanging bamboo ladder, cooking fire on an earth-filled basket in the yard"
+    },
+    "summary": "ใช้กับฉาก 'โรงครัว' ของ event มีดบาด (ครัวอยู่ที่ลานบ้าน) และการแบ่งเรือนในรั้วเดียวกันของครัวเรือนขุนนาง",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[30]" }],
+    "verified": false,
+    "gameRefs": { "tags": ["place:kitchen"] }
+  },
+  {
+    "id": "material.household_objects_1680s",
+    "domain": "material",
+    "title": "เครื่องเรือนและภาชนะ",
+    "period": [2230, 2231],
+    "claim": {
+      "furniture": ["เสื่อกกใช้นั่งและนอน", "ถาดไม่มีขาแทนโต๊ะ", "หมอนอิงสำหรับผู้มีฐานะ"],
+      "eating": "ไม่ใช้ช้อนส้อม อาหารหั่นเป็นชิ้นมาแล้ว",
+      "vessels": ["เครื่องกระเบื้อง", "เครื่องดินเผา", "ทองแดงบ้าง", "ไม้ลงรัก", "กะลามะพร้าว", "กระบอกไม้ไผ่", "ถังน้ำไผ่สาน"],
+      "market": "ข้าวต้มในลูกมะพร้าวขายในตลาด"
+    },
+    "summary": "ป้อน tag ontology เครื่องใช้ในครัวเรือน",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. III หน้า [34]" }],
+    "verified": false
+  },
+  {
+    "id": "material.food_1680s",
+    "domain": "material",
+    "title": "อาหารประจำวัน: ข้าวกับปลา กะปิ",
+    "period": [2230, 2231],
+    "claim": {
+      "staple": "ข้าวกับปลา นิยมปลาแห้ง/ปลาเค็มมากกว่าปลาสด",
+      "condiments": ["กะปิ (ซอสกุ้ง/เคยหมัก)", "กระเทียม", "ต้นหอม", "สมุนไพร", "ขมิ้นแทนหญ้าฝรั่น"],
+      "oil": "น้ำมันมะพร้าวเป็นน้ำมันทำอาหารชนิดเดียว",
+      "drink": "อารักข้าว (สุรากลั่นจากข้าว)",
+      "ration": "ข้าวราวหนึ่งปอนด์พอสำหรับหนึ่งมื้อ"
+    },
+    "summary": "ป้อนสำรับอาหารใน event และ tag อาหาร",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. IV หน้า [35]–[36]", "quote": "their common Food is Rice and Fish" }],
+    "verified": false
+  },
+  {
+    "id": "material.boats_1680s",
+    "domain": "material",
+    "title": "เรือเป็นทั้งพาหนะและที่พัก",
+    "period": [2230, 2231],
+    "claim": { "travel": "คนเดินทางใช้เรือของตนเป็นที่พักแรม", "royalProcession": "เมื่อพระเจ้าแผ่นดินเสด็จผ่าน ราษฎรลงจากเรือนมาที่ถนนหรือลงเรือเพื่อหมอบกราบ" },
+    "summary": "ฉากการเดินทางควรเป็นทางน้ำเป็นหลัก",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[30]" }],
+    "verified": false
   }
 ]

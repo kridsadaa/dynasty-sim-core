@@ -2,12 +2,175 @@
   {
     "id": "attire.wat_ko_kaeo_reference",
     "domain": "attire",
-    "title": "จิตรกรรมวัดเกาะแก้วสุทธารามเป็นภาพอ้างอิงการแต่งกายร่วมยุค",
+    "title": "จิตรกรรมวัดเกาะแก้วสุทธาราม (พ.ศ. 2277) — ภาพอ้างอิงร่วมยุค",
     "period": [2270, 2280],
-    "claim": { "use": "visualReference", "subjects": ["ชาวสยามหลายชนชั้น", "ชาวต่างชาติ"] },
-    "summary": "ใช้เป็นแหล่งหลักของ visual bible สำหรับอยุธยาตอนปลาย — เมื่อตรวจภาพแล้วให้แตกเป็นรายการ attire ย่อย (เครื่องนุ่งห่ม ทรงผม ตามชนชั้น/เพศ/วัย) พร้อม visualDescriptor",
+    "claim": {
+      "use": "visualReference",
+      "subjects": ["พุทธประวัติ: มหาปาฏิหาริย์ 8 และ 7 สัปดาห์หลังตรัสรู้", "ชาวต่างชาติในบทผู้ร้าย (ควาญช้างต่างชาติ, คณะเยซูอิตผมแดงสวมหมวก)", "หญิงไทยไว้ผมเป็นกระจุกรูปหยดน้ำ สวมเครื่องประดับศีรษะทอง"],
+      "visualDescriptor": "late-Ayutthaya Thai mural style, flat red-ground painting, Thai women with teardrop-shaped hair tufts and gold headdresses"
+    },
+    "summary": "จิตรกรรมที่ใกล้ช่วง slice ที่สุด มีจารึกระบุปี 2277 ใช้เป็นแหล่งหลักของ visual bible — ภาพถ่ายส่วนใหญ่มีลิขสิทธิ์ ใช้ได้เฉพาะไฟล์ที่ license เปิด",
     "status": "attested",
-    "citations": [{ "sourceId": "src.wat_ko_kaeo_murals", "locator": "TODO: ระบุผนัง/ห้องภาพ" }],
+    "citations": [
+      { "sourceId": "src.lim_2025_wat_ko_kaeo", "locator": "Introduction; Fig. 6; หน้า s2, s7, s9", "quote": "teardrop-shaped tufts of hair" },
+      { "sourceId": "src.wat_ko_kaeo_murals", "locator": "TODO: ระบุผนัง/ห้องภาพจากการดูจริง" },
+      { "sourceId": "src.commons_wat_ko_kaeo_12", "locator": "ภาพถ่ายไฟล์ (12) — ยังไม่ระบุผนัง" }
+    ],
+    "verified": false
+  },
+  {
+    "id": "attire.commoner_men_1680s",
+    "domain": "attire",
+    "title": "ชายสามัญชน: เปลือยท่อนบน นุ่งผ้าแบบโจงกระเบน",
+    "period": [2230, 2231],
+    "estates": ["phrai_luang", "phrai_som", "that"],
+    "sex": "m",
+    "claim": {
+      "garment": "ผ้านุ่ง (ผ้าพิมพ์ลาย) ยาวราว 2.5 ell (หน่วยวัดผ้ายุโรป) ถึงเข่า ดึงชายลอดหว่างขาไปเหน็บหลัง (ลักษณะโจงกระเบน แม้ต้นฉบับไม่ใช้คำนี้)",
+      "upper": "ไม่สวมเสื้อ",
+      "feet": "เท้าเปล่า", "head": "ไม่สวมหมวก",
+      "visualDescriptor": "barefoot, bare-headed, bare-chested Siamese man, knee-length painted-cotton lower cloth drawn between the legs and tucked at the back, betel purse tied to the front end",
+      "projectToSlice": "medium"
+    },
+    "summary": "ลา ลูแบร์บรรยายการแต่งกายชายสามัญในทศวรรษ 2230 — ใช้กับ slice (2295–2315) ได้โดยอนุมาน",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. I 'Of the Habit and Meen of the Siameses' หน้า [25]–[28]", "quote": "they begirt their Reins and Thighs down to their Knees" }],
+    "verified": false
+  },
+  {
+    "id": "attire.women_1680s",
+    "domain": "attire",
+    "title": "หญิง: ผ้านุ่งแบบกระโปรง ผ้าห่มพาดอกเฉพาะคนมีฐานะ",
+    "period": [2230, 2231],
+    "sex": "f",
+    "claim": {
+      "garment": "ผ้านุ่งปล่อยตรงแบบกระโปรงยาวถึงกลางน่อง",
+      "upper": { "commoner": "ไม่มีผ้าคลุมอก", "rich": "ผ้าห่ม (ภายหลังเรียก สไบ) พาดอก ชายทั้งสองห้อยไปด้านหลังข้ามไหล่" },
+      "colors": "หญิงผู้ดีนิยมผ้านุ่งสีดำ ผ้าห่มมัสลินขาวเรียบ",
+      "jewelry": "ต่างหูทรงหยดน้ำทอง/เงิน, แหวนหลายวงที่สามนิ้วสุดท้าย",
+      "visualDescriptor": {
+        "commoner": "Siamese woman, bare upper body, plain wrap skirt to mid-calf",
+        "wellOff": "black wrap skirt, single white muslin breast-cloth across the chest with both ends hanging behind over the shoulders, pear-shaped gold earrings, many rings"
+      },
+      "projectToSlice": "medium"
+    },
+    "summary": "ฐานะแสดงผ่านการมี/ไม่มีผ้าห่มพาดอก และสีผ้า",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. I หน้า [25]–[28]", "quote": "only the Rich do constantly wear a Scarf" }],
+    "verified": false
+  },
+  {
+    "id": "attire.officials_1680s",
+    "domain": "attire",
+    "title": "ขุนนาง: เสื้อมัสลินผ่าหน้า ลอมพอก",
+    "period": [2230, 2231],
+    "estates": ["noble"],
+    "sex": "m",
+    "claim": {
+      "upper": "เสื้อมัสลินไม่มีปก ผ่าหน้า แขนกว้างราวสองฟุตยาวเกือบถึงข้อมือ สวมทับผ้านุ่ง",
+      "headwear": "ลอมพอก — หมวกทรงสูงปลายแหลมผ้าขาว มีสายรัดคาง สวมในงานพิธี; หมวกของข้าราชการมีวงทอง/เงิน/ปิดทองบอกยศ",
+      "feet": "รองเท้าแตะไม่มีส้น (ได้มาจากแขกมัวร์) ถอดเมื่ออยู่ต่อหน้าผู้ใหญ่",
+      "restricted": "เสื้อกั๊กยกดิ้นสวมได้เฉพาะเมื่อพระเจ้าแผ่นดินพระราชทาน",
+      "visualDescriptor": "Siamese noble in an open-front collarless white muslin over-shirt with wide long sleeves, silk lower cloth, tall white conical pointed hat with gold bands and chin strap, barefoot or in pointed heel-less slippers",
+      "projectToSlice": "medium"
+    },
+    "summary": "เครื่องแต่งกายบอกยศ — ใช้กับระบบบรรดาศักดิ์และภาพ portrait ขุนนาง",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. I หน้า [25]–[28]" }],
+    "verified": false
+  },
+  {
+    "id": "attire.rank_cloth_restrictions_1680s",
+    "domain": "attire",
+    "title": "ผ้าชั้นดีเป็นของพระราชทาน, สีแดงสำหรับศึก",
+    "period": [2230, 2231],
+    "claim": {
+      "restrictedCloth": "ผ้านุ่งไหมปักและผ้าลายเนื้อดีที่สุด ใช้ได้เฉพาะผู้ที่ได้รับพระราชทาน",
+      "military": "ทหารได้รับแจกเสื้อมัสลินย้อมแดง; ใส่สีแดงไปศึกและล่าสัตว์"
+    },
+    "summary": "ใช้เป็น item แบบ 'ผ้าพระราชทาน' ที่ให้บารมี และเงื่อนไขเครื่องแต่งกายในฉากศึก",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. I หน้า [25]–[28]", "quote": "are permitted to those only to whom the Prince presents them" }],
+    "verified": false
+  },
+  {
+    "id": "attire.indian_chintz_royal",
+    "domain": "attire",
+    "title": "ผ้าลายอินเดียอยู่ใต้การควบคุมของราชสำนัก",
+    "period": [2100, 2310],
+    "claim": { "item": "ผ้าลาย/ผ้าพิมพ์และย้อมสีอินเดียคุณภาพสูง", "use": ["ผ้านุ่ง", "ม่าน", "ของพระราชทานแก่ขุนนางและทูต"] },
+    "summary": "ราชสำนักและขุนนางดูเหมือนควบคุมการค้าผ้าอินเดีย — ผ้าลายจึงเป็นสัญลักษณ์ของฐานะ",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.guy_1990_textiles", "locator": "บทคัดย่อ (ยังไม่ได้อ่านฉบับเต็ม)" }],
+    "verified": false
+  },
+  {
+    "id": "attire.hair_1680s",
+    "domain": "attire",
+    "title": "ทรงผม: ตัดสั้นระดับบนใบหู โกนด้านล่าง",
+    "period": [2230, 2231],
+    "claim": {
+      "adults": "ทั้งชายหญิงตัดผมสั้นถึงระดับบนใบหู โกนผมด้านล่างเกลี้ยง; หญิงหวีผมขึ้นจากหน้าผาก",
+      "unmarried": "หนุ่มสาวโสด ตัดผมกลางกระหม่อม ถอนเป็นวงบาง ส่วนที่เหลือไว้ยาวเกือบถึงไหล่",
+      "teeth": "ฟันดำ (จากหมาก)",
+      "visualDescriptor": "short black hair cropped level with the top of the ears, sides shaved below, blackened teeth",
+      "projectToSlice": "medium"
+    },
+    "summary": "ต้นฉบับไม่ได้ใช้ชื่อ 'ทรงมหาดไทย' หรือ 'ผมปีก' — อย่าใช้ชื่อเหล่านี้ในข้อความเกมจนกว่าจะมีหลักฐานร่วมยุค",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. I หน้า [25]–[28]" }],
+    "verified": false
+  },
+  {
+    "id": "attire.monks_1680s",
+    "domain": "attire",
+    "title": "พระสงฆ์: จีวรเหลือง 4 ชิ้น ตาลปัตร บาตรเหล็ก",
+    "period": [2230, 2231],
+    "estates": ["monk"],
+    "sex": "m",
+    "claim": {
+      "robes": ["อังสะ (ผ้าพาดบ่า)", "จีวรปะต่อ เปิดไหล่ขวา", "สบง (พระผู้ใหญ่บางรูปสีแดง)", "ประคดเอวเหลือง"],
+      "grooming": "โกนผม หนวด คิ้ว ในวันขึ้นและแรม 15 ค่ำ (ตามต้นฉบับ: new and full moon)",
+      "objects": ["ตาลปัตรใบตาล", "บาตรเหล็กในถุงผ้าสะพาย"],
+      "templeServants": "ลูกศิษย์วัดแต่งแบบเดียวกันแต่เป็นสีขาว",
+      "visualDescriptor": "Siamese monk, shaved head and eyebrows, barefoot, yellow patched robe leaving right shoulder bare, yellow waist sash, palm-leaf fan, iron alms bowl in a cloth shoulder bag"
+    },
+    "summary": "ใช้กับตัวละครพระและเณร (เส้นทางบวชเรียน)",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part III ch. XVII 'Of the Talapoins and their Convents'" }],
+    "verified": false
+  },
+  {
+    "id": "attire.children_1680s",
+    "domain": "attire",
+    "title": "เด็ก: ไม่นุ่งผ้าจนอายุ 4–5 ขวบ ทาขมิ้น",
+    "period": [2230, 2231],
+    "claim": {
+      "clothing": "ไม่นุ่งผ้าจนอายุราว 4–5 ขวบ",
+      "jewelry": "เด็กผู้ดีสวมกำไลแขนและข้อเท้าทอง/เงินจนอายุ 6–7 ขวบ",
+      "skin": "ทาตัวและหน้าด้วยขมิ้นให้เหลือง",
+      "visualDescriptor": "naked small Siamese child with turmeric-yellowed skin, gold anklets and bracelets (well-born)"
+    },
+    "summary": "ยังไม่พบหลักฐานเรื่องไว้จุก/โกนจุกในลา ลูแบร์ — อย่าใส่ในภาพจนกว่าจะมีแหล่ง",
+    "status": "attested",
+    "citations": [
+      { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. I หน้า [25]–[28] (เสื้อผ้า/เครื่องประดับ)" },
+      { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. IV (ขมิ้น)" }
+    ],
+    "verified": false
+  },
+  {
+    "id": "attire.traiphum_thonburi_reference",
+    "domain": "attire",
+    "title": "สมุดภาพไตรภูมิฉบับกรุงธนบุรี (พ.ศ. 2319) — ภาพอ้างอิงช่วงธนบุรี",
+    "period": [2319, 2319],
+    "claim": { "use": "visualReference", "preferredCopy": "Berlin, Museum für Asiatische Kunst inv. II 650 (สมุดไทยยาว 33 เมตร)" },
+    "summary": "ฉบับ Berlin ใกล้งานช่างอยุธยาตอนปลายที่สุด ใช้กับ slice ธนบุรี; ภาพของพิพิธภัณฑ์ไม่ใช่ open license",
+    "status": "attested",
+    "citations": [
+      { "sourceId": "src.smb_traiphum_thonburi", "locator": "หน้า 'Six Metres of Traiphum'" },
+      { "sourceId": "src.areelertrat_2024_traiphum", "locator": "TODO: ระบุหน้าที่เปรียบเทียบฉบับ Berlin กับหอสมุดแห่งชาติ" }
+    ],
     "verified": false
   }
 ]

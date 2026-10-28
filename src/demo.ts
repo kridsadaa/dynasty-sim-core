@@ -16,6 +16,7 @@ import { describeTrait } from './systems/traits';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
 const content: ContentDB = buildContentDB({
+  names: load('names.json'),
   tags: load('tags.json'),
   anatomy: load('anatomy.json'),
   traitKinds: load('traitKinds.json'),

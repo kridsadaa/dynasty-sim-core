@@ -82,6 +82,12 @@ export interface NamingClaim {
   examples?: string[];
 }
 
+/** รายชื่อบุคคลที่ปรากฏในเอกสาร — compile เป็น public/content/names.json ให้ตัวสุ่มชื่อใช้ */
+export interface NameListClaim {
+  kind: 'nameList';
+  names: Array<{ name: string; sex?: 'm' | 'f'; where?: string }>;
+}
+
 export interface AttireClaim {
   garment?: string;
   hairstyle?: string;

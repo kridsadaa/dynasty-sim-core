@@ -2,19 +2,158 @@
   {
     "id": "vocab.currency_units",
     "domain": "vocab",
-    "title": "หน่วยเงินตรา ชั่ง ตำลึง บาท สลึง เฟื้อง",
+    "title": "หน่วยเงินตรา ชั่ง ตำลึง บาท สลึง เฟื้อง และพดด้วง",
     "period": [2230, 2400],
     "claim": {
       "terms": [
-        { "term": "ชั่ง", "meaning": "20 ตำลึง" },
+        { "term": "ชั่ง", "meaning": "20 ตำลึง = 80 บาท" },
         { "term": "ตำลึง", "meaning": "4 บาท" },
-        { "term": "บาท", "meaning": "4 สลึง" },
-        { "term": "สลึง", "meaning": "2 เฟื้อง" }
-      ]
+        { "term": "บาท", "meaning": "4 สลึง = 8 เฟื้อง" },
+        { "term": "สลึง", "meaning": "2 เฟื้อง" },
+        { "term": "เฟื้อง", "meaning": "1/8 บาท" }
+      ],
+      "coin": "พดด้วง — เงินก้อนทรงกระสุนงอตรงกลาง ประทับตรา",
+      "goldToSilver": 12
     },
-    "summary": "ระบบหน่วยเงินที่เกมใช้ (ทรัพย์คิดเป็นตำลึง) — ลา ลูแบร์บรรยายไว้ในสมัยพระนารายณ์ ต้องหาเอกสารอยุธยาตอนปลายยืนยันว่าอัตราเดิม และหาอัตราเบี้ยต่อเฟื้องในแต่ละช่วง",
+    "summary": "ทรัพย์ในเกมคิดเป็นตำลึง — ลา ลูแบร์ยืนยันเฟื้อง = 1/8 บาท และรูปทรงพดด้วงในทศวรรษ 2230; ต้องหาเอกสารอยุธยาตอนปลายยืนยันว่าอัตราไม่เปลี่ยน",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.la_loubere", "locator": "TODO: ภาคว่าด้วยเงินตรา" }],
+    "citations": [
+      { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XIV 'Of the Traffic'", "quote": "a Fouan, or the eighth part of a Fical, is worth eight hundred Coris" },
+      { "sourceId": "src.wiki_thai_baht", "locator": "ส่วนประวัติ: ตารางหน่วย" }
+    ],
+    "verified": false
+  },
+  {
+    "id": "vocab.cowrie_rates",
+    "domain": "vocab",
+    "title": "อัตราเบี้ย (หอยเบี้ย) ต่อเฟื้อง ผันผวนตามอุปทาน",
+    "period": [2173, 2233],
+    "claim": {
+      "cowriesPerFuang": [
+        { "who": "Van Vliet", "when": "ทศวรรษ 2170s", "rate": "600–700" },
+        { "who": "La Loubère", "when": "2230–2231", "rate": "800" },
+        { "who": "Gervaise", "when": "2231", "rate": "800" },
+        { "who": "Kaempfer", "when": "2233", "rate": "500–800" }
+      ],
+      "volatility": "ค่าเบี้ยตกเมื่อมีเรือขนเบี้ยเข้ามา"
+    },
+    "summary": "ราคาเบี้ยไม่คงที่ — เหมาะกับระบบเศรษฐกิจที่ค่าเงินย่อยแกว่ง; ยังไม่มีอัตราของอยุธยาตอนปลาย",
+    "status": "inferred",
+    "citations": [
+      { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XIV 'Of the Traffic'" },
+      { "sourceId": "src.ayutthaya_history_vandenberg", "locator": "หน้า Misc_Currency1.html (อ้าง Van Vliet หน้า 171–172, Gervaise หน้า 101–102, Kaempfer หน้า 67)" }
+    ],
+    "verified": false
+  },
+  {
+    "id": "vocab.pronouns_1680s",
+    "domain": "vocab",
+    "title": "สรรพนามและการทักทายตามฐานะ",
+    "period": [2230, 2231],
+    "claim": {
+      "terms": [
+        { "term": "ข้า", "meaning": "สรรพนามบุรุษที่ 1 โดยธรรมชาติเป็นของทาสพูดกับนาย", "register": "common" },
+        { "term": "เรา", "meaning": "สรรพนามบุรุษที่ 1 แสดงศักดิ์ของผู้พูด", "register": "formal" },
+        { "term": "ข้าไหว้เจ้า", "meaning": "คำทักทายผู้ใหญ่ (ลา ลูแบร์ถอดเสียง 'cavai Tchaou')", "register": "formal" },
+        { "term": "ขอรับพระโองการใส่เกล้าใส่กระหม่อม", "meaning": "คำรับพระราชโองการ", "register": "royal" },
+        { "term": "เจ้าฟ้า / นางฟ้า", "meaning": "เจ้านายชาย / หญิง (ตามการถอดเสียงของลา ลูแบร์)", "register": "royal" }
+      ],
+      "etiquette": "ผู้น้อยคุกเข่าอยู่ต่อหน้าผู้ใหญ่ และไม่พูดก่อน",
+      "transliterationNote": "การอ่านเป็นอักษรไทยเป็นการตีความของผู้ลงข้อมูล ไม่ได้อยู่ในต้นฉบับ"
+    },
+    "summary": "สรรพนามบุรุษที่ 1 มีหลายคำตามคู่สนทนา (นาย-ทาส, ราษฎร-เจ้านาย, เสมอกัน, พระสงฆ์) — ใช้ทำระบบระดับภาษาในบทสนทนา",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. VIII", "quote": "the word ca… ought to be naturally only in the mouth of a Slave" }],
+    "verified": false
+  },
+  {
+    "id": "vocab.phom_khrap_post_ayutthaya",
+    "domain": "vocab",
+    "title": "'ผม' (สรรพนาม) และ 'ครับ' เกิดหลังสมัยอยุธยา",
+    "period": [1800, 2310],
+    "claim": {
+      "phom": "สมัยสุโขทัยและอยุธยาพบ 'ผม' เป็นคำนาม (เส้นผม) เท่านั้น; เริ่มเป็นสรรพนามสมัย ร.4–ร.5",
+      "khrap": "'ครับผม' พัฒนาสมัย ร.6–ร.8; สายพัฒนาการที่ผู้เขียนเสนอ: ขอรับใส่เกล้าใส่กระผม > ขอรับกระผม > ขอรับผม > ขอรับ > ครับ",
+      "earlierForm": "Pallegoix (ค.ศ. 1850) บันทึกรูป 'กะผม'",
+      "styleRule": "ข้อความในยุคอยุธยา–ธนบุรีห้ามใช้ 'ผม' เป็นสรรพนาม และห้าม 'ครับ'; 'ขอรับ' ใช้ได้ในสำนวนราชการ/ถวายพระราชโองการ"
+    },
+    "summary": "กฎสำคัญของ style bible — 'ครับ' ถูกบังคับด้วย anachronism lint แล้ว ส่วน 'ผม' ตรวจด้วยเครื่องไม่ได้เพราะเป็นคำนามได้ ต้องตรวจโดยคน",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.kanokwan_2556_phom", "locator": "บทคัดย่อ; หน้า 204–207 ตารางที่ 2", "quote": "ในสมัยสุโขทัยและอยุธยาพบคำว่า 'ผม' ที่ใช้เป็นคำนามเท่านั้น" }],
+    "verified": false
+  },
+  {
+    "id": "vocab.calendar_eras",
+    "domain": "vocab",
+    "title": "ศักราช: จุลศักราชเป็นหลัก, พ.ศ. = จ.ศ. + 1181",
+    "period": [2230, 2400],
+    "claim": {
+      "csEpochCE": 638,
+      "conversion": "พ.ศ. = จ.ศ. + 1181",
+      "slice": "จ.ศ. 1114–1134 = พ.ศ. 2295–2315",
+      "buddhistEra": "ลา ลูแบร์กล่าวถึงศักราชเก่าที่นับจากการนิพพาน (1689 = 2233) ว่าใช้บ้าง"
+    },
+    "summary": "ข้อความในโลกเกม (เอกสาร จดหมาย คำพูด) ควรลงจุลศักราช; UI แสดง พ.ศ. ได้เพื่อความสะดวกผู้เล่น",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XI 'What the Siameses do know of the Mathematics'", "quote": "The most Modern of the two Siamese Epocha's, is referred to the Year of Grace 638." }],
+    "verified": false
+  },
+  {
+    "id": "vocab.lunar_months_1680s",
+    "domain": "vocab",
+    "title": "เดือนนับตามลำดับ ปีใหม่ราวพฤศจิกายน–ธันวาคม มีปี 13 เดือน",
+    "period": [2230, 2231],
+    "claim": {
+      "monthNames": "เรียกตามลำดับ (เดือนหนึ่ง เดือนสอง …)",
+      "yearStart": "เดือนดับเดือนพฤศจิกายนหรือธันวาคม",
+      "leap": "ปี 12 เดือนสองปี ตามด้วยปี 13 เดือนหนึ่งปี",
+      "seasons": { "winter": "เดือน 1–2", "littleSummer": "เดือน 3–5", "greatSummer": "อีก 7 เดือน" }
+    },
+    "summary": "ใช้แทนปฏิทิน 360 วันชั่วคราวของเกม (ROADMAP เฟส 3)",
+    "status": "attested",
+    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. VIII 'Of the Husbandry and the Difference of the Seasons'", "quote": "They have two years together consisting of twelve months, and a third of thirteen." }],
+    "verified": false
+  },
+  {
+    "id": "vocab.lunar_calendar_mechanics",
+    "domain": "vocab",
+    "title": "กลไกปฏิทินจันทรคติ (ระบบที่บันทึกในสมัยหลัง)",
+    "period": [2275, 2400],
+    "claim": {
+      "months": ["เดือนอ้าย (ราวธันวาคม)", "เดือนยี่", "เดือน 3", "…", "เดือน 12"],
+      "days": "ขึ้น 1–15 ค่ำ แล้วแรม 1–14 ค่ำ (เดือนคี่, 29 วัน) หรือแรม 1–15 ค่ำ (เดือนคู่, 30 วัน)",
+      "adhikamasa": "ปีอธิกมาสมีเดือน 8 สองหน รวม 384 วัน",
+      "adhikavara": "ปีอธิกวารเพิ่มแรม 15 ค่ำ ในเดือน 7 รวม 355 วัน",
+      "wanPhra": "ขึ้นและแรม 8 ค่ำ และ 15 ค่ำ (หรือ 14 ค่ำในเดือนขาด)"
+    },
+    "summary": "ใช้ทำระบบปฏิทินในเกมได้ แต่ต้องรู้ว่าเป็นระบบที่บันทึกสมัยรัตนโกสินทร์",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.wiki_th_lunar_calendar", "locator": "หัวข้อเดือน วัน อธิกมาส อธิกวาร" }],
+    "verified": false
+  },
+  {
+    "id": "vocab.chronicle_date_format",
+    "domain": "vocab",
+    "title": "รูปแบบการลงวันที่ในพงศาวดาร",
+    "period": [2223, 2223],
+    "claim": {
+      "pattern": "วัน (ในสัปดาห์) + ขึ้น/แรม N ค่ำ + เดือน N + ปีนักษัตร + ศักราช",
+      "example": "วันพุธ ขึ้น 12 ค่ำ เดือน 5 ปีวอก (= 10 เม.ย. ค.ศ. 1680)"
+    },
+    "summary": "ใช้เป็นรูปแบบวันที่ในจดหมาย/บันทึกในเกม — ต้องเปิดคำนำพงศาวดารฉบับหลวงประเสริฐยืนยันถ้อยคำจริง",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.wiki_luang_prasoet", "locator": "หมายเหตุเรื่องคำนำ (preface)" }],
+    "verified": false
+  },
+  {
+    "id": "vocab.six_hour_clock_codified_later",
+    "domain": "vocab",
+    "title": "ระบบนับเวลา 6 ชั่วโมง (โมง ทุ่ม ตี) ประกาศใช้เป็นแบบแผน พ.ศ. 2444",
+    "period": [2444, 2444],
+    "claim": { "codified": 2444, "ayutthayaUse": "ยังไม่มีหลักฐาน — ข้อความว่าใช้มาตั้งแต่อยุธยาไม่มีแหล่งอ้าง" },
+    "summary": "ระวังการใช้ 'ทุ่ม/โมง' ในข้อความยุคอยุธยาจนกว่าจะพบหลักฐาน ใช้ 'ยาม' หรือบรรยายเวลาด้วยธรรมชาติ (ไก่ขัน ตะวันบ่าย) ไปก่อน",
+    "status": "inferred",
+    "citations": [{ "sourceId": "src.wiki_six_hour_clock", "locator": "หัวข้อประวัติ (อ้างราชกิจจานุเบกษา 17:206)" }],
     "verified": false
   }
 ]

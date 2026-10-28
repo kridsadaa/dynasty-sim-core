@@ -28,8 +28,8 @@
   },
   "legend": { "baseDrift": 0.8, "writtenRecordDamp": 0.3, "maxOpsPerGeneration": 3 },
   "inheritance": {
-    "shareByParentage": { "principal_wife": 1.0, "minor_wife": 0.5, "slave_wife": 0.25, "adopted": 0.5, "unknown": 0.25 },
-    "mainHeirBonus": 0.5,
+    "shareByParentage": { "principal_wife": 3, "minor_wife": 2.5, "slave_wife": 2, "adopted": 1.5, "unknown": 1 },
+    "mainHeirBonus": 0,
     "funeralCostRate": { "royal": 0.3, "noble": 0.25, "phrai_luang": 0.15, "phrai_som": 0.15, "that": 0.05, "monk": 0.0, "merchant": 0.2, "foreigner": 0.1 },
     "funeralPrestigePerTamlueng": 0.05,
     "prestigeDecay": 0.2,

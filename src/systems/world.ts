@@ -2,7 +2,7 @@ import { ageOf, isAlive, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef } from '../core/types';
 import { tickWounds } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
-import { createHousehold, marry, spawnCharacter } from './factory';
+import { createHousehold, marry, pickName, spawnCharacter } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover } from './handover';
 import { householdYearTick } from './socialLearning';
 
@@ -146,9 +146,11 @@ function lifeMilestones(ctx: Ctx): string[] {
         .map((id) => (id ? ctx.state.characters[id] : undefined))
         .find(isAlive);
       if (!wife) continue;
+      const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
+      const family = new Set([man.name, wife.name, ...node.childIds.map((id) => ctx.state.familyNodes[id]?.name ?? '')]);
       const kid = spawnCharacter(ctx, {
-        name: ctx.rng.pick(['ทอง', 'เงิน', 'บุญ', 'สุข', 'มั่น', 'เจิม', 'ปาน', 'อ่อน']) ?? 'ทอง',
-        sex: ctx.rng.chance(0.5) ? 'm' : 'f', birthYear: year, estate: man.social.estate, father: man, mother: wife,
+        name: pickName(ctx, sex, man.social.estate, family),
+        sex, birthYear: year, estate: man.social.estate, father: man, mother: wife,
       });
       out.push(`${man.name} มีบุตร: ${kid.name}`);
     }
