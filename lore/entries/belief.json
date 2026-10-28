@@ -3,55 +3,217 @@
     "id": "belief.astrology_omens_1680s",
     "domain": "belief",
     "title": "โหราศาสตร์ ฤกษ์ยาม และลางร้าย",
-    "period": [2230, 2231],
+    "period": [
+      2230,
+      2231
+    ],
     "claim": {
       "almanac": "พราหมณ์โหรทำปฏิทินประจำปีถวาย ระบุวันดีวันร้ายสำหรับกิจต่างๆ",
       "auspiciousTime": "โหรกำหนดฤกษ์ — พระเจ้าแผ่นดินเสด็จออก/เข้าวังไม่ได้ถ้าโหรห้าม",
-      "luckier": ["วันอาทิตย์", "ข้างขึ้น"],
-      "badOmens": ["เสียงสัตว์หอน", "เสียงกวางและลิงร้อง", "งูเลื้อยตัดหน้า", "ฟ้าผ่าบ้าน"],
+      "luckier": [
+        "วันอาทิตย์",
+        "ข้างขึ้น"
+      ],
+      "badOmens": [
+        "เสียงสัตว์หอน",
+        "เสียงกวางและลิงร้อง",
+        "งูเลื้อยตัดหน้า",
+        "ฟ้าผ่าบ้าน"
+      ],
       "horoscope": "มีการผูกดวงชะตาส่วนบุคคล"
     },
     "summary": "ป้อน trait แบบ superstition, ระบบดวงชะตา (Character.horoscope) และ event ลางร้าย",
     "status": "attested",
-    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XI", "quote": "A Serpent which crosses the way, the Thunderbolt which falls on a House" }],
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XI",
+        "quote": "A Serpent which crosses the way, the Thunderbolt which falls on a House"
+      }
+    ],
     "verified": false
   },
   {
     "id": "belief.spirits_1680s",
     "domain": "belief",
     "title": "ความกลัวผี",
-    "period": [2230, 2231],
-    "claim": { "general": "ชาวสยามกลัวผีไม่น้อยกว่าชาวจีน", "caveat": "ข้อความเรื่องผีเรือนและวิญญาณบรรพบุรุษที่ลงโทษลูกหลานส่วนใหญ่พูดถึงชาวจีน" },
+    "period": [
+      2230,
+      2231
+    ],
+    "claim": {
+      "general": "ชาวสยามกลัวผีไม่น้อยกว่าชาวจีน",
+      "caveat": "ข้อความเรื่องผีเรือนและวิญญาณบรรพบุรุษที่ลงโทษลูกหลานส่วนใหญ่พูดถึงชาวจีน"
+    },
     "summary": "ยืนยันความเชื่อเรื่องผีทั่วไป แต่ยังไม่มีหลักฐานเรื่อง 'ผีเรือน' โดยชื่อ — ผีบรรพบุรุษที่ใช้ในระบบข้อห้ามตระกูลยังเป็นการอนุมาน",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part III ch. XXIII", "quote": "The Siameses do not less dread Spirits, than the Chineses" }],
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XXIII",
+        "quote": "The Siameses do not less dread Spirits, than the Chineses"
+      }
+    ],
     "verified": false,
-    "gameRefs": { "tags": ["supernatural:guardian_spirit"] }
+    "gameRefs": {
+      "tags": [
+        "supernatural:guardian_spirit"
+      ]
+    }
   },
   {
     "id": "belief.phi_in_three_seals",
     "domain": "belief",
     "title": "ผีในกฎหมายตราสามดวง",
-    "period": [2100, 2348],
-    "claim": { "topics": ["ผีที่ให้คุณและให้โทษ", "การเซ่นสรวง", "ความเชื่อเรื่องผีกับการเกษตร"] },
+    "period": [
+      2100,
+      2348
+    ],
+    "claim": {
+      "topics": [
+        "ผีที่ให้คุณและให้โทษ",
+        "การเซ่นสรวง",
+        "ความเชื่อเรื่องผีกับการเกษตร"
+      ]
+    },
     "summary": "แหล่งที่ควรอ่านฉบับเต็มเพื่อทำระบบผี/การเซ่นไหว้",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.suwannapha_2560_phi", "locator": "บทคัดย่อ (หน้า 19–29)" }],
+    "citations": [
+      {
+        "sourceId": "src.suwannapha_2560_phi",
+        "locator": "บทคัดย่อ (หน้า 19–29)"
+      }
+    ],
     "verified": false
   },
   {
     "id": "belief.chronicle_omens",
     "domain": "belief",
     "title": "ลางบอกเหตุในพงศาวดาร",
-    "period": [1893, 2310],
+    "period": [
+      1893,
+      2310
+    ],
     "claim": {
-      "goodOmens": ["ปรากฏการณ์ธรรมชาติที่เป็นมงคล", "บุคคลรอดพ้นอันตราย", "สัตว์มงคล", "เทวดา"],
-      "badOmens": ["ปรากฏการณ์ธรรมชาติที่เป็นอัปมงคล", "สัตว์อัปมงคล", "ผี"]
+      "goodOmens": [
+        "ปรากฏการณ์ธรรมชาติที่เป็นมงคล",
+        "บุคคลรอดพ้นอันตราย",
+        "สัตว์มงคล",
+        "เทวดา"
+      ],
+      "badOmens": [
+        "ปรากฏการณ์ธรรมชาติที่เป็นอัปมงคล",
+        "สัตว์อัปมงคล",
+        "ผี"
+      ]
     },
     "summary": "หมวดหมู่ลางใช้เป็น tag ของ event และ op 'supernatural' ในการบิดเบือนตำนาน",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.pathompong_2568_omens", "locator": "บทคัดย่อ" }],
+    "citations": [
+      {
+        "sourceId": "src.pathompong_2568_omens",
+        "locator": "บทคัดย่อ"
+      }
+    ],
     "verified": false,
-    "gameRefs": { "tags": ["supernatural:omen"] }
+    "gameRefs": {
+      "tags": [
+        "supernatural:omen"
+      ]
+    }
+  },
+  {
+    "id": "belief.phi_ruan_ancestral",
+    "domain": "belief",
+    "title": "ผีเรือน = ผีบรรพบุรุษ (ภาคกลาง: ผีปู่ย่าตายาย)",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "names": {
+        "central": "ผีปู่ย่าตายาย",
+        "north": "ผีปู่ย่า",
+        "northeast": "ผีปู่ตา",
+        "south": "ผีตายาย"
+      },
+      "role": "คุ้มครองครอบครัว",
+      "sacredSpot": "ที่ของผีในเรือนเป็นที่หวงห้ามสำหรับคนนอก",
+      "consulted": "ก่อนทำการใหญ่",
+      "feasted": "วันขึ้นปีใหม่",
+      "gameMapping": "ฐานของข้อห้ามตระกูล (FamilyTaboo) และ supernatural:guardian_spirit ในตำนาน"
+    },
+    "summary": "ให้ที่มาภายในโลกเกมแก่ข้อห้ามตระกูล: ทำผิดข้อห้าม = ล่วงเกินผีปู่ย่าตายาย",
+    "status": "inferred",
+    "projection": "ผู้เขียนเองระบุว่าคำบรรยายบางส่วนอนุมานจากร่องรอยและวรรณกรรม และผีเรือน \"กำลังหายไป\" ในเมือง — แสดงว่าเป็นของเก่าที่มีมาก่อน",
+    "citations": [
+      {
+        "sourceId": "src.anuman_1954_phi",
+        "locator": "หน้า 174–175, 178"
+      }
+    ],
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "supernatural:guardian_spirit"
+      ]
+    }
+  },
+  {
+    "id": "belief.phit_phi_regional",
+    "domain": "belief",
+    "title": "\"ผิดผี\" เป็นคำของอีสาน",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "region": "อีสาน",
+    "claim": {
+      "northeast": "การละเมิดประเพณีใดๆ เรียกว่าผิดผี ทำหน้าที่เหมือนประมวลกฎหมาย",
+      "bangkok": "มีพิธีไหว้ผีบรรพบุรุษในงานแต่งบางงาน",
+      "north": "แบ่งดอกไม้แห้งจากหิ้งผีเมื่อแต่งงาน (แบ่งผี)",
+      "fines": "ไม่พบอัตราค่าปรับ"
+    },
+    "summary": "ข้อความในเกม (handover.ts ใช้ \"ผิดผีบรรพบุรุษ\") อาจเป็นคำต่างภาคสำหรับตัวละครภาคกลาง — ควรเปลี่ยนเป็น \"ล่วงเกินผีปู่ย่าตายาย\" หรือหาหลักฐานการใช้ในภาคกลาง",
+    "status": "inferred",
+    "projection": "งานภาคสนามกลางศตวรรษที่ 20 — ใช้แยกคำศัพท์ตามภาค",
+    "citations": [
+      {
+        "sourceId": "src.anuman_1954_phi",
+        "locator": "หน้า 175–176"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "belief.birth_spirits_krasue",
+    "domain": "belief",
+    "title": "ผีกระสือกับแม่และทารก",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "threat": "ผีกระสือถูกดึงดูดด้วยเลือดคลอด เข้าทารกและแม่ได้",
+      "protection": [
+        "สายสิญจน์",
+        "อักขระ",
+        "หนามขวางใต้ถุนเรือน"
+      ],
+      "sickChild": "เด็กป่วยเรื้อรังสวมกำไลข้อเท้าเงินของแม่ม่าย"
+    },
+    "summary": "อันตรายช่วงคลอดและการป้องกัน — ป้อน event การเกิด",
+    "status": "inferred",
+    "projection": "งานภาคสนามกลางศตวรรษที่ 20",
+    "citations": [
+      {
+        "sourceId": "src.anuman_1954_phi",
+        "locator": "หน้า 163–164, 167"
+      }
+    ],
+    "verified": false
   }
 ]

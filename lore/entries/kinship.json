@@ -1,0 +1,249 @@
+[
+  {
+    "id": "kinship.uxorilocal_then_neolocal_1680s",
+    "domain": "kinship",
+    "title": "แต่งงานแล้วเจ้าบ่าวไปอยู่ในรั้วบ้านพ่อแม่เจ้าสาวก่อน แล้วจึงแยกเรือน",
+    "period": [
+      2230,
+      2231
+    ],
+    "claim": {
+      "initialResidence": "เรือนหอแยกหลัง ในรั้วบ้านพ่อแม่เจ้าสาว — เจ้าบ่าวปลูกเองด้วยทุนตัวเอง",
+      "duration": "หลายเดือน",
+      "then": "ย้ายออกไปปลูกเรือนที่ใดก็ได้ตามใจ",
+      "rumour": "มีข่าวว่าพ่อตาเก็บเจ้าบ่าวไว้ 6 เดือนก่อนแต่ง — ลา ลูแบร์เองสงสัย",
+      "gameMapping": "ขัดกับเกมปัจจุบันที่ภรรยาย้ายเข้าเรือนสามี (world.ts lifeMilestones)"
+    },
+    "summary": "หลักฐานร่วมยุคที่ใกล้ slice ที่สุดเรื่องที่อยู่หลังแต่งงาน — ควรเปลี่ยนกลไกครัวเรือนของเกม",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII \"Of the Marriage and Divorce\" หน้า 50–51",
+        "quote": "The new married persons continue there some Months"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.betrothal_procedure_1680s",
+    "domain": "kinship",
+    "title": "การสู่ขอ: แม่สื่อ หมอดู สามครั้ง นับทรัพย์สองฝ่าย",
+    "period": [
+      2230,
+      2231
+    ],
+    "claim": {
+      "goBetweens": "หญิงสูงวัยที่มีชื่อเสียงดี",
+      "horoscope": "ทั้งสองฝ่ายถามหมอดูเรื่องทรัพย์และความยืนยาวของการแต่งงาน",
+      "visits": 3,
+      "gifts": [
+        "หมาก",
+        "ผลไม้"
+      ],
+      "thirdVisit": "ญาตินับสินของเจ้าสาวและของที่ให้เจ้าบ่าว ไม่มีลายลักษณ์อักษร",
+      "religiousRite": "ไม่จำเป็น — พระมาประพรมน้ำมนต์หลังวันแต่งหลายวัน",
+      "feast": "ที่บ้านญาติเจ้าสาว ในโรงที่เจ้าบ่าวปลูก"
+    },
+    "summary": "โครง event chain การสู่ขอ — ระบบดวงชะตาของเกมใช้ตรงนี้ได้",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII หน้า 50"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.inheritance_divorce_1680s",
+    "domain": "kinship",
+    "title": "มรดกและการหย่าตามที่ลา ลูแบร์บันทึก",
+    "period": [
+      2230,
+      2231
+    ],
+    "claim": {
+      "heirs": "ภริยาหลวงก่อน แล้วบุตรของนางแบ่งเท่ากัน",
+      "minorWives": "ภริยาน้อยและบุตรอาจถูกทายาทขายได้",
+      "wills": "ไม่มีพินัยกรรม",
+      "divorce": {
+        "property": "สามีคืนสินของภริยา",
+        "children": "แม่ได้บุตรคนที่ 1, 3, 5…; พ่อได้คนที่ 2, 4…; ลูกคนเดียวไปกับแม่",
+        "remarriage": "แต่งใหม่ได้ในวันเดียวกัน"
+      }
+    },
+    "summary": "ต่างจากตัวบทลักษณมรดก (บุตรภริยาน้อยได้ 2.5 ส่วน) — อาจเป็นความเข้าใจของคนนอก หรือการปฏิบัติจริงต่างจากตัวบท; กฎแบ่งลูกตอนหย่าใช้ทำ event ได้ทันที",
+    "status": "attested",
+    "contested": "social.inheritance_by_mother_status (ตัวบทให้บุตรภริยาน้อยและทาสภริยาได้ส่วนแบ่ง)",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII หน้า 51–52",
+        "quote": "inherit from their Parents by equal Portions"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.women_labor_1680s",
+    "domain": "kinship",
+    "title": "ผู้หญิงเลี้ยงครอบครัวด้วยแรงงาน ขณะผู้ชายไปเข้าเวร",
+    "period": [
+      2230,
+      2231
+    ],
+    "claim": {
+      "primaryEarner": "ผู้หญิง (ตามที่ผู้สังเกตเห็น)",
+      "maleAbsence": "งานเกณฑ์ราว 6 เดือนต่อปี บางครั้ง 1–3 ปีติดกัน"
+    },
+    "summary": "ภรรยาดูแลนา/ค้าขายขณะสามีไม่อยู่ — ผู้หญิงควรมีบทบาททางเศรษฐกิจในเกม ไม่ใช่แค่แม่บ้าน",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII หน้า 52 และ ch. XV",
+        "quote": "it is they that maintain the men by their Labour"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.marriage_law_three_seals",
+    "domain": "kinship",
+    "title": "ลักษณผัวเมีย: ความยินยอม สินสอดขันหมาก การบวชยุติการสมรส",
+    "period": [
+      1893,
+      2348
+    ],
+    "claim": {
+      "validMarriage": "พ่อแม่/ผู้ปกครองยกให้ และหญิงยินยอม",
+      "desertion": "สามีหายไป 8–11 เดือน (ไปค้าขาย 1 ปี) ภรรยาคืนสินสอด ขันหมาก และทุนของเขาแล้วเลิกได้ (มาตรา 50)",
+      "contestedDivorce": "หญิงคืนสินสอดขันหมาก เว้นแต่มีลูกแล้ว",
+      "ordination": "สามีบวช = การสมรสสิ้นสุด สินเดิมและสินสมรสตกเป็นของภรรยาทั้งหมด เว้นแต่แบ่งไว้ก่อน",
+      "livingWithWifesFamily": "ชายที่ไปอยู่เลี้ยงลูก/หลานสาวเขา ถ้าด่าทอพ่อแม่หญิง หญิงคืนของแล้วไล่ออกได้ (มาตรา 61)",
+      "wifeRanks": [
+        "พระราชทาน",
+        "กลางเมือง",
+        "กลางนอก",
+        "กลางทาษี"
+      ]
+    },
+    "summary": "มาตรา 61 สนับสนุนว่าผู้ชายไปอยู่บ้านฝ่ายหญิงเป็นเรื่องปกติจนกฎหมายต้องรองรับ; การบวชทำให้ทรัพย์ตกแก่ภรรยา — มีผลกับเส้นทางบวชในเกม",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.thawatchai_2560_phuamia",
+        "locator": "หน้า 4, 8, 10–12 (อ้างมาตรา 50, 61)"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.youngest_daughter_house",
+    "domain": "kinship",
+    "title": "เรือนพ่อแม่ตกแก่ลูกสาวคนสุดท้อง ที่อยู่ดูแลพ่อแม่",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "residence": "คู่แต่งงานใหม่อยู่ใกล้หรือกับพ่อแม่เจ้าสาว",
+      "houseHeir": "ลูกสาวคนสุดท้อง แลกกับการอยู่ดูแลพ่อแม่",
+      "otherProperty": "ที่ดินและของมีค่าแบ่งเท่ากันในหมู่ลูกที่ยังมีชีวิต",
+      "matrilateral": "ยาย (แม่ของแม่) ใกล้ชิดกว่าย่า",
+      "gameMapping": "handover.ts ยกเรือนให้ทายาทหลัก (ลูกชาย) — ขัดกับแบบแผนนี้"
+    },
+    "summary": "แบบแผนที่สอดคล้องกับลา ลูแบร์เรื่องอยู่บ้านฝ่ายหญิง",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชัน 2491–2500 — ใช้เป็นแบบแผนครัวเรือนชาวนาภาคกลาง; ยิ่งตรงกับลา ลูแบร์ (2230) ยิ่งเชื่อได้ว่าเป็นแบบแผนเก่า",
+    "citations": [
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "บทที่ 2 หน้า 48, 56; บทที่ 4 หน้า 88",
+        "quote": "house and hearth customarily go at death to the youngest daughter"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.residence_mixed_census",
+    "domain": "kinship",
+    "title": "สำมะโนบางชัน: อยู่บ้านฝ่ายชายและฝ่ายหญิงพอๆ กัน",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "households": 288,
+      "withSonsWife": 29,
+      "withDaughtersHusband": 20,
+      "by1953": "ใกล้เคียงกัน",
+      "gameMapping": "ที่อยู่หลังแต่งงานควรเป็นความน่าจะเป็น ไม่ใช่กฎตายตัว"
+    },
+    "summary": "ถ่วงข้อสรุป \"อยู่บ้านฝ่ายหญิง\" ไม่ให้แข็งเกินไป",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชัน 2491–2500 — ใช้เป็นแบบแผนครัวเรือนชาวนาภาคกลาง; ยิ่งตรงกับลา ลูแบร์ (2230) ยิ่งเชื่อได้ว่าเป็นแบบแผนเก่า",
+    "contested": "kinship.youngest_daughter_house และ kinship.uxorilocal_then_neolocal_1680s ชี้ไปทางบ้านฝ่ายหญิง",
+    "citations": [
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "เชิงอรรถบทที่ 2 ข้อ 24 หน้า 258"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.household_seniority",
+    "domain": "kinship",
+    "title": "ครอบครัว = กินจากไฟกองเดียว; ลำดับพี่น้องเคร่งครัด",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "household": "พ่อแม่และลูกที่ยังไม่แต่งงาน มักมีพ่อแม่ของคู่ ป้า น้า น้อง หรือลูกเขยรวมด้วย",
+      "seniority": "น้องต้องเรียกพี่ พ่อแม่ตีลูกคนเล็กเมื่อทะเลาะเพื่อรักษาความเคารพ แม้แฝดก็จัดลำดับ",
+      "cousins": "ลูกของพี่ของพ่อแม่เรียกพี่ไม่ว่าอายุจริง"
+    },
+    "summary": "ลำดับอาวุโสในครัวเรือน ใครเชื่อฟังใคร — ป้อนระบบความสัมพันธ์และบทสนทนา",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชัน 2491–2500 — ใช้เป็นแบบแผนครัวเรือนชาวนาภาคกลาง; ยิ่งตรงกับลา ลูแบร์ (2230) ยิ่งเชื่อได้ว่าเป็นแบบแผนเก่า",
+    "citations": [
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "หน้า 50, 52, 56"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.milk_money",
+    "domain": "kinship",
+    "title": "ค่าน้ำนม: เงินที่จ่ายให้แม่เจ้าสาว",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "recipient": "แม่ของเจ้าสาว",
+      "payer": "เจ้าบ่าวหรือพ่อแม่เจ้าบ่าว",
+      "logic": "ลูกเขยที่มาอยู่ช่วยงานเพิ่มผลตอบแทนให้ครัวเรือนฝ่ายหญิง"
+    },
+    "summary": "ใครได้เงินในการแต่งงาน — ป้อน event สู่ขอ",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชัน 2491–2500 — ใช้เป็นแบบแผนครัวเรือนชาวนาภาคกลาง; ยิ่งตรงกับลา ลูแบร์ (2230) ยิ่งเชื่อได้ว่าเป็นแบบแผนเก่า",
+    "citations": [
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "บทที่ 2 หน้า 47",
+        "quote": "'milk money' that her husband or his parents pay her mother"
+      }
+    ],
+    "verified": false
+  }
+]

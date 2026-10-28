@@ -3,7 +3,10 @@
     "id": "src.phongsawadan_phan_chanthanumat",
     "title": "พระราชพงศาวดารกรุงศรีอยุธยา ฉบับพันจันทนุมาศ (เจิม)",
     "kind": "primary",
-    "describesPeriod": [1893, 2310],
+    "describesPeriod": [
+      1893,
+      2310
+    ],
     "reliability": 4,
     "url": "https://vajirayana.org",
     "notes": "ชำระสมัยรัตนโกสินทร์ตอนต้น — ตรวจปีที่ชำระแล้วเติม composedYear; ฉบับพิมพ์อยู่ในประชุมพงศาวดาร"
@@ -13,7 +16,10 @@
     "title": "กฎหมายตราสามดวง",
     "kind": "primary",
     "composedYear": 2348,
-    "describesPeriod": [1893, 2348],
+    "describesPeriod": [
+      1893,
+      2348
+    ],
     "reliability": 4,
     "url": "https://th.wikisource.org/wiki/หน้า:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(2).djvu/147",
     "notes": "ชำระสมัยรัชกาลที่ 1 (จ.ศ. 1166) จากกฎหมายสมัยอยุธยา — เนื้อหาบางส่วนอาจถูกปรับแก้ระหว่างชำระ ระวังเมื่อใช้กับอยุธยาตอนปลาย. ฉบับที่ใช้: ประมวลกฎหมายรัชกาลที่ 1 จุลศักราช 1166 (พิมพ์ 2482) บนวิกิซอร์ซ — URL รูปแบบ หน้า:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(เล่ม).djvu/สแกน; ศักราชในตัวบทแต่ละฉบับไม่ระบุว่าเป็นศักราชใด และการแปลงยังเป็นที่ถกเถียง"
@@ -23,7 +29,10 @@
     "title": "พระราชพงศาวดาร ฉบับพระราชหัตถเลขา ภาค 2 (พิมพ์ 2455)",
     "kind": "primary",
     "composedYear": 2455,
-    "describesPeriod": [2200, 2310],
+    "describesPeriod": [
+      2200,
+      2310
+    ],
     "reliability": 3,
     "url": "https://th.wikisource.org/wiki/หน้า:พระราชพงษาวดาร_ฉบับพระราชหัดถเลขา_ภาค_๒_(๒๔๕๕)_b.pdf/320",
     "notes": "ชำระสมัยรัตนโกสินทร์ (ปีที่ชำระต้องตรวจ — ใส่ปีพิมพ์ไว้ก่อน); ข้อความบนวิกิซอร์ซเป็น OCR ยังไม่พิสูจน์อักษร"
@@ -34,7 +43,10 @@
     "author": "กฤษฎา บุณยสมิต",
     "kind": "secondary",
     "composedYear": 2561,
-    "describesPeriod": [2100, 2460],
+    "describesPeriod": [
+      2100,
+      2460
+    ],
     "reliability": 4,
     "url": "https://so04.tci-thaijo.org/index.php/nitipat/article/view/175122"
   },
@@ -44,7 +56,10 @@
     "author": "จิตร ภูมิศักดิ์",
     "kind": "secondary",
     "composedYear": 2500,
-    "describesPeriod": [1893, 2475],
+    "describesPeriod": [
+      1893,
+      2475
+    ],
     "reliability": 3,
     "url": "https://vajirayana.org",
     "notes": "งานเชิงวิเคราะห์แนวมาร์กซิสต์ ปี 2500 — ใช้ตัวเลขที่อ้างตัวบทได้ แต่ควรเทียบกับตัวบทเอง"
@@ -53,7 +68,10 @@
     "id": "src.wiki_thai_nobility",
     "title": "Thai nobility — Wikipedia",
     "kind": "secondary",
-    "describesPeriod": [1893, 2475],
+    "describesPeriod": [
+      1893,
+      2475
+    ],
     "reliability": 2,
     "url": "https://en.wikipedia.org/wiki/Thai_nobility"
   },
@@ -63,7 +81,10 @@
     "author": "Simon de La Loubère",
     "kind": "primary",
     "composedYear": 2234,
-    "describesPeriod": [2230, 2231],
+    "describesPeriod": [
+      2230,
+      2231
+    ],
     "reliability": 4,
     "url": "https://archive.org/details/LoubereSiamAmsterdam1691",
     "notes": "ต้นฉบับฝรั่งเศส ฉบับ Amsterdam 1691 — ทูตฝรั่งเศสสมัยสมเด็จพระนารายณ์ (ค.ศ. 1687–88) เก่ากว่าอยุธยาตอนปลายราว 70 ปี และเป็นมุมมองชาวต่างชาติ"
@@ -74,7 +95,10 @@
     "author": "Simon de La Loubère",
     "kind": "primary",
     "composedYear": 2236,
-    "describesPeriod": [2230, 2231],
+    "describesPeriod": [
+      2230,
+      2231
+    ],
     "reliability": 4,
     "url": "https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam",
     "notes": "ฉบับแปลร่วมสมัย อ่านง่ายและแบ่งบทชัด แต่บางตอนเพี้ยนจากต้นฉบับ (เช่นตอนสวนผัก ที่เครื่องหมายวรรคตอนหายจนความหมายกลับ) — ข้อความสำคัญให้เทียบกับ src.la_loubere"
@@ -83,7 +107,10 @@
     "id": "src.prosea_benincasa",
     "title": "PROSEA: Benincasa hispida (ฟัก)",
     "kind": "secondary",
-    "describesPeriod": [1043, 2560],
+    "describesPeriod": [
+      1043,
+      2560
+    ],
     "reliability": 4,
     "url": "https://prosea.prota4u.org/view.aspx?id=2144",
     "notes": "ฐานข้อมูลพืชเอเชียตะวันออกเฉียงใต้ — ข้อมูลถิ่นกำเนิดทั่วไป ไม่เฉพาะอยุธยา"
@@ -94,7 +121,10 @@
     "author": "John Guy",
     "kind": "secondary",
     "composedYear": 2533,
-    "describesPeriod": [1893, 2310],
+    "describesPeriod": [
+      1893,
+      2310
+    ],
     "reliability": 4,
     "url": "https://digitalcommons.unl.edu/tsaconf/603",
     "notes": "Textile Society of America Symposium 1990 — อ่านแค่บทคัดย่อแล้ว ยังไม่ได้อ่านฉบับเต็ม"
@@ -105,7 +135,10 @@
     "author": "Lim N.H.M. Winnie",
     "kind": "secondary",
     "composedYear": 2568,
-    "describesPeriod": [2277, 2277],
+    "describesPeriod": [
+      2277,
+      2277
+    ],
     "reliability": 4,
     "url": "https://spafajournal.org/index.php/spafajournal/article/view/955",
     "license": "บทความ CC BY-NC-ND 4.0; ภาพจิตรกรรมในบทความเครดิต James Lao — ห้ามนำภาพไปใช้ต่อโดยไม่ขออนุญาต"
@@ -115,7 +148,10 @@
     "title": "สมุดภาพไตรภูมิฉบับกรุงธนบุรี (Museum für Asiatische Kunst, Berlin, inv. II 650)",
     "kind": "visual",
     "composedYear": 2319,
-    "describesPeriod": [2319, 2319],
+    "describesPeriod": [
+      2319,
+      2319
+    ],
     "reliability": 4,
     "url": "https://www.smb.museum/en/museums-institutions/museum-fuer-asiatische-kunst/collection-research/research/six-metres-of-traiphum/",
     "license": "ภาพบนเว็บพิพิธภัณฑ์ © Staatliche Museen zu Berlin / Hagen Immel — ไม่ใช่ open license",
@@ -127,7 +163,10 @@
     "author": "Rapeepun Areelertrat",
     "kind": "secondary",
     "composedYear": 2567,
-    "describesPeriod": [2319, 2350],
+    "describesPeriod": [
+      2319,
+      2350
+    ],
     "reliability": 4,
     "url": "https://so01.tci-thaijo.org/index.php/damrong/article/view/265484",
     "license": "CC BY-NC-ND"
@@ -138,7 +177,10 @@
     "author": "กสิณธร ราชโอรส (ผู้ถ่าย, 2558)",
     "kind": "visual",
     "composedYear": 2277,
-    "describesPeriod": [2270, 2280],
+    "describesPeriod": [
+      2270,
+      2280
+    ],
     "reliability": 3,
     "url": "https://commons.wikimedia.org/wiki/File:วัดเกาะแก้วสุทธาราม_จ.เพชรบุรี_(12).jpg",
     "license": "CC BY-SA 4.0 (ภาพถ่าย) — ต้องให้เครดิตและแชร์แบบเดียวกัน",
@@ -150,7 +192,10 @@
     "author": "กนกวรรณ วารีเขตต์, วิภาส โพธิแพทย์",
     "kind": "secondary",
     "composedYear": 2556,
-    "describesPeriod": [1800, 2500],
+    "describesPeriod": [
+      1800,
+      2500
+    ],
     "reliability": 4,
     "url": "https://so06.tci-thaijo.org/index.php/VANNAVIDAS/article/download/48412/40221"
   },
@@ -158,7 +203,10 @@
     "id": "src.wiki_luang_prasoet",
     "title": "Luang Prasoet Chronicle — Wikipedia (อ้าง ประชุมพงศาวดาร ฉบับกาญจนาภิเษก เล่ม 1 หน้า 211, กรมศิลปากร 2542)",
     "kind": "secondary",
-    "describesPeriod": [2223, 2223],
+    "describesPeriod": [
+      2223,
+      2223
+    ],
     "reliability": 3,
     "url": "https://en.wikipedia.org/wiki/Luang_Prasoet_Chronicle",
     "notes": "ควรเปิดต้นฉบับภาษาไทยในประชุมพงศาวดารยืนยันรูปแบบการลงศักราช"
@@ -167,7 +215,10 @@
     "id": "src.wiki_th_lunar_calendar",
     "title": "ปฏิทินจันทรคติไทย — วิกิพีเดีย (อ้าง ลอย ชุนพงษ์ทอง 2550, วารสารราชบัณฑิตยสถาน 32(2))",
     "kind": "secondary",
-    "describesPeriod": [2325, 2560],
+    "describesPeriod": [
+      2325,
+      2560
+    ],
     "reliability": 3,
     "url": "https://th.wikipedia.org/wiki/ปฏิทินจันทรคติไทย",
     "notes": "บรรยายระบบสมัยรัตนโกสินทร์/ปัจจุบัน — ยังไม่มีหลักฐานว่ากฎอธิกมาส/อธิกวารเหมือนกันในอยุธยา; ควรอ่าน Laurent (2000) 'Reading De La Loubère: The Chapter on the Siamese Calendar'"
@@ -176,7 +227,10 @@
     "id": "src.wiki_six_hour_clock",
     "title": "Thai six-hour clock — Wikipedia (อ้างราชกิจจานุเบกษา เล่ม 17 หน้า 206)",
     "kind": "secondary",
-    "describesPeriod": [2444, 2560],
+    "describesPeriod": [
+      2444,
+      2560
+    ],
     "reliability": 3,
     "url": "https://en.wikipedia.org/wiki/Thai_six-hour_clock"
   },
@@ -184,7 +238,10 @@
     "id": "src.wiki_thai_baht",
     "title": "Thai baht — Wikipedia (ส่วนประวัติ)",
     "kind": "secondary",
-    "describesPeriod": [1893, 2560],
+    "describesPeriod": [
+      1893,
+      2560
+    ],
     "reliability": 3,
     "url": "https://en.wikipedia.org/wiki/Thai_baht"
   },
@@ -194,7 +251,10 @@
     "author": "สุวรรณภา กลิ่นอังกาบ, วิราวรรณ สมพงษ์เจริญ",
     "kind": "secondary",
     "composedYear": 2560,
-    "describesPeriod": [1893, 2348],
+    "describesPeriod": [
+      1893,
+      2348
+    ],
     "reliability": 4,
     "url": "https://so03.tci-thaijo.org/index.php/husoarujournal/article/view/260349",
     "notes": "อ่านแค่บทคัดย่อ"
@@ -205,7 +265,10 @@
     "author": "ปฐมพงษ์ สุขเล็ก และคณะ",
     "kind": "secondary",
     "composedYear": 2568,
-    "describesPeriod": [1893, 2310],
+    "describesPeriod": [
+      1893,
+      2310
+    ],
     "reliability": 4,
     "url": "https://so02.tci-thaijo.org/index.php/jas/article/view/269985",
     "notes": "อ่านแค่บทคัดย่อ"
@@ -215,7 +278,10 @@
     "title": "ayutthaya-history.com (Tricky Vandenberg)",
     "kind": "secondary",
     "composedYear": 2554,
-    "describesPeriod": [2100, 2310],
+    "describesPeriod": [
+      2100,
+      2310
+    ],
     "reliability": 2,
     "url": "https://ayutthaya-history.com",
     "notes": "เว็บไซต์ของผู้สนใจที่ได้รับการยอมรับ — ใช้เป็นตัวชี้ทาง ควรหาเอกสารชั้นต้นยืนยัน"
@@ -225,7 +291,10 @@
     "title": "พระราชบัญญัติขนานนามสกุล พ.ศ. 2456",
     "kind": "primary",
     "composedYear": 2456,
-    "describesPeriod": [2456, 2456],
+    "describesPeriod": [
+      2456,
+      2456
+    ],
     "reliability": 5,
     "notes": "ประกาศในราชกิจจานุเบกษา — เติมเล่ม/หน้า"
   },
@@ -234,9 +303,215 @@
     "title": "จิตรกรรมฝาผนังอุโบสถวัดเกาะแก้วสุทธาราม จังหวัดเพชรบุรี",
     "kind": "visual",
     "composedYear": 2277,
-    "describesPeriod": [2270, 2280],
+    "describesPeriod": [
+      2270,
+      2280
+    ],
     "reliability": 4,
     "license": "ตัวงานเป็นสมบัติสาธารณะ — ภาพถ่ายต้องตรวจลิขสิทธิ์รายภาพก่อนใช้เป็นภาพอ้างอิง",
     "notes": "มีจารึกระบุปี พ.ศ. 2277 — ร่วมยุคกับอยุธยาตอนปลายโดยตรง"
+  },
+  {
+    "id": "src.anuman_1962_khwan",
+    "title": "The Khwan and its Ceremonies (Journal of the Siam Society 50.2)",
+    "author": "Phya Anuman Rajadhon",
+    "kind": "ethnographic",
+    "composedYear": 2505,
+    "describesPeriod": [
+      2430,
+      2505
+    ],
+    "reliability": 4,
+    "url": "https://thesiamsociety.org/knowledge-hub/uploads/research/259/664438a57ec1e.pdf",
+    "notes": "บรรยายกรุงเทพฯ/ภาคกลางราว 2440s–2500s จากประสบการณ์ผู้เขียน พร้อมเทียบภาคเหนือ/อีสาน"
+  },
+  {
+    "id": "src.anuman_1952_tham_khwan",
+    "title": "The Ceremony of Tham Khwan of a Month Old Child (Journal of the Siam Society 40.2)",
+    "author": "Phya Anuman Rajadhon",
+    "kind": "ethnographic",
+    "composedYear": 2495,
+    "describesPeriod": [
+      2430,
+      2495
+    ],
+    "reliability": 4,
+    "url": "https://thesiamsociety.org/wp-content/uploads/1952/03/JSS_040_2f_PhyaAnumanRajadhon_CeremonyOfThamKhwanOfMonthOldChild-1.pdf",
+    "notes": "บรรยายธรรมเนียม \"ในอดีต\" ของภาคกลาง บางส่วนยังมีอยู่ถึงทศวรรษ 2490"
+  },
+  {
+    "id": "src.anuman_1954_phi",
+    "title": "The Phi (Journal of the Siam Society 41.2)",
+    "author": "Phya Anuman Rajathon",
+    "kind": "ethnographic",
+    "composedYear": 2497,
+    "describesPeriod": [
+      2430,
+      2497
+    ],
+    "reliability": 4,
+    "url": "https://thesiamsociety.org/wp-content/uploads/1954/03/JSS_041_2c_PhyaAnumanRajathon_ThePhi.pdf",
+    "notes": "ผู้เขียนระบุว่าบางส่วนอนุมานจากร่องรอยที่หลงเหลือและวรรณกรรม"
+  },
+  {
+    "id": "src.peaceful_societies_ruralthai",
+    "title": "Rural Thai — Peaceful Societies (UNC Greensboro) สรุปจาก Phillips, Thai Peasant Personality (1965)",
+    "kind": "ethnographic",
+    "describesPeriod": [
+      2490,
+      2505
+    ],
+    "reliability": 2,
+    "url": "https://peacefulsocieties.uncg.edu/societies/ruralthai/",
+    "notes": "บทสรุปทุติยภูมิ ไม่มีเลขหน้า — ควรอ่าน Phillips ฉบับเต็ม"
+  },
+  {
+    "id": "src.vella_1971_review_akin",
+    "title": "Review of Akin Rabibhadana, The Organization of Thai Society in the Early Bangkok Period 1782–1873 (JSS 59.1)",
+    "author": "W.F. Vella",
+    "kind": "secondary",
+    "composedYear": 2514,
+    "describesPeriod": [
+      2200,
+      2416
+    ],
+    "reliability": 3,
+    "url": "https://thesiamsociety.org/wp-content/uploads/1971/03/JSS_059_1o_Reviews.pdf",
+    "notes": "บทวิจารณ์ — สรุปข้อเสนอของอคิน ไม่ใช่ตัวหนังสือเอง (ฉบับเต็มบน archive.org ยืมได้เท่านั้น)"
+  },
+  {
+    "id": "src.cruikshank_1975_slavery",
+    "title": "Slavery in Nineteenth Century Siam (JSS 63.2)",
+    "author": "R.B. Cruikshank",
+    "kind": "secondary",
+    "composedYear": 2518,
+    "describesPeriod": [
+      2300,
+      2443
+    ],
+    "reliability": 4,
+    "url": "https://thesiamsociety.org/wp-content/uploads/1975/03/JSS_063_2j_Cruikshank_SlaveryIn19thCenturySiam.pdf",
+    "notes": "อ้างหนังสืออคินพร้อมเลขหน้า"
+  },
+  {
+    "id": "src.onozawa_2002_labor",
+    "title": "The Labor Force in Thai Social History (Bulletin of Tsukuba Women's University 6)",
+    "author": "Nitaya Onozawa",
+    "kind": "secondary",
+    "composedYear": 2545,
+    "describesPeriod": [
+      2070,
+      2317
+    ],
+    "reliability": 3,
+    "url": "https://japan-iu.ac.jp/library/kiyou/2002/3.ONOZAWA.pdf",
+    "notes": "ถอดความจากอคินอีกทอด; ปี 2070 ของกฎหมายห้ามคนไม่ขึ้นทะเบียนยังไม่ได้ตรวจ"
+  },
+  {
+    "id": "src.baker_pasuk_2014_protection",
+    "title": "Protection and Power in Siam: From Khun Chang Khun Phaen to the Buddha Amulet (Southeast Asian Studies 2.2)",
+    "author": "Chris Baker, Pasuk Phongpaichit",
+    "kind": "secondary",
+    "composedYear": 2557,
+    "describesPeriod": [
+      2143,
+      2400
+    ],
+    "reliability": 4,
+    "url": "https://englishkyoto-seas.org/wp-content/uploads/SEAS_0202_Baker-and-Pasuk.pdf",
+    "notes": "หลักฐานจากวรรณคดีขุนช้างขุนแผน (ผู้เขียนคิดว่าเริ่มราว ค.ศ. 1600 และแพร่หลายในศตวรรษที่ 18) — หลักฐานทางอ้อม"
+  },
+  {
+    "id": "src.hanks_1975_entourage",
+    "title": "The Thai Social Order as Entourage and Circle (in Change and Persistence in Thai Society)",
+    "author": "Lucien M. Hanks",
+    "kind": "ethnographic",
+    "composedYear": 2518,
+    "describesPeriod": [
+      2490,
+      2518
+    ],
+    "reliability": 4,
+    "url": "https://seasite.niu.edu/Thai/BusinessThai/Hanks_article_cut_version_v2.pdf"
+  },
+  {
+    "id": "src.hanks_1962_merit",
+    "title": "Merit and Power in the Thai Social Order (American Anthropologist 64.6) — บทคัดย่อ eHRAF",
+    "author": "Lucien M. Hanks",
+    "kind": "ethnographic",
+    "composedYear": 2505,
+    "describesPeriod": [
+      2491,
+      2500
+    ],
+    "reliability": 3,
+    "url": "https://ehrafworldcultures.yale.edu/cultures/ao07/documents/028",
+    "notes": "อ่านแค่บทคัดย่อ/คำอธิบายในคลัง"
+  },
+  {
+    "id": "src.stewart_1967_review_phillips",
+    "title": "Review of Herbert Phillips, Thai Peasant Personality (Anthropologica 9.1)",
+    "author": "K.M. Stewart",
+    "kind": "ethnographic",
+    "composedYear": 2510,
+    "describesPeriod": [
+      2490,
+      2505
+    ],
+    "reliability": 3,
+    "url": "https://cas-sca.journals.uvic.ca/index.php/anthropologica/article/view/1223",
+    "notes": "บทวิจารณ์"
+  },
+  {
+    "id": "src.mizuno_1970_review_evers",
+    "title": "Review of Evers (ed.), Loosely Structured Social Systems: Thailand in Comparative Perspective (Tōnan Ajia Kenkyū 8.3, ภาษาญี่ปุ่น)",
+    "kind": "ethnographic",
+    "composedYear": 2513,
+    "describesPeriod": [
+      2490,
+      2512
+    ],
+    "reliability": 3,
+    "url": "https://kyoto-seas.org/pdf/8/3/080308.pdf"
+  },
+  {
+    "id": "src.loc_country_study_thailand",
+    "title": "Library of Congress Country Study: Thailand — Social and Political Development",
+    "kind": "secondary",
+    "describesPeriod": [
+      1893,
+      2475
+    ],
+    "reliability": 2,
+    "url": "https://countrystudies.us/thailand/9.htm"
+  },
+  {
+    "id": "src.thawatchai_2560_phuamia",
+    "title": "ความสัมพันธ์ระหว่างผัวเมีย: กรณีศึกษาจากกฎหมายตราสามดวง ในพระไอยการลักษณผัวเมีย (วารสารวิชาการมนุษยศาสตร์และสังคมศาสตร์ มรภ.พระนครศรีอยุธยา 5(2))",
+    "author": "ธวัชชัย ภูหลวง, พันธรัตน์ ศรีสุวรรณ",
+    "kind": "secondary",
+    "composedYear": 2560,
+    "describesPeriod": [
+      1893,
+      2348
+    ],
+    "reliability": 4,
+    "url": "https://so03.tci-thaijo.org/index.php/husoarujournal/article/view/260348",
+    "notes": "อ้างตัวบทฉบับกรมศิลปากร 2555 — มาตรา 50 และ 61 ยกมาตรง ที่เหลือเป็นการถอดความ"
+  },
+  {
+    "id": "src.sharp_hanks_1978_bangchan",
+    "title": "Bang Chan: Social History of a Rural Community in Thailand",
+    "author": "Lauriston Sharp, Lucien M. Hanks",
+    "kind": "ethnographic",
+    "composedYear": 2521,
+    "describesPeriod": [
+      2390,
+      2500
+    ],
+    "reliability": 4,
+    "url": "https://archive.org/details/oapen-20.500.12657-62036",
+    "license": "Open access (OAPEN)",
+    "notes": "งานภาคสนาม 2491–2500 ใกล้มีนบุรี + ประวัติบอกเล่าย้อนถึงการตั้งชุมชนกลางศตวรรษที่ 19"
   }
 ]

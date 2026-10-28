@@ -13,7 +13,11 @@ export interface Source {
   id: string; // "src.<slug>"
   title: string;
   author?: string;
-  kind: 'primary' | 'secondary' | 'visual';
+  /**
+   * primary = เอกสารร่วมยุค/ตัวบท, secondary = งานวิชาการประวัติศาสตร์,
+   * visual = ภาพ, ethnographic = งานภาคสนามมานุษยวิทยา/สังคมวิทยา (สังเกตสังคมในยุคที่ศึกษา ไม่ใช่ยุคของเกม)
+   */
+  kind: 'primary' | 'secondary' | 'visual' | 'ethnographic';
   /** ปีที่เขียน/ชำระ/สร้าง — ไม่ทราบให้เว้นไว้และบันทึกใน notes */
   composedYear?: number;
   /** ช่วงเวลาที่เอกสาร "บรรยายถึง" */
@@ -26,7 +30,19 @@ export interface Source {
   notes?: string;
 }
 
-export type LoreDomain = 'event' | 'social' | 'naming' | 'vocab' | 'belief' | 'material' | 'attire' | 'place';
+export type LoreDomain =
+  | 'event' | 'social' | 'naming' | 'vocab' | 'belief' | 'material' | 'attire' | 'place'
+  | 'kinship' // เครือญาติ ที่อยู่หลังแต่งงาน ครัวเรือน
+  | 'ritual'  // พิธีตามช่วงชีวิต
+  | 'psyche'; // ขวัญ การเลี้ยงดู ความกลัวและการเยียวยาแบบพื้นบ้าน
+
+/**
+ * ข้อมูลนี้ใช้ทำอะไรได้
+ * fact     = ข้อเท็จจริงของยุคในเกม ใช้ในข้อความ/ภาพได้
+ * pattern  = แบบแผนทางสังคมที่น่าจะเปลี่ยนช้า ใช้กำหนดพฤติกรรม NPC/ค่าความน่าจะเป็น แต่ไม่ยกไปเป็นรายละเอียดฉาก
+ * mechanic = แนวคิด/ทฤษฎีที่ใช้ออกแบบกลไกเกม (เช่น บุญบารมีกับบริวาร)
+ */
+export type AppliesAs = 'fact' | 'pattern' | 'mechanic';
 
 export interface Citation {
   sourceId: string;
@@ -52,6 +68,12 @@ export interface LoreEntry {
   citations: Citation[];
   /** มีคนเปิดเอกสารจริงตรวจแล้ว */
   verified: boolean;
+  /** ค่าเริ่มต้น 'fact' — ข้อมูลจากงานภาคสนามต่างยุคต้องเป็น pattern/mechanic */
+  appliesAs?: AppliesAs;
+  /** อธิบายว่าทำไมจึงอนุมานย้อนไปถึงยุคของเกมได้ — บังคับเมื่ออ้างงานภาคสนามที่ไม่ร่วมยุค */
+  projection?: string;
+  /** ข้อถกเถียงทางวิชาการ/มุมที่ขัดกัน */
+  contested?: string;
   /** ผูกกับ content ของเกม — validator ตรวจว่ามีอยู่จริง */
   gameRefs?: { tags?: TagId[] };
 }

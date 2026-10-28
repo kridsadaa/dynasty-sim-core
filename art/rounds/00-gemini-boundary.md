@@ -90,7 +90,7 @@ In the style of an 18th-century Thai temple mural painting: flat colors without 
 | A1 | สร้างได้ | 4 | บันไดพิงแทนบันไดแขวน; หลังคามุงจาก (lore: แผงไผ่สาน) | ผ้านุ่งแบบโจงและทรงผมสั้นโกนข้างตรง lore |
 | A2 | สร้างได้ | 3 | ผ้าห่มพาดเฉียงไหล่เดียวแบบสไบชุดไทยสมัยใหม่ (lore: พาดอก ชายห้อยหลังข้ามไหล่ทั้งสอง); หน้าตาแบบนางแบบ ผมทรงพิกซี่; เรือนฝาปะกนหลังคากระเบื้อง | ผ้านุ่งดำ ต่างหูหยดน้ำ แหวนหลายวง ตรง lore |
 | B1 | สร้างได้ | 3 | ผมบ๊อบยาวถึงคาง (lore: สั้นระดับบนใบหู) | ผ่านมุมหลังโดยไม่ใส่เสื้อให้ |
-| B2 | สร้างแต่ใส่ผ้าคลุมอกให้เอง | 3 | ตีความเตาผิด (ขาตั้งคร่อมหม้อ + เตาตะกร้า); ผมมวย | **เด็กเล็กพื้นหลังไม่เห็นผ้าท่อนบน — ผิดกฎข้อ 6** |
+| B2 | สร้างแต่ใส่ผ้าคลุมอกให้เอง | 3 | ตีความเตาผิด (ขาตั้งคร่อมหม้อ + เตาตะกร้า); ผมมวย | **เด็กเล็กพื้นหลังท่อนล่างถูกเสาบัง ไม่เห็นว่านุ่งผ้า — ไม่ผ่านกฎข้อ 6** (ไม่ใส่เสื้อไม่เป็นปัญหา) |
 | B3 | สร้างได้ | 3 | ผมมวย/ผมยาวปล่อย; ผู้หญิงส่วนใหญ่มีผ้าคาดอก | เส้นขอบฟ้าปรางค์–เจดีย์อยุธยาดูเข้าเค้า |
 | C1 | สร้างได้ | สไตล์ 4 | เทวดาพนมมือถือดาบ (แปลก); ลายเส้นสะอาดแบบดิจิทัล ไม่เหมือนสีฝุ่นเก่า | พื้นแดง เส้นสินเทา สีแบน ได้ตามสั่ง |
 | C2 | สร้างได้ ตาม prompt ทั้งหมด | 4 | เรือนชาวบ้านหลังคากระเบื้องประดับช่อฟ้า; ผมมวย | หญิงเปลือยท่อนบนแบบจิตรกรรม — Gemini ยอม |
@@ -105,7 +105,7 @@ In the style of an 18th-century Thai temple mural painting: flat colors without 
 
 1. **ทรงผม** — ผมผู้หญิงแตกเป็น 5 แบบ (บ๊อบ มวย ยาวปล่อย พิกซี่ เกรียน) ต้องใส่คำบรรยายจาก `attire.hair_1680s` ทุกภาพ:
    `hair cropped level with the top of the ears, the hair below shaved, lifted off the forehead` + Avoid: `buns, topknots on women, long loose hair, bob haircut`
-2. **เด็กต้องนุ่งผ้าเสมอ** — เพิ่มในทุก prompt ที่มีฉากหมู่: `any children present wear a small lower cloth`
+2. **เด็กต้องนุ่งผ้าท่อนล่างเสมอ (ไม่ใส่เสื้อได้)** — เพิ่มในทุก prompt ที่มีฉากหมู่: `any children present are bare-chested and wear a small lower cloth` (ช่วยกันกางเกงขาสั้นแบบ D2 ด้วย)
 3. **สไบ** — ใช้คำว่า `breast-cloth laid across the bosom, both ends thrown back over both shoulders` และ Avoid: `one-shoulder diagonal sash, modern Thai costume`
 4. **เรือนสามัญชน** — Avoid: `tiled roofs, ornate gable finials on commoner houses`; ระบุ `hanging bamboo ladder`
 5. **Chronicle ให้ดูเก่า** (ถ้าต้องการ) — เพิ่ม `aged mineral pigments, faded and flaking plaster, uneven hand-painted outlines`

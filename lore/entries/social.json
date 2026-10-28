@@ -3,23 +3,73 @@
     "id": "social.inheritance_by_mother_status",
     "domain": "social",
     "title": "ลักษณมรดก: ส่วนแบ่งของบุตรขึ้นกับประเภทของมารดา",
-    "period": [2155, 2348],
+    "period": [
+      2155,
+      2348
+    ],
     "claim": {
       "scope": "บังคับเมื่อผู้มีศักดินาตั้งแต่ 400 ขึ้นไปถึงแก่กรรม",
       "childSharesByMother": {
-        "สู่ขอ/พระราชทาน": { "child": 3, "grandchild": 2, "greatGrandchild": 1, "next": 0.5, "ifServedCrown": [4, 3, 2, 1] },
-        "อนุภริยา/ทูลขอ": { "child": 2.5, "grandchild": 1.5, "greatGrandchild": 1, "next": 0.5, "ifServedCrown": [3.5, 2.5, 2, 1] },
-        "ทาสภริยา": { "child": 2, "grandchild": 1.5, "greatGrandchild": 1, "next": 0.5, "ifServedCrown": [3.5, 2.5, 2, 1] }
+        "สู่ขอ/พระราชทาน": {
+          "child": 3,
+          "grandchild": 2,
+          "greatGrandchild": 1,
+          "next": 0.5,
+          "ifServedCrown": [
+            4,
+            3,
+            2,
+            1
+          ]
+        },
+        "อนุภริยา/ทูลขอ": {
+          "child": 2.5,
+          "grandchild": 1.5,
+          "greatGrandchild": 1,
+          "next": 0.5,
+          "ifServedCrown": [
+            3.5,
+            2.5,
+            2,
+            1
+          ]
+        },
+        "ทาสภริยา": {
+          "child": 2,
+          "grandchild": 1.5,
+          "greatGrandchild": 1,
+          "next": 0.5,
+          "ifServedCrown": [
+            3.5,
+            2.5,
+            2,
+            1
+          ]
+        }
       },
-      "adoptedFromInfancy": { "adopted1mTo1y": 1.5, "adopted2to4y": 1, "adopted5to7y": 0.5 },
+      "adoptedFromInfancy": {
+        "adopted1mTo1y": 1.5,
+        "adopted2to4y": 1,
+        "adopted5to7y": 0.5
+      },
       "condition": "ทายาททุกคนต้องได้รักษาไข้และร่วมปลงศพ มิฉะนั้นไม่ได้ส่วน",
       "gameBalanceKey": "inheritance.shareByParentage",
-      "gameMapping": { "principal_wife": 3, "minor_wife": 2.5, "slave_wife": 2, "adopted": 1.5, "unknown": 1 }
+      "gameMapping": {
+        "principal_wife": 3,
+        "minor_wife": 2.5,
+        "slave_wife": 2,
+        "adopted": 1.5,
+        "unknown": 1
+      }
     },
     "summary": "เกมใช้อัตราส่วนบุตรชั้นที่ 1 ตามตัวบทเป็นน้ำหนักแบ่งมรดก ('unknown' = 1 เป็นค่าที่ตั้งเอง); เงื่อนไข 'ต้องรักษาไข้และปลงศพ' ยังไม่ได้ทำในเกม — เป็น hook ที่ดีสำหรับ event",
     "status": "attested",
     "citations": [
-      { "sourceId": "src.three_seals_law", "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 143–150 มาตรา ๑–๒, ๘–๑๒", "quote": "บุตรได้ทรัพย ๓ ส่วน … ถ้าได้รับราชการ ได้ ๔ ส่วน" }
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 143–150 มาตรา ๑–๒, ๘–๑๒",
+        "quote": "บุตรได้ทรัพย ๓ ส่วน … ถ้าได้รับราชการ ได้ ๔ ส่วน"
+      }
     ],
     "verified": false
   },
@@ -27,131 +77,316 @@
     "id": "social.estate_division_noble",
     "domain": "social",
     "title": "ลักษณมรดก: แบ่งทรัพย์ขุนนางเป็นสี่ภาค",
-    "period": [2155, 2348],
-    "estates": ["noble"],
+    "period": [
+      2155,
+      2348
+    ],
+    "estates": [
+      "noble"
+    ],
     "claim": {
-      "toCrownFirst": ["อาวุธ", "ช้าง", "ม้า", "บ่าวไพร่", "เรือยาว 7 วาขึ้นไป"],
+      "toCrownFirst": [
+        "อาวุธ",
+        "ช้าง",
+        "ม้า",
+        "บ่าวไพร่",
+        "เรือยาว 7 วาขึ้นไป"
+      ],
       "thenDebts": true,
-      "fourParts": ["พระคลังหลวง", "บิดามารดา", "พี่น้อง ลูกหลาน ญาติ", "ภริยา"],
+      "fourParts": [
+        "พระคลังหลวง",
+        "บิดามารดา",
+        "พี่น้อง ลูกหลาน ญาติ",
+        "ภริยา"
+      ],
       "noParents": "แบ่งสามภาค",
       "noWife": "ภาคของภริยาเข้าพระคลังหลวง",
       "wifeShares": {
-        "พระราชทาน": 3.5, "สู่ขอมีขันหมาก": 3, "ทูลขอพระราชทาน/อนุภริยา": 2.5,
+        "พระราชทาน": 3.5,
+        "สู่ขอมีขันหมาก": 3,
+        "ทูลขอพระราชทาน/อนุภริยา": 2.5,
         "ifServedCrown": "+1 ทุกประเภท",
-        "under3Years": "ครึ่งส่วน", "noNursingNoFuneral": "ไม่ได้", "slaveWifeWithChildren": "ไม่ได้ทรัพย์ ได้แต่เป็นไท"
+        "under3Years": "ครึ่งส่วน",
+        "noNursingNoFuneral": "ไม่ได้",
+        "slaveWifeWithChildren": "ไม่ได้ทรัพย์ ได้แต่เป็นไท"
       }
     },
     "summary": "กลไกล้างไพ่ที่มีหลักฐานจริง — ราชสำนักได้ส่วนแบ่งมรดกขุนนาง; ยังไม่ได้ทำในเกมเพราะตัวละครยังไม่มีค่าศักดินา (ต้องทำระบบบรรดาศักดิ์ก่อน)",
     "status": "attested",
-    "citations": [{ "sourceId": "src.three_seals_law", "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 146–148 มาตรา ๓–๗", "quote": "ทำเปนสี่ภาก ๆ หนึ่งเข้าพระคลังหลวง" }],
+    "citations": [
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 146–148 มาตรา ๓–๗",
+        "quote": "ทำเปนสี่ภาก ๆ หนึ่งเข้าพระคลังหลวง"
+      }
+    ],
     "verified": false
   },
   {
     "id": "social.cremation_before_division",
     "domain": "social",
     "title": "ปลงศพก่อน แบ่งมรดกทีหลัง",
-    "period": [2155, 2348],
-    "claim": { "rule": "ทายาทที่เอาทรัพย์ไปก่อนปลงศพเผาผีเสียสิทธิ์; แบ่งมรดกหลังญาติปลงศพร่วมกันแล้ว", "funeralCostDeduction": "ไม่พบในตัวบท" },
+    "period": [
+      2155,
+      2348
+    ],
+    "claim": {
+      "rule": "ทายาทที่เอาทรัพย์ไปก่อนปลงศพเผาผีเสียสิทธิ์; แบ่งมรดกหลังญาติปลงศพร่วมกันแล้ว",
+      "funeralCostDeduction": "ไม่พบในตัวบท"
+    },
     "summary": "ค่างานศพที่หักจากมรดกในเกม (funeralCostRate) ยังเป็นกลไกที่แต่งขึ้น — ตัวบทพูดถึงลำดับเวลา ไม่ใช่การหักค่าใช้จ่าย",
     "status": "attested",
-    "citations": [{ "sourceId": "src.three_seals_law", "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 165–166 มาตรา ๔๔" }],
+    "citations": [
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 165–166 มาตรา ๔๔"
+      }
+    ],
     "verified": false
   },
   {
     "id": "social.wife_categories",
     "domain": "social",
     "title": "เมียสามประเภท: กลางเมือง กลางนอก กลางทาษี",
-    "period": [2100, 2348],
+    "period": [
+      2100,
+      2348
+    ],
     "claim": {
       "เมียกลางเมือง": "บิดามารดายกให้ (กุมมือ)",
       "เมียกลางนอก": "อนุภรรยา รองจากเมียหลวง",
       "เมียกลางทาษี": "หญิงที่ชายไถ่มาจากความลำบาก",
-      "adulteryFineRatio": { "กลางเมือง": 1, "กลางนอก": 0.8, "กลางทาษี": 0.6 },
-      "gameMapping": { "principal_wife": "เมียกลางเมือง", "minor_wife": "เมียกลางนอก", "slave_wife": "เมียกลางทาษี" }
+      "adulteryFineRatio": {
+        "กลางเมือง": 1,
+        "กลางนอก": 0.8,
+        "กลางทาษี": 0.6
+      },
+      "gameMapping": {
+        "principal_wife": "เมียกลางเมือง",
+        "minor_wife": "เมียกลางนอก",
+        "slave_wife": "เมียกลางทาษี"
+      }
     },
     "summary": "ตรงกับ Parentage ในเกม (principal_wife / minor_wife / slave_wife)",
     "status": "attested",
-    "citations": [{ "sourceId": "src.three_seals_law", "locator": "พระไอยการลักษณผัวเมีย เล่ม 2 สแกน 4", "quote": "หญิงอันบิดามานดากุมมือให้เปนเมียชาย ได้ชื่อว่าเปนเมียกลางเมือง" }],
+    "citations": [
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการลักษณผัวเมีย เล่ม 2 สแกน 4",
+        "quote": "หญิงอันบิดามานดากุมมือให้เปนเมียชาย ได้ชื่อว่าเปนเมียกลางเมือง"
+      }
+    ],
     "verified": false
   },
   {
     "id": "social.slave_types",
     "domain": "social",
     "title": "ทาสเจ็ดจำพวก",
-    "period": [2100, 2348],
-    "estates": ["that"],
+    "period": [
+      2100,
+      2348
+    ],
+    "estates": [
+      "that"
+    ],
     "claim": {
-      "lawful": ["ข้าสินไถ่ (ไถ่/ซื้อมา)", "ลูกทาสเกิดในเรือนเบี้ย", "ได้มาแต่บิดามารดา", "มีผู้ให้", "ช่วยกังวลในโทษทัณฑ์", "เลี้ยงไว้ในยามข้าวยาก", "ชะเลยได้มาแต่สงคราม"],
+      "lawful": [
+        "ข้าสินไถ่ (ไถ่/ซื้อมา)",
+        "ลูกทาสเกิดในเรือนเบี้ย",
+        "ได้มาแต่บิดามารดา",
+        "มีผู้ให้",
+        "ช่วยกังวลในโทษทัณฑ์",
+        "เลี้ยงไว้ในยามข้าวยาก",
+        "ชะเลยได้มาแต่สงคราม"
+      ],
       "redemptionForms": "ข้าสินไถ่มี 3 แบบ เริ่มจาก 'ไถ่มิได้ขาด' (ไม่ได้ขายขาด)",
-      "unlawfulExamples": ["ทาสที่ปล่อยเป็นไทแล้ว", "ทาสที่ปล่อยให้บวช"]
+      "unlawfulExamples": [
+        "ทาสที่ปล่อยเป็นไทแล้ว",
+        "ทาสที่ปล่อยให้บวช"
+      ]
     },
     "summary": "ช่องทางที่ตัวละครตกเป็นทาส/พ้นจากทาส — ป้อนระบบหนี้และ estate 'that'",
     "status": "attested",
-    "citations": [{ "sourceId": "src.three_seals_law", "locator": "พระไอยการทาษ เล่ม 2 สแกน 73–75 (พิมพ์จากฉบับรองทรง)" }],
+    "citations": [
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการทาษ เล่ม 2 สแกน 73–75 (พิมพ์จากฉบับรองทรง)"
+      }
+    ],
     "verified": false
   },
   {
     "id": "social.sakdina_civil_list",
     "domain": "social",
     "title": "ศักดินาข้าราชการพลเรือน (ตัวอย่าง)",
-    "period": [1919, 2348],
-    "estates": ["noble"],
+    "period": [
+      1919,
+      2348
+    ],
+    "estates": [
+      "noble"
+    ],
     "claim": {
       "examples": [
-        { "post": "มหาอุปราช", "sakdina": 100000 },
-        { "post": "เจ้าพญาจักรี (สมุหนายก)", "sakdina": 10000 },
-        { "post": "หลวงมหาอำมาตยาธิบดี", "sakdina": 3000 },
-        { "post": "หลวงจ่าแสนบดี", "sakdina": 2400 },
-        { "post": "หลวงวาสุเทพ", "sakdina": 1000 },
-        { "post": "หลวง (เจ้ากรมอื่น)", "sakdina": 800 },
-        { "post": "ขุน ปลัดกรม", "sakdina": [600, 800] },
-        { "post": "ขุนต่างกรม", "sakdina": 400 },
-        { "post": "หมื่นศรีเสนา", "sakdina": 500 },
-        { "post": "หัวหมื่น", "sakdina": 400 },
-        { "post": "หมื่นต่างกรม", "sakdina": 300 },
-        { "post": "หมื่นเจ้ากรมช่าง", "sakdina": 200 },
-        { "post": "หัวพัน", "sakdina": [200, 400] },
-        { "post": "นายเวร", "sakdina": 200 },
-        { "post": "นาย (ม้าใช้)", "sakdina": 150 },
-        { "post": "มหาดเล็กเลว", "sakdina": 200 },
-        { "post": "หม่อมเจ้า", "sakdina": 1500 },
-        { "post": "หม่อมราชวงศ์", "sakdina": 500 }
+        {
+          "post": "มหาอุปราช",
+          "sakdina": 100000
+        },
+        {
+          "post": "เจ้าพญาจักรี (สมุหนายก)",
+          "sakdina": 10000
+        },
+        {
+          "post": "หลวงมหาอำมาตยาธิบดี",
+          "sakdina": 3000
+        },
+        {
+          "post": "หลวงจ่าแสนบดี",
+          "sakdina": 2400
+        },
+        {
+          "post": "หลวงวาสุเทพ",
+          "sakdina": 1000
+        },
+        {
+          "post": "หลวง (เจ้ากรมอื่น)",
+          "sakdina": 800
+        },
+        {
+          "post": "ขุน ปลัดกรม",
+          "sakdina": [
+            600,
+            800
+          ]
+        },
+        {
+          "post": "ขุนต่างกรม",
+          "sakdina": 400
+        },
+        {
+          "post": "หมื่นศรีเสนา",
+          "sakdina": 500
+        },
+        {
+          "post": "หัวหมื่น",
+          "sakdina": 400
+        },
+        {
+          "post": "หมื่นต่างกรม",
+          "sakdina": 300
+        },
+        {
+          "post": "หมื่นเจ้ากรมช่าง",
+          "sakdina": 200
+        },
+        {
+          "post": "หัวพัน",
+          "sakdina": [
+            200,
+            400
+          ]
+        },
+        {
+          "post": "นายเวร",
+          "sakdina": 200
+        },
+        {
+          "post": "นาย (ม้าใช้)",
+          "sakdina": 150
+        },
+        {
+          "post": "มหาดเล็กเลว",
+          "sakdina": 200
+        },
+        {
+          "post": "หม่อมเจ้า",
+          "sakdina": 1500
+        },
+        {
+          "post": "หม่อมราชวงศ์",
+          "sakdina": 500
+        }
       ],
       "principle": "ศักดินาผูกกับตำแหน่งและราชทินนาม ไม่ใช่ตัวบุคคล"
     },
     "summary": "ฐานของระบบบรรดาศักดิ์ในเกม — ตัวละคร 'หมื่น' ในฉากเริ่มต้นจึงควรมีศักดินาราว 200–500; ปีในตัวบท (๑๒๙๘) แปลงต่างกันระหว่างนักวิชาการ",
     "status": "attested",
-    "citations": [{ "sourceId": "src.three_seals_law", "locator": "พระไอยการตำแหน่งนาพลเรือน เล่ม 1 สแกน 192–199 (พิสูจน์อักษรระดับ 1)" }],
+    "citations": [
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการตำแหน่งนาพลเรือน เล่ม 1 สแกน 192–199 (พิสูจน์อักษรระดับ 1)"
+      }
+    ],
     "verified": false
   },
   {
     "id": "social.sakdina_commoners",
     "domain": "social",
     "title": "ศักดินาไพร่และทาส",
-    "period": [2100, 2348],
-    "estates": ["phrai_luang", "phrai_som", "that"],
+    "period": [
+      2100,
+      2348
+    ],
+    "estates": [
+      "phrai_luang",
+      "phrai_som",
+      "that"
+    ],
     "claim": {
       "rates": [
-        { "status": "หัวสิบ", "rai": 30 },
-        { "status": "ไพร่หัวงาน", "rai": 25 },
-        { "status": "ไพร่มีครัว", "rai": 20 },
-        { "status": "ไพร่ราบ", "rai": 15 },
-        { "status": "ไพร่เลว", "rai": 10 },
-        { "status": "ยาจก วณิพก", "rai": 5 },
-        { "status": "ทาส ลูกทาส", "rai": 5 }
+        {
+          "status": "หัวสิบ",
+          "rai": 30
+        },
+        {
+          "status": "ไพร่หัวงาน",
+          "rai": 25
+        },
+        {
+          "status": "ไพร่มีครัว",
+          "rai": 20
+        },
+        {
+          "status": "ไพร่ราบ",
+          "rai": 15
+        },
+        {
+          "status": "ไพร่เลว",
+          "rai": 10
+        },
+        {
+          "status": "ยาจก วณิพก",
+          "rai": 5
+        },
+        {
+          "status": "ทาส ลูกทาส",
+          "rai": 5
+        }
       ]
     },
     "summary": "ตัวเลขจากงานรอง (จิตรอ้างพระอัยการเบ็ดเสร็จ) — ยังไม่ได้เทียบตัวบท",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.jit_sakdina", "locator": "บท 'ระบบศักดินาในประเทศไทย' หัวข้อ (4) อัตราสำหรับไพร่หรือประชาชน", "quote": "ไพร่มีครัว มีศักดินา 20 ไร่" }],
+    "citations": [
+      {
+        "sourceId": "src.jit_sakdina",
+        "locator": "บท 'ระบบศักดินาในประเทศไทย' หัวข้อ (4) อัตราสำหรับไพร่หรือประชาชน",
+        "quote": "ไพร่มีครัว มีศักดินา 20 ไร่"
+      }
+    ],
     "verified": false
   },
   {
     "id": "social.corvee",
     "domain": "social",
     "title": "การเข้าเวรของไพร่ และการสักเลก",
-    "period": [2230, 2310],
-    "estates": ["phrai_luang", "phrai_som"],
+    "period": [
+      2230,
+      2310
+    ],
+    "estates": [
+      "phrai_luang",
+      "phrai_som"
+    ],
     "claim": {
       "service": "เข้าเวรปีละ 6 เดือน อายุ 18–60",
       "marking": {
@@ -163,8 +398,16 @@
     "summary": "เครื่องหมายสังกัดที่ข้อมือเป็นร่องรอยทางกายที่ระบบร่างกายควรรองรับ (แผลเป็นแบบตั้งใจ บอกสังกัด) — วิธีทำ (ตีตรา vs สัก) ในอยุธยาตอนปลายยังไม่ชัด",
     "status": "inferred",
     "citations": [
-      { "sourceId": "src.la_loubere_en_1693", "locator": "Part III ch. II 'Of the Siamese People'", "quote": "They brand them on the outside of the Wrist with an hot Iron" },
-      { "sourceId": "src.jit_sakdina", "locator": "หัวข้อ ง. ส่วยแทนแรง", "quote": "มีกำหนดปีละ 6 เดือน" }
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. II 'Of the Siamese People'",
+        "quote": "They brand them on the outside of the Wrist with an hot Iron"
+      },
+      {
+        "sourceId": "src.jit_sakdina",
+        "locator": "หัวข้อ ง. ส่วยแทนแรง",
+        "quote": "มีกำหนดปีละ 6 เดือน"
+      }
     ],
     "verified": false
   },
@@ -172,13 +415,398 @@
     "id": "social.titles_not_hereditary",
     "domain": "social",
     "title": "บรรดาศักดิ์ไม่สืบทอด ผูกกับตำแหน่ง",
-    "period": [1919, 2475],
-    "claim": { "hereditary": false, "grantedTo": "บุคคล ตามตำแหน่งที่ได้รับแต่งตั้ง" },
+    "period": [
+      1919,
+      2475
+    ],
+    "claim": {
+      "hereditary": false,
+      "grantedTo": "บุคคล ตามตำแหน่งที่ได้รับแต่งตั้ง"
+    },
     "summary": "ตรงกับที่ handover.ts ทำอยู่ (บรรดาศักดิ์ไม่ตกทอด) แต่หลักฐานยังอ่อน — ทำเนียบศักดินาสนับสนุนว่าศักดินาผูกกับตำแหน่ง",
     "status": "inferred",
     "citations": [
-      { "sourceId": "src.wiki_thai_nobility", "locator": "หัวข้อ titles" },
-      { "sourceId": "src.three_seals_law", "locator": "พระไอยการตำแหน่งนาพลเรือน เล่ม 1 สแกน 192–199" }
+      {
+        "sourceId": "src.wiki_thai_nobility",
+        "locator": "หัวข้อ titles"
+      },
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการตำแหน่งนาพลเรือน เล่ม 1 สแกน 192–199"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.parental_authority_1680s",
+    "domain": "social",
+    "title": "พ่อแม่มีอำนาจเด็ดขาด และต้องรับผิดต่อพระเจ้าแผ่นดินแทนลูก",
+    "period": [
+      2230,
+      2231
+    ],
+    "claim": {
+      "children": "เด็กว่านอนสอนง่าย อ่อนโยน",
+      "parents": "มีอำนาจเด็ดขาดในครอบครัว",
+      "liability": "พ่อแม่ต้องรับผิดต่อพระเจ้าแผ่นดินในความผิดของลูก"
+    },
+    "summary": "หลักฐานร่วมยุคใกล้ slice ที่สุดเรื่องการเลี้ยงดู — ความผิดของลูกส่งผลถึงพ่อแม่ (event ทางสังคม/กฎหมาย)",
+    "status": "attested",
+    "contested": "งานภาคสนามบางชันทศวรรษ 2490 บรรยายการเลี้ยงดูแบบตามใจ — ดู psyche.indulgent_hierarchical_upbringing",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VIII หน้า [54] (ยังต้องตรวจถ้อยคำ)",
+        "quote": "the Parents do also answer unto the Prince for the Faults of their Children."
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.manpower_over_land",
+    "domain": "social",
+    "title": "คนสำคัญกว่าที่ดิน: ไพร่คือทรัพยากรที่แย่งกัน",
+    "period": [
+      2275,
+      2416
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "premise": "ที่ดินมีมาก คนมีน้อย ระบบมีไว้ขึ้นทะเบียนไพร่ใต้มูลนาย",
+      "phraiTypes": {
+        "luang": "ไพร่หลวง ขึ้นกับกษัตริย์ผ่านขุนนาง",
+        "som": "ไพร่สม ขึ้นกับเจ้านาย/ขุนนาง"
+      },
+      "competition": "กษัตริย์กับเจ้านายแย่งไพร่กัน",
+      "akinArgument": "การไหลของไพร่จากกษัตริย์ไปเจ้านายมีส่วนทำให้เสียกรุง 2310",
+      "gameMapping": "อำนาจ/บารมีของตระกูลควรนับจากจำนวนบริวารและไพร่ในสังกัด มากกว่าที่ดิน"
+    },
+    "summary": "เปลี่ยนแกนของ prestige จาก \"ทรัพย์\" เป็น \"คน\"",
+    "status": "inferred",
+    "projection": "ข้อเสนอของอคินอิงโครงสร้างที่สืบมาจากอยุธยา และผู้วิจารณ์ระบุว่าครอบคลุมช่วงก่อน 2310 ด้วย — ใช้เป็นกลไกออกแบบ ไม่ใช่รายละเอียดฉาก",
+    "citations": [
+      {
+        "sourceId": "src.vella_1971_review_akin",
+        "locator": "หน้า 233–235",
+        "quote": "the supreme value of men over land. Land was abundant, men were scarce."
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.patron_switching",
+    "domain": "social",
+    "title": "เปลี่ยนมูลนายได้ด้วยการซื้อตัว และไม่มีนายคือไร้ที่พึ่ง",
+    "period": [
+      2275,
+      2416
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "switch": "ไพร่สมย้ายไปหานายที่รวยกว่าได้ โดยนายใหม่ซื้อตัวจากนายเก่า (อคิน หน้า 34)",
+      "drift": "ไพร่หลวงพยายามเป็นไพร่สมเพราะงานเบากว่า (อคิน หน้า 33–34)",
+      "courtAccess": "สามัญชนต้องผ่านมูลนายจึงจะถึงศาล (อคิน หน้า 86)",
+      "patronDuties": [
+        "ช่วยเรื่องทำมาหากิน",
+        "ช่วยเหลือทางวัตถุ",
+        "ติดต่อกับทางราชการ"
+      ],
+      "clientGives": "ของกำนัล",
+      "afterDefeat": "ไพร่สมกลับไปเป็นไพร่หลวงหลังแพ้ศึก (อคิน หน้า 30)",
+      "nobles": "ขุนนางที่เสียไพร่ไปพึ่งเจ้านาย"
+    },
+    "summary": "กลไกเปลี่ยนนาย (มีต้นทุน) และ \"ไม่มีนาย = ไม่มีสิทธิ์ทางกฎหมาย\" — ต่อเข้ากับ Character.social.patronId",
+    "status": "inferred",
+    "projection": "ข้อเสนอของอคินอิงโครงสร้างที่สืบมาจากอยุธยา และผู้วิจารณ์ระบุว่าครอบคลุมช่วงก่อน 2310 ด้วย — ใช้เป็นกลไกออกแบบ ไม่ใช่รายละเอียดฉาก",
+    "citations": [
+      {
+        "sourceId": "src.cruikshank_1975_slavery",
+        "locator": "หน้า 326–329 (อ้างอคิน หน้า 30, 33–34, 80–86)",
+        "quote": "Without the protection and aid of a noble or prince, a commoner was helpless"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.slavery_as_strategy",
+    "domain": "social",
+    "title": "เป็นทาสเป็นทางเลือก ไม่ใช่แค่การตกต่ำ",
+    "period": [
+      2275,
+      2416
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "redemption": "ทาสสินไถ่ไถ่ตัวได้",
+      "refuge": "ทาสหนีไปพึ่งคนอื่น ถ้าผู้รับไว้ไม่ยอมคืน นายเดิมเอาคืนไม่ได้ (อคิน หน้า 112)",
+      "freedom": [
+        "นายยอมให้บวช",
+        "ทาสหญิงมีบุตรกับนายหรือญาตินาย"
+      ],
+      "lateC18": "ไพร่หลวงขายตัวเป็นทาสเพื่อหนีงานเกณฑ์",
+      "rankScale": {
+        "king": "ไม่จำกัด",
+        "princes": "11,000–50,000",
+        "nobles": "400–10,000",
+        "commoners": "10–400",
+        "slavesBeggars": 5
+      },
+      "cruikshank": "สถานะทาสเป็นการเคลื่อนข้าง ไม่ใช่ตกต่ำ; คนอนาถาที่ไม่มีนายอยู่ต่ำกว่าทาส"
+    },
+    "summary": "ทำให้หนี้/ทาสเป็นทางเลือกเชิงกลยุทธ์ในเกม (หนีงานเกณฑ์ ได้ผู้คุ้มครอง)",
+    "status": "inferred",
+    "projection": "ข้อเสนอของอคินอิงโครงสร้างที่สืบมาจากอยุธยา และผู้วิจารณ์ระบุว่าครอบคลุมช่วงก่อน 2310 ด้วย — ใช้เป็นกลไกออกแบบ ไม่ใช่รายละเอียดฉาก",
+    "citations": [
+      {
+        "sourceId": "src.cruikshank_1975_slavery",
+        "locator": "หน้า 320–332 (อ้างอคิน หน้า 105–118)",
+        "quote": "the master could not get him back"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.corvee_escape_routes",
+    "domain": "social",
+    "title": "ทางหนีงานเกณฑ์ของไพร่หลวง",
+    "period": [
+      2275,
+      2317
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "routes": [
+        "หนีเข้าป่า",
+        "ติดสินบนนาย",
+        "บวช",
+        "ขายตัวเป็นทาส"
+      ],
+      "registration": "คนไม่ขึ้นทะเบียนถูกลงโทษ",
+      "thonburi": "กฎหมายพระเจ้าตากปี 2317 ให้สักเมืองและชื่อนายลงบนตัวไพร่"
+    },
+    "summary": "เมนูตัวเลือกของสามัญชนเมื่อถูกเกณฑ์ — ป้อน event ช่วงวัยหนุ่ม",
+    "status": "inferred",
+    "projection": "ข้อเสนอของอคินอิงโครงสร้างที่สืบมาจากอยุธยา และผู้วิจารณ์ระบุว่าครอบคลุมช่วงก่อน 2310 ด้วย — ใช้เป็นกลไกออกแบบ ไม่ใช่รายละเอียดฉาก",
+    "citations": [
+      {
+        "sourceId": "src.onozawa_2002_labor",
+        "locator": "หน้า 47–50 (อ้างอคิน หน้า 33–35)",
+        "quote": "There was a law against shifting from phrai laung to phrai som"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.corvee_burden_by_status",
+    "domain": "social",
+    "title": "ภาระงานเกณฑ์ต่อปีตามสถานะ (ต้นรัตนโกสินทร์)",
+    "period": [
+      2325,
+      2416
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "phraiLuang": "3 เดือน หรือจ่าย 18 บาท",
+      "phraiSom": "1 เดือน",
+      "slaves": "8 วัน"
+    },
+    "summary": "ไพร่สมงานเบากว่าไพร่หลวงมาก จึงมีแรงจูงใจย้ายสังกัด",
+    "status": "inferred",
+    "projection": "ตัวเลขของต้นรัตนโกสินทร์ — ใช้เป็นสัดส่วนเปรียบเทียบ ไม่ใช่ตัวเลขของ slice",
+    "contested": "social.corvee บันทึก 6 เดือน (ลา ลูแบร์ 2230 และจิตร) — จำนวนเดือนเปลี่ยนตามยุค ยังไม่มีตัวเลขของอยุธยาตอนปลาย",
+    "citations": [
+      {
+        "sourceId": "src.cruikshank_1975_slavery",
+        "locator": "อ้างอคิน หน้า 87–88"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.protection_patronage",
+    "domain": "social",
+    "title": "ให้แรงงานแลกการคุ้มครอง (ขุนช้างขุนแผน)",
+    "period": [
+      2143,
+      2400
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "exchange": "คนให้แรงงานแก่ผู้อุปถัมภ์เพื่อแลกการคุ้มครอง ส่วนใหญ่จากอำนาจรัฐเอง",
+      "dangers": [
+        "ธรรมชาติ",
+        "ความชั่วของคน",
+        "อำนาจรัฐ"
+      ],
+      "patronPower": [
+        "คุณสมบัติส่วนตัว",
+        "ความมั่งคั่ง",
+        "เส้นสายในราชสำนัก"
+      ],
+      "address": "บริวารเรียกนายว่า \"พ่อ\"",
+      "monkhood": "การบวชคุ้มครองจากการเกณฑ์",
+      "king": "เป็นทั้งผู้คุ้มครองใหญ่สุดและภัยใหญ่สุด"
+    },
+    "summary": "ค่า \"การคุ้มครอง\" ของผู้อุปถัมภ์ และความโปรดปรานของพระเจ้าแผ่นดินที่ให้ทั้งคุณและโทษ",
+    "status": "inferred",
+    "projection": "หลักฐานทางวรรณคดีที่แพร่หลายในศตวรรษที่ 18 — ทางอ้อม",
+    "citations": [
+      {
+        "sourceId": "src.baker_pasuk_2014_protection",
+        "locator": "หน้า 216–219 และบทสรุป",
+        "quote": "Men donate some or all of their labor to a patron in return for protection"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.entourage_and_circle",
+    "domain": "social",
+    "title": "บริวารและวง (Hanks): ความสัมพันธ์สมัครใจ แตกเมื่อนายตาย",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "rankAsMerit": "ลำดับชั้นถูกอ่านว่าเป็นบุญ คนขึ้นลงตามบุญที่เปลี่ยน",
+      "voluntary": "นาย–บริวารเป็นความสัมพันธ์สมัครใจ ฝ่ายใดก็ยุติได้",
+      "duration": "บริวารอยู่ตราบที่นายยังให้ได้",
+      "patronDeath": "นายตาย บริวารกระจาย คนที่แข็งที่สุดเอาทรัพย์ ไม่มีผู้สืบทอด",
+      "workRelief": "นายที่ย้ายบริวารไปงานเบาไม่ได้จะเสียบริวาร",
+      "circle": "สายบริวารของบริวารที่มาเมื่อถูกเรียก",
+      "rivalry": "บริวารด้วยกันอาจเป็นศัตรูกัน",
+      "gameMapping": "ตอน handover บริวารไม่ตกทอดอัตโนมัติ — ทายาทต้องรักษาไว้; เป็นกลไกล้างไพ่ทางสังคม"
+    },
+    "summary": "แกนของระบบบริวารในเกม",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชัน/กรุงเทพฯ ทศวรรษ 2490 — Hanks เสนอเป็นแบบแผนทั่วไปของสังคมไทย ใช้ออกแบบพฤติกรรมบริวาร ไม่ยืนยันว่าตรงกับศตวรรษที่ 18",
+    "citations": [
+      {
+        "sourceId": "src.hanks_1975_entourage",
+        "locator": "หน้า 197–203",
+        "quote": "An entourage endures only as long as a patron is able to continue providing"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.merit_and_power",
+    "domain": "social",
+    "title": "บุญกับอำนาจ (Hanks): อำนาจมีได้หลายทาง ประสิทธิผลมาจากบุญ",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "hierarchy": "ที่ทางในลำดับชั้นขึ้นกับบุญเทียบกับบาป",
+      "powerSources": [
+        "ประสบการณ์",
+        "ความรู้",
+        "เครื่องราง"
+      ],
+      "effectiveness": "ประสิทธิผลมาจากบุญเท่านั้น",
+      "gameMapping": "แยกค่า merit (มีอยู่แล้วใน Character) ออกจากอำนาจ/เครื่องราง"
+    },
+    "summary": "ใช้แยกระบบบุญกับระบบอำนาจ",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชัน/กรุงเทพฯ ทศวรรษ 2490 — Hanks เสนอเป็นแบบแผนทั่วไปของสังคมไทย ใช้ออกแบบพฤติกรรมบริวาร ไม่ยืนยันว่าตรงกับศตวรรษที่ 18",
+    "citations": [
+      {
+        "sourceId": "src.hanks_1962_merit",
+        "locator": "บทคัดย่อ",
+        "quote": "effectiveness, by contrast, derives only from merit"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.polite_surface",
+    "domain": "social",
+    "title": "ความสุภาพภายนอกกับเจตนาภายใน (Phillips)",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "traits": [
+        "ปัจเจก",
+        "ปฏิบัตินิยม",
+        "อ่อนโยน"
+      ],
+      "values": [
+        "ใจเย็น",
+        "ความสุภาพแบบ \"เครื่องสำอางทางสังคม\"",
+        "แบบแผนการแสดงความเคารพ"
+      ],
+      "caution": "ระวังตัวต่อกัน"
+    },
+    "summary": "กลไก \"หน้ากาก\": สิ่งที่ NPC แสดงออกกับความรู้สึกจริงต่างกันได้",
+    "status": "inferred",
+    "projection": "บทวิจารณ์งานภาคสนามบางชันทศวรรษ 2490",
+    "citations": [
+      {
+        "sourceId": "src.stewart_1967_review_phillips",
+        "locator": "หน้า 112–113"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.loosely_structured_debate",
+    "domain": "social",
+    "title": "ข้อถกเถียง \"สังคมโครงสร้างหลวม\"",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "mechanic",
+    "claim": {
+      "embree": "ปัจเจกมีที่ว่างทางพฤติกรรมมาก ฐานะไม่ตายตัว เชื้อพระวงศ์ลดชั้นตามรุ่น บรรดาศักดิ์ให้ตามความสามารถหรือความโปรดปราน",
+      "critics": {
+        "Mulder": "แนวคิดไม่มีความหมายทางสังคมวิทยา",
+        "Phillips": "แน่นต่อหน้า หลวมลับหลัง",
+        "Boonsanong": "ชนชั้นเห็นชัด",
+        "Evers": "ต้องแยกระดับความคิด บรรทัดฐาน สถิติ"
+      },
+      "gameMapping": "พันธะทางสังคมควรยืดหยุ่นตามสถานการณ์ (ต่อหน้าเคร่ง ลับหลังหลวม)"
+    },
+    "summary": "ไม่ใช้เป็นข้อเท็จจริง ใช้เป็นหลักออกแบบที่ยังถกเถียง",
+    "status": "inferred",
+    "projection": "งานภาคสนามทศวรรษ 2490–2510",
+    "contested": "ข้อเสนอของ Embree ถูกวิจารณ์หนัก — ใช้ด้วยความระวัง",
+    "citations": [
+      {
+        "sourceId": "src.mizuno_1970_review_evers",
+        "locator": "หน้า 427–436"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "social.chinese_mobility",
+    "domain": "social",
+    "title": "ชาวจีนไม่ขึ้นทะเบียนไพร่ เคลื่อนย้ายและค้าขายได้",
+    "period": [
+      2275,
+      2416
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "chinese": "ไม่ถูกขึ้นทะเบียน จึงเดินทางและค้าขายได้อิสระ",
+      "phrai": "ไพร่ขายตัวเป็นทาสให้นายที่ดีกว่าได้"
+    },
+    "summary": "ภูมิหลังพ่อค้าจีนเป็นเส้นทางเลื่อนชั้น — หลักฐานอ่อน (แหล่งชั้นที่สาม)",
+    "status": "inferred",
+    "projection": "แหล่งสรุปทั่วไป ต้องหาเอกสารชั้นต้นยืนยัน",
+    "citations": [
+      {
+        "sourceId": "src.loc_country_study_thailand",
+        "locator": "หัวข้อ Social and Political Development",
+        "quote": "he could sell himself into slavery to a more attractive nai"
+      }
     ],
     "verified": false
   }

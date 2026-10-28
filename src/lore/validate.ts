@@ -57,12 +57,23 @@ for (const e of entries) {
     }
     if (/todo/i.test(c.locator)) warnings.push(`${at}: ยังไม่ระบุตำแหน่งใน ${s.id}`);
     if (!overlaps(e.period, s.describesPeriod)) {
-      // attested ต้องมีหลักฐานร่วมยุค; inferred อนุมานจากเอกสารต่างยุคได้ แต่ต้องรู้ตัว
       const msg = `${at}: ${s.id} บรรยายช่วง ${s.describesPeriod.join('–')} ไม่ครอบคลุม ${e.period.join('–')}`;
-      (e.status === 'attested' ? errors : warnings).push(msg);
+      if (s.kind === 'ethnographic') {
+        // งานภาคสนามต่างยุค: ใช้ได้เฉพาะเป็นแบบแผน/กลไก และต้องอธิบายการอนุมาน
+        const appliesAs = e.appliesAs ?? 'fact';
+        if (e.status === 'attested') errors.push(`${msg} — งานภาคสนามต่างยุคต้องเป็น inferred`);
+        if (appliesAs === 'fact') errors.push(`${msg} — งานภาคสนามต่างยุคต้องตั้ง appliesAs เป็น pattern หรือ mechanic`);
+        if (!e.projection) errors.push(`${msg} — ต้องมี projection อธิบายว่าทำไมอนุมานย้อนได้`);
+      } else if (e.status === 'attested') {
+        // attested ต้องมีหลักฐานร่วมยุค
+        errors.push(msg);
+      } else if (!e.projection) {
+        // inferred อนุมานจากเอกสารต่างยุคได้ แต่ควรเขียนเหตุผลไว้
+        warnings.push(msg);
+      }
     }
-    // งานวิชาการสมัยใหม่ (secondary) เขียนทีหลังเสมอ — เตือนเฉพาะเอกสารชั้นต้น/ภาพที่ชำระทีหลัง
-    if (s.kind !== 'secondary' && s.composedYear !== undefined && s.composedYear > e.period[1] + config.lateCompilationWarnYears) {
+    // งานสมัยใหม่ (secondary/ethnographic) เขียนทีหลังเสมอ — เตือนเฉพาะเอกสารชั้นต้น/ภาพที่ชำระทีหลัง
+    if ((s.kind === 'primary' || s.kind === 'visual') && s.composedYear !== undefined && s.composedYear > e.period[1] + config.lateCompilationWarnYears) {
       warnings.push(`${at}: ${s.id} เขียน/ชำระ พ.ศ. ${s.composedYear} หลังช่วงข้อมูลเกิน ${config.lateCompilationWarnYears} ปี — ระวังยุคเหลื่อม`);
     }
   }
@@ -99,6 +110,9 @@ for (const e of entries) {
 console.log(`lore: ${sources.length} แหล่ง, ${entries.length} รายการ, ${anachronisms.length} กฎ anachronism`);
 console.log(`slice ปัจจุบัน: ${config.currentSlice.label} (พ.ศ. ${config.currentSlice.period.join('–')})`);
 for (const [d, c] of byDomain) console.log(`  ${d.padEnd(9)} ${c.verified}/${c.total} verified`);
+const byUse = new Map<string, number>();
+for (const e of entries) byUse.set(e.appliesAs ?? 'fact', (byUse.get(e.appliesAs ?? 'fact') ?? 0) + 1);
+console.log(`  ใช้เป็น: ${[...byUse].map(([k, n]) => `${k} ${n}`).join(', ')}`);
 for (const w of warnings) console.log(`  ⚠ ${w}`);
 for (const e of errors) console.log(`  ✖ ${e}`);
 

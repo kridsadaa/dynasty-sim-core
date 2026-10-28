@@ -1,0 +1,177 @@
+[
+  {
+    "id": "psyche.khwan_concept",
+    "domain": "psyche",
+    "title": "ขวัญ: ทุกคนมีขวัญ ขวัญเด็กอ่อนและแข็งขึ้นตามวัย",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "claim": {
+      "khwan": "สิ่งที่อยู่ในกายให้ความสุขและสุขภาพ ถ้าออกจากกายจะเจ็บป่วย",
+      "childState": "ขวัญอ่อน — เด็กตกใจง่ายขวัญก็ตกใจง่าย แข็งแรงขึ้นเมื่อโต",
+      "alsoHaveKhwan": ["สัตว์", "เสาเรือน", "ข้าว", "เมือง"],
+      "gameMapping": "ค่า ageVulnerability ใน trauma.ts (เด็กเปราะบางสุด แข็งขึ้นตามอายุ)"
+    },
+    "summary": "ให้เหตุผลภายในโลกเกมกับกลไก 'เด็กฝังใจง่ายกว่า' — ข้อความในเกมพูดถึง 'ขวัญอ่อน' แทนคำศัพท์จิตวิทยาสมัยใหม่",
+    "status": "inferred",
+    "projection": "ความเชื่อเรื่องขวัญเป็นความเชื่อพื้นฐานร่วมของคนไท/ลาว/ไทใหญ่ ที่พระยาอนุมานราชธนบรรยายว่าเป็นธรรมเนียมดั้งเดิม — โครงความเชื่อหลักน่าจะเก่ากว่าศตวรรษที่ 18 แต่รายละเอียดพิธีอาจเปลี่ยน",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 119, 122", "quote": "A baby which is easily frightened, will have a khwan with the same tendency." }],
+    "verified": false
+  },
+  {
+    "id": "psyche.fright_khwan_loss",
+    "domain": "psyche",
+    "title": "ตกใจแล้วขวัญหาย",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "claim": {
+      "terms": { "ขวัญหาย/ขวัญหนี/ขวัญบิน": "ขวัญออกจากกาย", "ขวัญหนีดีฝ่อ": "ตกใจอย่างแรง", "เสียขวัญ": "หมดกำลังใจ" },
+      "trigger": "ตกใจกะทันหัน หกล้ม",
+      "signs": ["ร้องไห้จ้าไม่หยุด", "ต่อมามีไข้"],
+      "gameMapping": "เหตุการณ์ที่ impact เกิน memoryThreshold → สถานะ 'ขวัญหาย' ชั่วคราว (ไข้/ร้องไห้) ก่อนสรุปผลเป็นปม"
+    },
+    "summary": "จุดเริ่มของเส้นทาง 'เหตุร้าย → ขวัญหาย → ปม' ในภาษาของยุค",
+    "status": "inferred",
+    "projection": "ดู psyche.khwan_concept",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 122–123", "quote": "When a child suffers a shock from some sudden fright and cries sharply" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.rap_khwan_comfort",
+    "domain": "psyche",
+    "title": "รับขวัญ: ปลอบทันทีด้วยการตบอกเบาๆ",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "claim": {
+      "actor": "แม่หรือใครก็ได้ที่อยู่ตรงนั้น",
+      "action": "ตบอกเด็กเบาๆ หลายครั้ง พร้อมพูดเรียกขวัญให้อยู่กับเนื้อกับตัว",
+      "timing": "ทันทีที่เด็กตกใจร้อง",
+      "gameMapping": "comfortRole + comfortFactor ใน resolveTrauma — ตรงกับกลไกเดิม"
+    },
+    "summary": "หลักฐานทางชาติพันธุ์วรรณนาที่ตรงกับกลไก 'ผู้ใหญ่ปลอบแล้วฝังใจน้อยลง' ที่มีอยู่แล้ว",
+    "status": "inferred",
+    "projection": "ดู psyche.khwan_concept",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 123" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.riak_khwan_ritual",
+    "domain": "psyche",
+    "title": "เรียกขวัญเด็ก: ตักขวัญ ผูกขวัญ",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "region": "ภาคกลาง (ภาคเหนือเรียกฮ้องขวัญ อีสานเรียกสู่ขวัญ)",
+    "claim": {
+      "when": "เด็กกลับบ้านร้องไห้และมีไข้หลังหกล้มหรือตกใจ",
+      "performer": "ส่วนใหญ่เป็นแม่",
+      "objects": ["ขันทองเหลือง", "ทัพพี", "ผ้า", "ด้ายดิบ"],
+      "steps": ["ไปที่จุดเกิดเหตุ เรียกขวัญ", "ตักขวัญใส่ขัน ปิดผ้า", "กลับบ้านวนขันเหนือตัวเด็ก", "ผูกด้ายข้อมือทั้งสอง ให้พร ให้ของขวัญเล็กน้อย"],
+      "outcome": "เด็กค่อยๆ หาย",
+      "gameMapping": "การกระทำหลัง event (ต้นทุนต่ำ) ที่ลดความรุนแรงของปมที่กำลังก่อตัว หรือเปลี่ยนปมให้เป็นแบบแฝง"
+    },
+    "summary": "ตัวเลือกใหม่ให้พ่อแม่ในเกมหลังลูกเจอเหตุร้าย — ทำหรือไม่ทำมีผลต่อปมของลูก",
+    "status": "inferred",
+    "projection": "ดู psyche.khwan_concept",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 129–130", "quote": "Someone, usually the child's mother, will in an instant take a brass bowl" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.khwan_unrecalled",
+    "domain": "psyche",
+    "title": "ขวัญไม่กลับ → เจ็บป่วย → ตาย (ตามความเชื่อ)",
+    "period": [2275, 2400],
+    "appliesAs": "pattern",
+    "claim": { "belief": "ขวัญเป็นของไม่อยู่นิ่ง ตกใจก็ออกจากกาย คนที่ขวัญไม่อยู่จะป่วย ถ้าขวัญไม่กลับจะตาย" },
+    "summary": "ใช้เป็นความกังวลของตัวละครในเกม (ความเครียดของพ่อแม่ ความเชื่อในบทสนทนา) ไม่ใช่กลไกความตายจริง",
+    "status": "inferred",
+    "projection": "พระยาอนุมานราชธนระบุว่าเป็นความเชื่อของชาวสยาม 'ในอดีต' — โครงความเชื่อน่าจะเก่ากว่าที่บันทึก",
+    "citations": [{ "sourceId": "src.anuman_1952_tham_khwan", "locator": "หน้า 177", "quote": "if the khwan does not come back, the person will die." }],
+    "verified": false
+  },
+  {
+    "id": "psyche.hard_to_raise_child",
+    "domain": "psyche",
+    "title": "เด็กเลี้ยงยาก: ผูกขวัญ ตั้งชื่อน่าเกลียด ยกให้พระ",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "claim": {
+      "state": "เด็กป่วยบ่อย เรียกว่า 'เลี้ยงยาก'",
+      "remedies": ["เชิญคนที่ 'เลี้ยงเด็กง่าย' (มักเป็นสามีภรรยา) มาผูกขวัญด้วยด้ายและกำไลเงินของแม่ม่าย", "ยกเด็กชายให้พระแบบทอดผ้าป่าเพื่อหลอกผีที่จะมาเอาตัว", "ตั้งชื่อน่าเกลียดให้ผีไม่สนใจ"],
+      "belief": "สามวันแรกหลังเกิด เด็กเป็นลูกผี ผีอาจมาเอาคืน"
+    },
+    "summary": "สถานะ 'เด็กอ่อนแอ' และทางเลือกของพ่อแม่ — การตั้งชื่อน่าเกลียดต่อเข้ากับตัวสุ่มชื่อได้",
+    "status": "inferred",
+    "projection": "ผู้เขียนเล่าจากประสบการณ์ราว พ.ศ. 2453 ในกรุงเทพฯ — ใช้เป็นแบบแผนของครัวเรือนภาคกลาง",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 131–134 และเชิงอรรถหน้า 134" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.mother_departure_thread",
+    "domain": "psyche",
+    "title": "แม่ผูกด้ายข้อมือก่อนจากลูก",
+    "period": [2275, 2400],
+    "appliesAs": "pattern",
+    "claim": { "practice": "แม่ที่ต้องฝากลูกไว้กับคนอื่นผูกด้ายที่ข้อมือลูกและสัญญาว่าจะกลับ", "belief": "ถ้าไม่ทำ ลูกจะงอแงร้องไห้ตลอดที่แม่ไม่อยู่" },
+    "summary": "ตัวกระตุ้นความเครียดเมื่อผู้เลี้ยงดูไม่อยู่ ที่พ่อแม่ป้องกันได้",
+    "status": "inferred",
+    "projection": "ผู้เขียนระบุว่ายังเชื่อกันอยู่ถึงปี 2505 — ใช้เป็นแบบแผน",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 134" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.chetabhut_dread",
+    "domain": "psyche",
+    "title": "เจตภูต: ความกลัวและความฝัน",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "claim": {
+      "distinction": "ขวัญออกเฉพาะเมื่อกลัวมากหรือถูกผีร้ายรบกวน; เจตภูตออกเมื่อหวาดระแวงหรือขณะฝัน",
+      "dying": "คนใกล้ตายเสียเจตภูตไปแล้ว 3 ใน 4",
+      "regional": "ขวัญ 32 เป็นของภาคเหนือ/อีสาน ไม่พบในภาคกลาง — ตัวละครภาคกลางมีขวัญเดียว"
+    },
+    "summary": "คำอธิบายพื้นบ้านของฝันร้ายและความหวาดระแวงที่ค้างอยู่ — ใช้กับปมที่แสดงอาการเป็นฝันร้าย",
+    "status": "inferred",
+    "projection": "ดู psyche.khwan_concept",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 124–126" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.khwan_doctor",
+    "domain": "psyche",
+    "title": "หมอขวัญ",
+    "period": [2275, 2400],
+    "appliesAs": "pattern",
+    "claim": { "role": "ผู้ประกอบพิธีทำขวัญอาชีพ มีงานมากช่วงฤดูบวช", "alternatives": ["แม่", "ญาติ", "พระ"] },
+    "summary": "NPC ที่จ้างได้ — ครอบครัวมีฐานะจ้างหมอขวัญ ครอบครัวสามัญทำกันเอง",
+    "status": "inferred",
+    "projection": "หลักฐานเป็นศตวรรษที่ 20 — ใช้เป็นบทบาท NPC ได้ แต่ไม่ยืนยันว่ามีอาชีพนี้ในศตวรรษที่ 18",
+    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 141" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.frightening_children_with_ghosts",
+    "domain": "psyche",
+    "title": "ผู้ใหญ่ขู่เด็กด้วยผี",
+    "period": [2275, 2400],
+    "appliesAs": "pattern",
+    "claim": { "example": "คนแก่บอกเด็กว่าผีห่า (ผีโรคระบาด) มากับเรือตอนกลางคืน ให้รีบเข้านอน", "evidence": "เรื่องเล่าวัยเด็กของผู้เขียนเอง กรุงเทพฯ ราว 2430s–2440s" },
+    "summary": "ช่องทางที่ปมความกลัวถูกสร้างโดยตั้งใจ — ผู้ใหญ่ที่มี superstition แรงอาจ 'สอน' ความกลัวให้เด็ก",
+    "status": "inferred",
+    "projection": "หลักฐานชิ้นเดียว (เรื่องเล่าส่วนตัว) — ใช้เป็นแบบแผนแบบระวัง",
+    "citations": [{ "sourceId": "src.anuman_1954_phi", "locator": "หน้า 171" }],
+    "verified": false
+  },
+  {
+    "id": "psyche.indulgent_hierarchical_upbringing",
+    "domain": "psyche",
+    "title": "การเลี้ยงดู: ตามใจ แต่สอนที่ทางในลำดับชั้น",
+    "period": [2275, 2400],
+    "appliesAs": "pattern",
+    "claim": { "method": "สอนด้วยการทำให้ดูและการเกลี้ยกล่อม", "punishment": "การลงโทษทางกายมีน้อย", "goal": "ยอมรับที่ทางของตนในลำดับชั้น" },
+    "summary": "หลักฐานอ่อน (บทสรุปทุติยภูมิ) — ต้องอ่าน Phillips (1965) ฉบับเต็ม; ขัดกับภาพ 'พ่อแม่มีอำนาจเด็ดขาด' ของลา ลูแบร์บางส่วน",
+    "status": "inferred",
+    "projection": "งานภาคสนามบางชันทศวรรษ 2490 — ห่างจาก slice ~200 ปี",
+    "contested": "ลา ลูแบร์ (2230) บรรยายว่าพ่อแม่มีอำนาจเด็ดขาดในครอบครัว — ดู social.parental_authority_1680s",
+    "citations": [{ "sourceId": "src.peaceful_societies_ruralthai", "locator": "หน้า Rural Thai" }],
+    "verified": false
+  }
+]
