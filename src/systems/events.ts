@@ -221,12 +221,21 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): Even
         break;
       case 'prestige': {
         const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
-        if (dyn) dyn.prestige += e.delta;
+        // บารมีที่ได้จากการกระทำขึ้นกับบุญ ส่วนบารมีที่เสียไม่ลดตามบุญ
+        if (dyn) dyn.prestige += e.delta > 0 ? e.delta * meritEffectiveness(ch) : e.delta;
         break;
       }
     }
   }
   return report;
+}
+
+/**
+ * บุญกำหนดประสิทธิผลของอำนาจ (lore: social.merit_and_power) — อำนาจมาได้หลายทาง แต่ผลมาจากบุญ
+ * merit 0 → ×1 (ค่าเดิม), บุญมาก → สูงสุด ×1.5, บาปมาก → ต่ำสุด ×0.5
+ */
+export function meritEffectiveness(ch: Character): number {
+  return 1 + 0.5 * Math.tanh(ch.merit / 50);
 }
 
 function buildPercepts(p: PreparedEvent): Percept[] {

@@ -130,6 +130,11 @@ function lifeMilestones(ctx: Ctx): string[] {
     const age = ageOf(ctx, man);
     const node = ctx.state.familyNodes[man.familyNodeId];
     if (!node) continue;
+    // เป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) → อ่านออกเขียนได้ จดตำนานลงสมุดข่อยได้ตอนสืบทอด
+    if (age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
+      man.skills['literacy'] = Math.max(man.skills['literacy'] ?? 0, 40);
+      out.push(`${man.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
+    }
     if (age === W.marriageAge && node.spouseIds.length === 0) {
       let home = man.householdId ? ctx.state.households[man.householdId] : undefined;
       if (home && home.headId !== man.id) home.memberIds = home.memberIds.filter((id) => id !== man.id);

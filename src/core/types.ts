@@ -564,6 +564,9 @@ export interface Balance {
     targetDriftChance: Unit;
     kindMutateChance: Unit;
     susceptibleAge: [number, number];
+    /** ผู้ใหญ่ขู่เด็กด้วยผี (lore: psyche.frightening_children_with_ghosts) */
+    ghostScareBase: Unit;
+    ghostScareMaxAge: number;
   };
   legend: {
     baseDrift: number;
@@ -588,6 +591,9 @@ export interface Balance {
     oldAgeYearlyRisk: number; // ต่อปีที่เกิน oldAgeStart
     marriageAge: number;
     childAtAges: number[];
+    /** เด็กชายไปเป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) */
+    noviceAge: number;
+    noviceChance: Unit;
   };
   prune: {
     keepKinDistance: number;

@@ -224,10 +224,10 @@ function story(seed: number, verbose: boolean): boolean {
       say(`\n[${year}] ${player.name} ได้รับบรรดาศักดิ์ ${player.social.title} จากความชอบในการกู้ชาติ`);
     }
 
-    // เด็กในเรือน: บวชเณร (อ่านออกเขียนได้) / โดนมีดบาดตอน 7 ขวบ
+    // เด็กในเรือน: เป็นเณรเรียนหนังสือที่วัดตอน 7–8 ขวบ (lore: ritual.novice_schooling_1680s) / โดนมีดบาดตอน 7 ขวบ
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c)) continue;
-      if (c.sex === 'm' && ageOf(ctx, c) === 15 && ctx.rng.chance(0.5)) c.skills['literacy'] = 40;
+      if (c.sex === 'm' && ageOf(ctx, c) === B.world.noviceAge && ctx.rng.chance(B.world.noviceChance)) c.skills['literacy'] = 40;
       if (ageOf(ctx, c) === 7 && c.householdId === player.householdId && c.id !== player.id && ctx.rng.chance(0.5)) {
         const mom = c.caregiverIds.map((id) => ctx.state.characters[id]).find((x) => isAlive(x) && x.sex === 'f');
         if (!mom) continue;

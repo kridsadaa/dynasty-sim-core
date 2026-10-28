@@ -254,7 +254,8 @@ function crystallizeTaboos(ctx: Ctx, dead: Character, heir: Character, heirNode:
       dyn.taboos = dyn.taboos.filter((x) => x !== t);
       out.push(t.strength < B.tabooForgetBelow
         ? `ข้อห้าม${ctx.tags.label(t.target)} ถูกลืมไปตามกาลเวลา`
-        : `${heir.name} ฝ่าฝืนข้อห้าม${ctx.tags.label(t.target)} (ผิดผีบรรพบุรุษ)`);
+        // "ผิดผี" เป็นคำของอีสาน — ตระกูลภาคกลางนับถือผีปู่ย่าตายาย (lore: belief.phit_phi_regional)
+        : `${heir.name} ฝ่าฝืนข้อห้าม${ctx.tags.label(t.target)} (ล่วงเกินผีปู่ย่าตายาย)`);
     }
   }
 

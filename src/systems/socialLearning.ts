@@ -50,6 +50,25 @@ export function householdYearTick(ctx: Ctx, householdId: HouseholdId): string[] 
       const imposer = ctx.state.characters[rule.imposedBy];
       if (imposer) transmit(ctx, imposer, child, kind, rule.target, 0.5, log);
     }
+    // (c) ผู้ใหญ่ "สอน" ความกลัวโดยตั้งใจ — ขู่เด็กเล็กด้วยผีให้เชื่อฟัง (lore: psyche.frightening_children_with_ghosts)
+    if (age <= S.ghostScareMaxAge) {
+      for (const adult of adults) {
+        if (!child.caregiverIds.includes(adult.id) && hh.headId !== adult.id) continue;
+        const superstitious = adult.traitIds.some((id) => ctx.state.traits[id]?.kind === 'superstition');
+        const p = S.ghostScareBase * adult.personality.piety * susceptibility * (superstitious ? 1.5 : 1);
+        if (!ctx.rng.chance(p)) continue;
+        const { reinforced } = addOrReinforceTrait(ctx, child, {
+          kind: 'phobia',
+          target: 'supernatural:phi',
+          intensity: (0.25 + 0.3 * adult.personality.piety) * ctx.rng.range(0.7, 1),
+          latent: false,
+          awareness: 'knows_cause', // เด็กรู้ว่ากลัวเพราะถูกเล่าเรื่องผี
+          origin: { type: 'social', fromNodeId: adult.familyNodeId, fromKind: 'superstition', fromTarget: 'supernatural:phi' },
+        });
+        log.push(`${child.name} ${reinforced ? 'กลัวผีหนักขึ้น' : 'เริ่มกลัวผี'} เพราะ${adult.name}ขู่ให้เข้านอน`);
+        break;
+      }
+    }
   }
   return log;
 }

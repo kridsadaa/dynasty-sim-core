@@ -24,7 +24,9 @@
     "ruleTransmitBase": 0.15,
     "targetDriftChance": 0.2,
     "kindMutateChance": 0.2,
-    "susceptibleAge": [2, 14]
+    "susceptibleAge": [2, 14],
+    "ghostScareBase": 0.12,
+    "ghostScareMaxAge": 10
   },
   "legend": { "baseDrift": 0.8, "writtenRecordDamp": 0.3, "maxOpsPerGeneration": 3 },
   "inheritance": {
@@ -39,6 +41,6 @@
     "tabooForgetBelow": 0.15,
     "tabooMutateChance": 0.15
   },
-  "world": { "eventsPerYear": 3, "oldAgeStart": 50, "oldAgeYearlyRisk": 0.015, "marriageAge": 20, "childAtAges": [22, 25] },
+  "world": { "eventsPerYear": 3, "oldAgeStart": 50, "oldAgeYearlyRisk": 0.015, "marriageAge": 20, "childAtAges": [22, 25], "noviceAge": 8, "noviceChance": 0.5 },
   "prune": { "keepKinDistance": 3, "eventLogMaxAgeDays": 3600, "lightMemoryKeep": 3 }
 }

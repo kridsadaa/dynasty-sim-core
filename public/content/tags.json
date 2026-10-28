@@ -56,6 +56,8 @@
 
   { "id": "supernatural:omen", "parents": [], "label": { "th": "นิมิตประหลาด" } },
   { "id": "supernatural:guardian_spirit", "parents": [], "label": { "th": "ผีบรรพบุรุษ" } },
+  { "id": "supernatural:phi", "parents": [], "label": { "th": "ผี" }, "salience": 0.6,
+    "loreRefs": ["psyche.frightening_children_with_ghosts"] },
 
   { "id": "body:any", "parents": [], "label": { "th": "ร่างกาย" }, "generalizeStop": true },
   { "id": "body:head", "parents": ["body:any"], "label": { "th": "ศีรษะ" } },
