@@ -127,5 +127,151 @@
         "resist": [ { "source": "personality", "trait": "boldness", "invert": true, "weight": 0.8, "reasonKey": "shy" } ],
         "effects": [ { "op": "prestige", "role": "actor", "delta": 0.5 } ] }
     ]
+  },
+  "intent.befriend.done": {
+    "id": "intent.befriend.done",
+    "textKey": "event.befriend_done",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "ok", "textKey": "event.befriend_done.ok",
+        "effects": [
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "friend", "atLeast": 0.6 },
+          { "op": "relation", "role": "target", "toward": "actor", "kind": "friend", "atLeast": 0.6 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "atLeast": 0.8 }
+        ] }
+    ]
+  },
+  "intent.befriend.failed": {
+    "id": "intent.befriend.failed",
+    "textKey": "event.befriend_failed",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "ok", "textKey": "event.befriend_failed.ok", "effects": [ { "op": "stress", "role": "actor", "delta": 0.03 } ] }
+    ]
+  },
+  "intent.befriend.mischief": {
+    "id": "intent.befriend.mischief",
+    "textKey": "event.befriend_mischief",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "go", "textKey": "event.befriend_mischief.go",
+        "resist": [ { "source": "personality", "trait": "piety", "weight": 0.9, "reasonKey": "pious" } ],
+        "effects": [
+          { "op": "intent", "role": "actor", "progress": 0.2 },
+          { "op": "merit", "role": "actor", "delta": -1 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "delta": 0.05 }
+        ] },
+      { "id": "refuse", "textKey": "event.befriend_mischief.refuse",
+        "effects": [ { "op": "intent", "role": "actor", "odds": -0.05 } ] }
+    ]
+  },
+  "intent.called_home": {
+    "id": "intent.called_home",
+    "textKey": "event.called_home",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "go_home", "textKey": "event.called_home.go_home",
+        "effects": [
+          { "op": "intent", "role": "actor", "progress": -0.15 },
+          { "op": "bond", "role": "actor", "toward": "elder", "affection": 0.04 }
+        ] },
+      { "id": "stay", "textKey": "event.called_home.stay",
+        "resist": [ { "source": "bond", "role": "elder", "axis": "awe", "weight": 1.0, "reasonKey": "awe" } ],
+        "effects": [
+          { "op": "intent", "role": "actor", "odds": 0.03 },
+          { "op": "bond", "role": "actor", "toward": "elder", "affection": -0.06, "awe": 0.03 }
+        ] }
+    ]
+  },
+  "intent.court.trial": {
+    "id": "intent.court.trial",
+    "textKey": "event.court_trial",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "all_in", "textKey": "event.court_trial.all_in",
+        "resist": [ { "source": "personality", "trait": "resilience", "invert": true, "weight": 0.7, "reasonKey": "tired" } ],
+        "effects": [
+          { "op": "intent", "role": "actor", "progress": 0.15, "odds": 0.06 },
+          { "op": "stress", "role": "actor", "delta": 0.05 }
+        ] },
+      { "id": "enough", "textKey": "event.court_trial.enough", "effects": [] },
+      { "id": "slack", "textKey": "event.court_trial.slack",
+        "effects": [ { "op": "intent", "role": "actor", "odds": -0.08 } ] }
+    ]
+  },
+  "intent.court.gossip": {
+    "id": "intent.court.gossip",
+    "textKey": "event.court_gossip",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "ignore", "textKey": "event.court_gossip.ignore",
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.03 } ] },
+      { "id": "discreet", "textKey": "event.court_gossip.discreet",
+        "effects": [ { "op": "intent", "role": "actor", "progress": -0.1, "odds": 0.04 } ] }
+    ]
+  },
+  "intent.court.accepted": {
+    "id": "intent.court.accepted",
+    "textKey": "event.court_accepted",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "marry", "textKey": "event.court_accepted.marry",
+        "effects": [ { "op": "marry", "role": "actor", "with": "target" } ] },
+      { "id": "wait", "textKey": "event.court_accepted.wait",
+        "effects": [
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "atLeast": 0.8 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "friend", "atLeast": 0.5 }
+        ] }
+    ]
+  },
+  "intent.court.rejected": {
+    "id": "intent.court.rejected",
+    "textKey": "event.court_rejected",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "ok", "textKey": "event.court_rejected.ok", "effects": [ { "op": "stress", "role": "actor", "delta": 0.08 } ] }
+    ]
+  },
+  "family.arranged_match": {
+    "id": "family.arranged_match",
+    "textKey": "event.arranged_match",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "accept", "textKey": "event.arranged_match.accept",
+        "effects": [ { "op": "marry", "role": "actor", "with": "target" } ] },
+      { "id": "refuse", "textKey": "event.arranged_match.refuse",
+        "resist": [ { "source": "bond", "role": "elder", "axis": "awe", "weight": 1.0, "reasonKey": "awe" } ],
+        "effects": [
+          { "op": "bond", "role": "actor", "toward": "elder", "affection": -0.05 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "atLeast": 0.2 }
+        ] }
+    ]
   }
 }

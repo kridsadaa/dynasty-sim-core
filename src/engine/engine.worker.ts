@@ -9,7 +9,8 @@ import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
 import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, Push, ReplyData, Request, WorkerMessage } from './protocol';
-import { dynastyView, eventView, playerView, type TextTable } from './views';
+import { abandonIntent, startIntent } from '../systems/intent';
+import { dynastyView, eventView, intentPlanView, knownView, playerView, type TextTable } from './views';
 
 // ============================================================================
 // Simulation Worker — เจ้าของ GameState แต่เพียงผู้เดียว
@@ -26,17 +27,17 @@ let ctx: Ctx | null = null;
 const pending = new Map<string, PreparedEvent>(); // เซฟเป็น snapshot ไปกับทุกเซฟ → โหลดแล้วต้องตัดสินใจ event เดิมต่อ
 let sessionLock: Promise<void> | null = null;
 
-const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'balance', 'names', 'text.th'] as const;
+const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'intents', 'balance', 'names', 'text.th'] as const;
 
 const contentReady = (async () => {
   const base = `${import.meta.env.BASE_URL}content/`;
-  const [tags, anatomy, traitKinds, events, rules, balance, names, th] = await Promise.all(
+  const [tags, anatomy, traitKinds, events, rules, intents, balance, names, th] = await Promise.all(
     CONTENT_FILES.map((f) => fetch(`${base}${f}.json`).then((r) => {
       if (!r.ok) throw new Error(`โหลด content ${f} ไม่ได้ (${r.status})`);
       return r.json();
     })),
   );
-  content = buildContentDB({ tags, anatomy, traitKinds, events, rules, balance, names });
+  content = buildContentDB({ tags, anatomy, traitKinds, events, rules, intents, balance, names });
   text = th;
   push({ type: 'ready' });
 })();
@@ -240,6 +241,7 @@ async function handle(cmd: Command): Promise<unknown> {
       if (rep.wounds.length) lines.unshift(`บาดเจ็บ ${rep.wounds.length} แห่ง`);
       if (rep.strained) lines.unshift('ฝืนใจทำ — เครียดขึ้น');
       if (rep.named) lines.push(`ตั้งชื่อว่า "${rep.named.name}"`);
+      lines.push(...rep.notes);
       // ตัวเลือกพาไป event ถัดไปทันที (ช่วยงานครัว → มีดบาด) — UI ถาม viewPending ต่อ
       const next = prepareFollowUp(c, p, rep);
       if (next) pending.set(next.instance.id, next);
@@ -251,6 +253,20 @@ async function handle(cmd: Command): Promise<unknown> {
       return playerView(need(), text);
     case 'viewDynasty':
       return dynastyView(need());
+    case 'viewKnown':
+      return knownView(need(), text);
+    case 'planIntent':
+      return intentPlanView(need(), text, cmd.targetId, cmd.kind);
+    case 'startIntent': {
+      const c = need();
+      const player = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const target = must(c.state.characters[cmd.targetId as typeof player.id], 'คนนี้');
+      return { lines: startIntent(c, cmd.kind, player, target, cmd.approach) } satisfies ReplyData['startIntent'];
+    }
+    case 'abandonIntent': {
+      const c = need();
+      return { lines: abandonIntent(c, must(c.state.characters[c.state.meta.playerCharacterId], 'player')) } satisfies ReplyData['abandonIntent'];
+    }
   }
 }
 

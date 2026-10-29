@@ -17,7 +17,11 @@ export type Command =
   | { type: 'choose'; instanceId: string; optionId: string; name?: string }
   | { type: 'viewPlayer' }
   | { type: 'viewDynasty' }
-  | { type: 'viewPending' };
+  | { type: 'viewPending' }
+  | { type: 'viewKnown' }
+  | { type: 'planIntent'; targetId: string; kind: string }
+  | { type: 'startIntent'; targetId: string; kind: string; approach: string }
+  | { type: 'abandonIntent' };
 
 export interface ReplyData {
   newGame: CharacterView;
@@ -32,6 +36,10 @@ export interface ReplyData {
   viewPlayer: CharacterView;
   viewDynasty: DynastyView;
   viewPending: EventView[];
+  viewKnown: KnownPersonView[];
+  planIntent: IntentPlanView;
+  startIntent: { lines: string[] };
+  abandonIntent: { lines: string[] };
 }
 
 /** playing = เวลากำลังเดิน; ended = ตระกูลสิ้นสาย เล่นต่อไม่ได้ */
@@ -84,6 +92,59 @@ export interface CharacterView {
   scars: string[];
   wounds: string[];
   capabilities: Record<string, number>;
+  /** ชีวิตประจำวันตอนนี้ — เปลี่ยนตามความตั้งใจที่ทำอยู่ (ไปช่วยงานบ้านคนอื่น = ไม่ได้อยู่ช่วยบ้าน) */
+  lifestyle: string;
+  intent: IntentStatusView | null;
+}
+
+/** คนในแผง "คนที่รู้จัก" — ญาติที่ยังมีชีวิต และคนนอกตระกูลที่ผู้เล่นรู้จัก */
+export interface KnownPersonView {
+  id: string;
+  name: string;
+  age: number;
+  /** พ่อ แม่ พี่ชาย ภรรยา ลูกสาว / เพื่อนสนิท คนรู้จัก */
+  tie: string;
+  kin: boolean;
+  /** "ลูกสาวบ้านช่างทอง · ต่างตำบล · ยังไม่ออกเรือน" */
+  detail: string;
+  /** สิ่งที่ตั้งใจทำกับคนนี้ได้ (กดแล้วเปิดหน้าเลือกวิธี) */
+  actions: Array<{ kind: string; label: string }>;
+  /** เป็นเป้าของความตั้งใจที่ทำอยู่ */
+  focus: boolean;
+}
+
+export interface OddsFactorView {
+  label: string;
+  /** เปอร์เซ็นต์ (บวก/ลบ) */
+  value: number;
+}
+
+export interface IntentPlanView {
+  kind: string;
+  targetId: string;
+  title: string;
+  text: string;
+  /** ความตั้งใจเดิมที่จะถูกยกเลิกถ้าเริ่มอันนี้ */
+  replaces?: string;
+  approaches: Array<{
+    id: string;
+    label: string;
+    odds: number;
+    months: number;
+    factors: OddsFactorView[];
+    /** ชีวิตประจำวันจะเปลี่ยนอย่างไร */
+    lifestyle: string;
+    unavailable?: string;
+  }>;
+}
+
+export interface IntentStatusView {
+  title: string;
+  approach: string;
+  progress: number;
+  monthsLeft: number;
+  odds: number;
+  factors: OddsFactorView[];
 }
 
 export interface DynastyView {

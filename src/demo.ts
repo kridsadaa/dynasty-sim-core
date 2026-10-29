@@ -13,6 +13,7 @@ import { applyHistoricalShocks, markDead, performHandover, settleDeath } from '.
 import { renderLegend } from './systems/legend';
 import { householdYearTick } from './systems/socialLearning';
 import { describeTrait } from './systems/traits';
+import { arrangedMatchEvent } from './systems/intent';
 import { lifeMilestones } from './systems/world';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -23,6 +24,7 @@ const content: ContentDB = buildContentDB({
   traitKinds: load('traitKinds.json'),
   events: load('events.json'),
   rules: load('rules.json'),
+  intents: load('intents.json'),
   balance: load('balance.json'),
 });
 const B = content.balance;
@@ -195,6 +197,9 @@ function story(seed: number, verbose: boolean): boolean {
     // แต่งงาน ที่อยู่หลังแต่งงาน แยกเรือน มีบุตร เป็นเณร — ใช้กลไกเดียวกับตัวเกม (world.ts)
     const family = new Set([player.name, ...livingChildren(ctx, player).map((c) => c.name)]);
     for (const l of lifeMilestones(ctx)) if ([...family].some((n) => l.startsWith(n))) say(`[${year}] ${l}`);
+    // ผู้เล่นไม่ถูกจับแต่งอัตโนมัติ — ในเดโมรับคู่ที่ผู้ใหญ่ทาบทามให้เสมอ
+    const match = arrangedMatchEvent(ctx);
+    if (match) for (const l of chooseOption(ctx, match, 'accept').notes) say(`[${year}] ${l}`);
     if (year === 2315 && age >= 25 && !player.social.title) {
       player.social.title = 'ขุนศรีสงคราม';
       say(`\n[${year}] ${player.name} ได้รับบรรดาศักดิ์ ${player.social.title} จากความชอบในการกู้ชาติ`);

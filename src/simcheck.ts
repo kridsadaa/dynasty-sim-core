@@ -8,6 +8,8 @@ import type { ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { heirCandidates, markDead, performHandover } from './systems/handover';
+import { knownLocals } from './systems/acquaintance';
+import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { advanceDay } from './systems/world';
 
@@ -19,6 +21,7 @@ const content: ContentDB = buildContentDB({
   traitKinds: load('traitKinds.json'),
   events: load('events.json'),
   rules: load('rules.json'),
+  intents: load('intents.json'),
   balance: load('balance.json'),
 });
 const SEEDS = Number(process.argv[2] ?? 5);
@@ -41,6 +44,10 @@ function invariants(ctx: Ctx, ended: boolean): void {
     check('สมาชิกเรือนที่ตายแล้ว', Object.values(S.households).flatMap((h) => h.memberIds.filter((id) => !alive(id))));
     check('คนตายที่ยังถือเงิน', Object.values(S.characters).filter((c) => !isAlive(c) && c.social.wealth > 0.5).map((c) => c.name));
   }
+  check('ความตั้งใจที่ผู้ทำ/เป้าหมายไม่อยู่แล้ว', Object.values(S.intents).filter((i) => !alive(i.actorId) || !S.characters[i.targetId]).map((i) => i.id));
+  const locals = Object.values(S.characters).filter((c) => c.local && isAlive(c));
+  check('คนนอกตระกูลล้น (รู้จักเกินเพดาน)', locals.length > content.balance.locals.maxKnown[1] + 4 ? [`${locals.length} คน`] : []);
+  check('คนนอกตระกูลที่มีตระกูล/เรือน', locals.filter((c) => c.dynastyId || c.householdId).map((c) => c.name));
   check('อายุติดลบ', Object.values(S.characters).filter((c) => c.birthDay > S.meta.day).map((c) => c.name));
   check('childIds ชี้ไป node ที่ไม่มี', Object.values(S.familyNodes).flatMap((n) => n.childIds.filter((id) => !S.familyNodes[id])));
   // พี่น้อง/พ่อแม่ลูก หรือคู่ครองของพี่น้องที่ยังมีชีวิต ชื่อซ้ำกัน — อ่านเรื่องไม่รู้เรื่อง (pickName ต้องกันไว้)
@@ -73,6 +80,15 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   const S = ctx.state;
   let over = false;
   for (let d = 0; d < content.balance.daysPerYear * YEARS && !over; d++) {
+    // กลางปี: ผู้เล่นที่ว่างอยู่ตั้งใจทำอะไรสักอย่างกับคนที่รู้จัก (สุ่มคน/สิ่งที่ตั้งใจ/วิธี) — ทดสอบระบบ intent
+    const player = S.characters[S.meta.playerCharacterId];
+    if (S.meta.day % content.balance.daysPerYear === 180 && isAlive(player) && !activeIntent(ctx, player.id) && ctx.rng.chance(0.6)) {
+      const options = knownLocals(ctx, player).flatMap((t) => Object.values(content.intents)
+        .filter((def) => !targetProblem(ctx, def, player, t))
+        .flatMap((def) => planIntent(ctx, def.id, player, t).filter((p) => !p.unavailable).map((p) => ({ def, t, p }))));
+      const pick = ctx.rng.pick(options);
+      if (pick) startIntent(ctx, pick.def.id, player, pick.t, pick.p.def.id);
+    }
     for (const sig of advanceDay(ctx)) {
       if (sig.type === 'event') {
         // เลือกตัวเลือกแรกที่ไม่ล็อก แล้วเล่น event ต่อเนื่อง (followUp) จนจบสาย

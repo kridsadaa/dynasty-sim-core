@@ -24,6 +24,7 @@ export type HouseholdId = Brand<string, 'Household'>;
 export type LegendId = Brand<string, 'Legend'>;
 export type ItemId = Brand<string, 'Item'>;
 export type EventInstanceId = Brand<string, 'EventInstance'>;
+export type IntentId = Brand<string, 'Intent'>;
 
 /** Content keys — มาจาก JSON จึงไม่ brand */
 export type TagId = `${string}:${string}`; // "food:cucumber", "tool:kitchen_knife"
@@ -31,6 +32,7 @@ export type VarRef = `$${string}`;          // "$target_food" — ตัวแ�
 export type PartDefId = string;             // "finger.index.l"
 export type EventDefId = string;
 export type TraitKindId = string;           // "phobia" | "aversion" | ... (ประกาศใน content)
+export type IntentKindId = string;          // "befriend" | "court" (ประกาศใน intents.json)
 
 export type Day = number;    // วันนับจาก epoch ของเกม
 export type Unit = number;   // 0..1
@@ -206,7 +208,15 @@ export interface Character {
   marriedDay?: Day;
   /** วันที่คู่นี้จะแยกเรือนออกจากบ้านพ่อแม่ (ยกเว้นลูกที่อยู่ดูแลพ่อแม่) */
   moveOutDay?: Day;
+  /**
+   * คนนอกตระกูลที่ผู้เล่นรู้จัก (เพื่อนบ้าน คนต่างตำบล) — ไม่มีเรือน/ตระกูลในฉาก ครอบครัวของเขาไม่ได้จำลอง
+   * wed: ออกเรือนไปกับคนนอกฉากแล้ว · หายไปเมื่อแต่งเข้าตระกูลผู้เล่น
+   */
+  local?: { distance: Distance; trade: string; wed?: true };
 }
+
+/** ระยะจากเรือนของผู้เล่น — กำหนดว่าความตั้งใจต่อคนนี้กินแรงงานที่บ้านแค่ไหน */
+export type Distance = 'near' | 'town' | 'far';
 
 // ============================================================================
 // Memory — ความทรงจำเชิงเหตุผล (causal) แยก "สิ่งที่รับรู้" ออกจาก "สิ่งที่โทษ"
@@ -422,8 +432,10 @@ export interface Item {
 /**
  * affection / awe คือความรู้สึกของ from ที่มีต่อ to (ส่วนใหญ่ลูก → พ่อแม่) — ดู systems/will.ts
  *  affection: รัก/ผูกพัน (-1 เกลียดชัง .. 1 รักมาก), awe: เกรง/ยำเกรง (0..1)
+ *  acquaintance: from รู้จัก to แค่ไหน (0 แค่เคยเห็นหน้า .. 1 สนิท) — "คนที่รู้จัก" ของผู้เล่น
  */
-export type RelationKind = 'caregiver' | 'spouse' | 'patron' | 'friend' | 'rival' | 'gratitude' | 'grudge' | 'affection' | 'awe';
+export type RelationKind =
+  | 'caregiver' | 'spouse' | 'patron' | 'friend' | 'rival' | 'gratitude' | 'grudge' | 'affection' | 'awe' | 'acquaintance';
 
 export interface Relation {
   id: string;
@@ -482,6 +494,12 @@ export type Effect =
   /** ตั้งชื่อคนใน role: input = ชื่อที่ผู้เล่นพิมพ์ (ไม่ส่งมา = ใช้ชื่อเดิม), pick = สุ่มจากคลังชื่อใหม่ */
   | { op: 'name'; role: string; by: 'input' | 'pick' }
   | { op: 'merit'; role: string; delta: number }
+  /** ความตั้งใจที่ role กำลังทำอยู่: เดินหน้า/ถอยหลัง (progress) และโอกาสสำเร็จ (odds) */
+  | { op: 'intent'; role: string; progress?: number; odds?: number }
+  /** ความสัมพันธ์ของ role ต่อ toward: delta บวกเข้าค่าเดิม, atLeast ยกขึ้นอย่างน้อยเท่านี้ */
+  | { op: 'relation'; role: string; toward: string; kind: RelationKind; delta?: number; atLeast?: number }
+  /** role แต่งงานกับ with — ที่อยู่หลังแต่งตามธรรมเนียม (ดู wed ใน world.ts) */
+  | { op: 'marry'; role: string; with: string }
   | { op: 'skill'; role: string; skill: string; delta: number }
   | { op: 'prestige'; role: string; delta: number };
 
@@ -546,6 +564,67 @@ export interface EventInstance {
   resolvedTags: TagId[];
   optionId: string | null;
   injectedRuleIds: string[];
+}
+
+// ============================================================================
+// Intent — ความตั้งใจระยะยาวต่อคนหนึ่งคน (ผูกมิตร เกี้ยว) ไม่ใช่การกระทำเล็กๆ ทีละครั้ง
+// เลือกวิธีแล้วชีวิตประจำวันเปลี่ยน: ไปช่วยงานบ้านเขา = แรงงานหายจากเรือนตัวเองตามระยะทาง
+// ครบเวลา → ทอยโอกาส → event สำเร็จ/ไม่สำเร็จ; ระหว่างทางมี event แทรก
+// ============================================================================
+
+export interface Intent {
+  id: IntentId;
+  kind: IntentKindId;
+  approach: string;
+  actorId: CharacterId;
+  targetId: CharacterId;
+  startDay: Day;
+  /** 0..1 — เดินเดือนละ 1/months ครบ 1 แล้วทอยผล */
+  progress: Unit;
+  /** จำนวนเดือนที่ประเมินไว้ตอนเริ่ม */
+  months: number;
+  /** โอกาสที่ได้/เสียจาก event ระหว่างทาง */
+  bonus: number;
+}
+
+export interface IntentApproachDef {
+  id: string;
+  textKey: string;
+  /** ตามระยะทาง: labor = สัดส่วนแรงงานที่หายจากเรือน (1 = ไปอยู่ที่นั่นเลย), months = เวลาฐาน; null = ทำแบบนี้ไม่ได้ */
+  by: Record<Distance, { labor: Unit; months: number } | null>;
+  /** บวกโอกาสสำเร็จ */
+  odds: number;
+  /** ค่าใช้จ่ายครั้งเดียวตอนเริ่ม (ตำลึง) */
+  cost?: number;
+  minAge?: number;
+  /** ต้องมีพ่อหรือแม่ที่ยังมีชีวิตไปพูดให้ — ฐานะของบ้านเรามีผลมาก รู้จักกันมาก่อนมีผลน้อย */
+  formal?: boolean;
+  /** ระหว่างไปช่วยงานได้ทักษะอาชีพของบ้านเขา เดือนละเท่านี้ × แรงงานที่ไป */
+  learnTrade?: number;
+}
+
+export interface IntentDef {
+  id: IntentKindId;
+  textKey: string;
+  /** befriend: ใครก็ได้ที่ยังไม่สนิท · court: ต่างเพศ ยังไม่มีคู่ ทั้งสองฝ่ายถึงวัย */
+  target: 'befriend' | 'court';
+  minAge: number;
+  baseOdds: number;
+  approaches: IntentApproachDef[];
+  /** event ที่เปิดเมื่อครบเวลา — bindings: actor, target, elder (ถ้ามี) */
+  success: EventDefId;
+  failure: EventDefId;
+  /** event แทรกระหว่างทาง (สุ่มเดือนละ balance.intent.midEventChance) */
+  midEvents: Array<{ event: EventDefId; approaches?: string[]; needsElder?: boolean; minLabor?: number; maxAge?: number }>;
+}
+
+/** บ้านของคนนอกตระกูล — อาชีพกำหนดฐานะและทักษะที่ได้เมื่อไปช่วยงาน */
+export interface TradeDef {
+  id: string;
+  label: { th: string };
+  estate: Estate;
+  skill: string;
+  weight: number;
 }
 
 // ============================================================================
@@ -649,6 +728,36 @@ export interface Balance {
     noviceAge: number;
     noviceChance: Unit;
   };
+  intent: {
+    /** ต่อเดือน: โอกาสมี event แทรก */
+    midEventChance: Unit;
+    /** ค่าแรงที่เรือนต้องจ้างคนแทนเดือนละเท่าไร (ตำลึง) เมื่อแรงงาน 1 คนหายไปทั้งเดือน ตามฐานะของเรือน */
+    laborValue: Record<Estate, number>;
+    /** ไม่อยู่ช่วยงานบ้าน → ความรักต่อพ่อแม่ในเรือนเดียวกันลดเดือนละเท่านี้ × แรงงานที่หาย (พ่อแม่บ่น) */
+    awayAffectionPerMonth: number;
+    /** รู้จักกันมากขึ้นเดือนละ × (0.5 + แรงงานที่ไปอยู่ด้วย) */
+    familiarityPerMonth: number;
+    estateGapPenalty: number;
+    oddsRange: [Unit, Unit];
+    /** ความตั้งใจที่ต้องใช้แรงงานเต็มตัว (ย้ายไปอยู่ใกล้เขา) ทำได้ตั้งแต่อายุเท่านี้ */
+    relocateMinAge: number;
+    /** ผู้ใหญ่ทาบทามคู่ให้ผู้เล่นที่ยังไม่แต่งงาน ไม่เกินอายุนี้ และเว้นกี่ปีหลังปฏิเสธ */
+    arrangedMaxAge: number;
+    arrangedEveryYears: number;
+  };
+  locals: {
+    /** เริ่มรู้จักคนนอกบ้านตั้งแต่อายุ */
+    startAge: number;
+    /** จำนวนคนรู้จักนอกตระกูลสูงสุด: ตอนเด็ก (< 14) / ตอนโต */
+    maxKnown: [number, number];
+    /** เต็มแล้ว: โอกาสต่อปีที่คนที่ไม่ค่อยสนิทจะห่างหายไป (เปิดที่ให้คนใหม่) */
+    fadeChance: Unit;
+    /** คนรู้จักที่ยังไม่มีคู่ แต่งงานไปกับคนนอกฉาก ต่อปี */
+    wedChance: Unit;
+    distanceWeights: Record<Distance, number>;
+    /** ผู้เล่นวัยหนุ่มสาวที่ยังไม่มีคู่ รู้จักคนต่างเพศมากกว่า */
+    oppositeSexWhenSingle: Unit;
+  };
   prune: {
     keepKinDistance: number;
     eventLogMaxAgeDays: number;
@@ -673,6 +782,8 @@ export interface ContentDB {
   injectionRules: InjectionRule[];
   claimTemplates: Record<string, ClaimTemplate>;
   history: HistoricalEvent[];
+  intents: Record<IntentKindId, IntentDef>;
+  trades: TradeDef[];
   balance: Balance;
 }
 
@@ -710,4 +821,6 @@ export interface GameState {
   items: Table<Item>;
   relations: Table<Relation>;
   eventLog: Table<EventInstance>;
+  /** ความตั้งใจที่กำลังทำ (ตอนนี้มีแต่ของผู้เล่น คนละไม่เกิน 1) — เซฟเก่าไม่มีตารางนี้ โหลดแล้วได้ {} */
+  intents: Table<Intent>;
 }

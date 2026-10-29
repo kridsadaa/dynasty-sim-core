@@ -11,7 +11,7 @@ export function emptyState(seed: number): GameState {
       playerCharacterId: '' as Character['id'], playerDynastyId: '' as DynastyId,
     },
     characters: {}, bodyParts: {}, wounds: {}, memories: {}, traits: {}, households: {},
-    familyNodes: {}, dynasties: {}, legends: {}, items: {}, relations: {}, eventLog: {},
+    familyNodes: {}, dynasties: {}, legends: {}, items: {}, relations: {}, eventLog: {}, intents: {},
   };
 }
 
@@ -190,6 +190,39 @@ export function marry(ctx: Ctx, a: Character, b: Character): void {
   nb.spouseIds.push(na.id);
   const id = `${a.id}|${b.id}|spouse`;
   ctx.state.relations[id] = { id, from: a.id, to: b.id, kind: 'spouse', strength: 0.5, sinceDay: ctx.state.meta.day };
+}
+
+/**
+ * แต่งงานแล้วไปอยู่ที่ไหน — ch คือคนในตระกูล, spouse คือคนนอกที่แต่งเข้ามา (lore: kinship.uxorilocal_then_neolocal_1680s,
+ * kinship.marriage_law_three_seals, kinship.residence_mixed_census, kinship.youngest_daughter_house):
+ *  - ลูกสาวในตระกูลแต่งงาน → เขยคนนอกย้ายมาอยู่เรือนพ่อแม่ฝ่ายหญิง
+ *  - ลูกชายในตระกูลแต่งงาน → ส่วนใหญ่ไปอยู่กับครอบครัวภรรยา (นอกฉาก = ตั้งเรือนใหม่), บางส่วนพาภรรยามาอยู่บ้านพ่อแม่
+ *  - ครบ stayYears คู่ที่อยู่บ้านพ่อแม่แยกเรือนออกไป (ดู lifeMilestones)
+ */
+export function wed(ctx: Ctx, ch: Character, spouse: Character): string {
+  const W = ctx.content.balance.world;
+  const day = ctx.state.meta.day;
+  marry(ctx, ch, spouse);
+  ch.marriedDay = day;
+  delete spouse.local; // คนรู้จักนอกตระกูลที่แต่งเข้ามา กลายเป็นคนในเรือน
+  const stay = Math.round(ctx.rng.range(W.stayYears[0], W.stayYears[1])) * ctx.content.balance.daysPerYear;
+
+  const parentsHome = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+  if (ch.sex === 'f') {
+    // เขยเข้าเรือนพ่อแม่ฝ่ายหญิง (ลักษณผัวเมีย ม.61 รองรับชายที่ไปอยู่บ้านฝ่ายหญิง)
+    joinHousehold(ctx, spouse, parentsHome ?? createHousehold(ctx, ch));
+    ch.moveOutDay = day + stay;
+    return `${ch.name} แต่งงานกับ${spouse.name} เขยเข้ามาอยู่เรือนพ่อแม่ฝ่ายหญิง`;
+  }
+  if (parentsHome && ctx.rng.chance(W.patrilocalChance)) {
+    joinHousehold(ctx, spouse, parentsHome);
+    ch.moveOutDay = day + stay;
+    return `${ch.name} แต่งงานกับ${spouse.name} พาภรรยามาอยู่เรือนพ่อแม่`;
+  }
+  // ไปอยู่กับครอบครัวภรรยา — ครอบครัวฝ่ายหญิงไม่ได้จำลอง จึงนับเป็นเรือนใหม่ของคู่นี้
+  const home = createHousehold(ctx, ch);
+  joinHousehold(ctx, spouse, home);
+  return `${ch.name} แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวภรรยา`;
 }
 
 export function createDynasty(ctx: Ctx, name: string, founder: Character, faction: string | null): Dynasty {

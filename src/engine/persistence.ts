@@ -22,7 +22,7 @@ export const CURRENT_SCHEMA = 1;
 type TableName = Exclude<keyof GameState, 'meta'>;
 const TABLES: TableName[] = [
   'characters', 'bodyParts', 'wounds', 'memories', 'traits', 'households',
-  'familyNodes', 'dynasties', 'legends', 'items', 'relations', 'eventLog',
+  'familyNodes', 'dynasties', 'legends', 'items', 'relations', 'eventLog', 'intents',
 ];
 
 /** migration[v] แปลง state จาก schema v → v+1 */

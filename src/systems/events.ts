@@ -5,7 +5,7 @@ import type {
   TagId, Trait, VarRef, WoundId,
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
-import { cleanName, pickNameFor, rememberCustomName, renameCharacter } from './factory';
+import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
 
@@ -252,6 +252,8 @@ export interface EventReport {
   followUp?: GameEventDef['id'];
   /** ชื่อที่ตั้งให้ใครสักคนใน event นี้ */
   named?: { characterId: Character['id']; name: string; byPlayer: boolean };
+  /** บรรทัด log จาก effect (แต่งงานแล้วไปอยู่ที่ไหน) */
+  notes: string[];
 }
 
 /** input.name: ชื่อที่ผู้เล่นพิมพ์ สำหรับตัวเลือก input 'name' — ไม่ส่งมา = ใช้ชื่อที่ตั้งไว้ก่อน */
@@ -262,7 +264,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
   const typedName = input.name === undefined ? undefined : cleanName(input.name);
   if (typedName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
   p.instance.optionId = optionId;
-  const report: EventReport = { optionId, wounds: [], trauma: [] };
+  const report: EventReport = { optionId, wounds: [], trauma: [], notes: [] };
   const strain = p.resist.get(optionId);
   if (strain) {
     p.actor.stress = clamp01(p.actor.stress + strain.value * ctx.content.balance.will.stressPerResist);
@@ -332,6 +334,31 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'merit':
         ch.merit += e.delta;
         break;
+      case 'intent': {
+        // ความตั้งใจที่ role ทำอยู่ (คนละไม่เกินหนึ่ง) — ไม่มีแล้ว (เพิ่งจบ) ก็ไม่ต้องทำอะไร
+        const i = Object.values(ctx.state.intents).find((x) => x.actorId === ch.id);
+        if (!i) break;
+        if (e.progress) i.progress = clamp01(i.progress + e.progress);
+        if (e.odds) i.bonus += e.odds;
+        break;
+      }
+      case 'relation': {
+        const other = who(e.toward);
+        if (!other) break;
+        const id = `${ch.id}|${other.id}|${e.kind}`;
+        const prev = ctx.state.relations[id];
+        const cur = prev?.strength ?? 0;
+        const next = Math.max(-1, Math.min(1, Math.max(cur + (e.delta ?? 0), e.atLeast ?? -1)));
+        ctx.state.relations[id] = { id, from: ch.id, to: other.id, kind: e.kind, strength: next, sinceDay: prev?.sinceDay ?? ctx.state.meta.day };
+        break;
+      }
+      case 'marry': {
+        const other = who(e.with);
+        // event ค้างอยู่นานจนมีคนแต่งงานไปก่อน → ไม่แต่งซ้อน
+        if (!other || other.deathDay !== null || livingSpouse(ctx, ch) || livingSpouse(ctx, other) || other.local?.wed) break;
+        report.notes.push(wed(ctx, ch, other));
+        break;
+      }
       case 'name': {
         const byPlayer = e.by === 'input';
         const name = byPlayer ? typedName ?? ch.name : pickNameFor(ctx, ch);

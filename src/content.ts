@@ -8,6 +8,7 @@ export function buildContentDB(raw: {
   traitKinds: ContentDB['traitKinds'];
   events: ContentDB['events'];
   rules: Pick<ContentDB, 'scarRules' | 'injectionRules' | 'claimTemplates' | 'history'>;
+  intents: Pick<ContentDB, 'intents' | 'trades'>;
   balance: ContentDB['balance'];
 }): ContentDB {
   const tags = Object.fromEntries(raw.tags.map((t) => [t.id, t])) as ContentDB['tags'];
@@ -26,6 +27,11 @@ export function buildContentDB(raw: {
     for (const v of Object.values(ev.variables ?? {})) for (const tag of v.oneOf) known(`event ${ev.id} variable`, tag);
     for (const o of ev.options) for (const tag of o.tags ?? []) known(`event ${ev.id} option ${o.id}`, tag);
   }
+  for (const def of Object.values(raw.intents.intents)) {
+    for (const id of [def.success, def.failure, ...def.midEvents.map((m) => m.event)]) {
+      if (!raw.events[id]) throw new Error(`intent ${def.id}: unknown event ${id}`);
+    }
+  }
   return {
     names: raw.names,
     tags,
@@ -36,6 +42,8 @@ export function buildContentDB(raw: {
     injectionRules: raw.rules.injectionRules,
     claimTemplates: raw.rules.claimTemplates,
     history: raw.rules.history,
+    intents: raw.intents.intents,
+    trades: raw.intents.trades,
     balance: raw.balance,
   };
 }

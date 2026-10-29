@@ -1,5 +1,5 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
-import type { CharacterView, ClockState, DynastyView, EventView } from './engine/protocol';
+import type { CharacterView, ClockState, DynastyView, EventView, IntentPlanView, KnownPersonView } from './engine/protocol';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
 
@@ -74,7 +74,116 @@ function renderPlayer(v: CharacterView) {
   list('ปมในใจ', v.traits);
   list('ร่องรอยบนร่างกาย', [...v.scars, ...v.wounds.map((w) => `แผลสด ${w}`)]);
   list('ความสามารถทางกาย', Object.entries(v.capabilities).filter(([, x]) => x < 1).map(([k, x]) => `${k}: ${Math.round(x * 100)}%`));
+  box.append(el('h2', 'วิถีชีวิต'), el('div', v.lifestyle, 'lifestyle'));
+  if (v.intent) {
+    const i = v.intent;
+    const card = el('div', undefined, 'intent');
+    const head = el('div', undefined, 'row');
+    const quit = el('button', 'เลิก') as HTMLButtonElement;
+    quit.title = 'เลิกความตั้งใจนี้';
+    quit.onclick = async () => {
+      const r = await engine.request({ type: 'abandonIntent' });
+      for (const l of r.lines) write(l);
+      await refresh();
+    };
+    head.append(el('strong', `ตั้งใจ${i.title}`), quit);
+    const bar = el('progress') as HTMLProgressElement;
+    Object.assign(bar, { max: 100, value: i.progress });
+    bar.setAttribute('aria-label', `คืบหน้า ${i.progress}%`);
+    card.append(head, el('div', i.approach, 'muted'), bar, el('div', `อีกราว ${i.monthsLeft} เดือน · โอกาสสำเร็จ ${i.odds}%`));
+    card.title = i.factors.map((f) => `${f.value > 0 ? '+' : ''}${f.value}% ${f.label}`).join('\n');
+    box.append(card);
+  }
   lastYear = v.year;
+}
+
+// ---------------- คนที่รู้จัก: ญาติ (พับไว้) + คนนอกตระกูล พร้อมปุ่มสิ่งที่ตั้งใจทำได้ ----------------
+let kinOpen = false;
+
+function personRow(p: KnownPersonView): HTMLElement {
+  const row = el('div', undefined, `person${p.focus ? ' focus' : ''}`);
+  const who = el('div');
+  who.append(el('strong', p.name), document.createTextNode(` ${p.age} ปี · `), el('span', p.tie, 'tie'));
+  row.append(who, el('div', p.detail, 'muted'));
+  if (p.actions.length) {
+    const acts = el('div', undefined, 'acts');
+    for (const a of p.actions) {
+      const b = el('button', a.label) as HTMLButtonElement;
+      b.onclick = () => void openPlan(p.id, a.kind);
+      acts.append(b);
+    }
+    row.append(acts);
+  }
+  return row;
+}
+
+function renderKnown(people: KnownPersonView[]) {
+  const box = $('known');
+  box.replaceChildren(el('h2', 'คนที่รู้จัก'));
+  const kin = people.filter((p) => p.kin);
+  const others = people.filter((p) => !p.kin);
+  if (kin.length) {
+    const d = el('details') as HTMLDetailsElement;
+    d.open = kinOpen;
+    d.ontoggle = () => (kinOpen = d.open);
+    d.append(el('summary', `ครอบครัว (${kin.length})`), ...kin.map(personRow));
+    box.append(d);
+  }
+  if (!others.length) box.append(el('div', 'ยังไม่รู้จักใครนอกบ้าน', 'muted'));
+  box.append(...others.map(personRow));
+}
+
+/** หน้าเลือกวิธี: โอกาสสำเร็จ เวลาโดยประมาณ และชีวิตประจำวันที่จะเปลี่ยน — หยุดเวลาไว้ระหว่างเลือก */
+async function openPlan(targetId: string, kind: string) {
+  const wasPlaying = clock.playing;
+  if (wasPlaying) await clockCmd({ type: 'pause' });
+  const resume = () => {
+    if (wasPlaying && !modalOpen()) void clockCmd({ type: 'play' });
+  };
+  let plan: IntentPlanView;
+  try {
+    plan = await engine.request({ type: 'planIntent', targetId, kind });
+  } catch (e) {
+    status.textContent = (e as Error).message;
+    resume();
+    return;
+  }
+  const buttons = plan.approaches.map((a) => {
+    const b = el('button', undefined, 'opt approach') as HTMLButtonElement;
+    b.append(el('strong', a.label));
+    b.append(el('span', a.unavailable ? `ทำไม่ได้: ${a.unavailable}` : `โอกาสสำเร็จ ${a.odds}% · ราว ${a.months} เดือน`, 'note'));
+    if (!a.unavailable) {
+      b.append(el('span', a.lifestyle, 'note'));
+      const fs = el('span', undefined, 'factors');
+      a.factors.forEach((f, i) => {
+        if (i) fs.append(document.createTextNode(' · '));
+        fs.append(el('span', `${f.value > 0 ? '+' : ''}${f.value}% ${f.label}`, f.value > 0 ? 'up' : 'down'));
+      });
+      b.append(fs);
+    }
+    b.disabled = !!a.unavailable;
+    b.onclick = async () => {
+      try {
+        const r = await engine.request({ type: 'startIntent', targetId, kind, approach: a.id });
+        closeModal();
+        write(`→ ตั้งใจ${plan.title}: ${a.label}`);
+        for (const l of r.lines) write(l);
+        await refresh();
+        resume();
+      } catch (e) {
+        modal.append(el('p', (e as Error).message, 'error'));
+      }
+    };
+    return b;
+  });
+  const back = el('button', 'ย้อนกลับ') as HTMLButtonElement;
+  back.onclick = () => {
+    closeModal();
+    resume();
+  };
+  const row = el('div', undefined, 'row');
+  row.append(back);
+  openModal(el('h2', plan.title), el('p', plan.text), ...(plan.replaces ? [el('p', plan.replaces, 'triggered')] : []), ...buttons, row);
 }
 
 function renderDynasty(v: DynastyView) {
@@ -92,6 +201,7 @@ function renderDynasty(v: DynastyView) {
 
 async function refresh() {
   renderPlayer(await engine.request({ type: 'viewPlayer' }));
+  renderKnown(await engine.request({ type: 'viewKnown' }));
   renderDynasty(await engine.request({ type: 'viewDynasty' }));
 }
 
@@ -216,6 +326,7 @@ async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: s
     closeModal();
     write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ: ${v.name}`);
     renderPlayer(v);
+    renderKnown(await engine.request({ type: 'viewKnown' }));
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
     $('date').textContent = `พ.ศ. ${v.year}`;
     hasGame = true;
