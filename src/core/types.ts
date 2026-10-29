@@ -419,7 +419,11 @@ export interface Item {
   teaches?: { skill: string; learnBonus: number }; // ตำราประจำตระกูล
 }
 
-export type RelationKind = 'caregiver' | 'spouse' | 'patron' | 'friend' | 'rival' | 'gratitude' | 'grudge';
+/**
+ * affection / awe คือความรู้สึกของ from ที่มีต่อ to (ส่วนใหญ่ลูก → พ่อแม่) — ดู systems/will.ts
+ *  affection: รัก/ผูกพัน (-1 เกลียดชัง .. 1 รักมาก), awe: เกรง/ยำเกรง (0..1)
+ */
+export type RelationKind = 'caregiver' | 'spouse' | 'patron' | 'friend' | 'rival' | 'gratitude' | 'grudge' | 'affection' | 'awe';
 
 export interface Relation {
   id: string;
@@ -469,14 +473,29 @@ export type Effect =
       panicRole?: string; witnessPanic?: Unit;
     }
   | { op: 'stress'; role: string; delta: number }
+  /** ความรู้สึกของ role ที่มีต่อ toward เปลี่ยน — ส่วนที่ติดลบ (ถูกดุ) แรงขึ้นตามความดุของ toward */
+  | { op: 'bond'; role: string; toward: string; affection?: number; awe?: number }
+  /** ต่อด้วย event ถัดไปทันที (ใช้ role/ตัวแปรชุดเดิม) ด้วยโอกาส chance */
+  | { op: 'followUp'; event: EventDefId; chance: Unit }
   | { op: 'skill'; role: string; skill: string; delta: number }
   | { op: 'prestige'; role: string; delta: number };
+
+/**
+ * แรงต้านในใจตัวละครต่อตัวเลือก — บวกกันทุกข้อ (เฉพาะส่วนที่เป็นบวก)
+ * ค่า ≥ will.strainAt: เลือกได้แต่ฝืนใจ (เครียด) · ≥ will.lockAt: ล็อก พร้อมบอกเหตุผล
+ *  bond: ความรู้สึกที่มีต่อคนใน role (weight ติดลบ = ยิ่งเกลียดยิ่งต้าน)
+ *  personality: invert = ใช้ (1 − ค่า) เช่น boldness ต่ำ → ขี้อาย
+ */
+export type Resist =
+  | { source: 'bond'; role: string; axis: 'affection' | 'awe'; weight: number; reasonKey: string }
+  | { source: 'personality'; trait: keyof Personality; invert?: boolean; weight: number; reasonKey: string };
 
 export interface EventOption {
   id: string;
   textKey: string;
   tags?: Array<TagId | VarRef>;
   conditions?: Condition[];
+  resist?: Resist[];
   effects: Effect[];
   /** ตัวเลือกที่ระบบ inject เข้ามา (ไม่ได้อยู่ใน def) */
   injectedBy?: string;
@@ -489,6 +508,7 @@ export interface GameEventDef {
   contextTags: Array<TagId | VarRef>;
   variables?: Record<string, { oneOf: TagId[] }>;
   roles: Record<string, RoleFilter>;
+  /** weight 0 = ไม่สุ่มขึ้นเอง เกิดได้เฉพาะเป็น followUp ของ event อื่น */
   trigger: { ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number };
   percepts: PerceptTemplate[];
   options: EventOption[];
@@ -553,6 +573,20 @@ export interface Balance {
     causalWeight: Record<PerceptRole, number>;
     maxGeneralizeSteps: number;
     comfortFactor: Unit;
+    /** โอกาสที่ปม "เพี้ยน" (โทษสิ่งที่ไม่ใช่ต้นเหตุ เช่น ฟักทอง) จะฝังจริง — ที่เหลือฝังกับต้นเหตุจริงแทน */
+    misattributionKeep: Unit;
+  };
+  will: {
+    strainAt: Unit;
+    lockAt: Unit;
+    /** ความเครียดที่เพิ่มต่อแรงต้าน 1.0 เมื่อฝืนใจเลือก */
+    stressPerResist: number;
+  };
+  bond: {
+    /** ค่าเริ่มต้นของลูกต่อพ่อแม่ — awe = aweBase + aweFromHarshness × (1 − agreeableness ของพ่อแม่) */
+    affection: Signed;
+    aweBase: Unit;
+    aweFromHarshness: Unit;
   };
   wound: {
     infection: Record<WoundKind, Unit>;

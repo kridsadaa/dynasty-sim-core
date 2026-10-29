@@ -6,6 +6,7 @@ import type {
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
 import { resolveTrauma, type TraumaResult } from './trauma';
+import { adjustBond, resistance, type Resistance } from './will';
 
 // ============================================================================
 // Contextual Event Injection
@@ -31,7 +32,9 @@ export interface PreparedEvent {
   instance: EventInstance;
   actor: Character;
   options: ResolvedOption[];
-  locked: Map<string, string>; // optionId → ruleId ที่ล็อก
+  locked: Map<string, string>; // optionId → ruleId ที่ล็อก ('will' = ใจไม่ยอม ดู resist)
+  /** แรงต้านในใจต่อตัวเลือก (เฉพาะที่ ≥ strainAt) — ล็อกหรือฝืนใจ */
+  resist: Map<string, Resistance>;
   extraEffects: Effect[];
   hits: TraitHit[];
 }
@@ -41,6 +44,7 @@ export interface PendingEventSnapshot {
   instanceId: EventInstance['id'];
   options: ResolvedOption[];
   locked: Array<[string, string]>;
+  resist?: Array<[string, Resistance]>; // ไม่มีในเซฟก่อนมีระบบ will
   extraEffects: Effect[];
   hits: Array<{ traitId: Trait['id']; strength: number; scope: TraitHit['scope']; optionId?: string }>;
 }
@@ -50,6 +54,7 @@ export function snapshotEvent(p: PreparedEvent): PendingEventSnapshot {
     instanceId: p.instance.id,
     options: p.options,
     locked: [...p.locked],
+    resist: [...p.resist],
     extraEffects: p.extraEffects,
     hits: p.hits.map((h) => ({ traitId: h.trait.id, strength: h.strength, scope: h.scope, optionId: h.optionId })),
   };
@@ -66,6 +71,7 @@ export function restoreEvent(ctx: Ctx, s: PendingEventSnapshot): PreparedEvent |
     def, instance, actor,
     options: s.options,
     locked: new Map(s.locked),
+    resist: new Map(s.resist ?? []),
     extraEffects: s.extraEffects,
     hits: s.hits.flatMap((h) => {
       const trait = ctx.state.traits[h.traitId];
@@ -103,10 +109,37 @@ export function prepareEvent(
     .map((o) => ({ ...o, tags: (o.tags ?? []).map(sub) }));
 
   const prepared: PreparedEvent = {
-    def, instance, actor, options: baseOptions, locked: new Map(), extraEffects: [], hits: [],
+    def, instance, actor, options: baseOptions, locked: new Map(), resist: new Map(), extraEffects: [], hits: [],
   };
   inject(ctx, prepared);
+  applyWill(ctx, prepared);
   return prepared;
+}
+
+/** แรงต้านในใจ → ล็อกหรือฝืนใจ; ถ้าใจไม่ยอมทุกทาง ปลดตัวที่ต้านน้อยสุดให้เลือกแบบฝืนใจ (event ต้องจบได้เสมอ) */
+function applyWill(ctx: Ctx, p: PreparedEvent): void {
+  const W = ctx.content.balance.will;
+  const who = (role: string) => {
+    const id = p.instance.bindings[role];
+    return id ? ctx.state.characters[id] : undefined;
+  };
+  for (const o of p.options) {
+    const r = o.resist && resistance(ctx, p.actor, o.resist, who);
+    if (!r || r.value < W.strainAt) continue;
+    p.resist.set(o.id, r);
+    if (r.value >= W.lockAt && !p.locked.has(o.id)) p.locked.set(o.id, 'will');
+  }
+  if (p.options.every((o) => p.locked.has(o.id))) {
+    const willLocked = p.options.filter((o) => p.locked.get(o.id) === 'will');
+    const easiest = willLocked.sort((a, b) => (p.resist.get(a.id)?.value ?? 0) - (p.resist.get(b.id)?.value ?? 0))[0];
+    if (easiest) p.locked.delete(easiest.id);
+  }
+}
+
+/** event ถัดไปที่ตัวเลือกพาไป (followUp) — role และตัวแปรชุดเดิม */
+export function prepareFollowUp(ctx: Ctx, p: PreparedEvent, report: EventReport): PreparedEvent | null {
+  if (!report.followUp || !ctx.content.events[report.followUp]) return null;
+  return prepareEvent(ctx, report.followUp, p.instance.bindings, p.instance.vars);
 }
 
 function checkCondition(ctx: Ctx, ch: Character, c: Condition): boolean {
@@ -211,6 +244,9 @@ export interface EventReport {
   optionId: string;
   wounds: WoundId[];
   trauma: TraumaResult[];
+  /** เลือกทั้งที่ใจต้าน */
+  strained?: Resistance;
+  followUp?: GameEventDef['id'];
 }
 
 export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): EventReport {
@@ -218,6 +254,11 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): Even
   const opt = must(p.options.find((o) => o.id === optionId), optionId);
   p.instance.optionId = optionId;
   const report: EventReport = { optionId, wounds: [], trauma: [] };
+  const strain = p.resist.get(optionId);
+  if (strain) {
+    p.actor.stress = clamp01(p.actor.stress + strain.value * ctx.content.balance.will.stressPerResist);
+    report.strained = strain;
+  }
   const woundsByRole = new Map<string, { ids: WoundId[]; maxSeverity: number }>();
   const who = (role: string) => {
     const id = p.instance.bindings[role];
@@ -225,6 +266,10 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): Even
   };
 
   for (const e of [...opt.effects, ...p.extraEffects]) {
+    if (e.op === 'followUp') {
+      if (!report.followUp && ctx.rng.chance(e.chance)) report.followUp = e.event;
+      continue;
+    }
     const ch = who(e.role);
     if (!ch) continue;
     switch (e.op) {
@@ -265,6 +310,13 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): Even
       case 'stress':
         ch.stress = clamp01(ch.stress + e.delta);
         break;
+      case 'bond': {
+        const other = who(e.toward);
+        if (!other) break;
+        if (e.affection) adjustBond(ctx, ch, other, 'affection', e.affection);
+        if (e.awe) adjustBond(ctx, ch, other, 'awe', e.awe);
+        break;
+      }
       case 'skill':
         ch.skills[e.skill] = Math.max(0, (ch.skills[e.skill] ?? 0) + e.delta);
         break;

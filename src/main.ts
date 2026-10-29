@@ -71,7 +71,8 @@ function renderEvent(ev: EventView) {
   box.replaceChildren(el('h2', ev.title), el('p', ev.text));
   if (ev.triggered.length) box.append(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
   for (const o of ev.options) {
-    const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}`) as HTMLButtonElement;
+    const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}${o.note && !o.locked ? ' strained' : ''}`) as HTMLButtonElement;
+    if (o.note) b.append(el('span', o.note, 'note'));
     b.disabled = o.locked;
     b.onclick = async () => {
       box.replaceChildren();
@@ -81,6 +82,7 @@ function renderEvent(ev: EventView) {
         for (const l of r.lines) write(l);
         setBusy(false);
         await refresh();
+        await showPending(); // event ต่อเนื่อง (ถ้ามี)
       } catch (e) {
         // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
         status.textContent = (e as Error).message;

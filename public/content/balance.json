@@ -8,8 +8,11 @@
     "secondTraitThreshold": 0.72,
     "causalWeight": { "instrument": 1.0, "agent": 0.9, "target": 0.35, "place": 0.2, "environment": 0.15, "witness": 0.1, "sensation": 0.3 },
     "maxGeneralizeSteps": 2,
-    "comfortFactor": 0.7
+    "comfortFactor": 0.7,
+    "misattributionKeep": 0.08
   },
+  "will": { "strainAt": 0.35, "lockAt": 0.75, "stressPerResist": 0.15 },
+  "bond": { "affection": 0.5, "aweBase": 0.1, "aweFromHarshness": 0.4 },
   "wound": {
     "infection": { "cut": 0.25, "stab": 0.45, "burn": 0.35, "blunt": 0.1, "fracture": 0.15, "bite": 0.5 },
     "scarChance": { "cut": 0.9, "stab": 1.0, "burn": 1.2, "blunt": 0.3, "fracture": 0.2, "bite": 0.9 },

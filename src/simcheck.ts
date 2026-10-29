@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { isAlive, makeCtx, type Ctx } from './core/ctx';
 import type { ContentDB } from './core/types';
-import { chooseOption } from './systems/events';
+import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { heirCandidates, markDead, performHandover } from './systems/handover';
 import { bootstrapScenario } from './systems/scenario';
@@ -75,10 +75,12 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   for (let d = 0; d < content.balance.daysPerYear * YEARS && !over; d++) {
     for (const sig of advanceDay(ctx)) {
       if (sig.type === 'event') {
-        const p = sig.prepared;
-        const opt = p.options.find((o) => !p.locked.has(o.id));
-        if (!opt) throw new Error(`seed ${seed}: event ${p.def.id} ไม่มีตัวเลือกที่เลือกได้`);
-        chooseOption(ctx, p, opt.id);
+        // เลือกตัวเลือกแรกที่ไม่ล็อก แล้วเล่น event ต่อเนื่อง (followUp) จนจบสาย
+        for (let p: PreparedEvent | null = sig.prepared; p; ) {
+          const opt = p.options.find((o) => !p!.locked.has(o.id));
+          if (!opt) throw new Error(`seed ${seed}: event ${p.def.id} ไม่มีตัวเลือกที่เลือกได้`);
+          p = prepareFollowUp(ctx, p, chooseOption(ctx, p, opt.id));
+        }
       } else if (sig.type === 'playerDied') {
         const dead = S.characters[S.meta.playerCharacterId]!;
         if (!heirCandidates(ctx, dead).length) {

@@ -55,7 +55,8 @@ export interface EventView {
   instanceId: string;
   title: string;
   text: string;
-  options: Array<{ id: string; text: string; locked: boolean; injected: boolean }>;
+  /** note: เหตุผลที่ล็อก หรือคำเตือนว่าต้องฝืนใจ */
+  options: Array<{ id: string; text: string; locked: boolean; injected: boolean; note?: string }>;
   triggered: string[]; // ปมที่ถูกกระตุ้น (สำหรับ UI แสดง "ใจสั่น...")
 }
 

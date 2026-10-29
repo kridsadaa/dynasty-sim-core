@@ -1,7 +1,7 @@
 import { buildContentDB } from '../content';
 import { makeCtx, commitRng, must, yearOf, type Ctx } from '../core/ctx';
 import type { ContentDB } from '../core/types';
-import { chooseOption, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
+import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { emptyState } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario } from '../systems/scenario';
@@ -174,6 +174,10 @@ async function handle(cmd: Command): Promise<unknown> {
         t.branches.map((b) => `ฝังใจ: ${describeTrait(c, must(c.state.traits[b.traitId], 'trait'))}`),
       );
       if (rep.wounds.length) lines.unshift(`บาดเจ็บ ${rep.wounds.length} แห่ง`);
+      if (rep.strained) lines.unshift('ฝืนใจทำ — เครียดขึ้น');
+      // ตัวเลือกพาไป event ถัดไปทันที (ช่วยงานครัว → มีดบาด) — UI ถาม viewPending ต่อ
+      const next = prepareFollowUp(c, p, rep);
+      if (next) pending.set(next.instance.id, next);
       return { lines } satisfies ReplyData['choose'];
     }
     case 'viewPlayer':

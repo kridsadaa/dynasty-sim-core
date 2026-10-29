@@ -17,6 +17,7 @@ import { addOrReinforceTrait } from './traits';
 //
 // จุดที่ทำให้เกิด "ปมเพี้ยน": ขั้น [2] — เด็กเล็ก + จินตนาการสูง ให้น้ำหนักกับ "ความสะดุดตา"
 // มากกว่า "บทบาทเชิงเหตุ" ฟักทองสีส้มสดจึงแย่งน้ำหนักจากมีดได้ ไม่มี if-else พิเศษสำหรับแตงกวา
+// แต่ขั้น [4] ให้ปมเพี้ยนฝังจริงเพียง misattributionKeep — เป็นเรื่องแปลกที่นานๆ เจอที
 // ============================================================================
 
 const CAUSAL_ROLES: ReadonlySet<PerceptRole> = new Set(['instrument', 'agent']);
@@ -101,7 +102,13 @@ export function resolveTrauma(ctx: Ctx, input: TraumaInput): TraumaResult {
     const pool = [...attribution];
     for (let i = 0; i < fixations && pool.length; i++) {
       // สุ่มตามน้ำหนัก attribution (ไม่ใช่ argmax) → ผลลัพธ์หลากหลายแม้ input เดียวกัน
-      const pick = must(ctx.rng.weighted(pool, (a) => a.weight), 'fixation');
+      let pick = must(ctx.rng.weighted(pool, (a) => a.weight), 'fixation');
+      // ปมเพี้ยน (กลัวฟักทอง กลัวแม่) ให้เกิดยาก — ส่วนใหญ่ใจไปผูกกับต้นเหตุจริงแทน หรือไม่ฝังเลย
+      if (!CAUSAL_ROLES.has(pick.role) && !ctx.rng.chance(B.misattributionKeep)) {
+        const causal = pool.find((a) => CAUSAL_ROLES.has(a.role));
+        if (!causal) continue;
+        pick = causal;
+      }
       pool.splice(pool.indexOf(pick), 1);
 
       const misattributed = !CAUSAL_ROLES.has(pick.role);

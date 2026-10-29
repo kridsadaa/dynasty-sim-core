@@ -1,11 +1,46 @@
 {
+  "childhood.kitchen_chore": {
+    "id": "childhood.kitchen_chore",
+    "textKey": "event.kitchen_chore",
+    "contextTags": ["situation:kitchen_work", "place:kitchen", "$target_food"],
+    "variables": { "target_food": { "oneOf": ["food:pumpkin", "food:cucumber"] } },
+    "roles": { "actor": { "ageRange": [4, 12] }, "caregiver": { "relationToActor": "caregiver" } },
+    "trigger": { "ageRange": [4, 12], "weight": 1, "cooldownDays": 300 },
+    "percepts": [],
+    "options": [
+      { "id": "help", "textKey": "event.kitchen_chore.help", "tags": ["tool:kitchen_knife", "$target_food"],
+        "resist": [ { "source": "bond", "role": "caregiver", "axis": "affection", "weight": -1.2, "reasonKey": "resent" } ],
+        "effects": [
+          { "op": "bond", "role": "actor", "toward": "caregiver", "affection": 0.06, "awe": -0.02 },
+          { "op": "skill", "role": "actor", "skill": "cooking", "delta": 3 },
+          { "op": "followUp", "event": "childhood.kitchen_cut", "chance": 0.08 }
+        ] },
+      { "id": "later", "textKey": "event.kitchen_chore.later",
+        "resist": [
+          { "source": "bond", "role": "caregiver", "axis": "awe", "weight": 0.6, "reasonKey": "awe" },
+          { "source": "bond", "role": "caregiver", "axis": "affection", "weight": 0.25, "reasonKey": "affection" }
+        ],
+        "effects": [
+          { "op": "bond", "role": "actor", "toward": "caregiver", "affection": -0.03, "awe": 0.04 }
+        ] },
+      { "id": "sneak", "textKey": "event.kitchen_chore.sneak",
+        "resist": [
+          { "source": "bond", "role": "caregiver", "axis": "awe", "weight": 1.2, "reasonKey": "awe" },
+          { "source": "bond", "role": "caregiver", "axis": "affection", "weight": 0.5, "reasonKey": "affection" }
+        ],
+        "effects": [
+          { "op": "bond", "role": "actor", "toward": "caregiver", "affection": -0.06, "awe": 0.08 },
+          { "op": "stress", "role": "actor", "delta": -0.05 }
+        ] }
+    ]
+  },
   "childhood.kitchen_cut": {
     "id": "childhood.kitchen_cut",
     "textKey": "event.kitchen_cut",
     "contextTags": ["situation:kitchen_work", "place:kitchen", "tool:kitchen_knife", "$target_food"],
     "variables": { "target_food": { "oneOf": ["food:pumpkin", "food:cucumber"] } },
     "roles": { "actor": { "ageRange": [4, 12] }, "caregiver": { "relationToActor": "caregiver" } },
-    "trigger": { "ageRange": [4, 12], "weight": 1, "cooldownDays": 720 },
+    "trigger": { "ageRange": [4, 12], "weight": 0 },
     "percepts": [
       { "tag": "tool:kitchen_knife", "role": "instrument", "salience": 0.6 },
       { "tag": "$target_food", "role": "target", "salience": 0.45 },
@@ -40,6 +75,7 @@
       { "id": "eat", "textKey": "event.court_feast.eat", "tags": ["$dish"],
         "effects": [ { "op": "prestige", "role": "actor", "delta": 1 } ] },
       { "id": "chat", "textKey": "event.court_feast.chat",
+        "resist": [ { "source": "personality", "trait": "boldness", "invert": true, "weight": 0.8, "reasonKey": "shy" } ],
         "effects": [ { "op": "prestige", "role": "actor", "delta": 0.5 } ] }
     ]
   }

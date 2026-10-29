@@ -60,8 +60,21 @@ export function dynastyView(ctx: Ctx): DynastyView {
 }
 
 export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventView {
-  const vars: Record<string, string> = { actor: p.actor.name };
+  const vars: Record<string, string> = {};
+  const actorNode = ctx.state.familyNodes[p.actor.familyNodeId];
+  for (const [role, id] of Object.entries(p.instance.bindings)) {
+    const ch = ctx.state.characters[id];
+    // เรียกพ่อแม่ตามที่ลูกเรียก: "แม่แย้ม" ไม่ใช่ "แย้ม"
+    const kin = ch && (ch.familyNodeId === actorNode?.motherId ? 'แม่' : ch.familyNodeId === actorNode?.fatherId ? 'พ่อ' : '');
+    vars[role] = ch ? `${kin}${ch.name}` : role;
+  }
   for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.label(v);
+  const willNote = (id: string) => {
+    const r = p.resist.get(id);
+    if (!r) return undefined;
+    const reason = fill(text[`will.reason.${r.reasonKey}`] ?? r.reasonKey, { who: r.role ? vars[r.role] ?? r.role : '' });
+    return fill(text[p.locked.get(id) === 'will' ? 'will.lock' : 'will.strain'] ?? '{reason}', { reason });
+  };
   return {
     instanceId: p.instance.id,
     title: text[`${p.def.textKey}.title`] ?? p.def.id,
@@ -71,6 +84,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       text: fill(text[o.textKey] ?? o.textKey, { ...vars, ...o.params }),
       locked: p.locked.has(o.id),
       injected: !!o.injectedBy,
+      note: willNote(o.id),
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
   };
