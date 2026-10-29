@@ -70,7 +70,7 @@ export function seedLegendsFromLife(ctx: Ctx, ch: Character, node: FamilyNode, d
   return out;
 }
 
-type DriftOp = 'glorify' | 'magnify' | 'anchor' | 'supernatural' | 'forget' | 'conflate';
+export type DriftOp = 'glorify' | 'magnify' | 'anchor' | 'supernatural' | 'forget' | 'conflate';
 
 /** เล่าต่อ 1 รุ่น — teller คือคนที่ถ่ายทอดเรื่องให้รุ่นถัดไป (ปกติคือทายาท) */
 export function retellLegend(ctx: Ctx, legend: Legend, teller: Character | null): DriftOp[] {

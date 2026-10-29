@@ -33,8 +33,13 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: ch.bodyPartIds.flatMap((pid) => {
       const p = ctx.state.bodyParts[pid];
-      const label = p ? partLabel(p.partDefId) : '';
-      return p ? [...p.scars.map((s) => `แผลเป็น(${t(text, 'scar.kind', s.kind)})ที่${label}`), ...(p.status === 'missing' ? [`สูญเสีย${label}`] : [])] : [];
+      if (!p) return [];
+      const label = partLabel(p.partDefId);
+      // แผลชนิดเดียวกันที่อวัยวะเดียวกันรวมเป็นบรรทัดเดียว "×N"
+      const counts = new Map<string, number>();
+      for (const s of p.scars) counts.set(s.kind, (counts.get(s.kind) ?? 0) + 1);
+      const lines = [...counts].map(([kind, n]) => `แผลเป็น(${t(text, 'scar.kind', kind)})ที่${label}${n > 1 ? ` ×${n}` : ''}`);
+      return p.status === 'missing' ? [...lines, `สูญเสีย${label}`] : lines;
     }),
     wounds: ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${partLabel(w!.partDefId)}: ${t(text, 'wound.stage', w!.stage)}`),
     // คีย์เป็นคำไทยเพราะ UI แสดงคีย์ตรงๆ
@@ -59,7 +64,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
   for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.label(v);
   return {
     instanceId: p.instance.id,
-    title: p.def.id,
+    title: text[`${p.def.textKey}.title`] ?? p.def.id,
     text: fill(text[p.def.textKey] ?? p.def.textKey, vars),
     options: p.options.map((o) => ({
       id: o.id,

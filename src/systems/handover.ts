@@ -2,7 +2,7 @@ import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, Relation, TagId } from '../core/types';
 import { livingSpouse, pickCaregiverChild } from './factory';
-import { retellLegend, seedLegendsFromLife } from './legend';
+import { retellLegend, seedLegendsFromLife, type DriftOp } from './legend';
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 
@@ -75,6 +75,16 @@ export function heirCandidates(ctx: Ctx, deceased: Character): Array<{ ch: Chara
  * asPlayer=false: ใช้ตอนหัวหน้าตระกูลที่เป็น NPC ตาย (เช่น บิดาผู้เล่น) — แบ่งมรดก/ตกผลึกข้อห้ามเหมือนกัน
  * แต่ไม่สลับตัวละครผู้เล่น
  */
+/** คำบรรยายการบิดเบือนใน log — ผู้เล่นไม่ควรเห็นชื่อ op ภายใน */
+const DRIFT_LABEL: Record<DriftOp, string> = {
+  glorify: 'เสริมให้ดูยิ่งใหญ่ขึ้น',
+  magnify: 'เพิ่มจำนวนศัตรู',
+  anchor: 'ผูกเข้ากับศึกสงคราม',
+  supernatural: 'เติมเรื่องอภินิหาร',
+  forget: 'ลืมรายละเอียดบางส่วน',
+  conflate: 'ปนกับเรื่องของบรรพบุรุษที่มีชื่อเสียงกว่า',
+};
+
 export function performHandover(
   ctx: Ctx, deceasedId: Character['id'], chosenHeirId?: Character['id'], opts: { asPlayer?: boolean } = {},
 ): HandoverReport {
@@ -118,12 +128,15 @@ export function performHandover(
   for (const lid of dyn.legendIds) {
     const legend = ctx.state.legends[lid];
     if (!legend) continue;
-    const ops: string[] = retellLegend(ctx, legend, heir);
+    const ops = [...new Set(retellLegend(ctx, legend, heir))].map((op) => DRIFT_LABEL[op]);
     if ((heir.skills['literacy'] ?? 0) >= 30 && !legend.writtenRecord) {
       legend.writtenRecord = true; // จดลงสมุดข่อย → บิดเบือนช้าลงนับจากนี้
       ops.push('จดลงสมุดข่อย');
     }
-    if (ops.length) log.push(`ตำนาน ${lid} ถูกเล่าต่อโดย ${heir.name}: ${ops.join(', ')} (divergence ${legend.divergence.toFixed(2)})`);
+    const about = ctx.state.familyNodes[legend.truth.subjectNodeId]?.name;
+    if (ops.length) {
+      log.push(`ตำนาน${about ? `เรื่อง${about}` : ''}ถูกเล่าต่อโดย ${heir.name}: ${ops.join(', ')} (คลาดจากความจริง ${Math.round(legend.divergence * 100)}%)`);
+    }
   }
 
   // household: กฎส่วนตัวของผู้ตายหายไป เหลือเฉพาะที่ตกผลึกเป็นข้อห้ามตระกูลแล้ว (ปฏิบัติต่อในเรือนทายาท)
