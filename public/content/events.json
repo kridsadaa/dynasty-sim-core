@@ -1,4 +1,53 @@
 {
+  "family.newborn": {
+    "id": "family.newborn",
+    "textKey": "event.newborn",
+    "contextTags": [],
+    "roles": { "actor": {}, "child": {}, "spouse": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "self", "textKey": "event.newborn.self", "input": "name",
+        "effects": [ { "op": "name", "role": "child", "by": "input" } ] },
+      { "id": "spouse", "textKey": "event.newborn.spouse", "conditions": [ { "type": "hasRole", "role": "spouse" } ],
+        "effects": [
+          { "op": "name", "role": "child", "by": "pick" },
+          { "op": "bond", "role": "spouse", "toward": "actor", "affection": 0.05 }
+        ] },
+      { "id": "monk", "textKey": "event.newborn.monk",
+        "effects": [
+          { "op": "name", "role": "child", "by": "pick" },
+          { "op": "merit", "role": "actor", "delta": 1 }
+        ] },
+      { "id": "elder", "textKey": "event.newborn.elder", "conditions": [ { "type": "hasRole", "role": "elder" } ],
+        "effects": [
+          { "op": "name", "role": "child", "by": "pick" },
+          { "op": "bond", "role": "actor", "toward": "elder", "affection": 0.04 }
+        ] }
+    ]
+  },
+  "family.grandchild_naming": {
+    "id": "family.grandchild_naming",
+    "textKey": "event.grandchild_naming",
+    "contextTags": [],
+    "roles": { "actor": {}, "parent": {}, "child": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "self", "textKey": "event.grandchild_naming.self", "input": "name",
+        "effects": [
+          { "op": "name", "role": "child", "by": "input" },
+          { "op": "bond", "role": "parent", "toward": "actor", "affection": 0.05 }
+        ] },
+      { "id": "parent", "textKey": "event.grandchild_naming.parent",
+        "effects": [ { "op": "name", "role": "child", "by": "pick" } ] },
+      { "id": "monk", "textKey": "event.grandchild_naming.monk",
+        "effects": [
+          { "op": "name", "role": "child", "by": "pick" },
+          { "op": "merit", "role": "parent", "delta": 1 }
+        ] }
+    ]
+  },
   "childhood.kitchen_chore": {
     "id": "childhood.kitchen_chore",
     "textKey": "event.kitchen_chore",

@@ -24,7 +24,14 @@
       #log p { margin: 2px 0; }
       #log .year { color: var(--accent); font-weight: 600; margin-top: 8px; }
       #log .handover { border-left: 3px solid var(--accent); padding-left: 8px; }
-      #event:empty { display: none; }
+      #backdrop { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(0 0 0 / .45); }
+      #backdrop[hidden] { display: none; }
+      #event { width: min(560px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: 0 12px 40px rgb(0 0 0 / .35); }
+      #event h2 { font-size: 18px; color: var(--fg); }
+      #event form { display: grid; gap: 8px; margin-top: 8px; }
+      #event form .row { display: flex; gap: 8px; justify-content: flex-end; }
+      #event input { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+      #event .error { color: var(--accent); font-size: 14px; }
       #event .opt { display: block; width: 100%; text-align: left; margin-top: 6px; }
       #event .opt.injected { border-style: dashed; }
       #event .triggered { color: var(--accent); font-size: 14px; }
@@ -49,7 +56,6 @@
         <button id="save" disabled>บันทึก</button>
       </header>
       <div>
-        <section id="event"></section>
         <section><h2>บันทึก</h2><div id="log"></div></section>
       </div>
       <aside>
@@ -57,6 +63,7 @@
         <section id="dynasty" style="margin-top:16px"><h2>ตระกูล</h2></section>
       </aside>
     </main>
+    <div id="backdrop" hidden><section id="event" role="dialog" aria-modal="true"></section></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

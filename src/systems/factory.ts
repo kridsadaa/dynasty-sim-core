@@ -130,13 +130,57 @@ export function pickName(
   const fits = ctx.content.names.names.filter(
     (n) => (n.sex === null || n.sex === sex) && (n.estates === null || n.estates.includes(estate)) && !avoid.has(n.name),
   );
-  const pool = fits.length
-    ? fits.map((n) => ({ name: n.name, invented: !!n.invented }))
+  // ชื่อที่ผู้เล่นเคยตั้งในเซฟนี้ใช้ได้เหมือนชื่อในคลัง
+  const custom = (ctx.state.meta.customNames ?? [])
+    .filter((n) => n.sex === sex && !avoid.has(n.name) && !fits.some((f) => f.name === n.name))
+    .map((n) => ({ name: n.name, invented: false }));
+  const pool = fits.length || custom.length
+    ? [...fits.map((n) => ({ name: n.name, invented: !!n.invented })), ...custom]
     : PLACEHOLDER_NAMES.filter((n) => !avoid.has(n)).map((name) => ({ name, invented: true }));
   // ใช้ซ้ำน้อยสุดก่อน แล้วชื่อที่มีเอกสารก่อนชื่อที่แต่ง
   const rank = (n: { name: string; invented: boolean }) => (inUse.get(n.name) ?? 0) * 2 + (n.invented ? 1 : 0);
   const best = Math.min(...pool.map(rank));
   return ctx.rng.pick(pool.filter((n) => rank(n) === best))?.name ?? 'ทอง';
+}
+
+/** ชื่อที่ผู้เล่นพิมพ์: อักษรไทย 1–20 ตัว ไม่มีช่องว่าง — คืน null ถ้าใช้ไม่ได้ */
+export function cleanName(raw: string): string | null {
+  const name = raw.trim();
+  return /^[฀-๿]{1,20}$/.test(name) ? name : null;
+}
+
+/** จำชื่อที่ผู้เล่นตั้งเองไว้ในเซฟ (ถ้ายังไม่มีในคลัง) ให้ NPC ที่เกิดทีหลังสุ่มได้ */
+export function rememberCustomName(ctx: Ctx, name: string, sex: 'm' | 'f'): void {
+  if (ctx.content.names.names.some((n) => n.name === name && (n.sex === null || n.sex === sex))) return;
+  const list = (ctx.state.meta.customNames ??= []);
+  if (!list.some((n) => n.name === name && n.sex === sex)) list.push({ name, sex });
+}
+
+export function renameCharacter(ctx: Ctx, ch: Character, name: string): void {
+  ch.name = name;
+  const node = ctx.state.familyNodes[ch.familyNodeId];
+  if (node) node.name = name;
+}
+
+/** ชื่อที่ห้ามใช้กับเด็กแรกเกิด: ญาติใกล้ของพ่อแม่ฝั่งตระกูล และชื่อผู้เล่นที่ยังมีชีวิต */
+export function newbornAvoid(ctx: Ctx, parent: Character, otherParent: Character | undefined): Set<string> {
+  const avoid = relativeNames(ctx, parent, otherParent);
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (player && player.deathDay === null) avoid.add(player.name);
+  return avoid;
+}
+
+/** สุ่มชื่อใหม่ให้เด็กที่เกิดแล้ว (ให้คนอื่นตั้งให้) — ไม่ซ้ำชื่อเดิมที่ตั้งไว้ชั่วคราว */
+export function pickNameFor(ctx: Ctx, kid: Character): string {
+  const node = ctx.state.familyNodes[kid.familyNodeId];
+  const parents = [node?.fatherId, node?.motherId]
+    .map((n) => (n ? ctx.state.familyNodes[n]?.characterId : null))
+    .map((id) => (id ? ctx.state.characters[id] : undefined))
+    .filter((c): c is Character => !!c);
+  const main = parents.find((p) => p.dynastyId === kid.dynastyId) ?? parents[0];
+  const avoid = main ? newbornAvoid(ctx, main, parents.find((p) => p !== main)) : new Set<string>();
+  avoid.add(kid.name);
+  return pickName(ctx, kid.sex, kid.social.estate, avoid, namesInUse(ctx, kid.dynastyId, yearOf(ctx, ctx.state.meta.day)));
 }
 
 export function marry(ctx: Ctx, a: Character, b: Character): void {

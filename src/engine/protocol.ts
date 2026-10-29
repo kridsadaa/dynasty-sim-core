@@ -13,7 +13,7 @@ export type Command =
   | { type: 'deleteSave'; slot: string }
   | { type: 'advance'; days: number }
   | { type: 'pause' }
-  | { type: 'choose'; instanceId: string; optionId: string }
+  | { type: 'choose'; instanceId: string; optionId: string; name?: string }
   | { type: 'viewPlayer' }
   | { type: 'viewDynasty' }
   | { type: 'viewPending' };
@@ -56,7 +56,11 @@ export interface EventView {
   title: string;
   text: string;
   /** note: เหตุผลที่ล็อก หรือคำเตือนว่าต้องฝืนใจ */
-  options: Array<{ id: string; text: string; locked: boolean; injected: boolean; note?: string }>;
+  /** nameInput: ตัวเลือกนี้ให้ผู้เล่นพิมพ์ชื่อ — default = ชื่อที่เสนอไว้ก่อน */
+  options: Array<{
+    id: string; text: string; locked: boolean; injected: boolean; note?: string;
+    nameInput?: { default: string; label: string };
+  }>;
   triggered: string[]; // ปมที่ถูกกระตุ้น (สำหรับ UI แสดง "ใจสั่น...")
 }
 

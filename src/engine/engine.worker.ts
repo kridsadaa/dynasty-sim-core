@@ -2,7 +2,7 @@ import { buildContentDB } from '../content';
 import { makeCtx, commitRng, must, yearOf, type Ctx } from '../core/ctx';
 import type { ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
-import { emptyState } from '../systems/factory';
+import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
@@ -134,8 +134,11 @@ async function handle(cmd: Command): Promise<unknown> {
   switch (cmd.type) {
     case 'newGame': {
       await acquireSessionLock();
+      const heroName = cmd.heroName === undefined ? undefined : cleanName(cmd.heroName);
+      if (heroName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
       ctx = makeCtx(emptyState(cmd.seed), must(content, 'content'));
-      bootstrapScenario(ctx, cmd.heroName);
+      const hero = bootstrapScenario(ctx, heroName);
+      if (heroName) rememberCustomName(ctx, heroName, hero.sex);
       pending.clear();
       return playerView(ctx, text);
     }
@@ -168,13 +171,14 @@ async function handle(cmd: Command): Promise<unknown> {
     case 'choose': {
       const c = need();
       const p = must(pending.get(cmd.instanceId), 'event นี้ไม่ได้รออยู่');
-      const rep = chooseOption(c, p, cmd.optionId);
+      const rep = chooseOption(c, p, cmd.optionId, { name: cmd.name });
       pending.delete(cmd.instanceId);
       const lines = rep.trauma.flatMap((t) =>
         t.branches.map((b) => `ฝังใจ: ${describeTrait(c, must(c.state.traits[b.traitId], 'trait'))}`),
       );
       if (rep.wounds.length) lines.unshift(`บาดเจ็บ ${rep.wounds.length} แห่ง`);
       if (rep.strained) lines.unshift('ฝืนใจทำ — เครียดขึ้น');
+      if (rep.named) lines.push(`ตั้งชื่อว่า "${rep.named.name}"`);
       // ตัวเลือกพาไป event ถัดไปทันที (ช่วยงานครัว → มีดบาด) — UI ถาม viewPending ต่อ
       const next = prepareFollowUp(c, p, rep);
       if (next) pending.set(next.instance.id, next);

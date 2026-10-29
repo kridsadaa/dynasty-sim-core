@@ -3,8 +3,8 @@ import type { Character, GameEventDef } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import {
-  createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marry, namesInUse, pickCaregiverChild, pickName, relativeNames,
-  spawnCharacter,
+  createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marry, namesInUse, newbornAvoid, pickCaregiverChild,
+  pickName, spawnCharacter,
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
 import { householdYearTick } from './socialLearning';
@@ -52,7 +52,11 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       const logs = householdYearTick(ctx, hh.id);
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', line });
     }
-    for (const line of lifeMilestones(ctx)) out.push({ type: 'log', line });
+    for (const line of lifeMilestones(ctx, (kid, parent, spouse) => {
+      const naming = namingEvent(ctx, kid, parent, spouse);
+      if (naming) out.push({ type: 'event', prepared: naming });
+      return !!naming;
+    })) out.push({ type: 'log', line });
     for (const ch of Object.values(S.characters)) {
       if (!isAlive(ch)) continue;
       const over = ageOf(ctx, ch) - B.world.oldAgeStart;
@@ -92,6 +96,30 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   }
   if (player && !isAlive(player)) out.push({ type: 'playerDied' });
   return out;
+}
+
+/**
+ * เด็กเกิดในสายผู้เล่น → event ตั้งชื่อ
+ *  - ลูกของผู้เล่น: ผู้เล่นเลือกว่าจะตั้งเอง ให้คู่ครอง/พระ/พ่อแม่ตั้ง
+ *  - หลาน (ลูกของลูกผู้เล่น): บางครั้งลูกพาหลานมาให้ตั้งชื่อ
+ */
+function namingEvent(ctx: Ctx, kid: Character, parent: Character, spouse: Character): PreparedEvent | null {
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (!player || !isAlive(player)) return null;
+  if (parent.id === player.id || spouse.id === player.id) {
+    const elder = resolveRole(ctx, player, 'parent');
+    const other = parent.id === player.id ? spouse : parent;
+    return prepareEvent(ctx, 'family.newborn', {
+      actor: player.id, child: kid.id,
+      ...(isAlive(other) ? { spouse: other.id } : {}),
+      ...(elder ? { elder: elder.id } : {}),
+    });
+  }
+  const isPlayersChild = livingChildren(ctx, player).some((c) => c.id === parent.id);
+  if (isPlayersChild && ctx.rng.chance(ctx.content.balance.world.grandchildNamingChance)) {
+    return prepareEvent(ctx, 'family.grandchild_naming', { actor: player.id, parent: parent.id, child: kid.id });
+  }
+  return null;
 }
 
 /** สุ่ม event ที่ trigger ผ่าน + ผูก role ได้ครบ + พ้น cooldown */
@@ -150,7 +178,11 @@ function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Chara
  *  - ลูกชายในตระกูลแต่งงาน → ส่วนใหญ่ไปอยู่กับครอบครัวภรรยา (นอกฉาก = ตั้งเรือนใหม่), บางส่วนพาภรรยามาอยู่บ้านพ่อแม่
  *  - ครบ stayYears คู่ที่อยู่บ้านพ่อแม่แยกเรือนออกไป ยกเว้นลูกที่อยู่ดูแลพ่อแม่ (ลูกสาวคนสุดท้อง)
  */
-export function lifeMilestones(ctx: Ctx): string[] {
+export function lifeMilestones(
+  ctx: Ctx,
+  /** เรียกทุกครั้งที่มีเด็กเกิด — คืน true ถ้าจะให้ผู้เล่นตั้งชื่อ */
+  onBirth?: (kid: Character, parent: Character, spouse: Character) => boolean,
+): string[] {
   const W = ctx.content.balance.world;
   const dpy = ctx.content.balance.daysPerYear;
   const day = ctx.state.meta.day;
@@ -195,14 +227,13 @@ export function lifeMilestones(ctx: Ctx): string[] {
       const father = ch.sex === 'm' ? ch : spouse;
       const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
       // ชื่อผู้เล่นห้ามซ้ำเสมอ — เรื่องทั้งเกมเล่าผ่านคนนี้
-      const avoid = relativeNames(ctx, ch, spouse);
-      const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
-      if (player && isAlive(player)) avoid.add(player.name);
       const kid = spawnCharacter(ctx, {
-        name: pickName(ctx, sex, ch.social.estate, avoid, namesInUse(ctx, ch.dynastyId, year)),
+        name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, spouse), namesInUse(ctx, ch.dynastyId, year)),
         sex, birthYear: year, estate: ch.social.estate, father, mother,
       });
-      out.push(`${ch.name} มีบุตร: ${kid.name}`);
+      // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log
+      const naming = onBirth?.(kid, ch, spouse) ?? false;
+      out.push(naming ? `${ch.name} มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name} มีบุตร: ${kid.name}`);
     }
   }
   return out;

@@ -66,31 +66,69 @@ async function refresh() {
   renderDynasty(await engine.request({ type: 'viewDynasty' }));
 }
 
+// ---------------- modal: event ทุกอันและหน้าตั้งชื่อ ----------------
+const modal = $('event');
+const openModal = (...children: Node[]) => {
+  modal.replaceChildren(...children);
+  $('backdrop').hidden = false;
+};
+const closeModal = () => {
+  modal.replaceChildren();
+  $('backdrop').hidden = true;
+};
+
+/** ฟอร์มพิมพ์ชื่อ — ตรวจแบบเดียวกับ worker (อักษรไทย 1–20 ตัว) */
+function nameForm(label: string, value: string, submitText: string, onSubmit: (name: string) => void, onCancel: () => void): HTMLFormElement {
+  const form = el('form') as HTMLFormElement;
+  const input = el('input') as HTMLInputElement;
+  Object.assign(input, { value, required: true, maxLength: 20, pattern: '[\u0E00-\u0E7F]+', title: 'อักษรไทย ไม่มีช่องว่าง' });
+  input.setAttribute('aria-label', label);
+  const ok = el('button', submitText) as HTMLButtonElement;
+  const cancel = el('button', 'ย้อนกลับ') as HTMLButtonElement;
+  cancel.type = 'button';
+  cancel.onclick = onCancel;
+  const row = el('div', undefined, 'row');
+  row.append(cancel, ok);
+  form.append(el('label', label), input, row);
+  form.onsubmit = (e) => {
+    e.preventDefault();
+    onSubmit(input.value.trim());
+  };
+  queueMicrotask(() => input.select());
+  return form;
+}
+
+async function choose(ev: EventView, o: EventView['options'][number], name?: string) {
+  modal.replaceChildren(el('p', '…'));
+  try {
+    const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id, name });
+    closeModal();
+    write(`→ ${o.text}`);
+    for (const l of r.lines) write(l);
+    setBusy(false);
+    await refresh();
+    await showPending(); // event ต่อเนื่อง (ถ้ามี)
+  } catch (e) {
+    // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
+    await showPending();
+    modal.append(el('p', (e as Error).message, 'error'));
+  }
+}
+
 function renderEvent(ev: EventView) {
-  const box = $('event');
-  box.replaceChildren(el('h2', ev.title), el('p', ev.text));
-  if (ev.triggered.length) box.append(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
-  for (const o of ev.options) {
+  const head = [el('h2', ev.title), el('p', ev.text)];
+  if (ev.triggered.length) head.push(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
+  const buttons = ev.options.map((o) => {
     const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}${o.note && !o.locked ? ' strained' : ''}`) as HTMLButtonElement;
     if (o.note) b.append(el('span', o.note, 'note'));
     b.disabled = o.locked;
-    b.onclick = async () => {
-      box.replaceChildren();
-      try {
-        const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id });
-        write(`→ ${o.text}`);
-        for (const l of r.lines) write(l);
-        setBusy(false);
-        await refresh();
-        await showPending(); // event ต่อเนื่อง (ถ้ามี)
-      } catch (e) {
-        // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
-        status.textContent = (e as Error).message;
-        await showPending();
-      }
-    };
-    box.append(b);
-  }
+    const input = o.nameInput;
+    b.onclick = input
+      ? () => openModal(...head, nameForm(input.label, input.default, 'ตั้งชื่อ', (name) => choose(ev, o, name), () => renderEvent(ev)))
+      : () => choose(ev, o);
+    return b;
+  });
+  openModal(...head, ...buttons);
   setBusy(false);
   for (const b of timeButtons) b.disabled = true; // ต้องตัดสินใจก่อน
 }
@@ -151,13 +189,13 @@ async function run(days: number) {
 
 const MANUAL_SLOT = 'slot1';
 
-async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT) {
+async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: string) {
   try {
     const v = from === 'new'
-      ? await engine.request({ type: 'newGame', seed: Math.floor(Math.random() * 2 ** 31) })
+      ? await engine.request({ type: 'newGame', seed: Math.floor(Math.random() * 2 ** 31), heroName })
       : await engine.request({ type: 'load', slot: from });
     log.replaceChildren();
-    $('event').replaceChildren();
+    closeModal();
     write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ: ${v.name}`);
     renderPlayer(v);
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
@@ -166,10 +204,16 @@ async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT) {
     void requestPersistentStorage();
   } catch (e) {
     status.textContent = (e as Error).message;
+    if (from === 'new' && !modal.querySelector('.error')) modal.append(el('p', (e as Error).message, 'error'));
   }
 }
 
-$('new').onclick = () => start('new');
+$('new').onclick = () =>
+  openModal(
+    el('h2', 'เริ่มชีวิตใหม่'),
+    el('p', 'ลูกชายวัย 4 ขวบของขุนนางชั้นผู้น้อย ปลายกรุงศรีอยุธยา พ.ศ. 2288'),
+    nameForm('ชื่อตัวละคร', 'บุญมา', 'เริ่ม', (name) => void start('new', name), closeModal),
+  );
 $('load').onclick = () => start('autosave');
 $('loadSlot').onclick = () => start(MANUAL_SLOT);
 $('month').onclick = () => run(30);

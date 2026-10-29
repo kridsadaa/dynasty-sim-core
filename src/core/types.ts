@@ -459,7 +459,9 @@ export interface PartSelector {
 export type Condition =
   | { type: 'age'; min?: number; max?: number }
   | { type: 'capability'; capability: CapabilityId; min: Unit }
-  | { type: 'estate'; in: Estate[] };
+  | { type: 'estate'; in: Estate[] }
+  /** มีคนผูกกับ role นี้ใน event (เช่น ยังมีคู่ครอง/พ่อแม่ที่มีชีวิต) */
+  | { type: 'hasRole'; role: string };
 
 export type Effect =
   | {
@@ -477,6 +479,9 @@ export type Effect =
   | { op: 'bond'; role: string; toward: string; affection?: number; awe?: number }
   /** ต่อด้วย event ถัดไปทันที (ใช้ role/ตัวแปรชุดเดิม) ด้วยโอกาส chance */
   | { op: 'followUp'; event: EventDefId; chance: Unit }
+  /** ตั้งชื่อคนใน role: input = ชื่อที่ผู้เล่นพิมพ์ (ไม่ส่งมา = ใช้ชื่อเดิม), pick = สุ่มจากคลังชื่อใหม่ */
+  | { op: 'name'; role: string; by: 'input' | 'pick' }
+  | { op: 'merit'; role: string; delta: number }
   | { op: 'skill'; role: string; skill: string; delta: number }
   | { op: 'prestige'; role: string; delta: number };
 
@@ -496,6 +501,8 @@ export interface EventOption {
   tags?: Array<TagId | VarRef>;
   conditions?: Condition[];
   resist?: Resist[];
+  /** 'name' = ผู้เล่นพิมพ์ชื่อเอง — UI ถามชื่อก่อนส่งตัวเลือกนี้ */
+  input?: 'name';
   effects: Effect[];
   /** ตัวเลือกที่ระบบ inject เข้ามา (ไม่ได้อยู่ใน def) */
   injectedBy?: string;
@@ -632,6 +639,8 @@ export interface Balance {
     marriageAgeFemale: number;
     /** มีบุตรเมื่อแต่งงานได้กี่ปี */
     childAfterMarriageYears: number[];
+    /** โอกาสที่ลูกของผู้เล่นพาหลานมาให้ผู้เล่นตั้งชื่อ */
+    grandchildNamingChance: Unit;
     /** อยู่บ้านพ่อแม่ (ฝ่ายหญิงหรือฝ่ายชาย) กี่ปีก่อนแยกเรือน (lore: kinship.uxorilocal_then_neolocal_1680s) */
     stayYears: [number, number];
     /** โอกาสที่ลูกชายพาภรรยามาอยู่บ้านพ่อแม่ตัวเอง แทนไปอยู่บ้านฝ่ายหญิง (lore: kinship.residence_mixed_census) */
@@ -686,6 +695,8 @@ export interface GameState {
     nextSerial: number;
     playerCharacterId: CharacterId;
     playerDynastyId: DynastyId;
+    /** ชื่อที่ผู้เล่นพิมพ์ตั้งเองในเซฟนี้ — เข้าตัวสุ่มชื่อของ NPC ที่เกิดทีหลังด้วย (optional: เซฟเก่าไม่มี) */
+    customNames?: Array<{ name: string; sex: 'm' | 'f' }>;
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;

@@ -59,6 +59,13 @@ export function dynastyView(ctx: Ctx): DynastyView {
   };
 }
 
+/** ช่องพิมพ์ชื่อของ event ตั้งชื่อ — เด็กอยู่ใน role 'child' */
+function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string } | undefined {
+  const kid = p.instance.bindings.child ? ctx.state.characters[p.instance.bindings.child] : undefined;
+  if (!kid) return undefined;
+  return { default: kid.name, label: `ชื่อ${kid.sex === 'm' ? 'เด็กชาย' : 'เด็กหญิง'}` };
+}
+
 export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventView {
   const vars: Record<string, string> = {};
   const actorNode = ctx.state.familyNodes[p.actor.familyNodeId];
@@ -85,6 +92,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       locked: p.locked.has(o.id),
       injected: !!o.injectedBy,
       note: willNote(o.id),
+      nameInput: o.input === 'name' ? nameInput(ctx, p) : undefined,
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
   };

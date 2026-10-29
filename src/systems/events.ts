@@ -5,6 +5,7 @@ import type {
   TagId, Trait, VarRef, WoundId,
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
+import { cleanName, pickNameFor, rememberCustomName, renameCharacter } from './factory';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
 
@@ -105,7 +106,7 @@ export function prepareEvent(
   ctx.state.eventLog[instance.id] = instance;
 
   const baseOptions = def.options
-    .filter((o) => (o.conditions ?? []).every((c) => checkCondition(ctx, actor, c)))
+    .filter((o) => (o.conditions ?? []).every((c) => checkCondition(ctx, actor, c, bindings)))
     .map((o) => ({ ...o, tags: (o.tags ?? []).map(sub) }));
 
   const prepared: PreparedEvent = {
@@ -142,7 +143,7 @@ export function prepareFollowUp(ctx: Ctx, p: PreparedEvent, report: EventReport)
   return prepareEvent(ctx, report.followUp, p.instance.bindings, p.instance.vars);
 }
 
-function checkCondition(ctx: Ctx, ch: Character, c: Condition): boolean {
+function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<string, Character['id']>): boolean {
   switch (c.type) {
     case 'age': {
       const a = ageOf(ctx, ch);
@@ -152,6 +153,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition): boolean {
       return capability(ctx, ch, c.capability) >= c.min;
     case 'estate':
       return c.in.includes(ch.social.estate);
+    case 'hasRole':
+      return !!bindings[c.role];
   }
 }
 
@@ -247,11 +250,17 @@ export interface EventReport {
   /** เลือกทั้งที่ใจต้าน */
   strained?: Resistance;
   followUp?: GameEventDef['id'];
+  /** ชื่อที่ตั้งให้ใครสักคนใน event นี้ */
+  named?: { characterId: Character['id']; name: string; byPlayer: boolean };
 }
 
-export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): EventReport {
+/** input.name: ชื่อที่ผู้เล่นพิมพ์ สำหรับตัวเลือก input 'name' — ไม่ส่งมา = ใช้ชื่อที่ตั้งไว้ก่อน */
+export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input: { name?: string } = {}): EventReport {
   if (p.locked.has(optionId)) throw new Error(`option ${optionId} locked by ${p.locked.get(optionId)}`);
   const opt = must(p.options.find((o) => o.id === optionId), optionId);
+  // ตรวจชื่อก่อนมี effect ใดๆ — ชื่อใช้ไม่ได้ต้องไม่ทำให้ event ครึ่งๆ กลางๆ
+  const typedName = input.name === undefined ? undefined : cleanName(input.name);
+  if (typedName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
   p.instance.optionId = optionId;
   const report: EventReport = { optionId, wounds: [], trauma: [] };
   const strain = p.resist.get(optionId);
@@ -320,6 +329,17 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string): Even
       case 'skill':
         ch.skills[e.skill] = Math.max(0, (ch.skills[e.skill] ?? 0) + e.delta);
         break;
+      case 'merit':
+        ch.merit += e.delta;
+        break;
+      case 'name': {
+        const byPlayer = e.by === 'input';
+        const name = byPlayer ? typedName ?? ch.name : pickNameFor(ctx, ch);
+        renameCharacter(ctx, ch, name);
+        if (byPlayer) rememberCustomName(ctx, name, ch.sex);
+        report.named = { characterId: ch.id, name, byPlayer };
+        break;
+      }
       case 'prestige': {
         const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
         // บารมีที่ได้จากการกระทำขึ้นกับบุญ ส่วนบารมีที่เสียไม่ลดตามบุญ
