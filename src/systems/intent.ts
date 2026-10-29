@@ -5,6 +5,7 @@ import { DISTANCE_TH, familiarity, isSingle, relationStrength, setRelation, spaw
 import { scarModifiers } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { inLawNames, livingParents, livingSpouse } from './factory';
+import { serviceLabor } from './marriage';
 import { adjustBond } from './will';
 
 // ============================================================================
@@ -55,8 +56,8 @@ function approachOf(ctx: Ctx, i: Intent): { def: IntentDef; ap: IntentApproachDe
 export function awayLabor(ctx: Ctx, ch: Character): number {
   const i = activeIntent(ctx, ch.id);
   const target = i && ctx.state.characters[i.targetId];
-  if (!i || !target?.local) return 0;
-  return approachOf(ctx, i).ap.by[target.local.distance]?.labor ?? 0;
+  const intentLabor = i && target?.local ? approachOf(ctx, i).ap.by[target.local.distance]?.labor ?? 0 : 0;
+  return Math.max(intentLabor, serviceLabor(ch));
 }
 
 /** ใครจ่ายค่าจ้างคนแทน: หัวเรือนที่ ch อยู่ (มักเป็นพ่อ) ถ้าไม่มีก็ ch เอง */
@@ -76,6 +77,7 @@ export function targetProblem(ctx: Ctx, def: IntentDef, actor: Character, target
   if (target.sex === actor.sex) return 'invalid';
   if (ageOf(ctx, target) < def.minAge) return 'young';
   if (livingSpouse(ctx, actor)) return 'married';
+  if (actor.betrothal) return 'betrothed';
   if (!isSingle(ctx, target)) return 'taken';
   return null;
 }
@@ -231,6 +233,7 @@ export function tickIntents(ctx: Ctx): { lines: string[]; events: PreparedEvent[
         !isAlive(target) ? `${target.name}ถึงแก่กรรม ความตั้งใจของ${actor.name}จึงจบลง`
           : problem === 'taken' ? `${target.name}ออกเรือนไปกับคนอื่นเสียแล้ว`
             : problem === 'married' ? `${actor.name}มีคู่ครองแล้ว จึงเลิกเกี้ยว${target.name}`
+              : problem === 'betrothed' ? `${actor.name}หมั้นหมายแล้ว จึงเลิกเกี้ยว${target.name}`
               : `เลิกความตั้งใจต่อ${target.name}`,
       );
       continue;
@@ -256,7 +259,7 @@ export function tickIntents(ctx: Ctx): { lines: string[]; events: PreparedEvent[
     if (i.progress >= 1) {
       delete S.intents[i.id];
       const { odds: o } = odds(ctx, def, ap, actor, target, i.bonus);
-      events.push(prepareEvent(ctx, ctx.rng.chance(o) ? def.success : def.failure, bindings(ctx, actor, target)));
+      events.push(prepareEvent(ctx, ctx.rng.chance(o) ? ap.success ?? def.success : def.failure, bindings(ctx, actor, target)));
       continue;
     }
     if (ctx.rng.chance(I.midEventChance)) {
@@ -289,7 +292,7 @@ export function arrangedMatchEvent(ctx: Ctx): PreparedEvent | null {
   const age = ageOf(ctx, player);
   const marriageAge = player.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
   if (age < marriageAge || age > I.arrangedMaxAge) return null;
-  if ((S.familyNodes[player.familyNodeId]?.spouseIds.length ?? 0) > 0) return null;
+  if ((S.familyNodes[player.familyNodeId]?.spouseIds.length ?? 0) > 0 || player.betrothal || player.claim) return null;
   const current = activeIntent(ctx, player.id);
   if (current && ctx.content.intents[current.kind]?.target === 'court') return null;
   const since = I.arrangedEveryYears * ctx.content.balance.daysPerYear;

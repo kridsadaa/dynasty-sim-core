@@ -6,6 +6,7 @@ import type {
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
+import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
 
@@ -155,6 +156,10 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       return c.in.includes(ch.social.estate);
     case 'hasRole':
       return !!bindings[c.role];
+    case 'canPay': {
+      const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.claim?.amount;
+      return amount !== undefined && canPay(ctx, ch, amount);
+    }
   }
 }
 
@@ -357,6 +362,15 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         // event ค้างอยู่นานจนมีคนแต่งงานไปก่อน → ไม่แต่งซ้อน
         if (!other || other.deathDay !== null || livingSpouse(ctx, ch) || livingSpouse(ctx, other) || other.local?.wed) break;
         report.notes.push(wed(ctx, ch, other));
+        break;
+      }
+      case 'marriage': {
+        const other = who(e.with);
+        if (!other) break;
+        const r = applyMarriageStep(ctx, e.step, ch, other);
+        report.notes.push(...r.notes);
+        // ผู้ใหญ่ฝ่ายหญิงไม่ยอม → event ถัดไปใช้ role ชุดเดิม (prepareFollowUp)
+        if (r.followUp && !report.followUp) report.followUp = r.followUp;
         break;
       }
       case 'name': {

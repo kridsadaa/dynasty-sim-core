@@ -77,6 +77,8 @@ export interface EventView {
   options: Array<{
     id: string; text: string; locked: boolean; injected: boolean; note?: string;
     nameInput?: { default: string; label: string };
+    /** ราคา/โอกาสของตัวเลือก (สินสอด ผู้ใหญ่จะยอมไหม) — คนละเรื่องกับ note ที่เป็นเรื่องในใจ */
+    hint?: string;
   }>;
   triggered: string[]; // ปมที่ถูกกระตุ้น (สำหรับ UI แสดง "ใจสั่น...")
 }
@@ -95,6 +97,8 @@ export interface CharacterView {
   /** ชีวิตประจำวันตอนนี้ — เปลี่ยนตามความตั้งใจที่ทำอยู่ (ไปช่วยงานบ้านคนอื่น = ไม่ได้อยู่ช่วยบ้าน) */
   lifestyle: string;
   intent: IntentStatusView | null;
+  /** หมั้น วันนัดแต่ง ค่าน้ำนมที่ค้าง ช่วยงานบ้านพ่อตาแม่ยาย */
+  marriage: string[];
 }
 
 /** คนในแผง "คนที่รู้จัก" — ญาติที่ยังมีชีวิต และคนนอกตระกูลที่ผู้เล่นรู้จัก */

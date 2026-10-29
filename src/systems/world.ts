@@ -9,6 +9,7 @@ import {
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
+import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
 
 // ============================================================================
@@ -52,6 +53,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const r = tickIntents(ctx);
     for (const line of r.lines) out.push({ type: 'log', line });
     for (const prepared of r.events) out.push({ type: 'event', prepared });
+    // หมั้นถึงวันนัด / ถูกทวงค่าน้ำนม / ช่วยงานบ้านพ่อตาแม่ยาย
+    const m = tickMarriage(ctx);
+    for (const line of m.lines) out.push({ type: 'log', line });
+    for (const req of m.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
   }
 
   // รายปี (วันแรกของปี)
@@ -262,5 +267,7 @@ function marryOut(ctx: Ctx, ch: Character, year: number): string {
     name: pickName(ctx, spouseSex, ch.social.estate, inLawNames(ctx, ch), namesInUse(ctx, ch.dynastyId, year)),
     sex: spouseSex, birthYear: year - spouseAge, estate: ch.social.estate, dynastyId: null, householdId: null,
   });
-  return wed(ctx, ch, spouse);
+  // สินสอด: ลูกชายในตระกูลจ่ายออก (ตัวเองหรือพ่อแม่) ลูกสาวได้เข้าเรือนพ่อแม่ — อีกฝ่ายอยู่นอกฉาก
+  const sinsot = settleNpcSinsot(ctx, ch, spouse);
+  return `${wed(ctx, ch, spouse)}${sinsot ? ` (สินสอด ${sinsot} ตำลึง)` : ''}`;
 }

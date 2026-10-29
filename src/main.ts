@@ -40,12 +40,16 @@ function renderClock() {
 }
 
 async function clockCmd(cmd: { type: 'play' } | { type: 'pause' } | { type: 'setSpeed'; speed: number }) {
+  let error: string | null = null;
   try {
     clock = await engine.request(cmd);
   } catch (e) {
-    status.textContent = (e as Error).message;
+    error = (e as Error).message;
   }
   renderClock();
+  if (!error) return;
+  status.textContent = error; // หลัง renderClock — ไม่งั้นข้อความสถานะทับ error หายเงียบ
+  if (!modalOpen()) await showPending(); // เดินไม่ได้เพราะมี event ค้างที่ไม่ได้แสดง → แสดงให้เลือก
 }
 const togglePlay = () => clockCmd(clock.playing ? { type: 'pause' } : { type: 'play' });
 const changeSpeed = (d: number) => clockCmd({ type: 'setSpeed', speed: clock.speed + d });
@@ -75,6 +79,7 @@ function renderPlayer(v: CharacterView) {
   list('ร่องรอยบนร่างกาย', [...v.scars, ...v.wounds.map((w) => `แผลสด ${w}`)]);
   list('ความสามารถทางกาย', Object.entries(v.capabilities).filter(([, x]) => x < 1).map(([k, x]) => `${k}: ${Math.round(x * 100)}%`));
   box.append(el('h2', 'วิถีชีวิต'), el('div', v.lifestyle, 'lifestyle'));
+  for (const line of v.marriage) box.append(el('div', line, 'intent'));
   if (v.intent) {
     const i = v.intent;
     const card = el('div', undefined, 'intent');
@@ -135,8 +140,11 @@ function renderKnown(people: KnownPersonView[]) {
 
 /** หน้าเลือกวิธี: โอกาสสำเร็จ เวลาโดยประมาณ และชีวิตประจำวันที่จะเปลี่ยน — หยุดเวลาไว้ระหว่างเลือก */
 async function openPlan(targetId: string, kind: string) {
+  if (modalOpen()) return;
   const wasPlaying = clock.playing;
   if (wasPlaying) await clockCmd({ type: 'pause' });
+  // event เด้งขึ้นก่อนเวลาหยุดทัน — event มาก่อน ไม่เอาหน้าเลือกวิธีไปทับ
+  if (modalOpen()) return;
   const resume = () => {
     if (wasPlaying && !modalOpen()) void clockCmd({ type: 'play' });
   };
@@ -260,6 +268,7 @@ function renderEvent(ev: EventView) {
   if (ev.triggered.length) head.push(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
   const buttons = ev.options.map((o) => {
     const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}${o.note && !o.locked ? ' strained' : ''}`) as HTMLButtonElement;
+    if (o.hint) b.append(el('span', o.hint, 'note hint'));
     if (o.note) b.append(el('span', o.note, 'note'));
     b.disabled = o.locked;
     const input = o.nameInput;

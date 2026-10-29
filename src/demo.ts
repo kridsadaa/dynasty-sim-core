@@ -199,7 +199,13 @@ function story(seed: number, verbose: boolean): boolean {
     for (const l of lifeMilestones(ctx)) if ([...family].some((n) => l.startsWith(n))) say(`[${year}] ${l}`);
     // ผู้เล่นไม่ถูกจับแต่งอัตโนมัติ — ในเดโมรับคู่ที่ผู้ใหญ่ทาบทามให้เสมอ
     const match = arrangedMatchEvent(ctx);
-    if (match) for (const l of chooseOption(ctx, match, 'accept').notes) say(`[${year}] ${l}`);
+    if (match) {
+      for (const l of chooseOption(ctx, match, 'accept').notes) say(`[${year}] ${l}`);
+      // เดโมข้ามช่วงหมั้น: ยกขันหมากแต่งทันที (จ่ายครบถ้าพอ ไม่พอก็ผ่อนด้วยแรงงาน)
+      const wedding = prepareEvent(ctx, 'marriage.wedding', { actor: player.id, target: match.instance.bindings.target! });
+      const opt = must(wedding.options.find((o) => !wedding.locked.has(o.id)), 'wedding option');
+      for (const l of chooseOption(ctx, wedding, opt.id).notes) say(`[${year}] ${l}`);
+    }
     if (year === 2315 && age >= 25 && !player.social.title) {
       player.social.title = 'ขุนศรีสงคราม';
       say(`\n[${year}] ${player.name} ได้รับบรรดาศักดิ์ ${player.social.title} จากความชอบในการกู้ชาติ`);

@@ -5,6 +5,7 @@ import { capability } from '../systems/body';
 import type { PreparedEvent } from '../systems/events';
 import { livingChildren, livingParents, livingSpouse } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
+import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { describeTrait } from '../systems/traits';
 import type { CharacterView, DynastyView, EventView, IntentPlanView, IntentStatusView, KnownPersonView, OddsFactorView } from './protocol';
@@ -48,6 +49,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     // คีย์เป็นคำไทยเพราะ UI แสดงคีย์ตรงๆ
     capabilities: Object.fromEntries(CAPS.map((c) => [t(text, 'capability', c), Math.round(capability(ctx, ch, c) * 100) / 100])),
     ...lifestyleView(ctx, ch, text),
+    marriage: marriageStatus(ctx, ch),
   };
 }
 
@@ -72,7 +74,12 @@ function lifestyleText(labor: number, monthlyCost: number, target: Character, le
 
 function lifestyleView(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: string; intent: IntentStatusView | null } {
   const st = intentStatus(ctx, ch);
-  if (!st) return { lifestyle: ageOf(ctx, ch) < 6 ? 'ยังเล็ก อยู่ในความดูแลของผู้ใหญ่' : 'อยู่บ้าน ช่วยงานในเรือนตามปกติ', intent: null };
+  const host = ch.service && ctx.state.characters[ch.service.hostId];
+  // ไปช่วยงานบ้านพ่อตาแม่ยายชดใช้สินสอด/ค่าน้ำนม — กินแรงงานเหมือนความตั้งใจที่ต้องไปช่วยงานบ้านคนอื่น
+  const serving = ch.service && host
+    ? `แบ่งเวลาไปช่วยงานบ้านพ่อแม่ของ${host.name}ราว ${pct(ch.service.labor)}% · จ้างคนแทนเดือนละ ${money(ch.service.labor * ctx.content.balance.intent.laborValue[ch.social.estate])} ตำลึง`
+    : null;
+  if (!st) return { lifestyle: serving ?? (ageOf(ctx, ch) < 6 ? 'ยังเล็ก อยู่ในความดูแลของผู้ใหญ่' : 'อยู่บ้าน ช่วยงานในเรือนตามปกติ'), intent: null };
   const learn = st.approach.learnTrade ? tradeOf(ctx, st.target)?.label.th ?? null : null;
   return {
     lifestyle: st.labor > 0 ? lifestyleText(st.labor, st.monthlyCost, st.target, learn) : 'อยู่บ้าน ช่วยงานในเรือนตามปกติ',
@@ -126,14 +133,14 @@ export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
       const status = c.local!.wed ? 'ออกเรือนแล้ว' : age >= 15 && isSingle(ctx, c) ? 'ยังไม่ออกเรือน' : null;
       return {
         id: c.id, name: c.name, age,
-        tie: relationStrength(ctx, me.id, c.id, 'friend') >= 0.5 ? 'เพื่อนสนิท' : 'คนรู้จัก',
+        tie: me.betrothal?.toId === c.id ? 'คู่หมั้น' : relationStrength(ctx, me.id, c.id, 'friend') >= 0.5 ? 'เพื่อนสนิท' : 'คนรู้จัก',
         kin: false,
         detail: [localOrigin(ctx, c), DISTANCE_TH[c.local!.distance], status, closeness(familiarity(ctx, me.id, c.id))].filter(Boolean).join(' · '),
         actions: Object.values(ctx.content.intents)
           // สิ่งที่กำลังทำกับคนนี้อยู่แล้วไม่ต้องมีปุ่มซ้ำ (เลิก/ดูความคืบหน้าที่แผงตัวละคร)
           .filter((def) => !targetProblem(ctx, def, me, c) && !(current?.targetId === c.id && current.kind === def.id))
           .map((def) => ({ kind: def.id, label: text[def.textKey] ?? def.id })),
-        focus: c.id === current?.targetId,
+        focus: c.id === current?.targetId || c.id === me.betrothal?.toId,
       };
     });
   return [...kin, ...locals];
@@ -184,6 +191,17 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
   return { default: kid.name, label: `ชื่อ${kid.sex === 'm' ? 'เด็กชาย' : 'เด็กหญิง'}` };
 }
 
+/** ตัวเลือกที่เป็นขั้นตอนแต่งงาน → บอกราคาและโอกาสไว้ก่อนเลือก */
+function optionHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects']): string | undefined {
+  for (const e of effects) {
+    if (e.op !== 'marriage') continue;
+    const actor = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
+    const other = ctx.state.characters[p.instance.bindings[e.with] ?? ('' as Character['id'])];
+    if (actor && other) return marriageHint(ctx, e.step, actor, other);
+  }
+  return undefined;
+}
+
 export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventView {
   const vars: Record<string, string> = {};
   const actorNode = ctx.state.familyNodes[p.actor.familyNodeId];
@@ -211,6 +229,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       injected: !!o.injectedBy,
       note: willNote(o.id),
       nameInput: o.input === 'name' ? nameInput(ctx, p) : undefined,
+      hint: optionHint(ctx, p, o.effects),
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
   };

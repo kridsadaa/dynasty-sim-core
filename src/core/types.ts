@@ -213,6 +213,14 @@ export interface Character {
    * wed: ออกเรือนไปกับคนนอกฉากแล้ว · หายไปเมื่อแต่งเข้าตระกูลผู้เล่น
    */
   local?: { distance: Distance; trade: string; wed?: true };
+
+  // ---- ขั้นตอนแต่งงานที่ค้างอยู่ (ดู systems/marriage.ts) — มีแต่ของผู้เล่น ----
+  /** หมั้นแล้ว (ขันหมากสามขัน) รอยกขันหมากใหญ่ไปแต่งตามวันนัด — ผิดนัดเสียขันหมาก (lore: kinship.betrothal_khanmak_three_seals) */
+  betrothal?: { toId: CharacterId; weddingDay: Day; sinsot: number; called?: true };
+  /** ไปช่วยงานบ้านพ่อตาแม่ยายชดใช้สินสอด/ค่าน้ำนมที่จ่ายไม่ครบ */
+  service?: { hostId: CharacterId; untilDay: Day; labor: Unit };
+  /** พ่อแม่ฝ่ายหญิงจะมาทวงค่าน้ำนมค่าเลี้ยงดูหลังพาลูกสาวเขาหนี (lore: kinship.elopement_three_seals) */
+  claim?: { fromId: CharacterId; amount: number; dueDay: Day; called?: true };
 }
 
 /** ระยะจากเรือนของผู้เล่น — กำหนดว่าความตั้งใจต่อคนนี้กินแรงงานที่บ้านแค่ไหน */
@@ -473,7 +481,9 @@ export type Condition =
   | { type: 'capability'; capability: CapabilityId; min: Unit }
   | { type: 'estate'; in: Estate[] }
   /** มีคนผูกกับ role นี้ใน event (เช่น ยังมีคู่ครอง/พ่อแม่ที่มีชีวิต) */
-  | { type: 'hasRole'; role: string };
+  | { type: 'hasRole'; role: string }
+  /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
+  | { type: 'canPay'; what: 'sinsot' | 'claim' };
 
 export type Effect =
   | {
@@ -498,8 +508,10 @@ export type Effect =
   | { op: 'intent'; role: string; progress?: number; odds?: number }
   /** ความสัมพันธ์ของ role ต่อ toward: delta บวกเข้าค่าเดิม, atLeast ยกขึ้นอย่างน้อยเท่านี้ */
   | { op: 'relation'; role: string; toward: string; kind: RelationKind; delta?: number; atLeast?: number }
-  /** role แต่งงานกับ with — ที่อยู่หลังแต่งตามธรรมเนียม (ดู wed ใน world.ts) */
+  /** role แต่งงานกับ with — ที่อยู่หลังแต่งตามธรรมเนียม (ดู wed ใน factory.ts) */
   | { op: 'marry'; role: string; with: string }
+  /** ขั้นตอนแต่งงานของ role กับ with (สู่ขอ หมั้น แต่ง หนีตามกัน ค่าน้ำนม) — ดู systems/marriage.ts */
+  | { op: 'marriage'; role: string; with: string; step: MarriageStep }
   | { op: 'skill'; role: string; skill: string; delta: number }
   | { op: 'prestige'; role: string; delta: number };
 
@@ -601,7 +613,17 @@ export interface IntentApproachDef {
   formal?: boolean;
   /** ระหว่างไปช่วยงานได้ทักษะอาชีพของบ้านเขา เดือนละเท่านี้ × แรงงานที่ไป */
   learnTrade?: number;
+  /** event สำเร็จของวิธีนี้ (แทน IntentDef.success) — ฝากผู้ใหญ่ทาบทามสำเร็จ = ผู้ใหญ่ตกลงกันแล้ว */
+  success?: EventDefId;
 }
+
+/**
+ * propose: ให้ผู้ใหญ่ยกขันหมากไปสู่ขอ (ผู้ใหญ่ฝ่ายหญิงอาจไม่ยอม) · betroth: ผู้ใหญ่ตกลงกันแล้ว นัดวันแต่ง
+ * wed / wedService: ถึงวันนัด จ่ายสินสอดเต็ม / จ่ายบางส่วนแล้วไปช่วยงานบ้านพ่อตาแม่ยายแทน · breakOff: ผิดนัด
+ * elope: พาหนีตามกัน · payClaim / serveClaim / refuseClaim: ตอนพ่อแม่ฝ่ายหญิงมาทวงค่าน้ำนม
+ */
+export type MarriageStep =
+  | 'propose' | 'betroth' | 'wed' | 'wedService' | 'breakOff' | 'elope' | 'payClaim' | 'serveClaim' | 'refuseClaim';
 
 export interface IntentDef {
   id: IntentKindId;
@@ -727,6 +749,30 @@ export interface Balance {
     /** เด็กชายไปเป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) */
     noviceAge: number;
     noviceChance: Unit;
+  };
+  /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
+  marriage: {
+    /** สินสอดตามฐานะของฝ่ายหญิง (ตำลึง) */
+    sinsotByEstate: Record<Estate, number>;
+    /** ฝ่ายชายฐานะต่ำกว่า → ผู้ใหญ่ฝ่ายหญิงเรียกมากขึ้น */
+    marryUpFactor: number;
+    /** ขันหมากสามขันตอนไปสู่ขอ — ผิดนัดแล้วเอาคืนไม่ได้ */
+    khanmak: number;
+    betrothalMonths: [number, number];
+    /** โอกาสที่ผู้ใหญ่ฝ่ายหญิงยอมยกให้ (ก่อนปรับตามฐานะและความคุ้นเคย) */
+    consentBase: Unit;
+    /** ผ่อนด้วยแรงงาน: จ่ายก่อนส่วนนี้ แล้วไปช่วยงานบ้านพ่อตาแม่ยาย serviceMonths เดือน ด้วยแรงงาน serviceLabor */
+    servicePays: Unit;
+    serviceMonths: number;
+    serviceLabor: Unit;
+    /** หนีตามกันแล้วกี่เดือนพ่อแม่ฝ่ายหญิงจึงตามมาทวงค่าน้ำนม */
+    claimAfterMonths: number;
+    /** บารมีตระกูลที่เสียเมื่อหนีตามกัน ตามฐานะของคนหนี — ขุนนางเสียหน้ามากกว่าไพร่ */
+    elopePrestige: Record<Estate, number>;
+    /** ความรักต่อพ่อแม่ตัวเองที่ลดเมื่อหนีตามกัน (พ่อแม่โกรธ) */
+    elopeAffection: number;
+    breakOffPrestige: number;
+    refuseClaimPrestige: number;
   };
   intent: {
     /** ต่อเดือน: โอกาสมี event แทรก */

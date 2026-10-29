@@ -28,7 +28,7 @@ export function buildContentDB(raw: {
     for (const o of ev.options) for (const tag of o.tags ?? []) known(`event ${ev.id} option ${o.id}`, tag);
   }
   for (const def of Object.values(raw.intents.intents)) {
-    for (const id of [def.success, def.failure, ...def.midEvents.map((m) => m.event)]) {
+    for (const id of [def.success, def.failure, ...def.midEvents.map((m) => m.event), ...def.approaches.flatMap((a) => a.success ?? [])]) {
       if (!raw.events[id]) throw new Error(`intent ${def.id}: unknown event ${id}`);
     }
   }

@@ -96,7 +96,9 @@ export function meetPeople(ctx: Ctx): string[] {
   const player = S.characters[S.meta.playerCharacterId];
   if (!isAlive(player)) return [];
   const out: string[] = [];
+  // คนที่กำลังเกี้ยว/หมั้นอยู่ ห้ามห่างหายหรือถูกลบ
   const intentTargets = new Set(Object.values(S.intents).map((i) => i.targetId));
+  if (player.betrothal) intentTargets.add(player.betrothal.toId);
 
   // คนนอกที่ผู้เล่นไม่รู้จักแล้ว (รุ่นก่อนรู้จัก ทายาทไม่ได้รับต่อ) → ลบ
   for (const ch of Object.values(S.characters)) {
