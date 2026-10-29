@@ -157,7 +157,7 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
     case 'hasRole':
       return !!bindings[c.role];
     case 'canPay': {
-      const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.claim?.amount;
+      const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.eloped?.amount;
       return amount !== undefined && canPay(ctx, ch, amount);
     }
   }

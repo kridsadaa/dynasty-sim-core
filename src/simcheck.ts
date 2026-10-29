@@ -46,9 +46,9 @@ function invariants(ctx: Ctx, ended: boolean): void {
   }
   check('ความตั้งใจที่ผู้ทำ/เป้าหมายไม่อยู่แล้ว', Object.values(S.intents).filter((i) => !alive(i.actorId) || !S.characters[i.targetId]).map((i) => i.id));
   check('ขั้นตอนแต่งงานค้างอยู่กับคนที่ไม่มีแล้ว', Object.values(S.characters).flatMap((c) =>
-    [c.betrothal?.toId, c.claim?.fromId, c.service?.hostId].filter((id) => id && !S.characters[id]).map(() => c.name)));
+    [c.betrothal?.toId, c.eloped?.withId, c.service?.hostId].filter((id) => id && !S.characters[id]).map(() => c.name)));
   check('ขั้นตอนแต่งงานค้างอยู่กับคนที่ไม่ใช่ผู้เล่น', Object.values(S.characters)
-    .filter((c) => (c.betrothal || c.claim || c.service) && c.id !== S.meta.playerCharacterId && isAlive(c)).map((c) => c.name));
+    .filter((c) => (c.betrothal || c.eloped || c.service) && c.id !== S.meta.playerCharacterId && isAlive(c)).map((c) => c.name));
   const locals = Object.values(S.characters).filter((c) => c.local && isAlive(c));
   check('คนนอกตระกูลล้น (รู้จักเกินเพดาน)', locals.length > content.balance.locals.maxKnown[1] + 4 ? [`${locals.length} คน`] : []);
   check('คนนอกตระกูลที่มีตระกูล/เรือน', locals.filter((c) => c.dynastyId || c.householdId).map((c) => c.name));

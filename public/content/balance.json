@@ -55,10 +55,10 @@
     "serviceMonths": 12,
     "serviceLabor": 0.5,
     "claimAfterMonths": 3,
+    "elopeClaimFactor": 1.5,
     "elopePrestige": { "royal": 6, "noble": 3, "phrai_luang": 1, "phrai_som": 1, "that": 0.5, "monk": 3, "merchant": 2, "foreigner": 1 },
     "elopeAffection": -0.15,
-    "breakOffPrestige": 1,
-    "refuseClaimPrestige": 2
+    "breakOffPrestige": 1
   },
   "intent": {
     "midEventChance": 0.1,

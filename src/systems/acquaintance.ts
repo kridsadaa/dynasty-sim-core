@@ -43,7 +43,8 @@ export function tradeOf(ctx: Ctx, ch: Character): TradeDef | undefined {
 }
 
 /** คนนอกที่ยังไม่มีคู่ (ไม่ได้ออกเรือนนอกฉาก และไม่มีคู่ครองในฉาก) */
-export const isSingle = (ctx: Ctx, ch: Character) => !ch.local?.wed && !livingSpouse(ctx, ch);
+export const isSingle = (ctx: Ctx, ch: Character) =>
+  !ch.local?.wed && !livingSpouse(ctx, ch) && !Object.values(ctx.state.characters).some((c) => c.eloped?.withId === ch.id);
 
 export interface LocalOpts {
   sex: 'm' | 'f';
@@ -99,6 +100,7 @@ export function meetPeople(ctx: Ctx): string[] {
   // คนที่กำลังเกี้ยว/หมั้นอยู่ ห้ามห่างหายหรือถูกลบ
   const intentTargets = new Set(Object.values(S.intents).map((i) => i.targetId));
   if (player.betrothal) intentTargets.add(player.betrothal.toId);
+  if (player.eloped) intentTargets.add(player.eloped.withId);
 
   // คนนอกที่ผู้เล่นไม่รู้จักแล้ว (รุ่นก่อนรู้จัก ทายาทไม่ได้รับต่อ) → ลบ
   for (const ch of Object.values(S.characters)) {

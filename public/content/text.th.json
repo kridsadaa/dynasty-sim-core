@@ -128,11 +128,10 @@
   "event.marriage_wedding.wed": "ยกขันหมาก จ่ายสินสอดครบ",
   "event.marriage_wedding.serve": "จ่ายสินสอดได้ไม่ครบ ขอไปช่วยงานบ้านพ่อตาแม่ยายแทน",
   "event.marriage_wedding.break": "ผิดนัด ไม่ไปแต่ง",
-  "event.milk_claim.title": "ค่าน้ำนม",
-  "event.milk_claim": "พ่อแม่ของ{target}ตามมาทวงค่าน้ำนม ข้าวป้อน ค่าเลี้ยงดูลูกสาวที่{actor}พาหนีไป",
-  "event.milk_claim.pay": "จ่ายให้ แล้วกราบขอขมา",
-  "event.milk_claim.serve": "ขอขมา แล้วไปช่วยงานบ้านเขาชดใช้",
-  "event.milk_claim.refuse": "ไม่จ่าย",
-  "will.reason.timid": "ใจไม่กล้าพอ",
-  "will.reason.shame": "ละอายใจ"
+  "event.milk_claim.title": "พ่อแม่ฝ่ายหญิงตามมา",
+  "event.milk_claim": "พ่อแม่ของ{target}ตามมาถึงที่ ตามกฎหมาย{target}ยังไม่เป็นเมียของ{actor} เขาเรียกค่าน้ำนม ข้าวป้อน ค่าเลี้ยงดู และค่าปรับที่พาลูกสาวไปโดยไม่ได้คำนับ",
+  "event.milk_claim.pay": "กราบขอขมา จ่ายครบ แล้วแต่งงานตามประเพณี",
+  "event.milk_claim.serve": "กราบขอขมา จ่ายเท่าที่มี แต่งงาน แล้วไปช่วยงานบ้านเขาชดใช้",
+  "event.milk_claim.return": "ส่งตัว{target}คืนพ่อแม่",
+  "will.reason.timid": "ใจไม่กล้าพอ"
 }

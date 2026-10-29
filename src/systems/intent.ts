@@ -77,7 +77,7 @@ export function targetProblem(ctx: Ctx, def: IntentDef, actor: Character, target
   if (target.sex === actor.sex) return 'invalid';
   if (ageOf(ctx, target) < def.minAge) return 'young';
   if (livingSpouse(ctx, actor)) return 'married';
-  if (actor.betrothal) return 'betrothed';
+  if (actor.betrothal || actor.eloped) return 'betrothed';
   if (!isSingle(ctx, target)) return 'taken';
   return null;
 }
@@ -292,7 +292,7 @@ export function arrangedMatchEvent(ctx: Ctx): PreparedEvent | null {
   const age = ageOf(ctx, player);
   const marriageAge = player.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
   if (age < marriageAge || age > I.arrangedMaxAge) return null;
-  if ((S.familyNodes[player.familyNodeId]?.spouseIds.length ?? 0) > 0 || player.betrothal || player.claim) return null;
+  if ((S.familyNodes[player.familyNodeId]?.spouseIds.length ?? 0) > 0 || player.betrothal || player.eloped) return null;
   const current = activeIntent(ctx, player.id);
   if (current && ctx.content.intents[current.kind]?.target === 'court') return null;
   const since = I.arrangedEveryYears * ctx.content.balance.daysPerYear;

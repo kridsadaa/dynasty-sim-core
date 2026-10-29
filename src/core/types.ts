@@ -219,8 +219,11 @@ export interface Character {
   betrothal?: { toId: CharacterId; weddingDay: Day; sinsot: number; called?: true };
   /** ไปช่วยงานบ้านพ่อตาแม่ยายชดใช้สินสอด/ค่าน้ำนมที่จ่ายไม่ครบ */
   service?: { hostId: CharacterId; untilDay: Day; labor: Unit };
-  /** พ่อแม่ฝ่ายหญิงจะมาทวงค่าน้ำนมค่าเลี้ยงดูหลังพาลูกสาวเขาหนี (lore: kinship.elopement_three_seals) */
-  claim?: { fromId: CharacterId; amount: number; dueDay: Day; called?: true };
+  /**
+   * พาลูกสาวเขาหนีมาอยู่ด้วยกัน — ตามตัวบทยังไม่เป็นผัวเมีย (ลักษณผัวเมีย ม.123–135) จนพ่อแม่ฝ่ายหญิงตามมา (dueDay)
+   * แล้วจ่ายค่าน้ำนมค่าเลี้ยงดู + ค่าปรับ (amount) แต่งตามประเพณี หรือส่งตัวคืน (lore: kinship.elopement_three_seals)
+   */
+  eloped?: { withId: CharacterId; sinceDay: Day; amount: number; dueDay: Day; called?: true };
 }
 
 /** ระยะจากเรือนของผู้เล่น — กำหนดว่าความตั้งใจต่อคนนี้กินแรงงานที่บ้านแค่ไหน */
@@ -483,7 +486,7 @@ export type Condition =
   /** มีคนผูกกับ role นี้ใน event (เช่น ยังมีคู่ครอง/พ่อแม่ที่มีชีวิต) */
   | { type: 'hasRole'; role: string }
   /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
-  | { type: 'canPay'; what: 'sinsot' | 'claim' };
+  | { type: 'canPay'; what: 'sinsot' | 'elope' };
 
 export type Effect =
   | {
@@ -620,10 +623,11 @@ export interface IntentApproachDef {
 /**
  * propose: ให้ผู้ใหญ่ยกขันหมากไปสู่ขอ (ผู้ใหญ่ฝ่ายหญิงอาจไม่ยอม) · betroth: ผู้ใหญ่ตกลงกันแล้ว นัดวันแต่ง
  * wed / wedService: ถึงวันนัด จ่ายสินสอดเต็ม / จ่ายบางส่วนแล้วไปช่วยงานบ้านพ่อตาแม่ยายแทน · breakOff: ผิดนัด
- * elope: พาหนีตามกัน · payClaim / serveClaim / refuseClaim: ตอนพ่อแม่ฝ่ายหญิงมาทวงค่าน้ำนม
+ * elope: พาหนีมาอยู่ด้วยกัน (ยังไม่เป็นผัวเมีย) · ตอนพ่อแม่ฝ่ายหญิงตามมา: settleElope (จ่ายครบแล้วแต่ง)
+ * / serveElope (จ่ายบางส่วน ช่วยงานบ้านเขา แล้วแต่ง) / returnBride (ส่งตัวคืน เสียค่าปรับ)
  */
 export type MarriageStep =
-  | 'propose' | 'betroth' | 'wed' | 'wedService' | 'breakOff' | 'elope' | 'payClaim' | 'serveClaim' | 'refuseClaim';
+  | 'propose' | 'betroth' | 'wed' | 'wedService' | 'breakOff' | 'elope' | 'settleElope' | 'serveElope' | 'returnBride';
 
 export interface IntentDef {
   id: IntentKindId;
@@ -765,14 +769,15 @@ export interface Balance {
     servicePays: Unit;
     serviceMonths: number;
     serviceLabor: Unit;
-    /** หนีตามกันแล้วกี่เดือนพ่อแม่ฝ่ายหญิงจึงตามมาทวงค่าน้ำนม */
+    /** หนีตามกันแล้วกี่เดือนพ่อแม่ฝ่ายหญิงจึงตามมา */
     claimAfterMonths: number;
+    /** ค่าน้ำนมค่าเลี้ยงดู + ค่าปรับที่ฝ่ายหญิงเรียก เทียบกับสินสอด — ส่งตัวคืนเสียครึ่งเดียว (ชายช่วยออกกึ่งหนึ่ง ม.139) */
+    elopeClaimFactor: number;
     /** บารมีตระกูลที่เสียเมื่อหนีตามกัน ตามฐานะของคนหนี — ขุนนางเสียหน้ามากกว่าไพร่ */
     elopePrestige: Record<Estate, number>;
     /** ความรักต่อพ่อแม่ตัวเองที่ลดเมื่อหนีตามกัน (พ่อแม่โกรธ) */
     elopeAffection: number;
     breakOffPrestige: number;
-    refuseClaimPrestige: number;
   };
   intent: {
     /** ต่อเดือน: โอกาสมี event แทรก */

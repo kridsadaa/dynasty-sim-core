@@ -338,13 +338,12 @@
     "trigger": { "weight": 0 },
     "percepts": [],
     "options": [
-      { "id": "pay", "textKey": "event.milk_claim.pay", "conditions": [ { "type": "canPay", "what": "claim" } ],
-        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "payClaim" } ] },
+      { "id": "pay", "textKey": "event.milk_claim.pay", "conditions": [ { "type": "canPay", "what": "elope" } ],
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "settleElope" } ] },
       { "id": "serve", "textKey": "event.milk_claim.serve",
-        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "serveClaim" } ] },
-      { "id": "refuse", "textKey": "event.milk_claim.refuse",
-        "resist": [ { "source": "personality", "trait": "agreeableness", "weight": 0.6, "reasonKey": "shame" } ],
-        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "refuseClaim" } ] }
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "serveElope" } ] },
+      { "id": "return", "textKey": "event.milk_claim.return",
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "returnBride" } ] }
     ]
   }
 }

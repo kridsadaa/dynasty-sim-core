@@ -12,7 +12,8 @@ import { adjustBond } from './will';
 //  ผู้ใหญ่ทาบทาม / ฝากผู้ใหญ่ไปทาบทาม ──► betroth: ผู้ใหญ่ตกลงกันแล้ว ─────────┤
 //                                                                          └─ ไม่ยอม → ทำใจ / รอ / พาหนีตามกัน
 //  หมั้น ──► วันนัด: wed (จ่ายสินสอด) / wedService (จ่ายบางส่วน ไปช่วยงานบ้านพ่อตาแม่ยาย) / breakOff (ผิดนัด เสียขันหมาก)
-//  หนีตามกัน ──► claimAfterMonths: พ่อแม่ฝ่ายหญิงมาทวงค่าน้ำนม → จ่าย / ผ่อนด้วยแรงงาน / ไม่จ่าย (เสียหน้า)
+//  หนีตามกัน ──► อยู่ด้วยกันแต่ยังไม่เป็นผัวเมีย (ตัวบท ม.133) ไม่มีลูก ──► claimAfterMonths: พ่อแม่ฝ่ายหญิงตามมา
+//              → จ่ายค่าน้ำนมค่าเลี้ยงดู+ค่าปรับแล้วแต่งตามประเพณี / จ่ายบางส่วน ช่วยงานบ้านเขาแล้วแต่ง / ส่งตัวคืน
 //
 //  lore: kinship.parental_consent_three_seals (พ่อแม่หญิงต้องยกให้), kinship.betrothal_khanmak_three_seals (ขันหมาก
 //  สามขัน วันนัด สินสอด), kinship.elopement_three_seals (หนีตามกัน → ค่าน้ำนม), kinship.courtship_liberty_1680s
@@ -103,7 +104,7 @@ export interface StepResult {
 export function applyMarriageStep(ctx: Ctx, step: MarriageStep, actor: Character, other: Character): StepResult {
   const M = ctx.content.balance.marriage;
   const notes: string[] = [];
-  const free = (c: Character) => isAlive(c) && !livingSpouse(ctx, c) && !c.local?.wed;
+  const free = (c: Character) => isAlive(c) && !livingSpouse(ctx, c) && !c.local?.wed && !c.eloped && !isElopedPartner(ctx, c);
   switch (step) {
     case 'propose': {
       if (!free(actor) || !free(other)) break;
@@ -139,35 +140,47 @@ export function applyMarriageStep(ctx: Ctx, step: MarriageStep, actor: Character
     case 'elope': {
       if (!free(actor) || !free(other)) break;
       delete actor.betrothal;
-      notes.push(`${actor.name}พา${other.name}หนีตามกันไป — ผู้ใหญ่ทั้งสองบ้านเสียหน้า`);
-      notes.push(wed(ctx, actor, other));
+      const day = ctx.state.meta.day;
+      actor.eloped = {
+        withId: other.id, sinceDay: day, dueDay: day + M.claimAfterMonths * MONTH,
+        amount: Math.round(sinsotFor(ctx, actor, other) * M.elopeClaimFactor),
+      };
+      notes.push(`${actor.name}พา${other.name}หนีมาอยู่ด้วยกัน — ตามกฎหมายยังไม่นับเป็นผัวเมีย ผู้ใหญ่ทั้งสองบ้านเสียหน้า`);
       losePrestige(ctx, actor, M.elopePrestige[actor.social.estate]);
       for (const p of livingParents(ctx, actor)) adjustBond(ctx, actor, p, 'affection', M.elopeAffection);
-      actor.claim = { fromId: other.id, amount: sinsotFor(ctx, actor, other), dueDay: ctx.state.meta.day + M.claimAfterMonths * MONTH };
       break;
     }
-    case 'payClaim': {
-      const c = actor.claim;
-      delete actor.claim;
-      if (c) notes.push(`จ่ายค่าน้ำนมค่าเลี้ยงดูแก่บ้าน${other.name} (${paidText(actor, pay(ctx, actor, c.amount))}) — ผู้ใหญ่บ้านนั้นหายโกรธ`);
+    case 'settleElope':
+    case 'serveElope': {
+      const e = actor.eloped;
+      delete actor.eloped;
+      if (!e || !isAlive(other) || livingSpouse(ctx, actor) || livingSpouse(ctx, other)) break;
+      const amount = step === 'settleElope' ? e.amount : Math.round(e.amount * M.servicePays);
+      notes.push(`ไปขอขมาพ่อแม่${other.name} จ่ายค่าน้ำนมค่าเลี้ยงดูและค่าปรับ${step === 'settleElope' ? '' : 'ส่วนแรก'} (${paidText(actor, pay(ctx, actor, amount))})`);
+      notes.push(`แต่งงานกันตามประเพณี — ${wed(ctx, actor, other)}`);
+      if (step === 'serveElope') {
+        startService(ctx, actor, other);
+        notes.push(`${actor.name}ต้องไปช่วยงานบ้านพ่อแม่${other.name}ชดใช้ส่วนที่เหลืออีก ${M.serviceMonths} เดือน`);
+      }
       break;
     }
-    case 'serveClaim': {
-      const c = actor.claim;
-      delete actor.claim;
-      if (!c) break;
-      notes.push(`ไปขอขมาบ้าน${other.name} และรับไปช่วยงานชดใช้ค่าน้ำนม ${M.serviceMonths} เดือน`);
-      startService(ctx, actor, other);
+    case 'returnBride': {
+      const e = actor.eloped;
+      delete actor.eloped;
+      if (!e) break;
+      // ชายช่วยออกกึ่งหนึ่ง (ม.139) — อีกครึ่งพ่อแม่คิดเอากับลูกสาวเอง
+      notes.push(`ส่งตัว${other.name}คืนพ่อแม่ เสียค่าปรับ (${paidText(actor, pay(ctx, actor, Math.round(e.amount / 2)))})`);
+      setRelation(ctx, actor.id, other.id, 'acquaintance', Math.min(0.3, familiarity(ctx, actor.id, other.id)));
+      actor.stress = clamp01(actor.stress + 0.1);
       break;
     }
-    case 'refuseClaim':
-      delete actor.claim;
-      losePrestige(ctx, actor, M.refuseClaimPrestige);
-      actor.stress = clamp01(actor.stress + 0.05);
-      notes.push(`ไม่ยอมจ่ายค่าน้ำนม — ชาวบ้านติฉินนินทาว่า${actor.name}ไม่รู้จักคุณคน`);
-      break;
   }
   return { notes };
+}
+
+/** คนที่ถูกใครสักคนพาหนีมาอยู่ด้วย (ยังไม่ได้แต่ง) — ไม่ว่าง ให้คนอื่นเกี้ยว/แต่งไม่ได้ */
+export function isElopedPartner(ctx: Ctx, ch: Character): boolean {
+  return Object.values(ctx.state.characters).some((c) => c.eloped?.withId === ch.id && isAlive(c));
 }
 
 /** สัดส่วนแรงงานที่หายไปเพราะไปช่วยงานบ้านพ่อตาแม่ยาย */
@@ -185,11 +198,11 @@ export function tickMarriage(ctx: Ctx): { lines: string[]; events: MarriageEvent
   const events: MarriageEventRequest[] = [];
   const day = S.meta.day;
   for (const ch of Object.values(S.characters)) {
-    if (!ch.betrothal && !ch.claim && !ch.service) continue;
+    if (!ch.betrothal && !ch.eloped && !ch.service) continue;
     // ผู้เล่นเปลี่ยนรุ่นหรือตายไปแล้ว — เรื่องค้างของคนก่อนจบไปด้วย
     if (!isAlive(ch) || ch.id !== S.meta.playerCharacterId) {
       delete ch.betrothal;
-      delete ch.claim;
+      delete ch.eloped;
       delete ch.service;
       continue;
     }
@@ -207,13 +220,16 @@ export function tickMarriage(ctx: Ctx): { lines: string[]; events: MarriageEvent
         events.push({ event: 'marriage.wedding', bindings: bind(to) });
       }
     }
-    const c = ch.claim;
-    if (c && day >= c.dueDay && !c.called) {
-      const from = S.characters[c.fromId];
-      if (from) {
-        c.called = true;
-        events.push({ event: 'marriage.milk_claim', bindings: bind(from) });
-      } else delete ch.claim;
+    const e = ch.eloped;
+    if (e) {
+      const partner = S.characters[e.withId];
+      if (!isAlive(partner)) {
+        delete ch.eloped;
+        if (partner) lines.push(`${partner.name}ถึงแก่กรรมก่อนได้แต่งงานกันตามประเพณี`);
+      } else if (day >= e.dueDay && !e.called) {
+        e.called = true;
+        events.push({ event: 'marriage.milk_claim', bindings: bind(partner) });
+      }
     }
     const s = ch.service;
     if (s) {
@@ -241,7 +257,10 @@ export function marriageStatus(ctx: Ctx, ch: Character): string[] {
     const ok = canPay(ctx, ch, ch.betrothal.sinsot);
     out.push(`หมั้นกับ${to?.name ?? '-'} · นัดยกขันหมากแต่ง${dateOf(ch.betrothal.weddingDay)} · สินสอด ${ch.betrothal.sinsot} ตำลึง${ok ? '' : ' (เงินยังไม่พอ)'}`);
   }
-  if (ch.claim) out.push(`บ้าน${S.characters[ch.claim.fromId]?.name ?? '-'}จะมาทวงค่าน้ำนม ราว ${ch.claim.amount} ตำลึง`);
+  if (ch.eloped) {
+    const who = S.characters[ch.eloped.withId]?.name ?? '-';
+    out.push(`พา${who}หนีมาอยู่ด้วยกัน — ยังไม่นับเป็นผัวเมีย · พ่อแม่${who}จะตามมาราว${dateOf(ch.eloped.dueDay)} เรียกค่าน้ำนมและค่าปรับราว ${ch.eloped.amount} ตำลึง${canPay(ctx, ch, ch.eloped.amount) ? '' : ' (เงินยังไม่พอ)'}`);
+  }
   if (ch.service) {
     const months = Math.max(0, Math.ceil((ch.service.untilDay - S.meta.day) / MONTH));
     out.push(`ช่วยงานบ้านพ่อแม่ของ${S.characters[ch.service.hostId]?.name ?? 'คู่ครอง'}ชดใช้ อีก ${months} เดือน`);
@@ -265,14 +284,16 @@ export function marriageHint(ctx: Ctx, step: MarriageStep, actor: Character, oth
     }
     case 'breakOff':
       return `เสียขันหมาก · บารมีตระกูล −${M.breakOffPrestige}`;
-    case 'elope':
-      return `ไม่ต้องจ่ายสินสอด แต่พ่อแม่ทั้งสองฝ่ายโกรธ · บารมีตระกูล −${M.elopePrestige[actor.social.estate]} · อีก ${M.claimAfterMonths} เดือนบ้าน${other.name}จะมาทวงค่าน้ำนม`;
-    case 'payClaim':
-      return `จ่าย ${actor.claim?.amount ?? 0} ตำลึง`;
-    case 'serveClaim':
-      return `ไปช่วยงานบ้าน${other.name} ${M.serviceMonths} เดือน (แรงงานที่บ้านหายครึ่งหนึ่ง)`;
-    case 'refuseClaim':
-      return `บารมีตระกูล −${M.refuseClaimPrestige} · ถูกนินทา`;
+    case 'elope': {
+      const claim = Math.round(sinsotFor(ctx, actor, other) * M.elopeClaimFactor);
+      return `ตามกฎหมายยังไม่เป็นผัวเมีย ยังมีลูกด้วยกันไม่ได้ · พ่อแม่ทั้งสองฝ่ายโกรธ · บารมีตระกูล −${M.elopePrestige[actor.social.estate]} · อีก ${M.claimAfterMonths} เดือนพ่อแม่${other.name}จะตามมาเรียกค่าน้ำนมและค่าปรับราว ${claim} ตำลึง`;
+    }
+    case 'settleElope':
+      return `จ่าย ${actor.eloped?.amount ?? 0} ตำลึง แล้วแต่งงานตามประเพณี`;
+    case 'serveElope':
+      return `จ่ายก่อน ${Math.round((actor.eloped?.amount ?? 0) * M.servicePays)} ตำลึง แต่งงาน แล้วไปช่วยงานบ้านพ่อแม่${other.name} ${M.serviceMonths} เดือน (แรงงานที่บ้านหายครึ่งหนึ่ง)`;
+    case 'returnBride':
+      return `เสียค่าปรับ ${Math.round((actor.eloped?.amount ?? 0) / 2)} ตำลึง (ชายช่วยออกกึ่งหนึ่ง) · ${other.name}กลับไปอยู่บ้านพ่อแม่`;
   }
 }
 

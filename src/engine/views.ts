@@ -133,14 +133,15 @@ export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
       const status = c.local!.wed ? 'ออกเรือนแล้ว' : age >= 15 && isSingle(ctx, c) ? 'ยังไม่ออกเรือน' : null;
       return {
         id: c.id, name: c.name, age,
-        tie: me.betrothal?.toId === c.id ? 'คู่หมั้น' : relationStrength(ctx, me.id, c.id, 'friend') >= 0.5 ? 'เพื่อนสนิท' : 'คนรู้จัก',
+        tie: me.betrothal?.toId === c.id ? 'คู่หมั้น' : me.eloped?.withId === c.id ? 'อยู่ด้วยกัน (ยังไม่ได้แต่ง)'
+          : relationStrength(ctx, me.id, c.id, 'friend') >= 0.5 ? 'เพื่อนสนิท' : 'คนรู้จัก',
         kin: false,
         detail: [localOrigin(ctx, c), DISTANCE_TH[c.local!.distance], status, closeness(familiarity(ctx, me.id, c.id))].filter(Boolean).join(' · '),
         actions: Object.values(ctx.content.intents)
           // สิ่งที่กำลังทำกับคนนี้อยู่แล้วไม่ต้องมีปุ่มซ้ำ (เลิก/ดูความคืบหน้าที่แผงตัวละคร)
           .filter((def) => !targetProblem(ctx, def, me, c) && !(current?.targetId === c.id && current.kind === def.id))
           .map((def) => ({ kind: def.id, label: text[def.textKey] ?? def.id })),
-        focus: c.id === current?.targetId || c.id === me.betrothal?.toId,
+        focus: c.id === current?.targetId || c.id === me.betrothal?.toId || c.id === me.eloped?.withId,
       };
     });
   return [...kin, ...locals];
