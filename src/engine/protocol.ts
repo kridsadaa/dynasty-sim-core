@@ -11,8 +11,9 @@ export type Command =
   | { type: 'save'; slot: string }
   | { type: 'listSaves' }
   | { type: 'deleteSave'; slot: string }
-  | { type: 'advance'; days: number }
+  | { type: 'play' }
   | { type: 'pause' }
+  | { type: 'setSpeed'; speed: number }
   | { type: 'choose'; instanceId: string; optionId: string; name?: string }
   | { type: 'viewPlayer' }
   | { type: 'viewDynasty' }
@@ -24,15 +25,22 @@ export interface ReplyData {
   save: SaveSlotInfo;
   listSaves: SaveSlotInfo[];
   deleteSave: null;
-  advance: { stoppedBy: StopReason; day: number };
-  pause: null;
+  play: ClockState;
+  pause: ClockState;
+  setSpeed: ClockState;
   choose: { lines: string[] };
   viewPlayer: CharacterView;
   viewDynasty: DynastyView;
   viewPending: EventView[];
 }
 
-export type StopReason = 'done' | 'event' | 'paused' | 'gameOver';
+/** playing = เวลากำลังเดิน; ended = ตระกูลสิ้นสาย เล่นต่อไม่ได้ */
+export interface ClockState {
+  playing: boolean;
+  speed: number;
+  maxSpeed: number;
+  ended: boolean;
+}
 
 export interface Request<T extends Command['type'] = Command['type']> {
   id: number;
@@ -44,7 +52,8 @@ export type Reply = { id: number; ok: true; data: unknown } | { id: number; ok: 
 export type Push =
   | { type: 'ready' }
   | { type: 'log'; year: number; lines: string[] }
-  | { type: 'progress'; day: number; year: number }
+  | { type: 'progress'; day: number; year: number; month: number; dayOfMonth: number }
+  | { type: 'clock'; clock: ClockState }
   | { type: 'pendingEvent'; event: EventView }
   | { type: 'handover'; deceased: string; heir: string; lines: string[] }
   | { type: 'error'; message: string }; // ผิดพลาดที่ไม่ผูกกับ request ใด (เช่น โหลด content ไม่ได้, worker พัง)

@@ -39,6 +39,11 @@
       #event .opt.strained .note { color: var(--accent); }
       ul { margin: 0; padding-left: 18px; font-size: 14px; }
       #status { color: var(--muted); font-size: 14px; }
+      .clock { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+      #date { font-variant-numeric: tabular-nums; min-width: 11em; }
+      #play { min-width: 5.5em; }
+      #play.playing { border-color: var(--accent); color: var(--accent); }
+      #speed { letter-spacing: 2px; color: var(--accent); font-size: 12px; }
     </style>
   </head>
   <body>
@@ -49,10 +54,13 @@
         <button id="new">เริ่มใหม่</button>
         <button id="load">โหลด autosave</button>
         <button id="loadSlot">โหลดที่บันทึกไว้</button>
-        <button id="month" disabled>+1 เดือน</button>
-        <button id="year" disabled>+1 ปี</button>
-        <button id="decade" disabled>+10 ปี</button>
-        <button id="pause" disabled>หยุด</button>
+        <span class="clock">
+          <span id="date"></span>
+          <button id="play" disabled title="เดิน/หยุดเวลา (Space)">▶ เดิน</button>
+          <button id="slower" disabled title="ช้าลง (−)" aria-label="ช้าลง">−</button>
+          <span id="speed" aria-live="polite"></span>
+          <button id="faster" disabled title="เร็วขึ้น (+)" aria-label="เร็วขึ้น">+</button>
+        </span>
         <button id="save" disabled>บันทึก</button>
       </header>
       <div>

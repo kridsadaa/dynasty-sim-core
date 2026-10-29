@@ -1,5 +1,5 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
-import type { CharacterView, DynastyView, EventView } from './engine/protocol';
+import type { CharacterView, ClockState, DynastyView, EventView } from './engine/protocol';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
 
@@ -14,20 +14,49 @@ const el = (tag: string, text?: string, cls?: string) => {
 
 const log = $('log');
 const status = $('status');
-const timeButtons = ['month', 'year', 'decade', 'save'].map((id) => $<HTMLButtonElement>(id));
 let lastYear = 0;
+let hasGame = false;
+let clock: ClockState = { playing: false, speed: 2, maxSpeed: 5, ended: false };
 
 function write(line: string, cls?: string) {
   log.append(el('p', line, cls));
   log.scrollTop = log.scrollHeight;
 }
 
-function setBusy(busy: boolean, hasGame = true) {
-  for (const b of timeButtons) b.disabled = busy || !hasGame;
-  $<HTMLButtonElement>('pause').disabled = !busy;
-  $<HTMLButtonElement>('new').disabled = busy;
-  $<HTMLButtonElement>('load').disabled = busy;
-  $<HTMLButtonElement>('loadSlot').disabled = busy;
+// ---------------- นาฬิกา: เวลาเดินเองใน worker, UI แค่สั่งเดิน/หยุด/ปรับความเร็ว ----------------
+const modalOpen = () => !$('backdrop').hidden;
+
+function renderClock() {
+  const play = $<HTMLButtonElement>('play');
+  play.textContent = clock.playing ? '⏸ หยุด' : '▶ เดิน';
+  play.classList.toggle('playing', clock.playing);
+  play.disabled = !hasGame || clock.ended || modalOpen();
+  $<HTMLButtonElement>('slower').disabled = !hasGame || clock.speed <= 1;
+  $<HTMLButtonElement>('faster').disabled = !hasGame || clock.speed >= clock.maxSpeed;
+  $<HTMLButtonElement>('save').disabled = !hasGame;
+  $('speed').textContent = '●'.repeat(clock.speed) + '○'.repeat(clock.maxSpeed - clock.speed);
+  $('speed').title = `ความเร็ว ${clock.speed}/${clock.maxSpeed}`;
+  status.textContent = clock.ended ? 'ตระกูลสิ้นสาย' : modalOpen() ? 'รอการตัดสินใจ' : clock.playing ? '' : 'หยุดเวลา';
+}
+
+async function clockCmd(cmd: { type: 'play' } | { type: 'pause' } | { type: 'setSpeed'; speed: number }) {
+  try {
+    clock = await engine.request(cmd);
+  } catch (e) {
+    status.textContent = (e as Error).message;
+  }
+  renderClock();
+}
+const togglePlay = () => clockCmd(clock.playing ? { type: 'pause' } : { type: 'play' });
+const changeSpeed = (d: number) => clockCmd({ type: 'setSpeed', speed: clock.speed + d });
+
+// อัปเดตแผงตัวละคร/ตระกูลระหว่างเวลาเดิน — ไม่ถี่กว่า REFRESH_MS
+const REFRESH_MS = 700;
+let lastRefresh = 0;
+function refreshSoon() {
+  if (Date.now() - lastRefresh < REFRESH_MS) return;
+  lastRefresh = Date.now();
+  void refresh().catch(() => {});
 }
 
 function renderPlayer(v: CharacterView) {
@@ -71,10 +100,12 @@ const modal = $('event');
 const openModal = (...children: Node[]) => {
   modal.replaceChildren(...children);
   $('backdrop').hidden = false;
+  renderClock();
 };
 const closeModal = () => {
   modal.replaceChildren();
   $('backdrop').hidden = true;
+  renderClock();
 };
 
 /** ฟอร์มพิมพ์ชื่อ — ตรวจแบบเดียวกับ worker (อักษรไทย 1–20 ตัว) */
@@ -105,9 +136,8 @@ async function choose(ev: EventView, o: EventView['options'][number], name?: str
     closeModal();
     write(`→ ${o.text}`);
     for (const l of r.lines) write(l);
-    setBusy(false);
     await refresh();
-    await showPending(); // event ต่อเนื่อง (ถ้ามี)
+    await showPending(); // event ต่อเนื่อง (ถ้ามี) — ไม่มีแล้ว worker เดินเวลาต่อเอง
   } catch (e) {
     // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
     await showPending();
@@ -128,19 +158,14 @@ function renderEvent(ev: EventView) {
       : () => choose(ev, o);
     return b;
   });
-  openModal(...head, ...buttons);
-  setBusy(false);
-  for (const b of timeButtons) b.disabled = true; // ต้องตัดสินใจก่อน
+  openModal(...head, ...buttons); // worker หยุดเวลาไว้แล้ว — ต้องตัดสินใจก่อนจึงเดินต่อ
 }
 
 /** แสดง event ที่ worker ยังรออยู่ (หลังโหลดเซฟ หรือหลังเลือกตัวเลือกไม่สำเร็จ) */
 async function showPending() {
   try {
     const events = await engine.request({ type: 'viewPending' });
-    if (events[0]) {
-      renderEvent(events[0]);
-      status.textContent = 'รอการตัดสินใจ';
-    } else setBusy(false);
+    if (events[0]) renderEvent(events[0]);
   } catch (e) {
     status.textContent = (e as Error).message;
   }
@@ -159,7 +184,13 @@ engine.onPush((p) => {
       for (const l of p.lines) write(l);
       break;
     case 'progress':
-      status.textContent = `กำลังจำลอง… พ.ศ. ${p.year}`;
+      $('date').textContent = `พ.ศ. ${p.year} · เดือน ${p.month} วัน ${p.dayOfMonth}`;
+      refreshSoon();
+      break;
+    case 'clock':
+      clock = p.clock;
+      renderClock();
+      if (!clock.playing) void refresh().catch(() => {});
       break;
     case 'pendingEvent':
       renderEvent(p.event);
@@ -174,19 +205,6 @@ engine.onPush((p) => {
   }
 });
 
-async function run(days: number) {
-  setBusy(true);
-  try {
-    const r = await engine.request({ type: 'advance', days });
-    status.textContent = r.stoppedBy === 'gameOver' ? 'ตระกูลสิ้นสาย' : r.stoppedBy === 'event' ? 'รอการตัดสินใจ' : 'บันทึกอัตโนมัติแล้ว';
-    if (r.stoppedBy !== 'event') setBusy(false, r.stoppedBy !== 'gameOver');
-    await refresh();
-  } catch (e) {
-    status.textContent = (e as Error).message;
-    setBusy(false);
-  }
-}
-
 const MANUAL_SLOT = 'slot1';
 
 async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: string) {
@@ -199,7 +217,10 @@ async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: s
     write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ: ${v.name}`);
     renderPlayer(v);
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
-    status.textContent = 'พร้อม';
+    $('date').textContent = `พ.ศ. ${v.year}`;
+    hasGame = true;
+    clock = await engine.request({ type: 'pause' }); // เริ่ม/โหลดแล้วเวลาหยุดรอ ผู้เล่นกดเดินเอง
+    renderClock();
     await showPending();
     void requestPersistentStorage();
   } catch (e) {
@@ -208,18 +229,28 @@ async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: s
   }
 }
 
-$('new').onclick = () =>
+$('new').onclick = async () => {
+  if (clock.playing) await clockCmd({ type: 'pause' });
   openModal(
     el('h2', 'เริ่มชีวิตใหม่'),
     el('p', 'ลูกชายวัย 4 ขวบของขุนนางชั้นผู้น้อย ปลายกรุงศรีอยุธยา พ.ศ. 2288'),
     nameForm('ชื่อตัวละคร', 'บุญมา', 'เริ่ม', (name) => void start('new', name), closeModal),
   );
+};
 $('load').onclick = () => start('autosave');
 $('loadSlot').onclick = () => start(MANUAL_SLOT);
-$('month').onclick = () => run(30);
-$('year').onclick = () => run(360);
-$('decade').onclick = () => run(3600);
-$('pause').onclick = () => engine.request({ type: 'pause' }).catch((e: Error) => (status.textContent = e.message));
+$('play').onclick = togglePlay;
+$('slower').onclick = () => changeSpeed(-1);
+$('faster').onclick = () => changeSpeed(1);
+// คีย์ลัด: Space เดิน/หยุด, + / − ปรับความเร็ว — ไม่ทำงานตอนพิมพ์หรือมีหน้าต่างเปิดอยู่
+document.addEventListener('keydown', (e) => {
+  if (!hasGame || modalOpen() || e.target instanceof HTMLInputElement || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    void togglePlay();
+  } else if (e.key === '+' || e.key === '=') void changeSpeed(1);
+  else if (e.key === '-' || e.key === '_') void changeSpeed(-1);
+});
 $('save').onclick = async () => {
   try {
     const s = await engine.request({ type: 'save', slot: MANUAL_SLOT });

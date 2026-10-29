@@ -1,5 +1,5 @@
 import { buildContentDB } from '../content';
-import { makeCtx, commitRng, must, yearOf, type Ctx } from '../core/ctx';
+import { makeCtx, commitRng, dayOfYear, must, yearOf, type Ctx } from '../core/ctx';
 import type { ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
@@ -8,7 +8,7 @@ import { bootstrapScenario } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
 import { deleteSlot, listSlots, loadState, saveState } from './persistence';
-import type { Command, Push, ReplyData, Request, StopReason, WorkerMessage } from './protocol';
+import type { ClockState, Command, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { dynastyView, eventView, playerView, type TextTable } from './views';
 
 // ============================================================================
@@ -24,8 +24,6 @@ let content: ContentDB | null = null;
 let text: TextTable = {};
 let ctx: Ctx | null = null;
 const pending = new Map<string, PreparedEvent>(); // เซฟเป็น snapshot ไปกับทุกเซฟ → โหลดแล้วต้องตัดสินใจ event เดิมต่อ
-let running = false;
-let pauseRequested = false;
 let sessionLock: Promise<void> | null = null;
 
 const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'balance', 'names', 'text.th'] as const;
@@ -48,7 +46,6 @@ contentReady.catch((err: unknown) =>
 );
 
 const need = (): Ctx => must(ctx, 'ยังไม่ได้เริ่มเกม');
-const yieldNow = () => new Promise<void>((r) => setTimeout(r, 0));
 
 /** กันเปิดเกมซ้อน 2 แท็บแล้วเขียน IndexedDB ทับกัน — ถือ Web Lock ไว้ตลอดอายุ worker */
 function acquireSessionLock(): Promise<void> {
@@ -78,62 +75,120 @@ async function save(slot: string) {
   });
 }
 
-async function advance(days: number): Promise<ReplyData['advance']> {
-  const c = need();
-  if (pending.size) throw new Error('มีเหตุการณ์รอการตัดสินใจ');
-  running = true;
-  pauseRequested = false;
-  let stoppedBy: StopReason = 'done';
-  const lines: string[] = [];
-  const flush = () => {
-    if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
-  };
-  try {
-    for (let i = 0; i < days && stoppedBy === 'done'; i++) {
-      for (const sig of advanceDay(c)) {
-        if (sig.type === 'log') lines.push(sig.line);
-        else if (sig.type === 'event') {
-          pending.set(sig.prepared.instance.id, sig.prepared);
-          stoppedBy = 'event';
-        } else {
-          const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
-          if (!heirCandidates(c, dead).length) {
-            lines.push(`${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย`);
-            stoppedBy = 'gameOver';
-            break;
-          }
-          flush();
-          const r = performHandover(c, dead.id);
-          push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
+// ============================================================================
+// นาฬิกาเกม — เวลาเดินเองต่อเนื่อง ผู้เล่นหยุด/เล่น/ปรับความเร็วได้ (แบบเกมกลยุทธ์เรียลไทม์มีหยุด)
+//   ทุก tick เดิน SPEED_DAYS_PER_SEC[speed] / TICKS_PER_SEC วัน (สะสมเศษไว้ tick ถัดไป)
+//   มี event → หยุดเอง และเดินต่อให้เองเมื่อตัดสินใจครบทุก event
+// ============================================================================
+
+/** วันในเกมต่อวินาทีจริง ที่ความเร็ว 1–5 (ปีละ 360 วัน: ความเร็ว 3 ≈ 18 วินาทีต่อปี) */
+const SPEED_DAYS_PER_SEC = [0, 3, 8, 20, 60, 180];
+const MAX_SPEED = SPEED_DAYS_PER_SEC.length - 1;
+const TICKS_PER_SEC = 10;
+const AUTOSAVE_EVERY_MS = 30_000;
+
+let speed = 2;
+let playing = false;
+let ended = false; // ตระกูลสิ้นสาย
+let resumeAfterEvent = false;
+let clockLoop: Promise<void> | null = null;
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+function clockState(): ClockState {
+  return { playing, speed, maxSpeed: MAX_SPEED, ended };
+}
+const pushClock = () => push({ type: 'clock', clock: clockState() });
+
+/** เดินทีละวัน n วัน — หยุดก่อนครบถ้ามี event หรือสิ้นสาย */
+function step(c: Ctx, days: number, lines: string[]): 'done' | 'event' | 'gameOver' {
+  for (let i = 0; i < days; i++) {
+    let stop: 'done' | 'event' | 'gameOver' = 'done';
+    for (const sig of advanceDay(c)) {
+      if (sig.type === 'log') lines.push(sig.line);
+      else if (sig.type === 'event') {
+        pending.set(sig.prepared.instance.id, sig.prepared);
+        stop = 'event';
+      } else {
+        const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+        if (!heirCandidates(c, dead).length) {
+          lines.push(`${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย`);
+          return 'gameOver';
         }
-      }
-      // แบ่งงานเป็นก้อน 30 วัน แล้วคืน event loop → รับคำสั่ง pause และส่ง progress ได้
-      if (i % 30 === 29) {
-        flush();
-        push({ type: 'progress', day: c.state.meta.day, year: yearOf(c, c.state.meta.day) });
-        await yieldNow();
-        if (pauseRequested && stoppedBy === 'done') stoppedBy = 'paused';
+        if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
+        const r = performHandover(c, dead.id);
+        push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
       }
     }
-  } finally {
-    running = false;
-    flush();
+    if (stop !== 'done') return stop;
   }
-  for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
-  // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
-  if (stoppedBy !== 'gameOver') await save('autosave');
-  return { stoppedBy, day: c.state.meta.day };
+  return 'done';
 }
 
-const ALLOWED_WHILE_RUNNING = new Set<Command['type']>(['pause', 'viewPlayer', 'viewDynasty', 'viewPending', 'listSaves']);
+function pushProgress(c: Ctx) {
+  const doy = dayOfYear(c, c.state.meta.day);
+  push({ type: 'progress', day: c.state.meta.day, year: yearOf(c, c.state.meta.day), month: Math.floor(doy / 30) + 1, dayOfMonth: (doy % 30) + 1 });
+}
+
+async function runClock(c: Ctx): Promise<void> {
+  let carry = 0;
+  let lastSave = Date.now();
+  const lines: string[] = [];
+  try {
+    while (playing && ctx === c) {
+      carry += SPEED_DAYS_PER_SEC[speed]! / TICKS_PER_SEC;
+      const days = Math.floor(carry);
+      carry -= days;
+      const stop = days ? step(c, days, lines) : 'done';
+      if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
+      pushProgress(c);
+      if (stop === 'event') {
+        playing = false;
+        resumeAfterEvent = true;
+        for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
+      } else if (stop === 'gameOver') {
+        playing = false;
+        ended = true;
+      }
+      if (playing && Date.now() - lastSave > AUTOSAVE_EVERY_MS) {
+        await save('autosave');
+        lastSave = Date.now();
+      }
+      if (playing) await sleep(1000 / TICKS_PER_SEC);
+    }
+  } finally {
+    pushClock();
+    // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
+    if (!ended && ctx === c) await save('autosave');
+  }
+}
+
+function play(): ClockState {
+  const c = need();
+  if (ended) throw new Error('ตระกูลสิ้นสายแล้ว');
+  if (pending.size) throw new Error('มีเหตุการณ์รอการตัดสินใจ');
+  resumeAfterEvent = false;
+  if (!playing) {
+    playing = true;
+    clockLoop = runClock(c).finally(() => (clockLoop = null));
+  }
+  pushClock();
+  return clockState();
+}
+
+/** หยุดเวลาและรอ tick ที่กำลังเดินจบ — ใช้ก่อนแทนที่ ctx (เริ่มใหม่/โหลด) */
+async function stopClock(): Promise<void> {
+  playing = false;
+  resumeAfterEvent = false;
+  await clockLoop;
+}
 
 async function handle(cmd: Command): Promise<unknown> {
   await contentReady;
-  // เช็คหลัง await: คำสั่งที่ส่งมาก่อน content พร้อมจะถูกปล่อยพร้อมกัน — advance ตัวแรกตั้ง running แบบ sync ก่อนตัวถัดไปมาถึงบรรทัดนี้
-  if (running && !ALLOWED_WHILE_RUNNING.has(cmd.type)) throw new Error('กำลังจำลองอยู่ — กดหยุดก่อน');
   switch (cmd.type) {
     case 'newGame': {
       await acquireSessionLock();
+      await stopClock();
+      ended = false;
       const heroName = cmd.heroName === undefined ? undefined : cleanName(cmd.heroName);
       if (heroName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
       ctx = makeCtx(emptyState(cmd.seed), must(content, 'content'));
@@ -144,6 +199,8 @@ async function handle(cmd: Command): Promise<unknown> {
     }
     case 'load': {
       await acquireSessionLock();
+      await stopClock();
+      ended = false;
       const saved = must(await loadState(cmd.slot), `ไม่พบเซฟ ${cmd.slot}`);
       const c = makeCtx(saved.state, must(content, 'content'));
       ctx = c;
@@ -163,11 +220,15 @@ async function handle(cmd: Command): Promise<unknown> {
     case 'deleteSave':
       await deleteSlot(cmd.slot);
       return null;
-    case 'advance':
-      return advance(cmd.days);
+    case 'play':
+      return play();
     case 'pause':
-      pauseRequested = true;
-      return null;
+      await stopClock();
+      return clockState();
+    case 'setSpeed':
+      speed = Math.max(1, Math.min(MAX_SPEED, Math.round(cmd.speed)));
+      pushClock();
+      return clockState();
     case 'choose': {
       const c = need();
       const p = must(pending.get(cmd.instanceId), 'event นี้ไม่ได้รออยู่');
@@ -182,6 +243,8 @@ async function handle(cmd: Command): Promise<unknown> {
       // ตัวเลือกพาไป event ถัดไปทันที (ช่วยงานครัว → มีดบาด) — UI ถาม viewPending ต่อ
       const next = prepareFollowUp(c, p, rep);
       if (next) pending.set(next.instance.id, next);
+      // หยุดเพราะ event → ตัดสินใจครบแล้วเดินต่อเอง
+      if (!pending.size && resumeAfterEvent) play();
       return { lines } satisfies ReplyData['choose'];
     }
     case 'viewPlayer':
