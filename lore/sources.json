@@ -409,17 +409,17 @@
   },
   {
     "id": "src.baker_pasuk_2014_protection",
-    "title": "Protection and Power in Siam: From Khun Chang Khun Phaen to the Buddha Amulet (Southeast Asian Studies 2.2)",
+    "title": "Protection and Power in Siam: From Khun Chang Khun Phaen to the Buddha Amulet (Southeast Asian Studies 2(2): 215–242)",
     "author": "Chris Baker, Pasuk Phongpaichit",
     "kind": "secondary",
-    "composedYear": 2557,
+    "composedYear": 2556,
     "describesPeriod": [
       2143,
       2400
     ],
     "reliability": 4,
     "url": "https://englishkyoto-seas.org/wp-content/uploads/SEAS_0202_Baker-and-Pasuk.pdf",
-    "notes": "หลักฐานจากวรรณคดีขุนช้างขุนแผน (ผู้เขียนคิดว่าเริ่มราว ค.ศ. 1600 และแพร่หลายในศตวรรษที่ 18) — หลักฐานทางอ้อม"
+    "notes": "หลักฐานจากวรรณคดีขุนช้างขุนแผน (ผู้เขียนคิดว่าเริ่มราว ค.ศ. 1600 และแพร่หลายในศตวรรษที่ 18) — หลักฐานทางอ้อม — ฉบับที่อ่าน: Vol. 2 No. 2 สิงหาคม 2013 (พ.ศ. 2556) แม้ id จะเขียน 2014"
   },
   {
     "id": "src.hanks_1975_entourage",
@@ -436,7 +436,7 @@
   },
   {
     "id": "src.hanks_1962_merit",
-    "title": "Merit and Power in the Thai Social Order (American Anthropologist 64.6) — บทคัดย่อ eHRAF",
+    "title": "Merit and Power in the Thai Social Order (American Anthropologist 64(6): 1247–1261)",
     "author": "Lucien M. Hanks",
     "kind": "ethnographic",
     "composedYear": 2505,
@@ -445,8 +445,8 @@
       2500
     ],
     "reliability": 3,
-    "url": "https://ehrafworldcultures.yale.edu/cultures/ao07/documents/028",
-    "notes": "อ่านแค่บทคัดย่อ/คำอธิบายในคลัง"
+    "url": "https://doi.org/10.1525/aa.1962.64.6.02a00080",
+    "notes": "DOI 10.1525/aa.1962.64.6.02a00080 (จาก RIS ที่ผู้ใช้ส่งมา) — ตัวบทความยังไม่ได้อ่าน มีแค่บทคัดย่อใน eHRAF (https://ehrafworldcultures.yale.edu/cultures/ao07/documents/028)"
   },
   {
     "id": "src.stewart_1967_review_phillips",
@@ -527,5 +527,32 @@
     "reliability": 4,
     "url": "https://so04.tci-thaijo.org/index.php/jasu/article/download/247858/168275",
     "notes": "ใช้ตัวบทฉบับราชบัณฑิตยสถาน (ลักษณผัวเมีย 141 มาตรา) — ตาราง 12 มูลกรณีหน้า 121 และยกตัวบทมาตรา 79, 113(104), 114(105), 68, 139 มาตรง; เลขในวงเล็บคือเลขมาตราอีกระบบ"
+  },
+  {
+    "id": "src.baker_2019_buddhism_authority",
+    "title": "Buddhism and authority in Thailand in the long run (New Mandala, 14 สิงหาคม 2019) — มีฉบับแปลไทยโดยพงษ์พันธ์ ชุมใจ ในหน้าเดียวกัน",
+    "author": "Chris Baker",
+    "kind": "secondary",
+    "composedYear": 2562,
+    "describesPeriod": [
+      1893,
+      2562
+    ],
+    "reliability": 3,
+    "url": "https://www.newmandala.org/buddhism-and-authority/",
+    "notes": "บทความเชิงความเห็นของนักประวัติศาสตร์ ไม่มีเชิงอรรถ ไม่อ้างพงศาวดาร/ตัวบทสมัยอยุธยา — ใช้เป็นภาพรวมงานวิชาการ ไม่ใช่หลักฐานตรง"
+  },
+  {
+    "id": "src.three_seals_ri_2550",
+    "title": "กฎหมายตราสามดวง ฉบับราชบัณฑิตยสถาน (ชำระตามต้นฉบับหลวงตรา ๓ ดวง) 2550 — เล่ม 2",
+    "author": "ราชบัณฑิตยสถาน",
+    "kind": "primary",
+    "composedYear": 2348,
+    "describesPeriod": [
+      1893,
+      2348
+    ],
+    "reliability": 5,
+    "notes": "ฉบับที่วงวิชาการอ้าง มีภาพต้นฉบับคู่กับคำอ่าน — ผู้ใช้ส่งสแกนเล่ม 2 มา (lore/2550_กฎหมายตราสามดวง_2.pdf ไม่เข้า git) เลขหน้าในเล่ม = index ของ PDF − 14; เล่ม 2 มี ลักษณพิสูจน์ กฎมณเฑียรบาล ตำแหน่งนาพลเรือน (คำอ่านหน้า 256) พระอายการอาชญาหลวง กฎ 36 ข้อ พระราชกำหนดใหม่/เก่า พระไอยการพรมศักดิ์ — ไม่มีลักษณผัวเมีย. ผู้ใช้ส่งฉบับคุรุสภา 2505 เล่ม 1 มาด้วย (lore/DNKp….pdf) ซึ่งก็ไม่มีลักษณผัวเมีย"
   }
 ]
