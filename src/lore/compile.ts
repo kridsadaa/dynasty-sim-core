@@ -16,14 +16,17 @@ const isNameList = (c: Record<string, unknown>): c is NameListClaim & Record<str
 const pool: NamePool = { generatedFrom: [], names: [] };
 const seen = new Set<string>();
 for (const e of entries) {
-  // ชื่อที่แต่งขึ้นไม่เข้าตัวสุ่ม — ตัวสุ่มต้องใช้ชื่อที่มีในเอกสารเท่านั้น
-  if (e.domain !== 'naming' || e.status === 'invented' || !isNameList(e.claim)) continue;
+  // ชื่อที่แต่งขึ้นเข้าตัวสุ่มได้แต่ติดป้าย invented — pickName ใช้ชื่อที่มีในเอกสารก่อนเสมอเมื่อใช้ซ้ำเท่ากัน
+  if (e.domain !== 'naming' || !isNameList(e.claim)) continue;
   pool.generatedFrom.push(e.id);
   for (const n of e.claim.names) {
     const key = `${n.name}|${n.sex ?? ''}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    pool.names.push({ name: n.name, sex: n.sex ?? null, estates: e.estates ?? null, loreRef: e.id });
+    pool.names.push({
+      name: n.name, sex: n.sex ?? null, estates: e.estates ?? null, loreRef: e.id,
+      ...(e.status === 'invented' ? { invented: true as const } : {}),
+    });
   }
 }
 

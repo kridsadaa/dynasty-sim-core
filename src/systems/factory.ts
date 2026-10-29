@@ -121,6 +121,7 @@ export function namesInUse(ctx: Ctx, dynastyId: DynastyId | null, year: number):
  * สุ่มชื่อจาก names.json (compile จาก lore) ตามเพศ/ชนชั้น
  * - avoid: ห้ามเด็ดขาด (พ่อแม่ พี่น้อง คู่ครอง)
  * - inUse: เลือกชื่อที่คนในตระกูลใช้น้อยที่สุดก่อน (ดู namesInUse)
+ *   ใช้เท่ากัน → ชื่อที่มีเอกสาร (attested) ก่อนชื่อที่แต่ง (invented)
  * ถ้าไม่มีที่ตรงเลยใช้ชื่อชั่วคราว
  */
 export function pickName(
@@ -129,10 +130,13 @@ export function pickName(
   const fits = ctx.content.names.names.filter(
     (n) => (n.sex === null || n.sex === sex) && (n.estates === null || n.estates.includes(estate)) && !avoid.has(n.name),
   );
-  const pool = fits.length ? fits.map((n) => n.name) : PLACEHOLDER_NAMES.filter((n) => !avoid.has(n));
-  const uses = (n: string) => inUse.get(n) ?? 0;
-  const least = Math.min(...pool.map(uses));
-  return ctx.rng.pick(pool.filter((n) => uses(n) === least)) ?? 'ทอง';
+  const pool = fits.length
+    ? fits.map((n) => ({ name: n.name, invented: !!n.invented }))
+    : PLACEHOLDER_NAMES.filter((n) => !avoid.has(n)).map((name) => ({ name, invented: true }));
+  // ใช้ซ้ำน้อยสุดก่อน แล้วชื่อที่มีเอกสารก่อนชื่อที่แต่ง
+  const rank = (n: { name: string; invented: boolean }) => (inUse.get(n.name) ?? 0) * 2 + (n.invented ? 1 : 0);
+  const best = Math.min(...pool.map(rank));
+  return ctx.rng.pick(pool.filter((n) => rank(n) === best))?.name ?? 'ทอง';
 }
 
 export function marry(ctx: Ctx, a: Character, b: Character): void {
