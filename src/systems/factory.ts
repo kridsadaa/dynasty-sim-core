@@ -98,15 +98,41 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
 /** ชื่อชั่วคราวจนกว่า lore จะมีรายชื่อพอ — ไม่ได้มาจากเอกสาร */
 const PLACEHOLDER_NAMES = ['ทอง', 'เงิน', 'บุญ', 'สุข', 'มั่น', 'เจิม', 'ปาน', 'อ่อน'];
 
+/** คนที่ตายไปไม่เกินกี่ปียังนับว่า "ชื่อนี้มีคนใช้อยู่" — คนยังจำได้ เล่าเรื่องแล้วสับสน */
+const RECENT_DEAD_YEARS = 30;
+
 /**
- * สุ่มชื่อจาก names.json (compile จาก lore) ตามเพศ/ชนชั้น โดยเลี่ยงชื่อใน avoid (พ่อแม่ พี่น้อง)
+ * ชื่อที่คนในตระกูลใช้อยู่ → จำนวนคน: ทุกคนที่ยังมีชีวิต (รวมคู่ครองที่แต่งเข้ามา) และคนที่ตายไม่นาน
+ * ใช้เป็นตัวลงโทษแบบนุ่ม — pool ชื่อยังเล็ก กันเด็ดขาดไม่ได้
+ */
+export function namesInUse(ctx: Ctx, dynastyId: DynastyId | null, year: number): Map<string, number> {
+  const out = new Map<string, number>();
+  if (!dynastyId) return out;
+  const nodes = ctx.state.familyNodes;
+  for (const n of Object.values(nodes)) {
+    const inDynasty = n.dynastyId === dynastyId || n.spouseIds.some((s) => nodes[s]?.dynastyId === dynastyId);
+    if (!inDynasty || (n.deathYear !== null && year - n.deathYear > RECENT_DEAD_YEARS)) continue;
+    out.set(n.name, (out.get(n.name) ?? 0) + 1);
+  }
+  return out;
+}
+
+/**
+ * สุ่มชื่อจาก names.json (compile จาก lore) ตามเพศ/ชนชั้น
+ * - avoid: ห้ามเด็ดขาด (พ่อแม่ พี่น้อง คู่ครอง)
+ * - inUse: เลือกชื่อที่คนในตระกูลใช้น้อยที่สุดก่อน (ดู namesInUse)
  * ถ้าไม่มีที่ตรงเลยใช้ชื่อชั่วคราว
  */
-export function pickName(ctx: Ctx, sex: 'm' | 'f', estate: Estate, avoid: ReadonlySet<string> = new Set()): string {
+export function pickName(
+  ctx: Ctx, sex: 'm' | 'f', estate: Estate, avoid: ReadonlySet<string> = new Set(), inUse: ReadonlyMap<string, number> = new Map(),
+): string {
   const fits = ctx.content.names.names.filter(
     (n) => (n.sex === null || n.sex === sex) && (n.estates === null || n.estates.includes(estate)) && !avoid.has(n.name),
   );
-  return ctx.rng.pick(fits)?.name ?? ctx.rng.pick(PLACEHOLDER_NAMES.filter((n) => !avoid.has(n))) ?? 'ทอง';
+  const pool = fits.length ? fits.map((n) => n.name) : PLACEHOLDER_NAMES.filter((n) => !avoid.has(n));
+  const uses = (n: string) => inUse.get(n) ?? 0;
+  const least = Math.min(...pool.map(uses));
+  return ctx.rng.pick(pool.filter((n) => uses(n) === least)) ?? 'ทอง';
 }
 
 export function marry(ctx: Ctx, a: Character, b: Character): void {
@@ -160,6 +186,18 @@ export function relativeNames(ctx: Ctx, ch: Character, spouse: Character | undef
     for (const sib of livingChildren(ctx, parent)) people.push(sib, ...livingChildren(ctx, sib));
   }
   return new Set(people.map((p) => p.name));
+}
+
+/** ชื่อที่ห้ามใช้กับคู่ครองที่แต่งเข้ามา: ตัวเจ้าบ่าว/เจ้าสาวเอง และคู่ครองของพี่น้อง (สะใภ้/เขยสองคนชื่อเดียวกันอ่านไม่รู้เรื่อง) */
+export function inLawNames(ctx: Ctx, ch: Character): Set<string> {
+  const names = new Set([ch.name]);
+  for (const parent of livingParents(ctx, ch)) {
+    for (const sib of livingChildren(ctx, parent)) {
+      const sp = livingSpouse(ctx, sib);
+      if (sp) names.add(sp.name);
+    }
+  }
+  return names;
 }
 
 export function livingChildren(ctx: Ctx, ch: Character): Character[] {

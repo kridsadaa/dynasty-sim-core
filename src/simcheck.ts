@@ -43,6 +43,19 @@ function invariants(ctx: Ctx, ended: boolean): void {
   }
   check('อายุติดลบ', Object.values(S.characters).filter((c) => c.birthDay > S.meta.day).map((c) => c.name));
   check('childIds ชี้ไป node ที่ไม่มี', Object.values(S.familyNodes).flatMap((n) => n.childIds.filter((id) => !S.familyNodes[id])));
+  // พี่น้อง/พ่อแม่ลูก หรือคู่ครองของพี่น้องที่ยังมีชีวิต ชื่อซ้ำกัน — อ่านเรื่องไม่รู้เรื่อง (pickName ต้องกันไว้)
+  const livingNode = (id: string | null) => {
+    const n = id ? S.familyNodes[id as keyof typeof S.familyNodes] : undefined;
+    return n && alive(n.characterId) ? n : undefined;
+  };
+  check('ญาติใกล้ชิดชื่อซ้ำกัน', Object.values(S.familyNodes).flatMap((n) => {
+    if (!alive(n.characterId)) return [];
+    const kids = n.childIds.map(livingNode).filter((k) => !!k);
+    const groups = [kids.map((k) => k!.name), kids.flatMap((k) => k!.spouseIds.map(livingNode).filter((x) => !!x).map((x) => x!.name))];
+    const clash = groups.flatMap((g) => g.filter((name, i) => g.indexOf(name) !== i));
+    const withParent = kids.filter((k) => k!.name === n.name).map((k) => k!.name);
+    return [...clash, ...withParent];
+  }));
   check('แผลบนอวัยวะที่ไม่มีแล้ว', Object.values(S.wounds).filter((w) => {
     const ch = S.characters[w.characterId];
     const parts = ch ? content.anatomies[ch.anatomyId]?.parts : undefined;

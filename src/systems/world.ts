@@ -3,7 +3,7 @@ import type { Character, GameEventDef } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import {
-  createHousehold, joinHousehold, livingChildren, livingSpouse, marry, pickCaregiverChild, pickName, relativeNames,
+  createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marry, namesInUse, pickCaregiverChild, pickName, relativeNames,
   spawnCharacter,
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
@@ -194,8 +194,12 @@ export function lifeMilestones(ctx: Ctx): string[] {
       const mother = ch.sex === 'f' ? ch : spouse;
       const father = ch.sex === 'm' ? ch : spouse;
       const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
+      // ชื่อผู้เล่นห้ามซ้ำเสมอ — เรื่องทั้งเกมเล่าผ่านคนนี้
+      const avoid = relativeNames(ctx, ch, spouse);
+      const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+      if (player && isAlive(player)) avoid.add(player.name);
       const kid = spawnCharacter(ctx, {
-        name: pickName(ctx, sex, ch.social.estate, relativeNames(ctx, ch, spouse)),
+        name: pickName(ctx, sex, ch.social.estate, avoid, namesInUse(ctx, ch.dynastyId, year)),
         sex, birthYear: year, estate: ch.social.estate, father, mother,
       });
       out.push(`${ch.name} มีบุตร: ${kid.name}`);
@@ -210,7 +214,7 @@ function marryOut(ctx: Ctx, ch: Character, year: number): string {
   const spouseSex = ch.sex === 'm' ? 'f' : 'm';
   const spouseAge = spouseSex === 'm' ? W.marriageAge : W.marriageAgeFemale;
   const spouse = spawnCharacter(ctx, {
-    name: pickName(ctx, spouseSex, ch.social.estate, new Set([ch.name])),
+    name: pickName(ctx, spouseSex, ch.social.estate, inLawNames(ctx, ch), namesInUse(ctx, ch.dynastyId, year)),
     sex: spouseSex, birthYear: year - spouseAge, estate: ch.social.estate, dynastyId: null, householdId: null,
   });
   marry(ctx, ch, spouse);
