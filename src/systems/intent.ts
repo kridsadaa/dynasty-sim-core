@@ -5,7 +5,7 @@ import type { Character, Estate, Intent, IntentApproachDef, IntentDef, IntentKin
 import { DISTANCE_TH, familiarity, isSingle, relationStrength, setRelation, spawnLocal, tradeOf } from './acquaintance';
 import { scarModifiers } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
-import { inLawNames, livingParents, livingSpouse } from './factory';
+import { inLawNames, livingParents, livingSpouse, spouseAgeFor } from './factory';
 import { officeLabor } from './career';
 import { serviceLabor } from './marriage';
 import { adjustBond } from './will';
@@ -292,8 +292,7 @@ export function arrangedMatchEvent(ctx: Ctx): PreparedEvent | null {
   const player = S.characters[S.meta.playerCharacterId];
   if (!isAlive(player)) return null;
   const age = ageOf(ctx, player);
-  const marriageAge = player.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
-  if (age < marriageAge || age > I.arrangedMaxAge) return null;
+  if (age < W.marriageAge[player.sex][0] || age > I.arrangedMaxAge) return null;
   if ((S.familyNodes[player.familyNodeId]?.spouseIds.length ?? 0) > 0 || player.betrothal || player.eloped) return null;
   const current = activeIntent(ctx, player.id);
   if (current && ctx.content.intents[current.kind]?.target === 'court') return null;
@@ -305,10 +304,10 @@ export function arrangedMatchEvent(ctx: Ctx): PreparedEvent | null {
 
   // คู่ฐานะเดียวกัน จากต่างตำบล ไม่ซ้ำชื่อคนที่จะเป็นญาติเขย/สะใภ้ด้วยกัน
   const sex = player.sex === 'm' ? 'f' : 'm';
-  const spouseAge = (sex === 'm' ? W.marriageAge : W.marriageAgeFemale) + Math.floor(ctx.rng.range(-1, 3));
+  const spouseAge = spouseAgeFor(ctx, sex, age);
   const sameEstate = ctx.content.trades.filter((t) => t.estate === player.social.estate);
   const trade = ctx.rng.weighted(sameEstate.length ? sameEstate : ctx.content.trades, (t) => t.weight);
-  const match = spawnLocal(ctx, player, { sex, age: spouseAge, distance: 'town', trade, avoid: inLawNames(ctx, player) });
+  const match = spawnLocal(ctx, player, { sex, age: spouseAge, distance: 'town', trade, avoid: inLawNames(ctx, player), single: true });
   setRelation(ctx, player.id, match.id, 'acquaintance', 0.05);
   return prepareEvent(ctx, 'family.arranged_match', bindings(ctx, player, match));
 }

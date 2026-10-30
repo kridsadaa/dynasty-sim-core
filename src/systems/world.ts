@@ -5,8 +5,8 @@ import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { meetPeople } from './acquaintance';
 import {
-  createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, namesInUse, newbornAvoid, pickCaregiverChild,
-  pickName, spawnCharacter, wed,
+  createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
+  pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
@@ -238,10 +238,9 @@ export function lifeMilestones(
       out.push(`${ch.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
     }
 
-    const marriageAge = ch.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
     const neverMarried = (ctx.state.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0;
     // ผู้เล่นไม่ถูกจับแต่ง — เกี้ยวเอง หรือรับ/ปฏิเสธคู่ที่ผู้ใหญ่ทาบทาม (arrangedMatchEvent)
-    if (age === marriageAge && neverMarried && ch.id !== ctx.state.meta.playerCharacterId) out.push(marryOut(ctx, ch, year));
+    if (neverMarried && ch.id !== ctx.state.meta.playerCharacterId && marriesThisYear(ctx, ch.sex, age)) out.push(marryOut(ctx, ch, year));
 
     // แยกเรือนเมื่อครบกำหนด — ลูกที่อยู่ดูแลพ่อแม่ไม่ย้าย
     if (ch.moveOutDay !== undefined && day >= ch.moveOutDay) {
@@ -279,9 +278,8 @@ export function lifeMilestones(
 }
 
 function marryOut(ctx: Ctx, ch: Character, year: number): string {
-  const W = ctx.content.balance.world;
   const spouseSex = ch.sex === 'm' ? 'f' : 'm';
-  const spouseAge = spouseSex === 'm' ? W.marriageAge : W.marriageAgeFemale;
+  const spouseAge = spouseAgeFor(ctx, spouseSex, ageOf(ctx, ch));
   const spouse = spawnCharacter(ctx, {
     name: pickName(ctx, spouseSex, ch.social.estate, inLawNames(ctx, ch), namesInUse(ctx, ch.dynastyId, year)),
     sex: spouseSex, birthYear: year - spouseAge, estate: ch.social.estate, dynastyId: null, householdId: null,

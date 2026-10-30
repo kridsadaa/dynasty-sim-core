@@ -245,6 +245,32 @@ export function createHousehold(ctx: Ctx, head: Character): Household {
   return hh;
 }
 
+// ---- อายุออกเรือน (lore: kinship.marry_young_1680s) ----
+// ในช่วงอายุ [min, max] แต่ละปีมีโอกาสเท่ากัน ครบ max แล้วส่วนใหญ่แต่ง ที่เหลือ (neverMarryChance) ครองโสดตลอดชีวิต
+
+/** ปีนี้ออกเรือนไหม — เรียกปีละครั้งกับคนที่ยังไม่มีคู่ */
+export function marriesThisYear(ctx: Ctx, sex: 'm' | 'f', age: number): boolean {
+  const W = ctx.content.balance.world;
+  const [min, max] = W.marriageAge[sex];
+  if (age < min || age > max) return false;
+  return ctx.rng.chance(age === max ? 1 - W.neverMarryChance : 1 / (max - age + 1));
+}
+
+/** ส่วนของคนอายุนี้ที่ออกเรือนไปแล้ว — ใช้กับคนนอกที่เพิ่งสร้าง */
+export function marriedShare(ctx: Ctx, sex: 'm' | 'f', age: number): number {
+  const W = ctx.content.balance.world;
+  const [min, max] = W.marriageAge[sex];
+  if (age < min) return 0;
+  return (1 - W.neverMarryChance) * Math.min(1, (age - min) / (max - min + 1));
+}
+
+/** อายุคู่ครองเพศ sex ของคนอายุ partnerAge: อยู่ในช่วงอายุออกเรือน ภรรยาอ่อนกว่า สามีแก่กว่า */
+export function spouseAgeFor(ctx: Ctx, sex: 'm' | 'f', partnerAge: number): number {
+  const [min, max] = ctx.content.balance.world.marriageAge[sex];
+  const pick = min + Math.floor(ctx.rng.range(0, max - min + 1));
+  return sex === 'f' ? Math.min(pick, Math.max(min, partnerAge - 1)) : Math.max(pick, partnerAge + 1);
+}
+
 export function livingSpouse(ctx: Ctx, ch: Character): Character | undefined {
   return ctx.state.familyNodes[ch.familyNodeId]?.spouseIds
     .map((n) => ctx.state.familyNodes[n]?.characterId)

@@ -25,7 +25,7 @@
       "id": "court",
       "textKey": "intent.court",
       "target": "court",
-      "minAge": 16,
+      "minAge": 15,
       "baseOdds": 0.45,
       "approaches": [
         { "id": "visit", "textKey": "intent.court.visit", "odds": 0,

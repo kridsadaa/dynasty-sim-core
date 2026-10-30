@@ -1,6 +1,6 @@
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, Distance, RelationKind, TradeDef } from '../core/types';
-import { livingSpouse, namesInUse, pickName, spawnCharacter } from './factory';
+import { livingSpouse, marriedShare, marriesThisYear, namesInUse, pickName, spawnCharacter } from './factory';
 
 // ============================================================================
 // คนรู้จักนอกตระกูล — เพื่อนบ้าน คนต่างตำบล คนต่างเมืองที่พบในงานวัด
@@ -53,6 +53,8 @@ export interface LocalOpts {
   trade?: TradeDef;
   /** ชื่อที่ห้ามใช้เพิ่ม (เช่น สะใภ้/เขยของพี่น้อง สำหรับคู่ที่ผู้ใหญ่ทาบทาม) */
   avoid?: ReadonlySet<string>;
+  /** สร้างมาเป็นคนที่ยังไม่มีคู่ (คนให้เกี้ยว) — ไม่ระบุ = ออกเรือนแล้วหรือยังตามวัย */
+  single?: boolean;
 }
 
 export function spawnLocal(ctx: Ctx, knower: Character, o: LocalOpts): Character {
@@ -65,6 +67,7 @@ export function spawnLocal(ctx: Ctx, knower: Character, o: LocalOpts): Character
     sex: o.sex, birthYear: year - o.age, estate: trade.estate, dynastyId: null, householdId: null,
   });
   ch.local = { distance: o.distance, trade: trade.id };
+  if (!o.single && ctx.rng.chance(marriedShare(ctx, o.sex, o.age))) ch.local.wed = true;
   return ch;
 }
 
@@ -78,7 +81,7 @@ export function singlePeer(ctx: Ctx, ch: Character, spawn: boolean): Character |
   const close = (c: Character) => Math.abs(ageOf(ctx, c) - age) <= 6;
   const candidates = knownLocals(ctx, ch).filter((c) => c.sex === sex && isSingle(ctx, c) && close(c) && ageOf(ctx, c) >= 13);
   let other = ctx.rng.pick(candidates);
-  if (!other && spawn) other = spawnLocal(ctx, ch, { sex, age: Math.max(13, age + Math.floor(ctx.rng.range(-2, 3))), distance: 'near' });
+  if (!other && spawn) other = spawnLocal(ctx, ch, { sex, age: Math.max(13, age + Math.floor(ctx.rng.range(-2, 3))), distance: 'near', single: true });
   if (other && familiarity(ctx, ch.id, other.id) <= 0) setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
   return other;
 }
@@ -125,8 +128,7 @@ export function meetPeople(ctx: Ctx): string[] {
   const known = knownLocals(ctx, player);
   // ออกเรือนไปนอกฉาก — คนที่กำลังถูกเกี้ยวอยู่ก็อาจถูกคนอื่นชิงไป (tickIntents แจ้งเอง)
   for (const ch of known) {
-    const marriageAge = ch.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
-    if (!isSingle(ctx, ch) || ageOf(ctx, ch) < marriageAge || !ctx.rng.chance(L.wedChance)) continue;
+    if (!isSingle(ctx, ch) || !marriesThisYear(ctx, ch.sex, ageOf(ctx, ch))) continue;
     ch.local!.wed = true;
     if (familiarity(ctx, player.id, ch.id) >= 0.3 && !intentTargets.has(ch.id)) out.push(`${ch.name}ออกเรือนไปแล้ว`);
   }
@@ -153,13 +155,15 @@ export function meetPeople(ctx: Ctx): string[] {
   for (let i = 0; i < meet; i++) {
     const opposite = single && age >= 14 && age <= 35 && ctx.rng.chance(L.oppositeSexWhenSingle);
     const sex = opposite ? (player.sex === 'm' ? 'f' : 'm') : ctx.rng.chance(0.5) ? player.sex : player.sex === 'm' ? 'f' : 'm';
-    // วัยหนุ่มสาวต่างเพศ: ผู้หญิงมักอายุน้อยกว่า (แต่งงานเร็วกว่า) · อื่นๆ รุ่นราวคราวเดียวกัน
+    // วัยหนุ่มสาวต่างเพศที่ยังไม่มีคู่: อยู่ในช่วงอายุออกเรือน ผู้หญิงมักอ่อนกว่า · อื่นๆ รุ่นราวคราวเดียวกัน (ออกเรือนแล้วหรือยังตามวัย)
     const r = ctx.rng.range(0, 1);
+    const [min, max] = W.marriageAge[sex];
+    const inRange = (a: number) => Math.min(max, Math.max(min - 2, a));
     const otherAge = opposite
-      ? sex === 'f' ? Math.max(W.marriageAgeFemale - 2, age - 1 - Math.floor(r * 7)) : age + 1 + Math.floor(r * 7)
+      ? inRange(sex === 'f' ? age - 1 - Math.floor(r * 7) : age + 1 + Math.floor(r * 7))
       : Math.max(3, age - 3 + Math.floor(r * 7));
     const distance = must(ctx.rng.weighted(Object.entries(L.distanceWeights) as Array<[Distance, number]>, ([, w]) => w), 'distance')[0];
-    const ch = spawnLocal(ctx, player, { sex, age: otherAge, distance });
+    const ch = spawnLocal(ctx, player, { sex, age: otherAge, distance, single: opposite });
     setRelation(ctx, player.id, ch.id, 'acquaintance', Math.round(ctx.rng.range(0.1, 0.3) * 100) / 100);
     out.push(`${player.name}ได้รู้จักกับ${ch.name} ${localOrigin(ctx, ch)} ${DISTANCE_TH[distance]}`);
   }

@@ -825,8 +825,13 @@ export interface Balance {
     eventsPerYear: number;
     oldAgeStart: number;
     oldAgeYearlyRisk: number; // ต่อปีที่เกิน oldAgeStart
-    marriageAge: number;
-    marriageAgeFemale: number;
+    /**
+     * ช่วงอายุออกเรือนตามเพศ — แต่ละปีในช่วงมีโอกาสเท่ากัน (lore: kinship.marry_young_1680s)
+     * ตัวเลขเป็นของเกม: ลา ลูแบร์บอกแค่ว่าแต่งกันอายุน้อยมาก
+     */
+    marriageAge: { f: [number, number]; m: [number, number] };
+    /** ส่วนที่ครบช่วงอายุแล้วไม่ออกเรือนเลยตลอดชีวิต */
+    neverMarryChance: Unit;
     /** มีบุตรเมื่อแต่งงานได้กี่ปี */
     childAfterMarriageYears: number[];
     /** โอกาสที่ลูกของผู้เล่นพาหลานมาให้ผู้เล่นตั้งชื่อ */
@@ -943,8 +948,6 @@ export interface Balance {
     maxKnown: [number, number];
     /** เต็มแล้ว: โอกาสต่อปีที่คนที่ไม่ค่อยสนิทจะห่างหายไป (เปิดที่ให้คนใหม่) */
     fadeChance: Unit;
-    /** คนรู้จักที่ยังไม่มีคู่ แต่งงานไปกับคนนอกฉาก ต่อปี */
-    wedChance: Unit;
     distanceWeights: Record<Distance, number>;
     /** ผู้เล่นวัยหนุ่มสาวที่ยังไม่มีคู่ รู้จักคนต่างเพศมากกว่า */
     oppositeSexWhenSingle: Unit;
