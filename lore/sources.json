@@ -592,5 +592,31 @@
     "reliability": 3,
     "url": "https://so02.tci-thaijo.org/index.php/DRURDI/article/view/252166",
     "notes": "ปีที่พิมพ์ยังไม่ได้ตรวจ (อ้างงานถึง พ.ศ. 2562); อ้างบันทึกคณะทูตฝรั่งเศสฉบับแปลในประชุมพงศาวดาร ภาค 35–36 และจดหมายเหตุเซเบเรต — ข้อความสำคัญควรเปิดฉบับแปลนั้นตรวจ"
+  },
+  {
+    "id": "src.khun_chang_khun_phaen_national_library",
+    "title": "เสภาเรื่องขุนช้างขุนแผน ฉบับหอสมุดแห่งชาติ (ฉบับหอพระสมุดวชิรญาณ)",
+    "kind": "primary",
+    "composedYear": 2460,
+    "describesPeriod": [
+      2143,
+      2460
+    ],
+    "reliability": 2,
+    "url": "https://vajirayana.org/v2/books/ขุนช้างขุนแผน-ฉบับหอสมุดแห่งชาติ/",
+    "notes": "วรรณคดี ไม่ใช่บันทึกเหตุการณ์ — เรื่องเกิดราว ค.ศ. 1600 เล่าเป็นเสภาชาวบ้าน ย้ายเข้าราชสำนักช่วงศตวรรษที่ 18–ต้น 19 และเป็นหนังสือมาตรฐานราว ค.ศ. 1850–1918 (src.baker_pasuk_2009_kckp) แต่ละตอนจึงมาจากคนละยุค; บางจุดขัดกับกฎหมายตราสามดวง — ถ้าขัดกันให้ถือตัวบทกฎหมาย; ใช้ได้แค่ระดับ inferred"
+  },
+  {
+    "id": "src.baker_pasuk_2009_kckp",
+    "title": "Chris Baker & Pasuk Phongpaichit, The Career of Khun Chang Khun Phaen, Journal of the Siam Society 97 (2009): 1–42",
+    "kind": "secondary",
+    "composedYear": 2552,
+    "describesPeriod": [
+      2143,
+      2461
+    ],
+    "reliability": 4,
+    "url": "https://so06.tci-thaijo.org/index.php/pub_jss/article/view/158246",
+    "notes": "ยังไม่ได้อ่านฉบับเต็ม — ใช้ข้อสรุปเรื่องอายุของตัวบทจากบทคัดย่อ"
   }
 ]
