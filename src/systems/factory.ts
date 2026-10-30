@@ -60,10 +60,10 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     legendIds: [],
     pruneLevel: 0,
   };
-  // คนที่เกิดในปีนี้หรือก่อนหน้า: วันเกิดของปีนี้ต้องผ่านมาแล้ว → เด็กเกิดใหม่ไม่มีวันเกิดในอนาคต (อายุ -1)
-  // และคู่ครองที่สร้างด้วย birthYear = ปีนี้ − อายุ ได้อายุตรงตามที่ตั้งใจ (ทอยสุ่มครั้งเดียวเท่าเดิม)
+  // เกิดปีนี้: วันเกิดต้องไม่เลยวันนี้ → เด็กเกิดใหม่ไม่มีวันเกิดในอนาคต (อายุ -1)
+  // เกิดปีก่อนๆ: สุ่มได้ทั้งปี — ถ้าจำกัดถึงวันนี้ด้วย ตัวละครที่สร้างตอนต้นปี (ฉากเริ่มเกม) จะเกิดวันแรกของปีเหมือนกันหมด
   const now = ctx.state.meta.day;
-  const birthDaySpan = o.birthYear <= yearOf(ctx, now) ? dayOfYear(ctx, now) + 1 : B.daysPerYear;
+  const birthDaySpan = o.birthYear === yearOf(ctx, now) ? dayOfYear(ctx, now) + 1 : B.daysPerYear;
   const ch: Character = {
     id: newId(ctx, 'chr'),
     familyNodeId: node.id,

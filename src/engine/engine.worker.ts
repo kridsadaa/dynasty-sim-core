@@ -115,13 +115,17 @@ async function advance(days: number): Promise<ReplyData['advance']> {
         if (pauseRequested && stoppedBy === 'done') stoppedBy = 'paused';
       }
     }
+    flush();
+    // ยังถือ running ระหว่างเซฟ — ครั้งแรกที่เปิด IndexedDB คืน event loop ถ้า choose แทรกตรงนี้ได้
+    // เซฟจะได้ state หลังเลือกแต่ pending ก่อนเลือก → โหลดแล้วเลือก event เดิมซ้ำ
+    // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
+    if (stoppedBy !== 'gameOver') await save('autosave');
   } finally {
     running = false;
     flush();
+    // ส่ง event หลังเซฟเสร็จ → UI เปิดปุ่มตัวเลือกตอนที่ worker รับ choose ได้แล้ว
+    for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
   }
-  for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
-  // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
-  if (stoppedBy !== 'gameOver') await save('autosave');
   return { stoppedBy, day: c.state.meta.day };
 }
 
