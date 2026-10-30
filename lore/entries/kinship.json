@@ -495,5 +495,37 @@
     "rationale": "ผู้ออกแบบขอฉากจากละครไทยหลายเรื่อง; เรือเป็นพาหนะหลักของคนกรุงศรีฯ (material.boats_1680s) และลา ลูแบร์บันทึกว่าสาวๆ หาทางออกไปพบหนุ่มเมื่อทำได้ (kinship.courtship_liberty_1680s)",
     "citations": [],
     "verified": false
+  },
+  {
+    "id": "kinship.marry_young_1680s",
+    "domain": "kinship",
+    "title": "แต่งงานกันอายุน้อยมาก ฝ่ายชายตามสัดส่วน และมีบางคนไม่แต่งงานตลอดชีวิต",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์ไม่ได้ให้ตัวเลขอายุ เกมจึงตั้งช่วงเอง: หญิง 15–18 ชาย 18–22 และ 3% ไม่แต่งเลย (balance.world.marriageAge, neverMarryChance) — ฝ่ายชายช้ากว่าเพราะ \"ตามสัดส่วน\" และต้องสร้างเรือนหอได้; ควรหาตัวเลขจากแหล่งร่วมยุคหรือสมัยหลัง (เช่น ปาลเลอกัวซ์ 2397) มายืนยัน",
+    "claim": {
+      "fertility": "ผู้หญิงมีลูกได้ตั้งแต่อายุ 12 ปีหรือเร็วกว่า ส่วนใหญ่ไม่มีลูกหลังอายุ 40",
+      "custom": "ธรรมเนียมจึงแต่งงานลูกสาวตั้งแต่อายุน้อยมาก ลูกชายก็ตามสัดส่วน",
+      "celibate": "มีชาวสยามบางคนไม่แต่งงานตลอดชีวิต",
+      "nuns": "ผู้หญิงจะบวชเป็นนางชีได้ก็ต่อเมื่ออายุมากแล้ว"
+    },
+    "summary": "ฐานของอายุออกเรือนในเกม: คนในตระกูลและคนรู้จักออกเรือนในช่วงอายุนี้ คนอายุเกินช่วงที่ยังไม่มีคู่จึงหายาก",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII",
+        "quote": "The Custom is therefore to marry them very young, and the Boys in proportion"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII",
+        "quote": "there is found some Siameses. who disdain Marriage all their life"
+      }
+    ],
+    "verified": false
   }
 ]
