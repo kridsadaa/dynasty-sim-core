@@ -36,6 +36,8 @@ export function markDead(ctx: Ctx, ch: Character, cause: TagId): void {
   ch.deathDay = ctx.state.meta.day;
   ch.deathCause = cause;
   snapshotToNode(ctx, ch);
+  // ความตั้งใจของคนตายจบลงทันที — ถ้าตระกูลสิ้นสายจะไม่มีรอบรายเดือนมาเก็บกวาดให้
+  for (const i of Object.values(ctx.state.intents)) if (i.actorId === ch.id) delete ctx.state.intents[i.id];
 }
 
 export function snapshotToNode(ctx: Ctx, ch: Character): void {
