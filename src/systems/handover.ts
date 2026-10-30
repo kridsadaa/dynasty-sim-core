@@ -23,6 +23,17 @@ import { addOrReinforceTrait } from './traits';
 // ความทรงจำของผู้ตาย (เหลือแค่ตำนานที่บิดเบือน), ปมจิตใจโดยตรง (ส่งต่อเฉพาะผ่าน social learning ระหว่างมีชีวิต + taboo)
 // ============================================================================
 
+/** ชื่อความสัมพันธ์ที่ผู้เล่นเห็น (log มรดก, หน้าดูตัวละคร) */
+export const RELATION_TH: Record<Relation['kind'], string> = {
+  caregiver: 'ความผูกพันกับผู้เลี้ยงดู',
+  spouse: 'ความผูกพันคู่ครอง',
+  patron: 'สายมูลนาย',
+  friend: 'มิตรภาพ',
+  rival: 'ความเป็นคู่แข่ง',
+  gratitude: 'บุญคุณ',
+  grudge: 'ความแค้น',
+};
+
 /** ข้อความที่ผู้เล่นเห็นเมื่อตำนานถูกเล่าต่อ — ไม่โชว์ชื่อ op ภายใน */
 const RETELL_TH: Record<DriftOp, string> = {
   glorify: 'เรื่องยิ่งใหญ่ขึ้น',
@@ -295,7 +306,7 @@ function carryRelations(ctx: Ctx, dead: Character, heir: Character): string[] {
     // ทายาทมีความสัมพันธ์แบบเดียวกันกับคนนี้อยู่แล้วและแรงกว่า → ไม่เขียนทับ
     if ((ctx.state.relations[inherited.id]?.strength ?? -Infinity) >= inherited.strength) continue;
     ctx.state.relations[inherited.id] = inherited;
-    out.push(`${heir.name} รับ ${r.kind} กับ ${ctx.state.characters[other]?.name} (${inherited.strength.toFixed(2)})`);
+    out.push(`${heir.name} รับ${RELATION_TH[r.kind]}กับ${ctx.state.characters[other]?.name ?? '?'} ต่อจากผู้ตาย (${Math.round(inherited.strength * 100)}%)`);
   }
   return out;
 }
@@ -363,7 +374,7 @@ function crystallizeTaboos(ctx: Ctx, dead: Character, heir: Character, heirNode:
     };
     dyn.taboos.push(taboo);
     created.add(taboo.id);
-    out.push(`ข้อห้ามตระกูลใหม่: ${taboo.kind === 'ban' ? 'ห้าม' : 'พิธีเกี่ยวกับ'}${ctx.tags.label(taboo.target)} (แรง ${taboo.strength.toFixed(2)}, รู้ต้นเหตุ: ${taboo.originKnown})`);
+    out.push(`ข้อห้ามตระกูลใหม่: ${taboo.kind === 'ban' ? 'ห้าม' : 'พิธีเกี่ยวกับ'}${ctx.tags.label(taboo.target)} (แรง ${Math.round(taboo.strength * 100)}%, ${taboo.originKnown ? 'ยังรู้ต้นเหตุ' : 'ไม่มีใครรู้ต้นเหตุจริง'})`);
   }
 
   // (c) ข้อห้ามฝังเข้าตัวทายาทเป็น superstition (ถ้ายังไม่มีปมนี้)

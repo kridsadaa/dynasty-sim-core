@@ -8,8 +8,8 @@ import { bootstrapScenario } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
 import { deleteSlot, listSlots, loadState, saveState } from './persistence';
-import type { Command, Push, ReplyData, Request, StopReason, WorkerMessage } from './protocol';
-import { dynastyView, eventView, playerView, type TextTable } from './views';
+import type { Command, LogLine, Push, ReplyData, Request, StopReason, WorkerMessage } from './protocol';
+import { dynastyView, eventView, inspectView, playerView, treeView, type TextTable } from './views';
 
 // ============================================================================
 // Simulation Worker — เจ้าของ GameState แต่เพียงผู้เดียว
@@ -84,21 +84,21 @@ async function advance(days: number): Promise<ReplyData['advance']> {
   running = true;
   pauseRequested = false;
   let stoppedBy: StopReason = 'done';
-  const lines: string[] = [];
+  const lines: LogLine[] = [];
   const flush = () => {
     if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
   };
   try {
     for (let i = 0; i < days && stoppedBy === 'done'; i++) {
       for (const sig of advanceDay(c)) {
-        if (sig.type === 'log') lines.push(sig.line);
+        if (sig.type === 'log') lines.push({ kind: sig.kind, text: sig.line });
         else if (sig.type === 'event') {
           pending.set(sig.prepared.instance.id, sig.prepared);
           stoppedBy = 'event';
         } else {
           const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
           if (!heirCandidates(c, dead).length) {
-            lines.push(`${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย`);
+            lines.push({ kind: 'death', text: `${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
             stoppedBy = 'gameOver';
             break;
           }
@@ -129,7 +129,9 @@ async function advance(days: number): Promise<ReplyData['advance']> {
   return { stoppedBy, day: c.state.meta.day };
 }
 
-const ALLOWED_WHILE_RUNNING = new Set<Command['type']>(['pause', 'viewPlayer', 'viewDynasty', 'viewPending', 'listSaves']);
+const ALLOWED_WHILE_RUNNING = new Set<Command['type']>([
+  'pause', 'viewPlayer', 'viewDynasty', 'viewPending', 'viewTree', 'viewCharacter', 'listSaves',
+]);
 
 async function handle(cmd: Command): Promise<unknown> {
   await contentReady;
@@ -184,6 +186,10 @@ async function handle(cmd: Command): Promise<unknown> {
       return playerView(need(), text);
     case 'viewDynasty':
       return dynastyView(need());
+    case 'viewTree':
+      return treeView(need());
+    case 'viewCharacter':
+      return inspectView(need(), cmd.nodeId, text);
   }
 }
 
