@@ -17,6 +17,13 @@ const CAPS: CapabilityId[] = ['manipulation.fine', 'manipulation.gross', 'mobili
 /** ข้อความจากตาราง text.th — ไม่มีคีย์ให้คืนค่าดิบ (เห็นชัดว่าลืมใส่คำแปล) */
 const t = (text: TextTable, prefix: string, id: string) => text[`${prefix}.${id}`] ?? id;
 
+/** บรรทัดที่ซ้ำกันรวมเป็นบรรทัดเดียว "… ×2" (แผลเป็นแบบเดียวกันที่อวัยวะเดียวกัน) — คงลำดับที่เจอครั้งแรก */
+const countSame = (lines: string[]) => {
+  const n = new Map<string, number>();
+  for (const l of lines) n.set(l, (n.get(l) ?? 0) + 1);
+  return [...n].map(([l, k]) => (k > 1 ? `${l} ×${k}` : l));
+};
+
 /** UI ไม่ควรเห็นคีย์ภายใน ("noble", "finger.index.l", "manipulation.fine") — แปลงเป็นคำไทยที่นี่ */
 export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
   const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
@@ -31,11 +38,11 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     title: ch.social.title,
     wealth: Math.round(ch.social.wealth),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
-    scars: ch.bodyPartIds.flatMap((pid) => {
+    scars: countSame(ch.bodyPartIds.flatMap((pid) => {
       const p = ctx.state.bodyParts[pid];
       const label = p ? partLabel(p.partDefId) : '';
       return p ? [...p.scars.map((s) => `แผลเป็น(${t(text, 'scar.kind', s.kind)})ที่${label}`), ...(p.status === 'missing' ? [`สูญเสีย${label}`] : [])] : [];
-    }),
+    })),
     wounds: ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${partLabel(w!.partDefId)}: ${t(text, 'wound.stage', w!.stage)}`),
     // คีย์เป็นคำไทยเพราะ UI แสดงคีย์ตรงๆ
     capabilities: Object.fromEntries(CAPS.map((c) => [t(text, 'capability', c), Math.round(capability(ctx, ch, c) * 100) / 100])),
@@ -59,7 +66,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
   for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.label(v);
   return {
     instanceId: p.instance.id,
-    title: p.def.id,
+    title: text[`${p.def.textKey}.title`] ?? p.def.id,
     text: fill(text[p.def.textKey] ?? p.def.textKey, vars),
     options: p.options.map((o) => ({
       id: o.id,

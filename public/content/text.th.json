@@ -1,7 +1,9 @@
 {
+  "event.kitchen_cut.title": "มีดบาดในโรงครัว",
   "event.kitchen_cut": "{actor}ช่วยแม่ผ่า{target_food}อยู่ในโรงครัว มีดลื่นพลาดเข้าที่นิ้ว เลือดไหลไม่หยุด",
   "event.kitchen_cut.cry": "ร้องไห้วิ่งไปหาแม่",
   "event.kitchen_cut.hide": "กัดฟันซ่อนแผลไว้ ไม่ให้ใครรู้",
+  "event.court_feast.title": "งานเลี้ยงในวัง",
   "event.court_feast": "{actor}ได้รับเชิญไปงานเลี้ยงในวัง สำรับวันนี้มี{dish}",
   "event.court_feast.eat": "รับประทานอย่างสำรวม",
   "event.court_feast.chat": "ชวนขุนนางผู้ใหญ่สนทนา",

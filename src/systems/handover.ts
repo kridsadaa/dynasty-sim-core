@@ -2,7 +2,7 @@ import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, Relation, TagId } from '../core/types';
 import { livingSpouse, pickCaregiverChild } from './factory';
-import { retellLegend, seedLegendsFromLife } from './legend';
+import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from './legend';
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 
@@ -22,6 +22,16 @@ import { addOrReinforceTrait } from './traits';
 // สิ่งที่ "ไม่" ส่งต่อ: skill (ต้องเรียนใหม่ — ส่งต่อได้แค่ตำราที่เร่งการเรียน), บรรดาศักดิ์,
 // ความทรงจำของผู้ตาย (เหลือแค่ตำนานที่บิดเบือน), ปมจิตใจโดยตรง (ส่งต่อเฉพาะผ่าน social learning ระหว่างมีชีวิต + taboo)
 // ============================================================================
+
+/** ข้อความที่ผู้เล่นเห็นเมื่อตำนานถูกเล่าต่อ — ไม่โชว์ชื่อ op ภายใน */
+const RETELL_TH: Record<DriftOp, string> = {
+  glorify: 'เรื่องยิ่งใหญ่ขึ้น',
+  magnify: 'ศัตรูมากขึ้นกว่าเดิม',
+  anchor: 'ผูกเข้ากับศึกสงครามครั้งใหญ่',
+  supernatural: 'มีอิทธิฤทธิ์เข้ามาเกี่ยว',
+  forget: 'รายละเอียดบางส่วนเลือนหายไป',
+  conflate: 'ถูกเล่าปนกับบรรพบุรุษคนอื่น',
+};
 
 export interface HandoverReport {
   deceased: string;
@@ -88,7 +98,10 @@ export function performHandover(
   // [1] snapshot ทำแล้วใน markDead
 
   // [2] legends
-  for (const lid of seedLegendsFromLife(ctx, dead, node, dyn)) log.push(`ตำนานใหม่: ${lid}`);
+  for (const lid of seedLegendsFromLife(ctx, dead, node, dyn)) {
+    const legend = ctx.state.legends[lid];
+    log.push(`ตำนานใหม่: ${legend ? renderLegend(ctx, legend, 'current') : lid}`);
+  }
 
   // [3] heir
   const candidates = heirCandidates(ctx, dead);
@@ -118,12 +131,14 @@ export function performHandover(
   for (const lid of dyn.legendIds) {
     const legend = ctx.state.legends[lid];
     if (!legend) continue;
-    const ops: string[] = retellLegend(ctx, legend, heir);
+    // เรียกตามชื่อที่คนในตระกูลรู้จักก่อนเล่าต่อ (conflate อาจย้ายเรื่องไปผูกกับบรรพบุรุษคนอื่น)
+    const subject = ctx.state.familyNodes[legend.current.subjectNodeId]?.name ?? 'บรรพบุรุษ';
+    const ops = [...new Set(retellLegend(ctx, legend, heir))].map((op) => RETELL_TH[op]);
     if ((heir.skills['literacy'] ?? 0) >= 30 && !legend.writtenRecord) {
       legend.writtenRecord = true; // จดลงสมุดข่อย → บิดเบือนช้าลงนับจากนี้
       ops.push('จดลงสมุดข่อย');
     }
-    if (ops.length) log.push(`ตำนาน ${lid} ถูกเล่าต่อโดย ${heir.name}: ${ops.join(', ')} (divergence ${legend.divergence.toFixed(2)})`);
+    if (ops.length) log.push(`ตำนานของ${subject} ถูกเล่าต่อโดย ${heir.name}: ${ops.join(', ')}`);
   }
 
   // household: กฎส่วนตัวของผู้ตายหายไป เหลือเฉพาะที่ตกผลึกเป็นข้อห้ามตระกูลแล้ว (ปฏิบัติต่อในเรือนทายาท)

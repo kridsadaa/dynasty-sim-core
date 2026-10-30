@@ -68,7 +68,7 @@ async function refresh() {
 
 function renderEvent(ev: EventView) {
   const box = $('event');
-  box.replaceChildren(el('p', ev.text));
+  box.replaceChildren(el('h2', ev.title), el('p', ev.text));
   if (ev.triggered.length) box.append(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
   for (const o of ev.options) {
     const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}`) as HTMLButtonElement;
@@ -79,6 +79,8 @@ function renderEvent(ev: EventView) {
         const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id });
         write(`→ ${o.text}`);
         for (const l of r.lines) write(l);
+        // ยังไม่ได้เซฟ — บันทึกตอนเดินเวลาครั้งถัดไป (autosave) หรือกดบันทึกเอง
+        status.textContent = 'ตัดสินใจแล้ว';
         setBusy(false);
         await refresh();
       } catch (e) {
