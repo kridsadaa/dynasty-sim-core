@@ -230,6 +230,11 @@ export interface Character {
    * name: ราชทินนามที่ได้ (ใช้ซ้ำตอนเลื่อนจากหมื่นเป็นขุนชื่อเดียวกัน)
    */
   office?: { postId: string; name?: string; sinceDay: Day; favor: Signed };
+  /**
+   * งานบ้านต่อหมวด (ดู systems/chores.ts): joined = เคยตกลงเข้าไปช่วยแล้ว (ครั้งต่อไปไม่ถามซ้ำ ข้ามไปหัดขั้นใหม่),
+   * tasks = ขั้นที่หัดได้แล้ว, askAfter = ไม่ยอมช่วย — จะถูกเรียกอีกหลังวันนี้
+   */
+  chores?: Record<string, { joined: boolean; tasks: string[]; askAfter?: Day }>;
 }
 
 /** ระยะจากเรือนของผู้เล่น — กำหนดว่าความตั้งใจต่อคนนี้กินแรงงานที่บ้านแค่ไหน */
@@ -529,6 +534,11 @@ export type Effect =
   | { op: 'favor'; role: string; delta: number }
   /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์) */
   | { op: 'wealth'; role: string; delta?: number; perSakdina?: number }
+  /**
+   * งานบ้าน (หมวดและขั้นจากตัวแปร $chore / $task ของ event): join = ตกลงช่วยครั้งแรก teacher สอนขั้นแรก,
+   * learn = หัดขั้นใหม่ได้ (factor คูณทักษะที่ได้), decline = ไม่ช่วย — ดู systems/chores.ts
+   */
+  | { op: 'chore'; role: string; action: 'join' | 'learn' | 'decline'; teacher?: string; factor?: number }
   | { op: 'skill'; role: string; skill: string; delta: number }
   | { op: 'prestige'; role: string; delta: number };
 
@@ -540,7 +550,9 @@ export type Effect =
  */
 export type Resist =
   | { source: 'bond'; role: string; axis: 'affection' | 'awe'; weight: number; reasonKey: string }
-  | { source: 'personality'; trait: keyof Personality; invert?: boolean; weight: number; reasonKey: string };
+  | { source: 'personality'; trait: keyof Personality; invert?: boolean; weight: number; reasonKey: string }
+  /** ความคาดหวังตามเพศ (ลูกผู้หญิงปฏิเสธงานครัวยากกว่า) — ค่าต่อเพศโดยตรง */
+  | { source: 'sex'; f?: number; m?: number; reasonKey: string };
 
 export interface EventOption {
   id: string;
@@ -684,6 +696,35 @@ export interface OfficesDef {
   names: string[];
 }
 
+/** งานบ้านขั้นหนึ่ง — ไล่ตามทักษะและอายุ (lore: kinship.child_chores_by_strength) */
+export interface ChoreTaskDef {
+  id: string;
+  /** tag ป้ายชื่องาน (task:*) — ใช้แสดงในข้อความ */
+  tag: TagId;
+  minSkill: number;
+  minAge: number;
+  gain: number;
+  /** event เฉพาะของขั้นนี้ (เช่นหั่นผัก = จับมีด อาจโดนบาด) แทน chore.learn */
+  event?: EventDefId;
+}
+
+export interface ChoreDomainDef {
+  id: string;
+  tag: TagId;
+  skill: string;
+  /** โอกาสที่ถูกเรียกไปช่วยงานหมวดนี้ ตามเพศ */
+  weight: { f: number; m: number };
+  /** แรงคาดหวังตามเพศ: สูง = ปฏิเสธยาก และคนว่านอนสอนง่ายเข้าไปช่วยเอง */
+  expect: { f: number; m: number };
+  tasks: ChoreTaskDef[];
+  loreRefs?: string[];
+}
+
+export interface ChoresDef {
+  domains: ChoreDomainDef[];
+  skillLabels: Record<string, string>;
+}
+
 /** บ้านของคนนอกตระกูล — อาชีพกำหนดฐานะและทักษะที่ได้เมื่อไปช่วยงาน */
 export interface TradeDef {
   id: string;
@@ -794,6 +835,19 @@ export interface Balance {
     noviceAge: number;
     noviceChance: Unit;
   };
+  /** งานบ้านของเด็ก — ตัวเลขเป็นของเกม */
+  chores: {
+    ageRange: [number, number];
+    /** ต่อปี: ครั้งที่ถูกเรียกไปช่วยงาน */
+    sessionsPerYear: number;
+    /** แนวโน้มนิสัยถึงค่านี้ → ทำเองโดยไม่ถามผู้เล่น / ต่ำกว่า autoNoAt → ไม่สนใจและไม่มีใครบังคับ */
+    autoYesAt: number;
+    autoNoAt: number;
+    /** ไม่ยอมช่วยแล้วกี่ปีจึงถูกเรียกอีก */
+    askAgainYears: number;
+    /** ทำงานที่หัดได้แล้วซ้ำ — ทักษะเพิ่มทีละเท่านี้ (เงียบ ไม่ขึ้น log) */
+    practiceGain: number;
+  };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   career: {
     /** ลูกขุนนางชายถวายตัวเป็นมหาดเล็กได้ช่วงอายุนี้ */
@@ -897,6 +951,7 @@ export interface ContentDB {
   intents: Record<IntentKindId, IntentDef>;
   trades: TradeDef[];
   offices: OfficesDef;
+  chores: ChoresDef;
   balance: Balance;
 }
 

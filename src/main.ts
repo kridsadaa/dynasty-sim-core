@@ -78,6 +78,7 @@ function renderPlayer(v: CharacterView) {
   };
   list('ปมในใจ', v.traits);
   list('ร่องรอยบนร่างกาย', [...v.scars, ...v.wounds.map((w) => `แผลสด ${w}`)]);
+  list('ฝีมือ', v.craftSkills);
   list('ความสามารถทางกาย', Object.entries(v.capabilities).filter(([, x]) => x < 1).map(([k, x]) => `${k}: ${Math.round(x * 100)}%`));
   box.append(el('h2', 'วิถีชีวิต'), el('div', v.lifestyle, 'lifestyle'));
   for (const line of v.marriage) box.append(el('div', line, 'intent'));

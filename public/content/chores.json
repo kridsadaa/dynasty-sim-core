@@ -1,0 +1,41 @@
+{
+  "domains": [
+    {
+      "id": "kitchen", "tag": "chore:kitchen", "skill": "cooking",
+      "weight": { "f": 3, "m": 1.5 },
+      "expect": { "f": 0.55, "m": 0.1 },
+      "loreRefs": ["material.kitchen_tasks", "kinship.child_chores_by_strength"],
+      "tasks": [
+        { "id": "prep_veg", "tag": "task:prep_veg", "minSkill": 0, "minAge": 5, "gain": 4 },
+        { "id": "grate_coconut", "tag": "task:grate_coconut", "minSkill": 5, "minAge": 7, "gain": 5 },
+        { "id": "press_coconut", "tag": "task:press_coconut", "minSkill": 10, "minAge": 7, "gain": 5 },
+        { "id": "chop", "tag": "task:chop", "minSkill": 14, "minAge": 7, "gain": 5, "event": "chore.learn_chop" },
+        { "id": "pound_paste", "tag": "task:pound_paste", "minSkill": 20, "minAge": 9, "gain": 6 },
+        { "id": "full_curry", "tag": "task:full_curry", "minSkill": 30, "minAge": 11, "gain": 8 }
+      ]
+    },
+    {
+      "id": "housework", "tag": "chore:housework", "skill": "housework",
+      "weight": { "f": 1.5, "m": 2 },
+      "expect": { "f": 0.35, "m": 0.25 },
+      "loreRefs": ["kinship.child_chores_by_strength"],
+      "tasks": [
+        { "id": "sweep", "tag": "task:sweep", "minSkill": 0, "minAge": 5, "gain": 4 },
+        { "id": "carry_water", "tag": "task:carry_water", "minSkill": 6, "minAge": 8, "gain": 4 },
+        { "id": "carry_wood", "tag": "task:carry_wood", "minSkill": 10, "minAge": 9, "gain": 5 }
+      ]
+    },
+    {
+      "id": "craft", "tag": "chore:craft", "skill": "handicraft",
+      "weight": { "f": 2, "m": 0.6 },
+      "expect": { "f": 0.35, "m": 0.05 },
+      "loreRefs": ["material.crafts_1680s", "kinship.child_chores_by_strength"],
+      "tasks": [
+        { "id": "plait_mat", "tag": "task:plait_mat", "minSkill": 0, "minAge": 7, "gain": 4 },
+        { "id": "sew", "tag": "task:sew", "minSkill": 8, "minAge": 9, "gain": 5 },
+        { "id": "embroider", "tag": "task:embroider", "minSkill": 18, "minAge": 11, "gain": 6 }
+      ]
+    }
+  ],
+  "skillLabels": { "cooking": "งานครัว", "housework": "งานบ้าน", "handicraft": "งานฝีมือ" }
+}

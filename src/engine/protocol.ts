@@ -101,6 +101,8 @@ export interface CharacterView {
   marriage: string[];
   /** ตำแหน่งราชการ (ไม่มี = null) */
   office: string | null;
+  /** ฝีมืองานบ้าน: "งานครัว 23 (หัดได้ 4 ขั้น)" */
+  craftSkills: string[];
 }
 
 /** คนในแผง "คนที่รู้จัก" — ญาติที่ยังมีชีวิต และคนนอกตระกูลที่ผู้เล่นรู้จัก */

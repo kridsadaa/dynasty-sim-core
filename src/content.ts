@@ -10,6 +10,7 @@ export function buildContentDB(raw: {
   rules: Pick<ContentDB, 'scarRules' | 'injectionRules' | 'claimTemplates' | 'history'>;
   intents: Pick<ContentDB, 'intents' | 'trades'>;
   offices: ContentDB['offices'];
+  chores: ContentDB['chores'];
   balance: ContentDB['balance'];
 }): ContentDB {
   const tags = Object.fromEntries(raw.tags.map((t) => [t.id, t])) as ContentDB['tags'];
@@ -27,6 +28,13 @@ export function buildContentDB(raw: {
     for (const p of ev.percepts) known(`event ${ev.id} percept`, p.tag);
     for (const v of Object.values(ev.variables ?? {})) for (const tag of v.oneOf) known(`event ${ev.id} variable`, tag);
     for (const o of ev.options) for (const tag of o.tags ?? []) known(`event ${ev.id} option ${o.id}`, tag);
+  }
+  for (const d of raw.chores.domains) {
+    known(`chore ${d.id}`, d.tag);
+    for (const t of d.tasks) {
+      known(`chore ${d.id}/${t.id}`, t.tag);
+      if (t.event && !raw.events[t.event]) throw new Error(`chore ${d.id}/${t.id}: unknown event ${t.event}`);
+    }
   }
   for (const def of Object.values(raw.intents.intents)) {
     for (const id of [def.success, def.failure, ...def.midEvents.map((m) => m.event), ...def.approaches.flatMap((a) => a.success ?? [])]) {
@@ -46,6 +54,7 @@ export function buildContentDB(raw: {
     intents: raw.intents.intents,
     trades: raw.intents.trades,
     offices: raw.offices,
+    chores: raw.chores,
     balance: raw.balance,
   };
 }

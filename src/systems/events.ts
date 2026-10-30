@@ -7,6 +7,7 @@ import type {
 import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
 import { adjustFavor, applyCareer, officeRank } from './career';
+import { applyChore } from './chores';
 import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
@@ -371,6 +372,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       }
       case 'career':
         report.notes.push(...applyCareer(ctx, ch, e.action));
+        break;
+      case 'chore':
+        report.notes.push(...applyChore(ctx, ch, e.action, p.instance.vars, e.teacher ? who(e.teacher) : undefined, e.factor));
         break;
       case 'favor':
         adjustFavor(ch, e.delta);

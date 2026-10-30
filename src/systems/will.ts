@@ -55,6 +55,12 @@ export function resistance(
       const other = who(r.role);
       if (!other) continue;
       v = bond(ctx, actor, other, r.axis);
+    } else if (r.source === 'sex') {
+      v = r[actor.sex] ?? 0;
+      if (!v) continue;
+      top = top && top.part >= v ? top : { part: v, reasonKey: r.reasonKey };
+      value += v;
+      continue;
     } else {
       const p = actor.personality[r.trait];
       v = r.invert ? 1 - p : p;

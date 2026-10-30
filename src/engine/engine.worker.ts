@@ -27,17 +27,17 @@ let ctx: Ctx | null = null;
 const pending = new Map<string, PreparedEvent>(); // เซฟเป็น snapshot ไปกับทุกเซฟ → โหลดแล้วต้องตัดสินใจ event เดิมต่อ
 let sessionLock: Promise<void> | null = null;
 
-const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'intents', 'offices', 'balance', 'names', 'text.th'] as const;
+const CONTENT_FILES = ['tags', 'anatomy', 'traitKinds', 'events', 'rules', 'intents', 'offices', 'chores', 'balance', 'names', 'text.th'] as const;
 
 const contentReady = (async () => {
   const base = `${import.meta.env.BASE_URL}content/`;
-  const [tags, anatomy, traitKinds, events, rules, intents, offices, balance, names, th] = await Promise.all(
+  const [tags, anatomy, traitKinds, events, rules, intents, offices, chores, balance, names, th] = await Promise.all(
     CONTENT_FILES.map((f) => fetch(`${base}${f}.json`).then((r) => {
       if (!r.ok) throw new Error(`โหลด content ${f} ไม่ได้ (${r.status})`);
       return r.json();
     })),
   );
-  content = buildContentDB({ tags, anatomy, traitKinds, events, rules, intents, offices, balance, names });
+  content = buildContentDB({ tags, anatomy, traitKinds, events, rules, intents, offices, chores, balance, names });
   text = th;
   push({ type: 'ready' });
 })();

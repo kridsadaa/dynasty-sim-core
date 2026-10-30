@@ -48,41 +48,6 @@
         ] }
     ]
   },
-  "childhood.kitchen_chore": {
-    "id": "childhood.kitchen_chore",
-    "textKey": "event.kitchen_chore",
-    "contextTags": ["situation:kitchen_work", "place:kitchen", "$target_food"],
-    "variables": { "target_food": { "oneOf": ["food:pumpkin", "food:cucumber"] } },
-    "roles": { "actor": { "ageRange": [4, 12] }, "caregiver": { "relationToActor": "caregiver" } },
-    "trigger": { "ageRange": [4, 12], "weight": 1, "cooldownDays": 300 },
-    "percepts": [],
-    "options": [
-      { "id": "help", "textKey": "event.kitchen_chore.help", "tags": ["tool:kitchen_knife", "$target_food"],
-        "resist": [ { "source": "bond", "role": "caregiver", "axis": "affection", "weight": -1.2, "reasonKey": "resent" } ],
-        "effects": [
-          { "op": "bond", "role": "actor", "toward": "caregiver", "affection": 0.06, "awe": -0.02 },
-          { "op": "skill", "role": "actor", "skill": "cooking", "delta": 3 },
-          { "op": "followUp", "event": "childhood.kitchen_cut", "chance": 0.08 }
-        ] },
-      { "id": "later", "textKey": "event.kitchen_chore.later",
-        "resist": [
-          { "source": "bond", "role": "caregiver", "axis": "awe", "weight": 0.6, "reasonKey": "awe" },
-          { "source": "bond", "role": "caregiver", "axis": "affection", "weight": 0.25, "reasonKey": "affection" }
-        ],
-        "effects": [
-          { "op": "bond", "role": "actor", "toward": "caregiver", "affection": -0.03, "awe": 0.04 }
-        ] },
-      { "id": "sneak", "textKey": "event.kitchen_chore.sneak",
-        "resist": [
-          { "source": "bond", "role": "caregiver", "axis": "awe", "weight": 1.2, "reasonKey": "awe" },
-          { "source": "bond", "role": "caregiver", "axis": "affection", "weight": 0.5, "reasonKey": "affection" }
-        ],
-        "effects": [
-          { "op": "bond", "role": "actor", "toward": "caregiver", "affection": -0.06, "awe": 0.08 },
-          { "op": "stress", "role": "actor", "delta": -0.05 }
-        ] }
-    ]
-  },
   "childhood.kitchen_cut": {
     "id": "childhood.kitchen_cut",
     "textKey": "event.kitchen_cut",
@@ -998,6 +963,388 @@
             "op": "stress",
             "role": "actor",
             "delta": 0.08
+          }
+        ]
+      }
+    ]
+  },
+  "chore.ask": {
+    "id": "chore.ask",
+    "textKey": "event.chore_ask",
+    "contextTags": [
+      "$chore"
+    ],
+    "variables": {
+      "chore": {
+        "oneOf": [
+          "chore:kitchen",
+          "chore:housework",
+          "chore:craft"
+        ]
+      },
+      "task": {
+        "oneOf": [
+          "task:prep_veg",
+          "task:grate_coconut",
+          "task:press_coconut",
+          "task:chop",
+          "task:pound_paste",
+          "task:full_curry",
+          "task:sweep",
+          "task:carry_water",
+          "task:carry_wood",
+          "task:plait_mat",
+          "task:sew",
+          "task:embroider"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {},
+      "caregiver": {
+        "relationToActor": "caregiver"
+      }
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "help",
+        "textKey": "event.chore_ask.help",
+        "resist": [
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "affection",
+            "weight": -1.2,
+            "reasonKey": "resent"
+          }
+        ],
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "join",
+            "teacher": "caregiver"
+          },
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "affection": 0.05,
+            "awe": -0.02
+          }
+        ]
+      },
+      {
+        "id": "later",
+        "textKey": "event.chore_ask.later",
+        "resist": [
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "awe",
+            "weight": 0.6,
+            "reasonKey": "awe"
+          },
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "affection",
+            "weight": 0.25,
+            "reasonKey": "affection"
+          },
+          {
+            "source": "sex",
+            "f": 0.35,
+            "m": 0.05,
+            "reasonKey": "expected_girl"
+          }
+        ],
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "decline"
+          },
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "affection": -0.03,
+            "awe": 0.04
+          }
+        ]
+      },
+      {
+        "id": "sneak",
+        "textKey": "event.chore_ask.sneak",
+        "resist": [
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "awe",
+            "weight": 1.2,
+            "reasonKey": "awe"
+          },
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "affection",
+            "weight": 0.5,
+            "reasonKey": "affection"
+          },
+          {
+            "source": "sex",
+            "f": 0.5,
+            "m": 0.1,
+            "reasonKey": "expected_girl"
+          }
+        ],
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "decline"
+          },
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "affection": -0.06,
+            "awe": 0.08
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.05
+          }
+        ]
+      }
+    ]
+  },
+  "chore.learn": {
+    "id": "chore.learn",
+    "textKey": "event.chore_learn",
+    "contextTags": [
+      "$chore"
+    ],
+    "variables": {
+      "chore": {
+        "oneOf": [
+          "chore:kitchen",
+          "chore:housework",
+          "chore:craft"
+        ]
+      },
+      "task": {
+        "oneOf": [
+          "task:prep_veg",
+          "task:grate_coconut",
+          "task:press_coconut",
+          "task:chop",
+          "task:pound_paste",
+          "task:full_curry",
+          "task:sweep",
+          "task:carry_water",
+          "task:carry_wood",
+          "task:plait_mat",
+          "task:sew",
+          "task:embroider"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {},
+      "caregiver": {
+        "relationToActor": "caregiver"
+      }
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "diligent",
+        "textKey": "event.chore_learn.diligent",
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "learn",
+            "teacher": "caregiver"
+          },
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "affection": 0.03
+          }
+        ]
+      },
+      {
+        "id": "casual",
+        "textKey": "event.chore_learn.casual",
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "learn",
+            "teacher": "caregiver",
+            "factor": 0.5
+          }
+        ]
+      },
+      {
+        "id": "skip",
+        "textKey": "event.chore_learn.skip",
+        "resist": [
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "awe",
+            "weight": 0.8,
+            "reasonKey": "awe"
+          },
+          {
+            "source": "sex",
+            "f": 0.25,
+            "m": 0,
+            "reasonKey": "expected_girl"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "affection": -0.02,
+            "awe": 0.03
+          }
+        ]
+      }
+    ]
+  },
+  "chore.learn_chop": {
+    "id": "chore.learn_chop",
+    "textKey": "event.chore_chop",
+    "contextTags": [
+      "situation:kitchen_work",
+      "place:kitchen",
+      "$target_food"
+    ],
+    "variables": {
+      "target_food": {
+        "oneOf": [
+          "food:pumpkin",
+          "food:cucumber"
+        ]
+      },
+      "chore": {
+        "oneOf": [
+          "chore:kitchen",
+          "chore:housework",
+          "chore:craft"
+        ]
+      },
+      "task": {
+        "oneOf": [
+          "task:prep_veg",
+          "task:grate_coconut",
+          "task:press_coconut",
+          "task:chop",
+          "task:pound_paste",
+          "task:full_curry",
+          "task:sweep",
+          "task:carry_water",
+          "task:carry_wood",
+          "task:plait_mat",
+          "task:sew",
+          "task:embroider"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {},
+      "caregiver": {
+        "relationToActor": "caregiver"
+      }
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "diligent",
+        "textKey": "event.chore_chop.diligent",
+        "tags": [
+          "tool:kitchen_knife",
+          "$target_food"
+        ],
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "learn",
+            "teacher": "caregiver"
+          },
+          {
+            "op": "followUp",
+            "event": "childhood.kitchen_cut",
+            "chance": 0.06
+          }
+        ]
+      },
+      {
+        "id": "casual",
+        "textKey": "event.chore_chop.casual",
+        "tags": [
+          "tool:kitchen_knife",
+          "$target_food"
+        ],
+        "effects": [
+          {
+            "op": "chore",
+            "role": "actor",
+            "action": "learn",
+            "teacher": "caregiver",
+            "factor": 0.5
+          },
+          {
+            "op": "followUp",
+            "event": "childhood.kitchen_cut",
+            "chance": 0.12
+          }
+        ]
+      },
+      {
+        "id": "avoid",
+        "textKey": "event.chore_chop.avoid",
+        "resist": [
+          {
+            "source": "bond",
+            "role": "caregiver",
+            "axis": "awe",
+            "weight": 0.6,
+            "reasonKey": "awe"
+          },
+          {
+            "source": "sex",
+            "f": 0.25,
+            "m": 0,
+            "reasonKey": "expected_girl"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "awe": 0.02
           }
         ]
       }

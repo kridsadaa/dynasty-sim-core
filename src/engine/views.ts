@@ -6,6 +6,7 @@ import type { PreparedEvent } from '../systems/events';
 import { livingChildren, livingParents, livingSpouse } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus } from '../systems/career';
+import { choreSkills } from '../systems/chores';
 import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { describeTrait } from '../systems/traits';
@@ -52,6 +53,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     ...lifestyleView(ctx, ch, text),
     marriage: marriageStatus(ctx, ch),
     office: officeStatus(ctx, ch),
+    craftSkills: choreSkills(ctx, ch),
   };
 }
 
