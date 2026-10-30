@@ -3,7 +3,7 @@ import type { Character, GameEventDef } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import {
-  createHousehold, joinHousehold, livingChildren, livingSpouse, marry, pickCaregiverChild, pickName, relativeNames,
+  createHousehold, displayName, joinHousehold, livingChildren, livingSpouse, marry, pickCaregiverChild, pickName, relativeNames,
   spawnCharacter,
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
@@ -61,7 +61,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       const over = ageOf(ctx, ch) - B.world.oldAgeStart;
       if (over > 0 && ctx.rng.chance(over * B.world.oldAgeYearlyRisk)) {
         markDead(ctx, ch, 'situation:old_age');
-        if (ch.id !== player?.id) out.push({ type: 'log', kind: 'death', line: `${ch.name} ถึงแก่กรรม` });
+        if (ch.id !== player?.id) out.push({ type: 'log', kind: 'death', line: `${displayName(ctx, ch)} ถึงแก่กรรม` });
       }
     }
     // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
@@ -168,7 +168,7 @@ export function lifeMilestones(ctx: Ctx): string[] {
     // เป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) → อ่านออกเขียนได้ จดตำนานลงสมุดข่อยได้ตอนสืบทอด
     if (ch.sex === 'm' && age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
       ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, 40);
-      out.push(`${ch.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
+      out.push(`${displayName(ctx, ch)} ไปเป็นเณรเรียนหนังสือที่วัด`);
     }
 
     const marriageAge = ch.sex === 'm' ? W.marriageAge : W.marriageAgeFemale;
@@ -183,11 +183,11 @@ export function lifeMilestones(ctx: Ctx): string[] {
       if (hh && head && livingChildren(ctx, head).some((c) => c.id === ch.id)) {
         const siblingsAtHome = livingChildren(ctx, head).filter((c) => c.householdId === hh.id);
         if (pickCaregiverChild(siblingsAtHome)?.id === ch.id) {
-          out.push(`${ch.name} อยู่ดูแล${head.name}ต่อที่เรือนเดิม`);
+          out.push(`${displayName(ctx, ch)} อยู่ดูแล${displayName(ctx, head)}ต่อที่เรือนเดิม`);
         } else {
           const home = createHousehold(ctx, ch);
           for (const m of [spouse, ...livingChildren(ctx, ch)]) if (m && m.householdId === hh.id) joinHousehold(ctx, m, home);
-          out.push(`${ch.name} แยกเรือนออกจากบ้าน${head.name}`);
+          out.push(`${displayName(ctx, ch)} แยกเรือนออกจากบ้าน${displayName(ctx, head)}`);
         }
       }
     }
@@ -201,7 +201,7 @@ export function lifeMilestones(ctx: Ctx): string[] {
         name: pickName(ctx, sex, ch.social.estate, relativeNames(ctx, ch, spouse)),
         sex, birthYear: year, estate: ch.social.estate, father, mother,
       });
-      out.push(`${ch.name} มีบุตร: ${kid.name}`);
+      out.push(`${displayName(ctx, ch)} มีบุตร: ${displayName(ctx, kid)}`);
     }
   }
   return out;
@@ -225,15 +225,15 @@ function marryOut(ctx: Ctx, ch: Character, year: number): string {
     // เขยเข้าเรือนพ่อแม่ฝ่ายหญิง (ลักษณผัวเมีย ม.61 รองรับชายที่ไปอยู่บ้านฝ่ายหญิง)
     joinHousehold(ctx, spouse, parentsHome ?? createHousehold(ctx, ch));
     ch.moveOutDay = day + stay;
-    return `${ch.name} แต่งงานกับ${spouse.name} เขยเข้ามาอยู่เรือนพ่อแม่ฝ่ายหญิง`;
+    return `${displayName(ctx, ch)} แต่งงานกับ${displayName(ctx, spouse)} เขยเข้ามาอยู่เรือนพ่อแม่ฝ่ายหญิง`;
   }
   if (parentsHome && ctx.rng.chance(W.patrilocalChance)) {
     joinHousehold(ctx, spouse, parentsHome);
     ch.moveOutDay = day + stay;
-    return `${ch.name} แต่งงานกับ${spouse.name} พาภรรยามาอยู่เรือนพ่อแม่`;
+    return `${displayName(ctx, ch)} แต่งงานกับ${displayName(ctx, spouse)} พาภรรยามาอยู่เรือนพ่อแม่`;
   }
   // ไปอยู่กับครอบครัวภรรยา — ครอบครัวฝ่ายหญิงไม่ได้จำลอง จึงนับเป็นเรือนใหม่ของคู่นี้
   const home = createHousehold(ctx, ch);
   joinHousehold(ctx, spouse, home);
-  return `${ch.name} แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวภรรยา`;
+  return `${displayName(ctx, ch)} แต่งงานกับ${displayName(ctx, spouse)} ไปอยู่กับครอบครัวภรรยา`;
 }

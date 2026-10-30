@@ -14,16 +14,23 @@ const entries = readdirSync(join(root, 'lore', 'entries'))
 const isNameList = (c: Record<string, unknown>): c is NameListClaim & Record<string, unknown> => c.kind === 'nameList';
 
 const pool: NamePool = { generatedFrom: [], names: [] };
-const seen = new Set<string>();
+const seen = new Map<string, NamePool['names'][number]>();
 for (const e of entries) {
   // ชื่อที่แต่งขึ้นไม่เข้าตัวสุ่ม — ตัวสุ่มต้องใช้ชื่อที่มีในเอกสารเท่านั้น
   if (e.domain !== 'naming' || e.status === 'invented' || !isNameList(e.claim)) continue;
   pool.generatedFrom.push(e.id);
   for (const n of e.claim.names) {
     const key = `${n.name}|${n.sex ?? ''}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    pool.names.push({ name: n.name, sex: n.sex ?? null, estates: e.estates ?? null, loreRef: e.id });
+    const prev = seen.get(key);
+    if (prev) {
+      // ชื่อซ้ำข้ามรายการ → รวม ไม่ทิ้งชนชั้น/ที่มาของรายการหลัง
+      prev.estates = prev.estates && e.estates ? [...new Set([...prev.estates, ...e.estates])] : null;
+      if (!prev.loreRefs.includes(e.id)) prev.loreRefs.push(e.id);
+      continue;
+    }
+    const row = { name: n.name, sex: n.sex ?? null, estates: e.estates ?? null, loreRefs: [e.id] };
+    seen.set(key, row);
+    pool.names.push(row);
   }
 }
 

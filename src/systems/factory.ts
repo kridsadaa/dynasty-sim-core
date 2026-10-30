@@ -162,6 +162,17 @@ export function relativeNames(ctx: Ctx, ch: Character, spouse: Character | undef
   return new Set(people.map((p) => p.name));
 }
 
+/**
+ * ชื่อในข้อความที่ผู้เล่นอ่าน: ต่อท้ายปีเกิดเมื่อมีคนอื่นในผังตระกูลชื่อเดียวกัน
+ * (ชื่อซ้ำกับญาติที่ตายไปแล้วตั้งใจให้เกิดได้ — ดู lore/system-implications.md แนวทางการตั้งชื่อ)
+ */
+export function displayName(ctx: Ctx, who: Character | FamilyNode): string {
+  const node = 'familyNodeId' in who ? ctx.state.familyNodes[who.familyNodeId] : who;
+  if (!node) return who.name;
+  const twin = Object.values(ctx.state.familyNodes).some((n) => n.id !== node.id && n.name === node.name);
+  return twin ? `${node.name} (เกิด ${node.birthYear})` : node.name;
+}
+
 export function livingChildren(ctx: Ctx, ch: Character): Character[] {
   return (ctx.state.familyNodes[ch.familyNodeId]?.childIds ?? [])
     .map((n) => ctx.state.familyNodes[n]?.characterId)

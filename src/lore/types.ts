@@ -101,7 +101,7 @@ export interface LoreConfig {
   /** ช่วงปีที่ข้อความในเกมครอบคลุม — ใช้ตรวจ anachronism */
   gamePeriod: YearRange;
   /** slice ที่กำลังทำ (ROADMAP เฟส 0) */
-  currentSlice: { label: string; period: YearRange; estates: Estate[]; region: string };
+  currentSlice: { label: string; period: YearRange; estates: Estate[]; region: string; note?: string };
   /** อ้างเอกสารที่ชำระหลังช่วงของข้อมูลเกินกี่ปีถึงเตือน */
   lateCompilationWarnYears: number;
 }

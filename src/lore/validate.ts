@@ -123,6 +123,40 @@ for (const t of tags) {
   for (const ref of t.loreRefs ?? []) if (!entryIds.has(ref)) errors.push(`tags.json › ${t.id}: loreRefs อ้าง ${ref} ที่ไม่มี`);
 }
 
+// ---------- art → lore ----------
+// style.json / manifest.json อ้าง lore ได้ทุกระดับชั้น → เดินทั้งต้นไม้หา loreRefs
+function walkLoreRefs(at: string, v: unknown): void {
+  if (Array.isArray(v)) v.forEach((x, i) => walkLoreRefs(`${at}[${i}]`, x));
+  else if (v && typeof v === 'object') {
+    for (const [k, x] of Object.entries(v)) {
+      if (k === 'loreRefs' && Array.isArray(x)) {
+        for (const ref of x) if (!entryIds.has(ref)) errors.push(`${at}: loreRefs อ้าง ${ref} ที่ไม่มี`);
+      } else walkLoreRefs(`${at}.${k}`, x);
+    }
+  }
+}
+const manifest = readJson<{ images: Array<{ file: string; promptRef?: string }> }>('art', 'approved', 'manifest.json');
+walkLoreRefs('art/style.json', readJson('art', 'style.json'));
+walkLoreRefs('art/approved/manifest.json', manifest);
+
+/** anchor ของหัวข้อแบบ GitHub: ตัวเล็ก ตัดเครื่องหมายวรรคตอน เว้นวรรค → "-" */
+const slug = (heading: string) => heading.trim().toLowerCase().replace(/[^\p{L}\p{M}\p{N}\p{Pc} -]/gu, '').replace(/ /g, '-');
+for (const img of manifest.images) {
+  if (!img.promptRef) continue;
+  const [file, anchor] = img.promptRef.split('#');
+  let md: string;
+  try {
+    md = readFileSync(join(root, file!), 'utf8');
+  } catch {
+    errors.push(`manifest › ${img.file}: promptRef ชี้ไฟล์ที่ไม่มี ${file}`);
+    continue;
+  }
+  const anchors = new Set(md.split(/\r?\n/).filter((l) => /^#{1,6} /.test(l)).map((l) => slug(l.replace(/^#+ /, ''))));
+  if (anchor && !anchors.has(anchor)) {
+    errors.push(`manifest › ${img.file}: ไม่มีหัวข้อ #${anchor} ใน ${file}`);
+  }
+}
+
 // ---------- anachronism lint ----------
 for (const rule of anachronisms) {
   if (rule.loreRef && !entryIds.has(rule.loreRef)) errors.push(`anachronisms › "${rule.term}": loreRef ${rule.loreRef} ไม่มี`);

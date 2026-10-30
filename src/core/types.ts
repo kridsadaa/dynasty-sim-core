@@ -340,6 +340,8 @@ export interface FamilyNode {
     notableTraits: Array<{ kind: TraitKindId; target: TagId | null }>;
     scars: Array<{ partDefId: PartDefId; kind: Scar['kind'] }>;
     causeOfDeath: TagId | null;
+    /** บุญตอนตาย รวมบุญจากงานศพ (เซฟเก่าไม่มี) */
+    merit?: number;
   } | null;
   legendIds: LegendId[];
   pruneLevel: 0 | 1; // 0 = มี Character เต็ม, 1 = เหลือ node อย่างเดียว
@@ -375,6 +377,8 @@ export interface Dynasty {
   taboos: FamilyTaboo[];
   legendIds: LegendId[];
   branchSummaries: BranchSummary[];
+  /** รุ่นของทายาทใน handover ล่าสุดที่เล่าตำนานต่อ/ข้อห้ามเสื่อมแล้ว — handover ซ้ำในรุ่นเดียวกันไม่บิดเบือนซ้ำ (เซฟเก่าไม่มี) */
+  agedGeneration?: number;
 }
 
 // ============================================================================
@@ -616,7 +620,8 @@ export interface Balance {
 /** generated จาก lore/ โดย npm run lore:compile */
 export interface NamePool {
   generatedFrom: string[];
-  names: Array<{ name: string; sex: 'm' | 'f' | null; estates: Estate[] | null; loreRef: string }>;
+  /** ชื่อเดียวกันที่พบในหลายรายการ lore รวมเป็นแถวเดียว: estates = ยูเนียน (null = ทุกชนชั้น), loreRefs = ทุกแหล่ง */
+  names: Array<{ name: string; sex: 'm' | 'f' | null; estates: Estate[] | null; loreRefs: string[] }>;
 }
 
 export interface ContentDB {

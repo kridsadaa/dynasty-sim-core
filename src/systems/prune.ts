@@ -40,12 +40,18 @@ export function pruneState(ctx: Ctx): PruneReport {
     const d = dist.get(ch.familyNodeId) ?? Infinity;
     if (d <= B.keepKinDistance) continue;
     ch.lod = 'light';
-    const keep = ch.memoryIds
-      .map((id) => S.memories[id])
-      .filter((m) => !!m)
-      .sort((a, b) => Number(b!.formative) - Number(a!.formative) || b!.intensity - a!.intensity)
-      .slice(0, B.lightMemoryKeep)
-      .map((m) => m!.id);
+    // memory ที่แผลเป็น/ปมยังอ้างอยู่ต้องอยู่ต่อ (ไม่นับโควตา) — ตำนานจากแผลเป็นนั้นต้องใช้ percepts ตอนคนนี้ตาย
+    const referenced = referencedMemories(ctx, ch);
+    const keep = [
+      ...ch.memoryIds.filter((id) => referenced.has(id) && S.memories[id]),
+      ...ch.memoryIds
+        .filter((id) => !referenced.has(id))
+        .map((id) => S.memories[id])
+        .filter((m) => !!m)
+        .sort((a, b) => Number(b!.formative) - Number(a!.formative) || b!.intensity - a!.intensity)
+        .slice(0, B.lightMemoryKeep)
+        .map((m) => m!.id),
+    ];
     for (const id of ch.memoryIds) {
       if (keep.includes(id)) continue;
       delete S.memories[id];
@@ -110,6 +116,21 @@ function collapseCharacter(ctx: Ctx, ch: Character, report: PruneReport): void {
     node.pruneLevel = 1;
   }
   report.charactersCollapsed++;
+}
+
+function referencedMemories(ctx: Ctx, ch: Character): Set<string> {
+  const S = ctx.state;
+  const out = new Set<string>();
+  for (const pid of ch.bodyPartIds) for (const s of S.bodyParts[pid]?.scars ?? []) if (s.originMemoryId) out.add(s.originMemoryId);
+  for (const id of ch.traitIds) {
+    const o = S.traits[id]?.origin;
+    if (o?.type === 'experience') out.add(o.memoryId);
+  }
+  for (const id of ch.woundIds) {
+    const m = S.wounds[id]?.memoryId;
+    if (m) out.add(m);
+  }
+  return out;
 }
 
 /** BFS บนผังตระกูล (พ่อ แม่ ลูก คู่ครอง) */

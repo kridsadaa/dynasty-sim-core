@@ -1,50 +1,85 @@
-# Backlog — สิ่งที่พบจากการตรวจและทดสอบ (2026-10-28)
+# Backlog — สิ่งที่พบจากการตรวจและทดสอบ (อัปเดต 2026-10-30)
 
 บั๊กที่แก้แล้วอยู่ใน git log รายการนี้เป็นสิ่งที่ **ยังไม่ได้ทำ** เพราะต้องตัดสินใจเชิงออกแบบ ต้องค้นคว้าเพิ่ม หรือใหญ่เกินกว่าจะแก้ในรอบเดียว
 เรียงคร่าวๆ ตามผลกระทบต่อการเล่น
 
-ทดสอบซ้ำได้ด้วย `npm run sim:check` (รันโลก 110 ปี × 5 seed แล้วตรวจ invariant) และ `npm run demo`
+ทดสอบซ้ำได้ด้วย `npm test` (test ของ save/load + `sim:check` รันโลก 110 ปี × 5 seed แล้วตรวจ invariant — อยู่ใน `npm run build` แล้ว) และ `npm run demo`
+เล่นทดสอบในเบราว์เซอร์: `npx vite build` แล้วเปิด config `preview` (`vite preview` พอร์ต 4173)
+
+## แผนดำเนินการ (2026-10-30)
+
+แยกตามสิ่งที่ทำให้ติด: ขั้น 0 ต้องตัดสินใจ, ขั้น 1 ทำได้ทันที, ขั้น 2 ต้องมีคนเปิดเอกสารจริง (ROADMAP หลักข้อ 4), ขั้น 3 รอ event
+ขั้น 0 และขั้น 1 เสร็จแล้ว (เหลือข้อเดียวในขั้น 0) — ถัดไปคือขั้น 2 รอบ R1
+
+### ขั้น 0 — ตัดสินใจ ✅ ตกลงตามข้อเสนอ 2026-10-30
+
+| เรื่อง | ผล |
+|---|---|
+| เรือนกินส่วนแบ่งมรดก | ไม่นับเรือนในส่วนแบ่งเมื่อตกแก่ลูกที่อยู่ดูแล (`kinship.youngest_daughter_house`); ไม่มีลูกอยู่ในเรือน → ทายาทหลักได้และนับรวม |
+| ตำนานบิดเบือนต่อ handover หรือต่อรุ่น | ต่อรุ่น (`Dynasty.agedGeneration`) — การฝ่าฝืนข้อห้ามยังคิดต่อทายาทแต่ละคน |
+| ชื่อซ้ำกับญาติที่ตายแล้ว | อนุญาต แต่ต่อท้าย "(เกิด ปี)" เมื่อมีชื่อซ้ำในผัง |
+| ฉากเริ่ม พ.ศ. 2288 กับ slice 2295–2315 | คงไว้ เขียนเหตุผลใน `lore/config.json` (`currentSlice.note`) |
+| `anatomy.vital`, `anatomy.root`, `Item.teaches` | เก็บไว้ ทำพร้อมขั้น 3 |
+| `art/art/art/` | ตรวจแล้ว: ภาพ 7 รูปเหมือน `art/approved/` ทุก byte, `style.json` ต่างแค่ line ending, `manifest.json` เท่ากับฉบับ commit ก่อนแก้ anchor, `README.md` เป็นฉบับเก่า (ไม่มีข้อ 7 คลังภาพ) → **ไม่มีอะไรต้องรวมกลับ รอเจ้าของสั่งลบ** |
+
+### ขั้น 1 — ทำได้ทันที ✅
+
+- [x] ตำนานซ้ำตอน handover: รวมตาม `originMemoryId` ใช้แผลที่หนักที่สุดเป็นหลักฐาน
+- [x] ชื่อซ้ำ: `displayName` ต่อท้ายปีเกิดใน log ชีวิตประจำวัน, inspector (บิดามารดา/คู่ครอง/บุตร) และผัง (คู่ครองญาติ, ลูกที่ "ดูในสายอีกฝั่ง")
+- [x] มรดก: ไม่นับมูลค่าเรือนในส่วนแบ่ง + ระบุสถานะแม่ท้ายชื่อเมื่อทายาทได้สิทธิ์ต่างกัน
+- [x] ตำนาน/ข้อห้ามเสื่อมรุ่นละครั้ง
+- [x] งานศพคิดจากทรัพย์ทั้งหมด เงินสดไม่พอ → ขายทองก่อน แล้วขายที่ดินแปลงเล็ก (เรือน/ของตกทอดไม่ขาย)
+- [x] prune เก็บ memory ที่แผลเป็น/ปม/บาดแผลยังอ้างอยู่ (ไม่นับโควตา `lightMemoryKeep`)
+- [x] บุญตอนตาย (รวมบุญจากงานศพ) ลง `FamilyNode.summary.merit` แสดงใน inspector
+- [x] `lore:compile` รวมชื่อซ้ำ (estates ยูเนียน, `loreRefs` ทุกแหล่ง); `lore:check` ตรวจ `loreRefs` ใน `art/style.json`/manifest และ anchor ของ `promptRef`; แก้ anchor ใน manifest เป็น slug แบบ GitHub
+- [x] test: `node:test` + fake-indexeddb ครอบเซฟ/โหลด, abort เมื่อ put ล้ม, แท็บอื่น block, ชื่อช่องผิด, schema ใหม่กว่า; `npm test` อยู่ใน build — ใช้ `node:test` แทน vitest เพราะ vitest 3 ติด advisory ร้ายแรง (tinypool/@vitest/mocker) และรุ่นที่แก้แล้วต้องใช้ Node 20
+
+### ขั้น 2 — ค้นคว้า lore (AI ร่าง → คนเปิดเอกสารตรวจ → `verified: true`)
+
+ไม่ต้องรอครบ 86 รายการ — ตรวจรายการที่เกมใช้อยู่ก่อน (ชื่อใน `names.json`, `kinship.youngest_daughter_house`, `kinship.marriage_law_three_seals`, `ritual.funeral_cremation`, `social.cremation_before_division`)
+
+- [ ] **R1 มรดกและการสืบสกุล** — ลักษณมรดกกรณีไม่มีลูก (คู่ครอง/พ่อแม่/พี่น้องได้ไหม), บุตรบุญธรรม, ตำแหน่งผู้นำไปสายพี่น้อง → ปลดข้อ "ทรัพย์ตกเป็นของหลวง" และ "ผู้นำตระกูลตายโดยไม่มีลูก"
+- [ ] **R2 ประชากร** — อัตราตายของเด็ก, ระยะห่างการมีบุตร, อายุแต่งงาน (งานภาคสนามใช้เป็น `pattern` + `projection`) → แทน placeholder ใน `lifeMilestones` แก้ "ประชากรโตเท่าตัวทุกรุ่น"
+- [ ] **R3 ชื่อ** — คำถาม 4 ข้อใน `lore/system-implications.md` + ชื่อจากแหล่งร่วมยุคเพิ่ม
+- [ ] **R4 จัดสถานะ** — La Loubère 22 รายการ → `pattern` + `projection`, 4 รายการ attested ที่ไม่มีแหล่งร่วมยุค, `composedYear` ของพงศาวดารฉบับพันจันทนุมาศ, `loreRefs` ของ tag `asset:*`/`faction:*` และการอ้างกลับ tag ↔ lore 7 คู่
+
+### ขั้น 3 — content (คู่กับ style bible, ROADMAP เฟส 4)
+
+- [ ] event ช่วงชีวิต C4 (ทำขวัญเดือน, เณร, โกนจุก, บวช, สู่ขอ) — มี lore แล้ว แก้ "event น้อยมาก"
+- [ ] เมื่อมี event สู่ขอ/ศึก/งานช่าง ค่อยผูก stat ของแผลเป็น: `attraction` → สู่ขอ, `intimidation` → ศึก (`situation:combat`), `story_hook` → ตำนาน, `music`/`goldsmith` → งานช่าง (`situation:craft`); `Item.teaches` → event เรียนวิชา; `anatomy.vital` → ตายจากบาดแผล
+- [ ] ภาพ v0.2 สองรูป: สร้างใหม่ด้วย style v0.3 ในรอบภาพถัดไป หรือบันทึกเวอร์ชันลง manifest
 
 ## ระบบเกม
 
-- [ ] **แผลเป็นยังไม่มีผลต่อเกม** — `scarModifiers` (`src/systems/body.ts`) คำนวณและเซฟไว้แต่ไม่มีระบบไหนอ่าน stat ที่มันปรับ (`social:attraction`, `social:intimidation`, `social:story_hook`, `skill:music`, `skill:goldsmith`) และกฎ `inj.scar.face.intimidate` / `inj.capability.fine.craft` ต้องใช้ `situation:combat` / `situation:craft` ซึ่งยังไม่มี event ไหนมี → ต้องออกแบบก่อนว่า stat เหล่านี้ไปผูกกับอะไร (การสู่ขอ? การรับราชการ? event ช่าง?)
-- [ ] **ประชากรโตเท่าตัวทุกรุ่น** — ทุกคนในตระกูลแต่งงานตรงอายุและมีลูกปีที่ 2 กับ 5 หลังแต่งเสมอ (`lifeMilestones` ใน `world.ts` ยังเป็น placeholder) แทบไม่มีใครตายก่อน 50 → เซฟโต (~85–185 KB ที่ 110 ปี) และ `collapseCharacter` เป็น O(N²)
-- [ ] **ชื่อซ้ำในตระกูล** — pool มี 22 ชื่อ demo มี "ทองรอด" สองคนแต่งงานปีติดกัน และ "ทองแก้ว" เป็นทั้งผู้เล่นอายุ 72 และเด็กแรกเกิด อ่านเรื่องไม่รู้เรื่อง → ต้องเพิ่มชื่อจาก lore (และ verify ก่อน) หรือกันชื่อซ้ำกับญาติที่ตายไม่นาน
-- [ ] **event น้อยมาก** — มีแค่ `childhood.kitchen_cut` กับ `adult.court_feast`; เด็กเจอ "มีดบาดตอนผ่าฟัก" ซ้ำทุก 2 ปี
-- [ ] **ตำนานถูกเล่าต่อ/ข้อห้ามเสื่อม ต่อ 1 handover ไม่ใช่ต่อ 1 รุ่น** — handover ของหัวหน้า NPC กับของผู้เล่นในรุ่นเดียวกันทำให้บิดเบือนสองรอบ (`performHandover` ขั้น [7]–[8])
-- [ ] **ค่างานศพคิดจากเงินสดอย่างเดียว** — คนที่มีแต่เรือน/ที่ดินจัดงานศพ 1 ตำลึง (`holdFuneral` ใน `handover.ts`)
-- [ ] **คนที่ไม่มีลูก → ทรัพย์ตกเป็นของหลวงทั้งหมด** — ควรตรวจกับลักษณมรดกว่าคู่ครอง/พ่อแม่/พี่น้องมีสิทธิ์ไหม (ยังไม่มี lore รองรับ)
-- [ ] **ผู้นำตระกูลตายโดยไม่มีลูก** — ตำแหน่งผู้นำว่างจนกว่าจะมี handover ครั้งถัดไป ยังไม่มีการรับบุตรบุญธรรม/ส่งต่อให้สายพี่น้อง
-- [ ] **Light-LOD prune ลบ memory ที่แผลเป็น/ปมยังอ้างอยู่** (`prune.ts`) → ตำนานที่สร้างจาก NPC นั้นทีหลังขาดรายละเอียด
-- [ ] **`dead.merit` ถูกบวกตอนงานศพแต่ตัวละครถูก prune ทันที** — ถ้าบุญของผู้ตายควรมีผล (เช่น ต่อตำนาน) ต้องเก็บลง `FamilyNode.summary`
-- [ ] ฟิลด์ใน content ที่ยังไม่มีโค้ดอ่าน: `Item.teaches` (ตำราประจำตระกูล), `anatomy.vital`, `anatomy.root`
-- [ ] ฉากเริ่ม พ.ศ. 2288 อยู่ก่อนช่วง slice (2295–2315 ใน `lore/config.json`)
+- [ ] **แผลเป็นยังไม่มีผลต่อเกม** — `scarModifiers` (`src/systems/body.ts`) คำนวณและเซฟไว้แต่ไม่มีระบบไหนอ่าน stat ที่มันปรับ (`social:attraction`, `social:intimidation`, `social:story_hook`, `skill:music`, `skill:goldsmith`) และกฎ `inj.scar.face.intimidate` / `inj.capability.fine.craft` ต้องใช้ `situation:combat` / `situation:craft` ซึ่งยังไม่มี event ไหนมี → ขั้น 3
+- [ ] **ประชากรโตเท่าตัวทุกรุ่น** — ทุกคนในตระกูลแต่งงานตรงอายุและมีลูกปีที่ 2 กับ 5 หลังแต่งเสมอ (`lifeMilestones` ใน `world.ts` ยังเป็น placeholder) แทบไม่มีใครตายก่อน 50 → เซฟโต (~85–185 KB ที่ 110 ปี) และ `collapseCharacter` เป็น O(N²) → R2
+- [ ] **คลังชื่อเล็ก** — 22 ชื่อ ชื่อซ้ำอ่านออกแล้วด้วยปีเกิด แต่ใน 100 ปีมี "สา" 3–4 คนพร้อมกัน → R3
+- [ ] **event น้อยมาก** — มีแค่ `childhood.kitchen_cut` กับ `adult.court_feast`; เด็กเจอ "มีดบาดตอนผ่าฟัก" ซ้ำทุก 2 ปี → ขั้น 3
+- [ ] **คนที่ไม่มีลูก → ทรัพย์ตกเป็นของหลวงทั้งหมด** — ควรตรวจกับลักษณมรดกว่าคู่ครอง/พ่อแม่/พี่น้องมีสิทธิ์ไหม → R1
+- [ ] **ผู้นำตระกูลตายโดยไม่มีลูก** — ตำแหน่งผู้นำว่างจนกว่าจะมี handover ครั้งถัดไป ยังไม่มีการรับบุตรบุญธรรม/ส่งต่อให้สายพี่น้อง → R1
+- [ ] บุญตอนตายเก็บไว้แล้วแต่ยังไม่มีระบบไหนอ่าน (เช่น ต่อตำนาน)
 
 ## UI / ประสบการณ์เล่น
 
 - [ ] เลือกตัวเลือก event แล้วยังไม่บันทึกจนกว่าจะเดินเวลา → ปิดแท็บตอนนั้น โหลดแล้วจะเจอ event เดิม (ตั้งใจให้สอดคล้องกัน แต่ควรพิจารณา autosave หลังเลือก)
-- [ ] ข้อความมรดกตอนนี้แสดง "สิทธิ์ X% = ได้จริง Y%" แล้ว แต่ยังไม่มีคำอธิบายในเกมว่าสิทธิ์มาจากสถานะแม่
-
-- [ ] ตำนานซ้ำกันตอน handover — แผลเป็นหลายแผลจาก event เดียวกันสร้าง "ตำนานใหม่" ข้อความเดียวกัน 3 เรื่อง (`seedLegendsFromLife`) เห็นได้จาก log และผังตระกูล
+- [ ] ข้อความ handover/มรดกยังใช้ชื่อเปล่า (`r.deceased`, `heir.name` ใน `handover.ts`) — ชื่อซ้ำในบรรทัดเหล่านี้ยังไม่มีปีเกิด
+- [ ] คนจนตายแล้ว log ยังขึ้น "งานศพ … ใช้ 0 ตำลึง" และ "ได้ 0 ตำลึง" — ควรย่อหรือข้าม
 - [ ] ผังตระกูลเป็นรายการซ้อนแบบข้อความ — พอสำหรับเล่นทดสอบ ยังไม่ใช่ผังภาพ
 
 ## คลังข้อมูล (lore)
 
 - [ ] **0/86 รายการ verified** — ชื่อทั้ง 22 ชื่อใน `names.json` มาจากรายการที่ยังไม่ verified ขัดกับหลักข้อ 4 ใน ROADMAP; ควรให้ `lore:compile` ข้ามรายการ unverified เมื่อมีรายการ verified พอ
-- [ ] 22 รายการบรรยาย พ.ศ. 2230–2231 (La Loubère) แต่ใช้เป็น `attested`/`fact` สำหรับเกมช่วง 2275–2400 และเป็นฐานของ prompt ภาพ — ควรเปลี่ยนเป็น `pattern` + `projection` หรือหาแหล่งร่วมยุค (validator เตือนแล้ว)
-- [ ] รายการ attested ที่ไม่มีแหล่งร่วมยุค: `event.fall_of_ayutthaya_2310`, `kinship.marriage_law_three_seals`, `naming.names_bang_rachan_2308`, `naming.names_legal_cases`
-- [ ] `src.phongsawadan_phan_chanthanumat` ไม่มี `composedYear`
-- [ ] tag ↔ lore อ้างกันทางเดียว 7 คู่ (lore/README ข้อ 4 ขอให้อ้างกลับ); `loreRefs` ใน art/style ยังไม่มี validator ตรวจ
-- [ ] `lore:compile` ใช้ชื่อแรกที่เจอเมื่อ `name|sex` ซ้ำ — รายการหลังเสีย estates/provenance ไป
-- [ ] tag ที่เพิ่มรอบนี้เพื่อให้ scenario มีป้าย (`asset:*`, `faction:*`) ยังไม่มี `loreRefs`
+- [ ] 22 รายการบรรยาย พ.ศ. 2230–2231 (La Loubère) แต่ใช้เป็น `attested`/`fact` สำหรับเกมช่วง 2275–2400 และเป็นฐานของ prompt ภาพ — ควรเปลี่ยนเป็น `pattern` + `projection` หรือหาแหล่งร่วมยุค (validator เตือนแล้ว) → R4
+- [ ] รายการ attested ที่ไม่มีแหล่งร่วมยุค: `event.fall_of_ayutthaya_2310`, `kinship.marriage_law_three_seals`, `naming.names_bang_rachan_2308`, `naming.names_legal_cases` → R4
+- [ ] `src.phongsawadan_phan_chanthanumat` ไม่มี `composedYear` → R4
+- [ ] tag ↔ lore อ้างกันทางเดียว 7 คู่ (lore/README ข้อ 4 ขอให้อ้างกลับ); tag `asset:*`, `faction:*` ยังไม่มี `loreRefs` → R4
 
 ## ภาพประกอบ
 
 - [ ] `reality-stilt-house.jpg` และ `reality-meal-tray.jpg` สร้างด้วย style block v0.2 แต่ `art/style.json` ตรึงไว้ที่ v0.3 → baseline สำหรับ regression ปนกัน
-- [ ] anchor ใน `promptRef` เช่น `02-fixes.md#S1` ไม่ตรงกับ slug หัวข้อของ GitHub
 
 ## ทดสอบ / โครงสร้าง
 
-- [ ] ยังไม่มี test framework — `sim:check` เป็น regression test ตัวแรก; ควรเข้า build/CI
-- [ ] ทางที่ save ล้มแล้ว abort, IndexedDB ถูกแท็บอื่น block, และ worker โหลดไม่ขึ้น ยังไม่มีการทดสอบอัตโนมัติ (ตรวจด้วยการอ่านโค้ดเท่านั้น)
-- [ ] โฟลเดอร์ `art/art/art/` โผล่ใน working copy (ไม่ใช่จากโค้ด — น่าจะมาจาก OneDrive/เครื่องมืออื่น) ตอนนี้มีสำเนา README/style.json/approved ที่ต่างจาก `art/` → ตรวจว่ามีอะไรต้องรวมกลับก่อนลบ
+- [ ] worker โหลด content ไม่ขึ้น (`contentReady` ใน `engine.worker.ts`) ยังไม่มีการทดสอบอัตโนมัติ — ต้องจำลอง `self`/`fetch` ของ worker
+- [ ] เปิด DB แล้วแท็บอื่นอัปเกรดเวอร์ชัน (`onversionchange`) ยังไม่มี test
+- [ ] ลบ `art/art/art/` (untracked) — รอเจ้าของสั่ง ดูผลตรวจในขั้น 0
