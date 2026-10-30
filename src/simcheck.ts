@@ -7,7 +7,7 @@ import { isAlive, makeCtx, type Ctx } from './core/ctx';
 import type { ContentDB } from './core/types';
 import { chooseOption } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
-import { heirCandidates, markDead, performHandover } from './systems/handover';
+import { estateHeirs, markDead, performHandover, successorCandidates } from './systems/handover';
 import { bootstrapScenario } from './systems/scenario';
 import { advanceDay } from './systems/world';
 
@@ -40,6 +40,8 @@ function invariants(ctx: Ctx, ended: boolean): void {
     check('เรือนที่หัวเรือนไม่มีชีวิต', Object.values(S.households).filter((h) => !alive(h.headId)).map((h) => h.id));
     check('สมาชิกเรือนที่ตายแล้ว', Object.values(S.households).flatMap((h) => h.memberIds.filter((id) => !alive(id))));
     check('คนตายที่ยังถือเงิน', Object.values(S.characters).filter((c) => !isAlive(c) && c.social.wealth > 0.5).map((c) => c.name));
+    // ผู้นำตายโดยมีญาติในตระกูล → ต้องส่งต่อ (D2); ว่างได้เฉพาะตอนสิ้นสาย
+    check('ผู้นำตระกูลที่ไม่มีชีวิต', Object.values(S.dynasties).filter((d) => !alive(S.familyNodes[d.headNodeId]?.characterId)).map((d) => d.name));
   }
   check('อายุติดลบ', Object.values(S.characters).filter((c) => c.birthDay > S.meta.day).map((c) => c.name));
   check('childIds ชี้ไป node ที่ไม่มี', Object.values(S.familyNodes).flatMap((n) => n.childIds.filter((id) => !S.familyNodes[id])));
@@ -68,7 +70,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
         chooseOption(ctx, p, opt.id);
       } else if (sig.type === 'playerDied') {
         const dead = S.characters[S.meta.playerCharacterId]!;
-        if (!heirCandidates(ctx, dead).length) {
+        if (!successorCandidates(ctx, dead).length) {
           over = true;
           break;
         }
@@ -111,6 +113,62 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   console.log('ผู้เล่นตายก่อนบิดา:');
   check('handover แตะตำแหน่งของคนที่ยังมีชีวิต', problems);
   if (failed === before) console.log('  ✓ ผู้นำ หัวเรือน และกฎในเรือนคงเดิม');
+}
+
+// [3] ผู้เล่นไม่มีบุตร (D1 + D2) → น้องชายสืบตำแหน่งและได้มรดก; ไม่ใช่สิ้นสาย
+{
+  const ctx = makeCtx(emptyState(11), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += content.balance.daysPerYear * 25;
+  const dyn = S.dynasties[S.meta.playerDynastyId]!;
+  const heroNode = S.familyNodes[hero.familyNodeId]!;
+  const father = S.characters[S.familyNodes[heroNode.fatherId!]!.characterId!]!;
+  const mother = S.characters[S.familyNodes[heroNode.motherId!]!.characterId!]!;
+  const brother = spawnCharacter(ctx, { name: 'น้องชาย', sex: 'm', birthYear: 2287, estate: 'noble', father, mother });
+  markDead(ctx, father, 'situation:old_age');
+  performHandover(ctx, father.id, hero.id, { asPlayer: false });
+  hero.social.wealth = 100;
+  markDead(ctx, hero, 'situation:old_age');
+  const problems: string[] = [];
+  const cands = successorCandidates(ctx, hero);
+  if (cands[0]?.ch.id !== brother.id) problems.push(`ผู้สืบคนแรกคือ ${cands[0]?.ch.name ?? 'ไม่มี'} ไม่ใช่น้องชาย`);
+  const before = brother.social.wealth;
+  performHandover(ctx, hero.id);
+  if (S.meta.playerCharacterId !== brother.id) problems.push('ผู้เล่นไม่ได้สลับไปเป็นน้องชาย');
+  if (dyn.headNodeId !== brother.familyNodeId) problems.push('ผู้นำตระกูลไม่ได้ไปที่น้องชาย');
+  if (brother.social.wealth <= before) problems.push('น้องชายไม่ได้มรดก');
+  const b = failed;
+  console.log('ผู้เล่นไม่มีบุตร:');
+  check('ญาติสืบแทน', problems);
+  if (failed === b) console.log('  ✓ น้องชายสืบตำแหน่งและได้มรดก');
+}
+
+// [4] บุตรตายก่อน → หลานได้มรดกแทน และเป็นผู้สืบก่อนพี่น้อง
+{
+  const ctx = makeCtx(emptyState(12), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += content.balance.daysPerYear * 60;
+  const heroNode = S.familyNodes[hero.familyNodeId]!;
+  const father = S.characters[S.familyNodes[heroNode.fatherId!]!.characterId!]!;
+  const mother = S.characters[S.familyNodes[heroNode.motherId!]!.characterId!]!;
+  spawnCharacter(ctx, { name: 'น้องสาว', sex: 'f', birthYear: 2288, estate: 'noble', father, mother });
+  const wife = spawnCharacter(ctx, { name: 'ภรรยา', sex: 'f', birthYear: 2288, estate: 'noble', dynastyId: null, householdId: null });
+  marry(ctx, hero, wife);
+  const son = spawnCharacter(ctx, { name: 'ลูกชาย', sex: 'm', birthYear: 2310, estate: 'noble', father: hero, mother: wife });
+  const sonWife = spawnCharacter(ctx, { name: 'สะใภ้', sex: 'f', birthYear: 2312, estate: 'noble', dynastyId: null, householdId: null });
+  marry(ctx, son, sonWife);
+  const grandson = spawnCharacter(ctx, { name: 'หลานชาย', sex: 'm', birthYear: 2330, estate: 'noble', father: son, mother: sonWife });
+  markDead(ctx, son, 'situation:old_age');
+  markDead(ctx, hero, 'situation:old_age');
+  const problems: string[] = [];
+  if (successorCandidates(ctx, hero)[0]?.ch.id !== grandson.id) problems.push('ผู้สืบคนแรกไม่ใช่หลาน');
+  if (!estateHeirs(ctx, hero).some((h) => h.ch.id === grandson.id && h.relation === 'grandchild')) problems.push('หลานไม่อยู่ในผู้รับมรดก');
+  const b = failed;
+  console.log('บุตรตายก่อน:');
+  check('หลานรับแทน', problems);
+  if (failed === b) console.log('  ✓ หลานเป็นผู้สืบและได้ส่วนมรดก');
 }
 
 if (failed) {

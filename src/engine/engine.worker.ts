@@ -3,7 +3,7 @@ import { makeCtx, commitRng, must, yearOf, type Ctx } from '../core/ctx';
 import type { ContentDB } from '../core/types';
 import { chooseOption, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { emptyState } from '../systems/factory';
-import { heirCandidates, performHandover } from '../systems/handover';
+import { performHandover, successorCandidates } from '../systems/handover';
 import { bootstrapScenario } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
@@ -97,7 +97,7 @@ async function advance(days: number): Promise<ReplyData['advance']> {
           stoppedBy = 'event';
         } else {
           const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
-          if (!heirCandidates(c, dead).length) {
+          if (!successorCandidates(c, dead).length) {
             lines.push({ kind: 'death', text: `${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
             stoppedBy = 'gameOver';
             break;

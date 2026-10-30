@@ -6,7 +6,7 @@ import {
   createHousehold, displayName, joinHousehold, livingChildren, livingSpouse, marry, pickCaregiverChild, pickName, relativeNames,
   spawnCharacter,
 } from './factory';
-import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
+import { applyHistoricalShocks, markDead, performHandover, settleDeath, successorCandidates } from './handover';
 import { householdYearTick } from './socialLearning';
 
 // ============================================================================
@@ -66,17 +66,17 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     }
     // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
     const diedToday = Object.values(S.characters).filter((ch) => ch.deathDay === S.meta.day && ch.id !== player?.id);
-    const isHeadWithHeir = (ch: Character) =>
-      !!ch.dynastyId && S.dynasties[ch.dynastyId]?.headNodeId === ch.familyNodeId && heirCandidates(ctx, ch).length > 0;
+    const isHeadWithSuccessor = (ch: Character) =>
+      !!ch.dynastyId && S.dynasties[ch.dynastyId]?.headNodeId === ch.familyNodeId && successorCandidates(ctx, ch).length > 0;
     // คนทั่วไป → งานศพ แบ่งมรดก ออกจากเรือน; ทำก่อน handover เพราะ handover prune ตัวละครที่ตายแล้วทิ้ง
-    for (const ch of diedToday.filter((c) => !isHeadWithHeir(c))) {
+    for (const ch of diedToday.filter((c) => !isHeadWithSuccessor(c))) {
       const r = settleDeath(ctx, ch);
       if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', kind: 'inherit', line });
     }
-    // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
-    for (const ch of diedToday.filter(isHeadWithHeir)) {
+    // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที (ไม่มีบุตร → ญาติในตระกูล) ผู้เล่นได้ส่วนถ้าเป็นทายาท
+    for (const ch of diedToday.filter(isHeadWithSuccessor)) {
       if (!S.characters[ch.id]) continue;
-      const cands = heirCandidates(ctx, ch);
+      const cands = successorCandidates(ctx, ch);
       if (!cands.length) {
         settleDeath(ctx, ch);
         continue;

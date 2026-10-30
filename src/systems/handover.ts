@@ -1,6 +1,6 @@
 import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
-import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, Parentage, Relation, TagId } from '../core/types';
+import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, KinRelation, Parentage, Relation, TagId } from '../core/types';
 import { livingSpouse, pickCaregiverChild } from './factory';
 import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from './legend';
 import { pruneState, type PruneReport } from './prune';
@@ -103,6 +103,112 @@ export function heirCandidates(ctx: Ctx, deceased: Character): Array<{ ch: Chara
     .sort((a, b) => b.score - a.score);
 }
 
+/** ผู้รับมรดก: น้ำหนักสิทธิ์ + ป้ายที่บอกผู้เล่นว่าทำไมได้เท่านี้ (null = ไม่ต้องอธิบาย) */
+export interface EstateHeir {
+  ch: Character;
+  weight: number;
+  label: string | null;
+  relation: KinRelation | 'child';
+}
+
+const KIN_TH: Record<KinRelation, string> = {
+  grandchild: 'หลาน',
+  greatGrandchild: 'เหลน',
+  fullSibling: 'พี่น้องร่วมบิดามารดา',
+  paternalHalfSibling: 'พี่น้องร่วมบิดา',
+  maternalHalfSibling: 'พี่น้องร่วมมารดา',
+  nibling: 'หลาน (ลูกของพี่น้อง)',
+  grandNibling: 'เหลน (หลานของพี่น้อง)',
+  grandparent: 'ปู่ย่าตายาย',
+  uncleAunt: 'ลุงป้าน้าอา',
+  cousin: 'ลูกพี่ลูกน้อง',
+};
+
+/**
+ * ญาติร่วมสายเลือดที่ยังมีชีวิต เมื่อผู้ตายไม่มีบุตรเหลือ — น้ำหนักตามลักษณมรดก มาตรา ๑๖–๑๗ (lore: social.inheritance_kin_shares)
+ * ทุกคนแบ่งตามน้ำหนักร่วมกัน (ตัวบทให้ลูกหลาน พี่น้อง และญาติอยู่ในภาคเดียวกัน); คนที่นับได้หลายทางใช้ทางที่ได้มากที่สุด
+ * ยังไม่ใช้เงื่อนไข "ต้องรักษาไข้ปลงศพ" (ROADMAP: lore/system-implications.md D4)
+ */
+export function kinHeirs(ctx: Ctx, dead: Character): EstateHeir[] {
+  const S = ctx.state;
+  const K = ctx.content.balance.inheritance.kinShares;
+  const self = S.familyNodes[dead.familyNodeId];
+  if (!self) return [];
+  const node = (id: FamilyNode['id'] | null) => (id ? S.familyNodes[id] : undefined);
+  const childrenOf = (n: FamilyNode) => n.childIds.map(node).filter((x): x is FamilyNode => !!x);
+  const best = new Map<FamilyNode['id'], KinRelation>();
+  const add = (n: FamilyNode, rel: KinRelation) => {
+    const prev = best.get(n.id);
+    if (n.id !== self.id && (!prev || K[rel] > K[prev])) best.set(n.id, rel);
+  };
+
+  for (const c of childrenOf(self)) {
+    for (const gc of childrenOf(c)) {
+      add(gc, 'grandchild');
+      for (const ggc of childrenOf(gc)) add(ggc, 'greatGrandchild');
+    }
+  }
+  const parents = [node(self.fatherId), node(self.motherId)].filter((x): x is FamilyNode => !!x);
+  for (const sib of new Set(parents.flatMap(childrenOf))) {
+    if (sib.id === self.id) continue;
+    const sameFather = !!self.fatherId && sib.fatherId === self.fatherId;
+    const sameMother = !!self.motherId && sib.motherId === self.motherId;
+    add(sib, sameFather && sameMother ? 'fullSibling' : sameFather ? 'paternalHalfSibling' : 'maternalHalfSibling');
+    for (const nb of childrenOf(sib)) {
+      add(nb, 'nibling');
+      for (const gnb of childrenOf(nb)) add(gnb, 'grandNibling');
+    }
+  }
+  for (const p of parents) {
+    for (const gp of [node(p.fatherId), node(p.motherId)].filter((x): x is FamilyNode => !!x)) {
+      add(gp, 'grandparent');
+      for (const u of childrenOf(gp)) {
+        if (u.id === p.id) continue;
+        add(u, 'uncleAunt');
+        for (const cousin of childrenOf(u)) add(cousin, 'cousin');
+      }
+    }
+  }
+
+  const out: EstateHeir[] = [];
+  for (const [id, rel] of best) {
+    const cid = S.familyNodes[id]?.characterId;
+    const ch = cid ? S.characters[cid] : undefined;
+    if (isAlive(ch)) out.push({ ch, weight: K[rel], label: KIN_TH[rel], relation: rel });
+  }
+  return out.sort((a, b) => b.weight - a.weight || a.ch.birthDay - b.ch.birthDay);
+}
+
+/** ผู้รับมรดก: บุตรที่ยังมีชีวิต (น้ำหนักตามสถานะแม่) ถ้าไม่มีจึงเป็นญาติ (D1) */
+export function estateHeirs(ctx: Ctx, dead: Character): EstateHeir[] {
+  const B = ctx.content.balance.inheritance;
+  const kids = heirCandidates(ctx, dead).map((c) => c.ch);
+  if (!kids.length) return kinHeirs(ctx, dead);
+  const parentageOf = (h: Character) => must(ctx.state.familyNodes[h.familyNodeId], 'node').parentage;
+  // สิทธิ์ต่างกันเพราะสถานะแม่ → บอกสถานะ (ทุกคนสถานะเดียวกัน = แบ่งเท่ากัน ไม่ต้องอธิบาย)
+  const mixed = new Set(kids.map(parentageOf)).size > 1;
+  return kids.map((ch) => ({
+    ch, weight: B.shareByParentage[parentageOf(ch)], label: mixed ? PARENTAGE_TH[parentageOf(ch)] : null, relation: 'child' as const,
+  }));
+}
+
+/**
+ * ผู้สืบตำแหน่งในตระกูล (D2, lore: social.family_headship_to_kin): บุตรก่อน
+ * ไม่มีบุตร → ญาติในตระกูลเดียวกัน ลูกหลานสายตรงก่อน แล้วตามน้ำหนักในลักษณมรดก — ผู้ใหญ่ก่อนเด็ก คนโตก่อน
+ */
+export function successorCandidates(ctx: Ctx, dead: Character): Array<{ ch: Character; score: number }> {
+  const kids = heirCandidates(ctx, dead);
+  if (kids.length) return kids;
+  const descendant = (r: EstateHeir['relation']) => r === 'grandchild' || r === 'greatGrandchild';
+  return kinHeirs(ctx, dead)
+    .filter((k) => k.ch.dynastyId !== null && k.ch.dynastyId === dead.dynastyId)
+    .map((k) => {
+      const age = ageOf(ctx, k.ch);
+      return { ch: k.ch, score: (descendant(k.relation) ? 10 : 0) + k.weight + (age >= 16 ? 1 : 0) + age * 0.01 };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
 /**
  * asPlayer=false: ใช้ตอนหัวหน้าตระกูลที่เป็น NPC ตาย (เช่น บิดาผู้เล่น) — แบ่งมรดก/ตกผลึกข้อห้ามเหมือนกัน
  * แต่ไม่สลับตัวละครผู้เล่น
@@ -125,16 +231,17 @@ export function performHandover(
     log.push(`ตำนานใหม่: ${legend ? renderLegend(ctx, legend, 'current') : lid}`);
   }
 
-  // [3] heir
-  const candidates = heirCandidates(ctx, dead);
-  const heir = chosenHeirId ? must(ctx.state.characters[chosenHeirId], 'heir') : must(candidates[0], 'no heir — game over / adopt').ch;
+  // [3] heir — ไม่มีบุตร → ญาติในตระกูล (D2)
+  const candidates = successorCandidates(ctx, dead);
+  const heir = chosenHeirId ? must(ctx.state.characters[chosenHeirId], 'heir') : must(candidates[0], 'no successor — game over').ch;
   const heirNode = must(ctx.state.familyNodes[heir.familyNodeId], 'heir node');
 
   // [4] funeral
   log.push(holdFuneral(ctx, dead));
 
   // [5] estate
-  const estate = distributeEstate(ctx, dead, candidates.map((c) => c.ch), heir);
+  const heirs = estateHeirs(ctx, dead);
+  const estate = distributeEstate(ctx, dead, heirs, heirs.some((h) => h.ch.id === heir.id) ? heir : undefined);
   log.push(...estate.lines);
 
   // [6] social
@@ -191,16 +298,16 @@ export function performHandover(
 }
 
 /**
- * ผู้ตายที่ไม่ใช่ผู้นำตระกูล (ลูกหลานสายรอง คู่ครองคนนอก) — งานศพ + แบ่งมรดกให้ลูก + ออกจากเรือน
+ * ผู้ตายที่ไม่ใช่ผู้นำตระกูล (ลูกหลานสายรอง คู่ครองคนนอก) — งานศพ + แบ่งมรดกให้ลูก (ไม่มีลูก → ญาติ) + ออกจากเรือน
  * ไม่แตะตำแหน่งผู้นำ ตำนาน หรือข้อห้ามตระกูล; ต้องเรียกก่อน prune ไม่งั้นทรัพย์ค้างอยู่กับตัวละครที่ถูกลบ
  */
 export function settleDeath(ctx: Ctx, dead: Character): { lines: string[]; heirIds: Array<Character['id']> } {
-  const heirs = heirCandidates(ctx, dead).map((c) => c.ch);
+  const heirs = estateHeirs(ctx, dead);
   const lines = [holdFuneral(ctx, dead)];
   const estate = distributeEstate(ctx, dead, heirs, undefined);
   lines.push(...estate.lines);
   leaveHousehold(ctx, dead, [estate.houseHeir]);
-  return { lines, heirIds: heirs.map((h) => h.id) };
+  return { lines, heirIds: heirs.map((h) => h.ch.id) };
 }
 
 /**
@@ -254,36 +361,35 @@ function leaveHousehold(ctx: Ctx, dead: Character, preferred: Array<Character | 
 }
 
 /**
- * แบ่งมรดกแบบ partible: น้ำหนักตามสถานะแม่ + โบนัสทายาทหลัก
+ * แบ่งมรดกแบบ partible: น้ำหนักตามสถานะแม่ (บุตร) หรือตามความใกล้ชิด (ญาติ) + โบนัสทายาทหลัก
  * - เรือน → ลูกที่อยู่เรือนเดียวกันและดูแลพ่อแม่ (ลูกสาวคนสุดท้องก่อน) (lore: kinship.youngest_daughter_house)
  *   เป็นของลูกที่ดูแล ไม่นับในส่วนแบ่ง — ทรัพย์อื่นแบ่งตามสิทธิ์
- *   ถ้าไม่มีลูกอยู่ในเรือน → ทายาทหลัก และนับมูลค่าเรือนรวมในส่วนแบ่งของคนที่ได้
+ *   ถ้าไม่มีลูกอยู่ในเรือน (หรือผู้รับเป็นญาติ) → ทายาทหลัก และนับมูลค่าเรือนรวมในส่วนแบ่งของคนที่ได้
  * - ที่ดิน/ทอง → greedy ให้คนที่ยังได้น้อยกว่าสิทธิ์มากที่สุด
  * - เงินสดและหนี้ แบ่งตามสัดส่วนเดียวกัน (ลูกอาจตกเป็นหนี้จนต้องขายตัวเป็นทาส)
  * - ของประจำตระกูล (ownerDynastyId) ไม่ถูกแบ่ง — ผู้นำตระกูลถือครองแทน
+ * - ไม่มีทั้งบุตรและญาติ → ของหลวง (lore: social.estate_without_heirs)
  */
 function distributeEstate(
-  ctx: Ctx, dead: Character, heirs: Character[], main: Character | undefined,
+  ctx: Ctx, dead: Character, estateHeirs: EstateHeir[], main: Character | undefined,
 ): { lines: string[]; houseHeir: Character | undefined } {
   const B = ctx.content.balance.inheritance;
-  if (!heirs.length) {
+  if (!estateHeirs.length) {
     for (const it of Object.values(ctx.state.items)) if (it.ownerCharacterId === dead.id) delete ctx.state.items[it.id];
     dead.social.wealth = 0;
     dead.social.debt = 0;
-    return { lines: ['ไม่มีทายาท — ทรัพย์ตกเป็นของหลวง'], houseHeir: undefined };
+    return { lines: ['ไม่มีบุตรและญาติ — ทรัพย์ตกเป็นของหลวง'], houseHeir: undefined };
   }
-  const weight = new Map(
-    heirs.map((h) => {
-      const n = must(ctx.state.familyNodes[h.familyNodeId], 'node');
-      return [h.id, B.shareByParentage[n.parentage] + (h.id === main?.id ? B.mainHeirBonus : 0)] as const;
-    }),
-  );
+  const heirs = estateHeirs.map((h) => h.ch);
+  const byKin = estateHeirs[0]!.relation !== 'child';
+  const weight = new Map(estateHeirs.map((h) => [h.ch.id, h.weight + (h.ch.id === main?.id ? B.mainHeirBonus : 0)] as const));
+  const labelOf = new Map(estateHeirs.map((h) => [h.ch.id, h.label] as const));
   const totalW = [...weight.values()].reduce((a, b) => a + b, 0);
   const share = (h: Character) => (weight.get(h.id) ?? 0) / totalW;
 
   const items = Object.values(ctx.state.items).filter((i) => i.ownerCharacterId === dead.id);
-  const caregiver = pickCaregiverChild(heirs.filter((h) => dead.householdId && h.householdId === dead.householdId));
-  const houseHeir = caregiver ?? main ?? heirs[0];
+  const caregiver = byKin ? undefined : pickCaregiverChild(heirs.filter((h) => dead.householdId && h.householdId === dead.householdId));
+  const houseHeir = caregiver ?? main ?? heirs[0]!;
   const houses = items.filter((i) => i.kind === 'house');
   const counted = (i: Item) => i.kind !== 'house' || !caregiver;
   const totalValue = items.filter(counted).reduce((a, i) => a + i.value, 0) + dead.social.wealth;
@@ -308,20 +414,19 @@ function distributeEstate(
     h.social.wealth += cashFor.get(h.id) ?? 0;
     h.social.debt += dead.social.debt * share(h);
   }
-  // สิทธิ์ต่างกันเพราะสถานะแม่ → บอกสถานะไว้ท้ายชื่อ (ทุกคนสถานะเดียวกัน = แบ่งเท่ากัน ไม่ต้องอธิบาย)
-  const parentageOf = (h: Character) => must(ctx.state.familyNodes[h.familyNodeId], 'node').parentage;
-  const mixed = new Set(heirs.map(parentageOf)).size > 1;
   const lines = heirs.map((h) => {
     const got = (received.get(h.id) ?? 0) + (cashFor.get(h.id) ?? 0);
     const actual = totalValue > 0 ? ` = ${Math.round((got / totalValue) * 100)}%` : '';
-    return `${h.name}${mixed ? ` (${PARENTAGE_TH[parentageOf(h)]})` : ''} ได้ ${got.toFixed(0)} ตำลึง (สิทธิ์ ${Math.round(share(h) * 100)}%${actual})` +
+    const label = labelOf.get(h.id);
+    return `${h.name}${label ? ` (${label})` : ''} ได้ ${got.toFixed(0)} ตำลึง (สิทธิ์ ${Math.round(share(h) * 100)}%${actual})` +
       (dead.social.debt ? `, รับหนี้ ${(dead.social.debt * share(h)).toFixed(0)}` : '');
   });
   if (houses.length) {
     lines.unshift(caregiver
       ? `เรือนตกแก่${houseHeir.name} ลูกที่อยู่ดูแลพ่อแม่ — ไม่นับรวมในส่วนแบ่ง`
-      : `เรือนตกแก่${houseHeir.name} (ไม่มีลูกอยู่ในเรือน — นับรวมในส่วนแบ่ง)`);
+      : `เรือนตกแก่${houseHeir.name} (${byKin ? 'ไม่มีบุตร' : 'ไม่มีลูกอยู่ในเรือน'} — นับรวมในส่วนแบ่ง)`);
   }
+  if (byKin) lines.unshift('ไม่มีบุตร — มรดกตกแก่ญาติตามลักษณมรดก');
   dead.social.wealth = 0;
   dead.social.debt = 0;
   return { lines, houseHeir };

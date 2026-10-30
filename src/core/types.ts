@@ -317,6 +317,10 @@ export interface Household {
 // ============================================================================
 
 /** สถานะของแม่ มีผลต่อส่วนแบ่งมรดก (ตามแนวกฎหมายลักษณะมรดก — ปรับน้ำหนักใน content) */
+export type KinRelation =
+  | 'grandchild' | 'greatGrandchild' | 'fullSibling' | 'paternalHalfSibling' | 'maternalHalfSibling'
+  | 'nibling' | 'grandNibling' | 'grandparent' | 'uncleAunt' | 'cousin';
+
 export type Parentage = 'principal_wife' | 'minor_wife' | 'slave_wife' | 'adopted' | 'unknown';
 
 export interface FamilyNode {
@@ -584,6 +588,8 @@ export interface Balance {
   };
   inheritance: {
     shareByParentage: Record<Parentage, number>;
+    /** น้ำหนักของญาติเมื่อผู้ตายไม่มีบุตรที่ยังมีชีวิต (lore: social.inheritance_kin_shares, social.estate_without_heirs) */
+    kinShares: Record<KinRelation, number>;
     mainHeirBonus: number;
     funeralCostRate: Record<Estate, Unit>;
     funeralPrestigePerTamlueng: number;
