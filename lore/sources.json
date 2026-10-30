@@ -568,5 +568,17 @@
     "reliability": 2,
     "url": "https://so01.tci-thaijo.org/index.php/journaldtc/article/download/276077/177807/1092579",
     "notes": "งานด้านการครัว ไม่ใช่งานประวัติศาสตร์ — ใช้เป็นทางไปหากาพย์เห่ชมเครื่องคาวหวาน (พระราชนิพนธ์รัชกาลที่ 2) ส่วนสูตร/วัตถุดิบเป็นการตีความสมัยใหม่"
+  },
+  {
+    "id": "src.pythaidate",
+    "title": "pythaidate — โปรแกรมคำนวณปฏิทินจุลศักราชตามคัมภีร์สุริยยาตร์ (Mark Hollow, สัญญาอนุญาต MIT)",
+    "kind": "secondary",
+    "describesPeriod": [
+      1181,
+      2643
+    ],
+    "reliability": 3,
+    "url": "https://github.com/hmmbug/pythaidate",
+    "notes": "ทำตาม J.C. Eade; วันที่ทดสอบในโค้ดอ้าง Gislén & Eade, Journal of Astronomical History and Heritage 22(3): 417–430 (2019) — ยังไม่ได้เปิดบทความตรวจ; ตารางวันเถลิงศกที่มากับโค้ดไม่ตรงกับผลคำนวณ 13 ปี (ปี B* 12 ปี และ จ.ศ. 1215 = พ.ศ. 2396 ต่างกันหนึ่งวัน)"
   }
 ]

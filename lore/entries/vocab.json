@@ -109,7 +109,7 @@
       "leap": "ปี 12 เดือนสองปี ตามด้วยปี 13 เดือนหนึ่งปี",
       "seasons": { "winter": "เดือน 1–2", "littleSummer": "เดือน 3–5", "greatSummer": "อีก 7 เดือน" }
     },
-    "summary": "ใช้แทนปฏิทิน 360 วันชั่วคราวของเกม (ROADMAP เฟส 3)",
+    "summary": "ฐานของปฏิทินจันทรคติในเกม (core/calendar.ts) ที่แทนปี 360 วันแล้ว",
     "status": "attested",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. VIII 'Of the Husbandry and the Difference of the Seasons'", "quote": "They have two years together consisting of twelve months, and a third of thirteen." }],
     "verified": false
@@ -154,6 +154,30 @@
     "summary": "ระวังการใช้ 'ทุ่ม/โมง' ในข้อความยุคอยุธยาจนกว่าจะพบหลักฐาน ใช้ 'ยาม' หรือบรรยายเวลาด้วยธรรมชาติ (ไก่ขัน ตะวันบ่าย) ไปก่อน",
     "status": "inferred",
     "citations": [{ "sourceId": "src.wiki_six_hour_clock", "locator": "หัวข้อประวัติ (อ้างราชกิจจานุเบกษา 17:206)" }],
+    "verified": false
+  },
+  {
+    "id": "vocab.suriyayatra_calculation",
+    "domain": "vocab",
+    "title": "เกมคำนวณวันจันทรคติตามคัมภีร์สุริยยาตร์ และขึ้นศักราช/ปีนักษัตรใหม่ที่ขึ้น 1 ค่ำเดือน 5",
+    "period": [2275, 2400],
+    "appliesAs": "mechanic",
+    "projection": "กฎอธิกมาส/อธิกวารคำนวณแบบที่ Eade อธิบาย ยังไม่ได้ตรวจว่าโหรอยุธยาตอนปลายใช้กฎเดียวกันทุกปีหรือไม่ (src.wiki_th_lunar_calendar บอกว่ายังไม่มีหลักฐาน) — ทดสอบแล้วตรงกับวันที่ในพงศาวดารสองวัน (sim:check)",
+    "claim": {
+      "dayCount": "หรคุณ = จำนวนวันนับจากวันเถลิงศกจุลศักราช 1",
+      "yearTypes": "ปกติ 354 วัน · อธิกวาร 355 วัน (เดือน 7 มี 30 วัน) · อธิกมาส 384 วัน (เดือน 8 สองหน)",
+      "eraRollover": "พงศาวดารลงศักราชและปีนักษัตรใหม่ตั้งแต่ขึ้น 1 ค่ำเดือน 5 แม้ยังไม่ถึงวันเถลิงศก",
+      "evidence": [
+        "วันพุธ ขึ้น 12 ค่ำ เดือน 5 ปีวอก จ.ศ. 1042 = 10 เม.ย. ค.ศ. 1680 (vocab.chronicle_date_format)",
+        "เสียกรุง วันอังคาร ขึ้น 9 ค่ำ เดือน 5 ปีกุน จ.ศ. 1129 = 7 เม.ย. ค.ศ. 1767 — ก่อนวันเถลิงศกปีนั้น"
+      ]
+    },
+    "summary": "ตัวละครพูดถึงวันด้วยขึ้น/แรม ค่ำ เดือน ปีนักษัตร จุลศักราช ผู้เล่นเห็นวันที่สุริยคติคู่กัน",
+    "status": "inferred",
+    "citations": [
+      { "sourceId": "src.pythaidate", "locator": "pythaidate/lsyear.py, csdate.py" },
+      { "sourceId": "src.phongsawadan_royal_autograph", "locator": "TODO — ตอนเสียกรุงครั้งที่ 2 (วันที่ยังอ้างจากความจำ ต้องเปิดตรวจ)" }
+    ],
     "verified": false
   }
 ]
