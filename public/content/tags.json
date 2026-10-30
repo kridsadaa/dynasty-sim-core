@@ -102,5 +102,13 @@
   { "id": "task:carry_wood", "parents": ["task:any"], "label": { "th": "ขนฟืน" } },
   { "id": "task:plait_mat", "parents": ["task:any"], "label": { "th": "สานเสื่อ" } },
   { "id": "task:sew", "parents": ["task:any"], "label": { "th": "เย็บผ้า" } },
-  { "id": "task:embroider", "parents": ["task:any"], "label": { "th": "ปักผ้า" } }
+  { "id": "task:embroider", "parents": ["task:any"], "label": { "th": "ปักผ้า" } },
+  { "id": "chore:flowers", "parents": ["chore:any"], "label": { "th": "งานดอกไม้" } },
+  { "id": "chore:merit", "parents": ["chore:any"], "label": { "th": "งานบุญ" } },
+  { "id": "task:polish_floor", "parents": ["task:any"], "label": { "th": "ขัดกระดานเรือนด้วยกะลามะพร้าว" } },
+  { "id": "task:gather_lotus", "parents": ["task:any"], "label": { "th": "ตามผู้ใหญ่ลงเรือไปเก็บดอกบัว" } },
+  { "id": "task:string_flowers", "parents": ["task:any"], "label": { "th": "ร้อยดอกไม้เป็นพวง" } },
+  { "id": "task:fold_lotus", "parents": ["task:any"], "label": { "th": "พับกลีบบัว" } },
+  { "id": "task:give_alms", "parents": ["task:any"], "label": { "th": "ใส่บาตรตอนเช้า" } },
+  { "id": "task:temple_offering", "parents": ["task:any"], "label": { "th": "จัดของไปถวายวัดวันพระ" } }
 ]

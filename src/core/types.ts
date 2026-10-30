@@ -706,6 +706,8 @@ export interface ChoreTaskDef {
   gain: number;
   /** event เฉพาะของขั้นนี้ (เช่นหั่นผัก = จับมีด อาจโดนบาด) แทน chore.learn */
   event?: EventDefId;
+  /** บุญที่ได้เมื่อหัดขั้นนี้ (ใส่บาตร) */
+  merit?: number;
 }
 
 export interface ChoreDomainDef {
@@ -717,6 +719,8 @@ export interface ChoreDomainDef {
   /** แรงคาดหวังตามเพศ: สูง = ปฏิเสธยาก และคนว่านอนสอนง่ายเข้าไปช่วยเอง */
   expect: { f: number; m: number };
   tasks: ChoreTaskDef[];
+  /** ทำซ้ำหลังหัดครบแล้วได้บุญทีละเท่านี้ (งานบุญ) */
+  practiceMerit?: number;
   loreRefs?: string[];
 }
 
@@ -847,6 +851,9 @@ export interface Balance {
     askAgainYears: number;
     /** ทำงานที่หัดได้แล้วซ้ำ — ทักษะเพิ่มทีละเท่านี้ (เงียบ ไม่ขึ้น log) */
     practiceGain: number;
+    /** วัยรุ่นที่ยังไม่มีคู่ ไปเที่ยวพายเรือเก็บดอกบัวเอง — ช่วงอายุ และครั้งต่อปี */
+    outingAge: [number, number];
+    outingsPerYear: number;
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   career: {

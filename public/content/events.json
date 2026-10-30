@@ -1349,5 +1349,219 @@
         ]
       }
     ]
+  },
+  "outing.lotus_f": {
+    "id": "outing.lotus_f",
+    "textKey": "event.outing_lotus",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "stranger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "go",
+        "textKey": "event.outing_lotus.go",
+        "effects": [
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "flowers",
+            "delta": 2
+          },
+          {
+            "op": "followUp",
+            "event": "outing.lotus_fall_f",
+            "chance": 0.2
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "textKey": "event.outing_lotus.stay",
+        "effects": []
+      }
+    ]
+  },
+  "outing.lotus_m": {
+    "id": "outing.lotus_m",
+    "textKey": "event.outing_lotus",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "stranger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "go",
+        "textKey": "event.outing_lotus.go",
+        "effects": [
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "flowers",
+            "delta": 2
+          },
+          {
+            "op": "followUp",
+            "event": "outing.lotus_fall_m",
+            "chance": 0.2
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "textKey": "event.outing_lotus.stay",
+        "effects": []
+      }
+    ]
+  },
+  "outing.lotus_fall_f": {
+    "id": "outing.lotus_fall_f",
+    "textKey": "event.lotus_fall_f",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "stranger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "flee",
+        "textKey": "event.lotus_fall_f.flee",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "acquaintance",
+            "atLeast": 0.35
+          },
+          {
+            "op": "relation",
+            "role": "stranger",
+            "toward": "actor",
+            "kind": "acquaintance",
+            "atLeast": 0.35
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "talk",
+        "textKey": "event.lotus_fall_f.talk",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.6,
+            "reasonKey": "shy"
+          }
+        ],
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "acquaintance",
+            "atLeast": 0.55
+          },
+          {
+            "op": "relation",
+            "role": "stranger",
+            "toward": "actor",
+            "kind": "acquaintance",
+            "atLeast": 0.55
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "friend",
+            "atLeast": 0.3
+          }
+        ]
+      }
+    ]
+  },
+  "outing.lotus_fall_m": {
+    "id": "outing.lotus_fall_m",
+    "textKey": "event.lotus_fall_m",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "stranger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "dive",
+        "textKey": "event.lotus_fall_m.dive",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.7,
+            "reasonKey": "timid"
+          }
+        ],
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "acquaintance",
+            "atLeast": 0.55
+          },
+          {
+            "op": "relation",
+            "role": "stranger",
+            "toward": "actor",
+            "kind": "acquaintance",
+            "atLeast": 0.6
+          },
+          {
+            "op": "relation",
+            "role": "stranger",
+            "toward": "actor",
+            "kind": "gratitude",
+            "atLeast": 0.5
+          }
+        ]
+      },
+      {
+        "id": "shout",
+        "textKey": "event.lotus_fall_m.shout",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "acquaintance",
+            "atLeast": 0.25
+          }
+        ]
+      }
+    ]
   }
 }

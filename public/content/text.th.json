@@ -194,5 +194,17 @@
   "event.chore_chop.diligent": "ค่อยๆ ผ่าอย่างตั้งใจ",
   "event.chore_chop.casual": "ผ่าเร็วๆ ให้เสร็จ",
   "event.chore_chop.avoid": "ขอทำอย่างอื่นแทน",
-  "will.reason.expected_girl": "ลูกผู้หญิงต้องเข้าครัว ใครเขาจะว่าได้"
+  "will.reason.expected_girl": "ลูกผู้หญิงต้องเข้าครัว ใครเขาจะว่าได้",
+  "event.outing_lotus.title": "เก็บดอกบัว",
+  "event.outing_lotus": "เพื่อนๆ ชวน{actor}พายเรือไปเก็บดอกบัวในบึงท้ายบ้านกันเอง ไม่มีผู้ใหญ่ไปด้วย",
+  "event.outing_lotus.go": "พายเรือไปด้วย",
+  "event.outing_lotus.stay": "ไม่ไป",
+  "event.lotus_fall_f.title": "ตกน้ำ",
+  "event.lotus_fall_f": "{actor}เอื้อมเก็บดอกบัวจนเรือโคลง ตกลงไปในน้ำ — {stranger}ที่พายเรือผ่านมากระโดดลงไปช่วยพาขึ้นฝั่ง",
+  "event.lotus_fall_f.flee": "ขอบคุณแล้วรีบกลับบ้านด้วยความอาย",
+  "event.lotus_fall_f.talk": "นั่งคุยกันจนผ้าแห้ง",
+  "event.lotus_fall_m.title": "มีคนตกน้ำ",
+  "event.lotus_fall_m": "{stranger}เอื้อมเก็บดอกบัวจนเรือโคลง ตกลงไปในน้ำ — {actor}อยู่ใกล้ที่สุด",
+  "event.lotus_fall_m.dive": "กระโดดลงไปช่วย",
+  "event.lotus_fall_m.shout": "ตะโกนเรียกคนช่วย"
 }

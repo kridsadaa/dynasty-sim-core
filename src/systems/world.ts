@@ -9,7 +9,7 @@ import {
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
-import { tickChores } from './chores';
+import { tickChores, tickOutings } from './chores';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
@@ -59,6 +59,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const chores = player ? tickChores(ctx, awayLabor(ctx, player)) : { lines: [], events: [] };
     for (const line of chores.lines) out.push({ type: 'log', line });
     for (const req of chores.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
+    for (const req of player ? tickOutings(ctx, awayLabor(ctx, player)) : []) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
     // หมั้นถึงวันนัด / ถูกทวงค่าน้ำนม / ช่วยงานบ้านพ่อตาแม่ยาย
     const m = tickMarriage(ctx);
     for (const line of m.lines) out.push({ type: 'log', line });

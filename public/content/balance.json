@@ -51,7 +51,9 @@
     "autoYesAt": 0.45,
     "autoNoAt": -0.35,
     "askAgainYears": 2,
-    "practiceGain": 1.5
+    "practiceGain": 1.5,
+    "outingAge": [13, 20],
+    "outingsPerYear": 0.5
   },
   "career": {
     "entryAge": [13, 20],

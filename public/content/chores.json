@@ -18,9 +18,10 @@
       "id": "housework", "tag": "chore:housework", "skill": "housework",
       "weight": { "f": 1.5, "m": 2 },
       "expect": { "f": 0.35, "m": 0.25 },
-      "loreRefs": ["kinship.child_chores_by_strength"],
+      "loreRefs": ["kinship.child_chores_by_strength", "material.floor_polishing"],
       "tasks": [
         { "id": "sweep", "tag": "task:sweep", "minSkill": 0, "minAge": 5, "gain": 4 },
+        { "id": "polish_floor", "tag": "task:polish_floor", "minSkill": 4, "minAge": 7, "gain": 4 },
         { "id": "carry_water", "tag": "task:carry_water", "minSkill": 6, "minAge": 8, "gain": 4 },
         { "id": "carry_wood", "tag": "task:carry_wood", "minSkill": 10, "minAge": 9, "gain": 5 }
       ]
@@ -35,7 +36,29 @@
         { "id": "sew", "tag": "task:sew", "minSkill": 8, "minAge": 9, "gain": 5 },
         { "id": "embroider", "tag": "task:embroider", "minSkill": 18, "minAge": 11, "gain": 6 }
       ]
+    },
+    {
+      "id": "flowers", "tag": "chore:flowers", "skill": "flowers",
+      "weight": { "f": 1.6, "m": 0.4 },
+      "expect": { "f": 0.3, "m": 0.03 },
+      "loreRefs": ["material.flower_stringing"],
+      "tasks": [
+        { "id": "gather_lotus", "tag": "task:gather_lotus", "minSkill": 0, "minAge": 6, "gain": 4 },
+        { "id": "string_flowers", "tag": "task:string_flowers", "minSkill": 6, "minAge": 8, "gain": 5 },
+        { "id": "fold_lotus", "tag": "task:fold_lotus", "minSkill": 12, "minAge": 10, "gain": 5 }
+      ]
+    },
+    {
+      "id": "merit", "tag": "chore:merit", "skill": "devotion",
+      "weight": { "f": 1.2, "m": 1 },
+      "expect": { "f": 0.3, "m": 0.2 },
+      "practiceMerit": 0.5,
+      "loreRefs": ["ritual.alms_round_1680s"],
+      "tasks": [
+        { "id": "give_alms", "tag": "task:give_alms", "minSkill": 0, "minAge": 5, "gain": 4, "merit": 1 },
+        { "id": "temple_offering", "tag": "task:temple_offering", "minSkill": 6, "minAge": 9, "gain": 5, "merit": 1 }
+      ]
     }
   ],
-  "skillLabels": { "cooking": "งานครัว", "housework": "งานบ้าน", "handicraft": "งานฝีมือ" }
+  "skillLabels": { "cooking": "งานครัว", "housework": "งานบ้าน", "handicraft": "งานฝีมือ", "flowers": "งานดอกไม้", "devotion": "งานบุญ" }
 }

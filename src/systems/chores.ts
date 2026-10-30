@@ -1,5 +1,7 @@
 import { ageOf, isAlive, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, ChoreDomainDef, ChoreTaskDef, TagId } from '../core/types';
+import { familiarity, isSingle, knownLocals, setRelation, spawnLocal } from './acquaintance';
+import { livingSpouse } from './factory';
 import { bond } from './will';
 
 // ============================================================================
@@ -98,6 +100,7 @@ export function tickChores(ctx: Ctx, away: number): { lines: string[]; events: C
   const task = nextTask(ctx, ch, d);
   if (!task) {
     addSkill(ch, d, C.practiceGain); // หัดครบแล้ว ทำซ้ำเงียบๆ
+    if (d.practiceMerit) ch.merit += d.practiceMerit;
     return { lines, events };
   }
   if (incl >= C.autoYesAt && !task.event) {
@@ -120,6 +123,7 @@ function learn(ctx: Ctx, ch: Character, d: ChoreDomainDef, task: ChoreTaskDef, t
   const st = stateOf(ch, d);
   if (!st.tasks.includes(task.id)) st.tasks.push(task.id);
   addSkill(ch, d, task.gain * factor);
+  if (task.merit) ch.merit += task.merit;
   const what = ctx.tags.label(task.tag);
   return [teacher ? `${teacher.name}สอนให้${ch.name}${what}` : `${ch.name}หัด${what}ได้แล้ว`];
 }
@@ -141,6 +145,30 @@ export function applyChore(
       stateOf(ch, d).askAfter = ctx.state.meta.day + ctx.content.balance.chores.askAgainYears * ctx.content.balance.daysPerYear;
       return [];
   }
+}
+
+/**
+ * วัยรุ่นที่ยังไม่มีคู่: บางครั้งชวนกันพายเรือไปเก็บดอกบัวเอง — เรือโคลงตกน้ำ คนต่างเพศมาช่วย/ไปช่วยเขา
+ * (ฉากแต่งจากภาพจำในละคร lore: kinship.lotus_boat_meeting) คนต่างเพศเป็นคนรู้จักที่ยังไม่มีคู่ ไม่มีก็เป็นคนใหม่ระแวกบ้าน
+ */
+export function tickOutings(ctx: Ctx, away: number): ChoreEventRequest[] {
+  const S = ctx.state;
+  const C = ctx.content.balance.chores;
+  const ch = S.characters[S.meta.playerCharacterId];
+  if (!isAlive(ch) || away >= 1 || livingSpouse(ctx, ch) || ch.betrothal || ch.eloped) return [];
+  const age = ageOf(ctx, ch);
+  if (age < C.outingAge[0] || age > C.outingAge[1] || !ctx.rng.chance(C.outingsPerYear / 12)) return [];
+  const sex = ch.sex === 'm' ? 'f' : 'm';
+  const close = (c: Character) => Math.abs(ageOf(ctx, c) - age) <= 6;
+  const candidates = knownLocals(ctx, ch).filter((c) => c.sex === sex && isSingle(ctx, c) && close(c) && ageOf(ctx, c) >= 13);
+  let other = ctx.rng.pick(candidates);
+  if (!other) {
+    other = spawnLocal(ctx, ch, { sex, age: Math.max(13, age + Math.floor(ctx.rng.range(-2, 3))), distance: 'near' });
+    setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
+  } else if (familiarity(ctx, ch.id, other.id) <= 0) {
+    setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
+  }
+  return [{ event: ch.sex === 'f' ? 'outing.lotus_f' : 'outing.lotus_m', bindings: { actor: ch.id, stranger: other.id }, vars: {} }];
 }
 
 /** ฝีมืองานบ้านในแผงตัวละคร: "งานครัว 23 (หัดได้ 4 ขั้น)" */
