@@ -1,4 +1,4 @@
-import { dayOfYear, must, newId, yearOf, type Ctx } from '../core/ctx';
+import { dayOfYear, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import type {
   Character, Dynasty, DynastyId, Estate, FamilyNode, GameState, Household, HouseholdId, Parentage, Personality,
 } from '../core/types';
@@ -298,9 +298,15 @@ export function pickCaregiverChild(children: Character[]): Character | undefined
 }
 
 export function joinHousehold(ctx: Ctx, ch: Character, hh: Household): void {
-  if (ch.householdId) {
-    const old = ctx.state.households[ch.householdId];
-    if (old) old.memberIds = old.memberIds.filter((id) => id !== ch.id);
+  const old = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+  if (old && old !== hh) {
+    old.memberIds = old.memberIds.filter((id) => id !== ch.id);
+    // หัวเรือนย้ายออก (เช่น ม่ายแต่งใหม่ไปตั้งเรือนกับภรรยา) → คนอาวุโสสุดที่ยังอยู่เป็นหัวเรือนแทน ไม่มีใครเหลือก็เลิกเรือน
+    if (old.headId === ch.id) {
+      const next = old.memberIds.map((id) => ctx.state.characters[id]).filter(isAlive).sort((a, b) => a.birthDay - b.birthDay)[0];
+      if (next) old.headId = next.id;
+      else delete ctx.state.households[old.id];
+    }
   }
   ch.householdId = hh.id;
   if (!hh.memberIds.includes(ch.id)) hh.memberIds.push(ch.id);
