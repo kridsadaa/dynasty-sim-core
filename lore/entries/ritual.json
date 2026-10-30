@@ -211,5 +211,140 @@
       }
     ],
     "verified": false
+  },
+  {
+    "id": "ritual.holy_days_1680s",
+    "domain": "ritual",
+    "title": "วันพระ (ขึ้นและแรม 15 ค่ำ): ถือศีลไม่กินหลังเที่ยง งดหาปลา เอาของไปถวายวัด วันรุ่งขึ้นพระเทศน์",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกเฉพาะวันเดือนเพ็ญและเดือนดับ (ไม่ได้กล่าวถึงวัน 8 ค่ำที่ปฏิทินสมัยหลังนับเป็นวันพระด้วย — vocab.lunar_calendar_mechanics) เกมจึงนับวันพระแค่วันที่ 15 และ 30 ของเดือนในเกม และใช้ต่อทั้งช่วง 2275–2400 เพราะเป็นวัตรของพระที่สืบต่อมา",
+    "claim": {
+      "days": "วันเดือนเพ็ญและเดือนดับ — พระโกนผมโกนคิ้วในวันนี้",
+      "fast": "พระและชาวบ้านไม่กินอะไรหลังเที่ยง",
+      "fishing": "ชาวบ้านงดหาปลา (งานอื่นทำได้ตามปกติ) — ผู้เขียนเห็นว่าเพราะถือว่าการหาปลาไม่บริสุทธิ์นัก",
+      "alms": "ชาวบ้านนำเงิน ผลไม้ ผ้า หรือสัตว์ไปถวายวัด",
+      "sermon": "พระเทศน์วันรุ่งขึ้นหลังวันเพ็ญและวันดับ ชาวบ้านไปวัดสม่ำเสมอ ฟังจบรับว่า 'สาธุ' แล้วถวายของแก่พระผู้เทศน์",
+      "rains": "ช่วงน้ำเต็มคลองจนน้ำเริ่มลด พระเทศน์ทุกวัน เช้าถึงเที่ยงและบ่ายโมงถึงห้าโมงเย็น",
+      "candles": "บางครั้งถวายเทียนจุด พระติดไว้ที่เข่าพระพุทธรูป"
+    },
+    "summary": "event วันพระ: ตามผู้ใหญ่ไปวัดฟังเทศน์ ถือศีลไม่กินหลังเที่ยง หรือแอบไปหาปลา (บาป)",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "on these days the Talapoins and the People do fast, that is to say, they eat nothing from Noon"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "They preach the next day after every new and every full Moon, and the People are ever very constant in the Temples"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "ritual.temple_festival_1680s",
+    "domain": "ritual",
+    "title": "งานวัด: วัดแต่ละแห่งมีวันรับทานของตัวเอง คนมาในผ้าใหม่ งานฉลองวัดมีละคร แข่งวัว มวยปล้ำ ชกมวย",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์แยกเล่าสองเรื่อง: วันรับทานประจำวัด (คนมาเองในผ้าใหม่) และงานฉลองวัดใหม่/พระพุทธรูปใหม่ (มีละคร แข่งวัว มวย) — เกมรวมเป็น 'งานวัดประจำปี' ของวัดใกล้บ้านในหน้าแล้ง (เดือน 1–6 ในเกม เพราะลานแข่งวัวต้องเป็นที่แห้ง) ซึ่งเป็นการอนุมาน การแอบมองหนุ่มสาวในงานเป็นของแต่ง (ลา ลูแบร์บอกเพียงว่าลูกสาวถูกดูแลเข้มงวด และเมียขุนนางออกจากบ้านแทบเฉพาะไปเยี่ยมญาติหรือไปวัด)",
+    "claim": {
+      "templeDay": "นอกจากวันพระที่ทุกวัดมีร่วมกัน วัดแต่ละแห่งมีวันรับทานของตัวเองเหมือนวันฉลองวัด",
+      "crowd": "ชาวบ้านไปเองด้วยความสมัครใจ และอวดผ้าใหม่กัน",
+      "releasing": "บุญใหญ่อย่างหนึ่งคือซื้อสัตว์ที่คนจับมาจากทุ่งแล้วปล่อยไป",
+      "dedicationFeast": "ฉลองวัดใหม่เมื่ออัญเชิญพระพุทธรูปใหม่เข้าประดิษฐาน: ละคร (Lacone) แข่งวัว นักมวยปล้ำ และชกมวยด้วยศอกและหมัด",
+      "boxing": "พันมือด้วยเชือกสามสี่รอบ (ชาวลาวใช้ห่วงทองแดง)",
+      "oxRace": "ลานยาว 500 วา กว้าง 2 วา ปักเสาสี่มุม วิ่งวนรอบเสา มีร้านให้ผู้ตัดสินตรงกลาง",
+      "monks": "พระห้ามดูละครและการละเล่นเหล่านี้"
+    },
+    "summary": "event งานวัด: ทำบุญปล่อยนกปล่อยปลา ดูละคร ผู้ชายขึ้นชกมวยคาดเชือกได้ (อาจเจ็บหน้า) วัยรุ่นอาจแอบมองคนต่างเพศที่มางาน",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "The People voluntarily assist at these Festivals, and make a show with their new Cloaths"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VI",
+        "quote": "The Lacone serves principally to solemnize the Feast of the Dedication of a new Temple"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VI",
+        "quote": "In Boxing, they guard their Hand with three or four rounds of Cord"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "ritual.floating_lanterns_1680s",
+    "domain": "ritual",
+    "title": "ลอยโคม: เมื่อน้ำเริ่มลด ชาวบ้านลอยโคมกระดาษทาสีเต็มลำน้ำหลายคืน ขอบคุณน้ำที่ให้ความอุดมแก่ไร่นา",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์ไม่ได้บอกเดือน บอกเพียง 'เมื่อน้ำเริ่มลด' (ราวเดือน 11–12) เกมจึงวางไว้คืนเพ็ญเดือน 12 ของเกม; เกมเรียก 'ลอยโคม' ตามที่บันทึก ไม่ใช้คำว่าลอยกระทงและไม่อ้างเรื่องนางนพมาศ ซึ่งยังไม่มีหลักฐานในคลังว่าเก่าถึงช่วงเกม (ต้องค้นต่อ); การชวนคนที่รู้จักไปลอยโคมด้วยกันเป็นของแต่ง",
+    "claim": {
+      "when": "เมื่อน้ำเริ่มลด ติดต่อกันหลายคืน",
+      "why": "ขอบคุณน้ำทั้งที่ลดลงและที่ทำให้ไร่นาอุดม",
+      "lanterns": "ทั้งลำน้ำเต็มไปด้วยโคมที่ลอยไปตามน้ำ ทำด้วยกระดาษทาสีต่างๆ",
+      "size": "ใหญ่เล็กตามแรงศรัทธาของแต่ละคน",
+      "newYear": "ต้นปียังมีการตามไฟอีกครั้งเพื่อขอบคุณแผ่นดินที่ให้ผลผลิต — ลา ลูแบร์เห็นที่ลพบุรี ตามโคมบนกำแพงเมืองและในวัง"
+    },
+    "summary": "event ลอยโคมประจำปี: ลอยโคมเล็กของตัวเอง ช่วยผู้ใหญ่ทำโคมใหญ่ หรือชวนคนที่รู้จักไปลอยด้วยกัน",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VI 'Religious Shows'",
+        "quote": "The whole River is then seen cover'd with floating Lanthorns, which pass with it"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VI 'Religious Shows'",
+        "quote": "There are of different Sizes, according to the Devotion of every particular Person"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "ritual.fifth_month_bathing_1680s",
+    "domain": "ritual",
+    "title": "เพ็ญเดือน 5: สรงน้ำพระ และลูกหลานรดน้ำพ่อแม่ปู่ย่าตายาย ไม่แยกลูกชายลูกสาว",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "ธรรมเนียมรดน้ำผู้ใหญ่ในเดือน 5 สืบต่อมาถึงสมัยหลัง (สงกรานต์) — ใช้ทั้งช่วงเกม; ผลต่อความผูกพันกับพ่อแม่เป็นตัวเลขของเกม",
+    "claim": {
+      "when": "วันเพ็ญเดือน 5",
+      "temple": "พระสรงน้ำพระพุทธรูปด้วยน้ำหอม (ไม่รดพระเศียร) แล้วสรงน้ำพระสังฆราช ชาวบ้านไปสรงน้ำพระสังฆราชและพระรูปอื่นด้วย",
+      "family": "ในแต่ละบ้าน ลูกรดน้ำพ่อแม่ ปู่ย่าตายาย ลูกชายลูกสาวทำเหมือนกัน",
+      "laos": "ที่ลาวก็ทำ และรดน้ำพระเจ้าแผ่นดินในแม่น้ำด้วย"
+    },
+    "summary": "event รดน้ำพ่อแม่เพ็ญเดือน 5: เพิ่มความผูกพันกับพ่อแม่ — อีกทางหนึ่งนอกจากงานครัวที่ bond เปลี่ยนได้",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "the Son and the Daughter do equally wash the Father and the Mother, the Grandfather and the Grandmother"
+      }
+    ],
+    "verified": false
   }
 ]
