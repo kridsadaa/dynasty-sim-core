@@ -179,5 +179,37 @@
       }
     ],
     "verified": false
+  },
+  {
+    "id": "ritual.alms_round_1680s",
+    "domain": "ritual",
+    "title": "พระออกบิณฑบาตตอนเช้า ยืนที่ประตูบ้านโดยไม่พูด แทบไม่มีบ้านไหนไม่ให้",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "การบิณฑบาตเป็นวัตรของพระที่สืบต่อมาโดยตลอด — ใช้เป็นงานบุญประจำวันของเด็กในเรือน",
+    "claim": {
+      "round": "หลังสวดมนต์เช้า พระเข้าเมืองบิณฑบาตราวหนึ่งชั่วโมง",
+      "manner": "ยืนที่ประตูโดยไม่พูดอะไร ถ้าไม่มีใครให้สักครู่ก็เดินต่อ",
+      "givers": "ชาวบ้านแทบไม่เคยปล่อยให้พระกลับไปเปล่า",
+      "festivals": "วันสำคัญชาวบ้านนำเงิน ผลไม้ ผ้า หรือสัตว์ไปถวายวัด และจุดเทียนบูชาพระพุทธรูป"
+    },
+    "summary": "ฐานของงานบุญในเกม: ใส่บาตรตอนเช้าและนำของไปถวายวัด — ไม่ได้ระบุว่าใส่ข้าว",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "To crave Alms they stand at the Gates, without saying any thing"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "It is rare that the People sends them away without giving them"
+      }
+    ],
+    "verified": false
   }
 ]
