@@ -5,6 +5,7 @@ import { capability } from '../systems/body';
 import type { PreparedEvent } from '../systems/events';
 import { livingChildren, livingParents, livingSpouse } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
+import { careerHint, officeRank, officeStatus } from '../systems/career';
 import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { describeTrait } from '../systems/traits';
@@ -50,6 +51,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     capabilities: Object.fromEntries(CAPS.map((c) => [t(text, 'capability', c), Math.round(capability(ctx, ch, c) * 100) / 100])),
     ...lifestyleView(ctx, ch, text),
     marriage: marriageStatus(ctx, ch),
+    office: officeStatus(ctx, ch),
   };
 }
 
@@ -79,7 +81,13 @@ function lifestyleView(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: s
   const serving = ch.service && host
     ? `แบ่งเวลาไปช่วยงานบ้านพ่อแม่ของ${host.name}ราว ${pct(ch.service.labor)}% · จ้างคนแทนเดือนละ ${money(ch.service.labor * ctx.content.balance.intent.laborValue[ch.social.estate])} ตำลึง`
     : null;
-  if (!st) return { lifestyle: serving ?? (ageOf(ctx, ch) < 6 ? 'ยังเล็ก อยู่ในความดูแลของผู้ใหญ่' : 'อยู่บ้าน ช่วยงานในเรือนตามปกติ'), intent: null };
+  const onDuty = ch.office
+    ? `เข้าเวรรับราชการ${officeRank(ctx, ch) === 0 ? 'ในวัง' : ''} ไม่ได้อยู่ช่วยงานบ้านราว ${pct(ctx.content.balance.career.dutyLabor)}%`
+    : null;
+  if (!st) {
+    const fallback = ageOf(ctx, ch) < 6 ? 'ยังเล็ก อยู่ในความดูแลของผู้ใหญ่' : 'อยู่บ้าน ช่วยงานในเรือนตามปกติ';
+    return { lifestyle: [serving, onDuty].filter(Boolean).join(' · ') || fallback, intent: null };
+  }
   const learn = st.approach.learnTrade ? tradeOf(ctx, st.target)?.label.th ?? null : null;
   return {
     lifestyle: st.labor > 0 ? lifestyleText(st.labor, st.monthlyCost, st.target, learn) : 'อยู่บ้าน ช่วยงานในเรือนตามปกติ',
@@ -192,9 +200,32 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
   return { default: kid.name, label: `ชื่อ${kid.sex === 'm' ? 'เด็กชาย' : 'เด็กหญิง'}` };
 }
 
+/** ผลคร่าวๆ ของตัวเลือกในราชการ: เงิน ความโปรดปราน บุญบาป — ไม่บอกตัวเลขความโปรดปราน (เดาใจนายได้แค่คร่าวๆ) */
+function effectHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects']): string | undefined {
+  const parts: string[] = [];
+  for (const e of effects) {
+    if (e.op === 'followUp') {
+      parts.push('อาจมีคนรู้');
+      continue;
+    }
+    const ch = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
+    if (e.op === 'wealth' && ch) {
+      const d = Math.round((e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina);
+      if (d) parts.push(`${ch === p.actor ? '' : ch.name}${d > 0 ? 'ได้' : 'เสีย'} ${Math.abs(d)} ตำลึง`);
+    }
+    if (e.op === 'favor' && Math.abs(e.delta) >= 0.05) parts.push(e.delta > 0 ? 'เป็นที่พอใจ' : 'ถูกมองไม่ดี');
+    if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
+  }
+  return parts.length ? parts.join(' · ') : undefined;
+}
+
 /** ตัวเลือกที่เป็นขั้นตอนแต่งงาน → บอกราคาและโอกาสไว้ก่อนเลือก */
 function optionHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects']): string | undefined {
   for (const e of effects) {
+    if (e.op === 'career') {
+      const ch = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
+      if (ch) return careerHint(ctx, ch, e.action);
+    }
     if (e.op !== 'marriage') continue;
     const actor = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
     const other = ctx.state.characters[p.instance.bindings[e.with] ?? ('' as Character['id'])];
@@ -230,7 +261,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       injected: !!o.injectedBy,
       note: willNote(o.id),
       nameInput: o.input === 'name' ? nameInput(ctx, p) : undefined,
-      hint: optionHint(ctx, p, o.effects),
+      hint: optionHint(ctx, p, o.effects) ?? (p.def.id.startsWith('career.') ? effectHint(ctx, p, o.effects) : undefined),
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
   };

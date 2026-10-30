@@ -5,6 +5,7 @@ import { DISTANCE_TH, familiarity, isSingle, relationStrength, setRelation, spaw
 import { scarModifiers } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { inLawNames, livingParents, livingSpouse } from './factory';
+import { officeLabor } from './career';
 import { serviceLabor } from './marriage';
 import { adjustBond } from './will';
 
@@ -57,7 +58,7 @@ export function awayLabor(ctx: Ctx, ch: Character): number {
   const i = activeIntent(ctx, ch.id);
   const target = i && ctx.state.characters[i.targetId];
   const intentLabor = i && target?.local ? approachOf(ctx, i).ap.by[target.local.distance]?.labor ?? 0 : 0;
-  return Math.max(intentLabor, serviceLabor(ch));
+  return Math.max(intentLabor, serviceLabor(ch), officeLabor(ctx, ch));
 }
 
 /** ใครจ่ายค่าจ้างคนแทน: หัวเรือนที่ ch อยู่ (มักเป็นพ่อ) ถ้าไม่มีก็ ch เอง */

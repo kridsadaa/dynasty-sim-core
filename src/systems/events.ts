@@ -6,6 +6,7 @@ import type {
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
+import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
@@ -159,6 +160,10 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
     case 'canPay': {
       const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.eloped?.amount;
       return amount !== undefined && canPay(ctx, ch, amount);
+    }
+    case 'office': {
+      const rank = officeRank(ctx, ch);
+      return rank !== undefined && rank >= (c.minRank ?? 0) && rank <= (c.maxRank ?? Infinity);
     }
   }
 }
@@ -362,6 +367,18 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         // event ค้างอยู่นานจนมีคนแต่งงานไปก่อน → ไม่แต่งซ้อน
         if (!other || other.deathDay !== null || livingSpouse(ctx, ch) || livingSpouse(ctx, other) || other.local?.wed) break;
         report.notes.push(wed(ctx, ch, other));
+        break;
+      }
+      case 'career':
+        report.notes.push(...applyCareer(ctx, ch, e.action));
+        break;
+      case 'favor':
+        adjustFavor(ch, e.delta);
+        break;
+      case 'wealth': {
+        // ปรับไหมตามบรรดาศักดิ์ (perSakdina × ศักดินา) — จ่ายไม่ไหวก็จ่ายเท่าที่มี เงินไม่ติดลบ
+        const d = (e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina;
+        ch.social.wealth = Math.max(0, ch.social.wealth + d);
         break;
       }
       case 'marriage': {

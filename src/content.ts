@@ -9,6 +9,7 @@ export function buildContentDB(raw: {
   events: ContentDB['events'];
   rules: Pick<ContentDB, 'scarRules' | 'injectionRules' | 'claimTemplates' | 'history'>;
   intents: Pick<ContentDB, 'intents' | 'trades'>;
+  offices: ContentDB['offices'];
   balance: ContentDB['balance'];
 }): ContentDB {
   const tags = Object.fromEntries(raw.tags.map((t) => [t.id, t])) as ContentDB['tags'];
@@ -44,6 +45,7 @@ export function buildContentDB(raw: {
     history: raw.rules.history,
     intents: raw.intents.intents,
     trades: raw.intents.trades,
+    offices: raw.offices,
     balance: raw.balance,
   };
 }

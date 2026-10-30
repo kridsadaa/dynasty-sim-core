@@ -8,6 +8,7 @@ import {
   pickName, spawnCharacter, wed,
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
+import { careerYearTick, officeRank } from './career';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
@@ -74,6 +75,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const line of meetPeople(ctx)) out.push({ type: 'log', line });
     const match = arrangedMatchEvent(ctx);
     if (match) out.push({ type: 'event', prepared: match });
+    // ราชการ: ถวายตัว รายได้ตามตำแหน่ง เลื่อนยศ/ถูกลงโทษ
+    const career = careerYearTick(ctx);
+    for (const line of career.lines) out.push({ type: 'log', line });
+    for (const req of career.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
     for (const ch of Object.values(S.characters)) {
       if (!isAlive(ch)) continue;
       const over = ageOf(ctx, ch) - B.world.oldAgeStart;
@@ -148,6 +153,10 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
     const t = def.trigger;
     if (t.ageRange && (age < t.ageRange[0] || age > t.ageRange[1])) continue;
     if (t.estates && !t.estates.includes(actor.social.estate)) continue;
+    if (t.office) {
+      const rank = officeRank(ctx, actor);
+      if (rank === undefined || rank < (t.office.minRank ?? 0) || rank > (t.office.maxRank ?? Infinity)) continue;
+    }
     if (t.cooldownDays) {
       const recent = Object.values(ctx.state.eventLog).some(
         (e) => e.defId === def.id && e.bindings.actor === actor.id && day - e.day < t.cooldownDays!,

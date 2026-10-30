@@ -99,6 +99,8 @@ export interface CharacterView {
   intent: IntentStatusView | null;
   /** หมั้น วันนัดแต่ง ค่าน้ำนมที่ค้าง ช่วยงานบ้านพ่อตาแม่ยาย */
   marriage: string[];
+  /** ตำแหน่งราชการ (ไม่มี = null) */
+  office: string | null;
 }
 
 /** คนในแผง "คนที่รู้จัก" — ญาติที่ยังมีชีวิต และคนนอกตระกูลที่ผู้เล่นรู้จัก */

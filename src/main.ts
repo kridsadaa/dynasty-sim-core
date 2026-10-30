@@ -68,6 +68,7 @@ function renderPlayer(v: CharacterView) {
   box.replaceChildren(el('h2', 'ตัวละคร'));
   box.append(el('div', `${v.title ? v.title + ' ' : ''}${v.name} อายุ ${v.age} ปี (พ.ศ. ${v.year})`));
   box.append(el('div', `ชนชั้น: ${v.estate} · ทรัพย์ ${v.wealth} ตำลึง`));
+  if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));
   const list = (title: string, items: string[]) => {
     if (!items.length) return;
     box.append(el('h2', title));

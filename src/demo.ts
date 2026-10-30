@@ -25,6 +25,7 @@ const content: ContentDB = buildContentDB({
   events: load('events.json'),
   rules: load('rules.json'),
   intents: load('intents.json'),
+  offices: load('offices.json'),
   balance: load('balance.json'),
 });
 const B = content.balance;

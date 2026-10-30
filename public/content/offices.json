@@ -1,0 +1,14 @@
+{
+  "department": { "label": { "th": "กรมกองกระเวนขวา" }, "loreRefs": ["social.patrol_department_ladder"] },
+  "posts": [
+    { "id": "page", "rank": 0, "label": { "th": "มหาดเล็ก" }, "sakdina": 200, "minYears": 2,
+      "loreRefs": ["social.royal_pages_1680s"] },
+    { "id": "muen", "rank": 1, "label": { "th": "หมื่นกองกระเวน" }, "title": "หมื่น{name}", "sakdina": 300, "minYears": 3,
+      "loreRefs": ["social.patrol_department_ladder"] },
+    { "id": "khun", "rank": 2, "label": { "th": "ขุนกองกระเวน" }, "title": "ขุน{name}", "sakdina": 400, "minYears": 4,
+      "loreRefs": ["social.patrol_department_ladder"] },
+    { "id": "head", "rank": 3, "label": { "th": "เจ้ากรมกองกระเวนขวา" }, "title": "หลวงอินทราบดีศรีราชรองเมือง", "sakdina": 1000, "minYears": 0,
+      "unique": true, "loreRefs": ["social.patrol_department_ladder"] }
+  ],
+  "names": ["ยิสารบุรีย", "วิจารภูธร", "จำนงบุรีย", "ละคอรภักดี"]
+}

@@ -3,7 +3,7 @@
     "id": "human",
     "root": "torso",
     "parts": {
-      "torso":   { "id": "torso", "parent": null, "label": { "th": "ลำตัว" }, "tags": ["body:any"], "visibility": "covered", "vital": true, "hitWeight": 4, "capabilities": {} },
+      "torso":   { "id": "torso", "parent": null, "label": { "th": "ลำตัว" }, "tags": ["body:torso"], "visibility": "covered", "vital": true, "hitWeight": 4, "capabilities": {} },
       "head":    { "id": "head", "parent": "torso", "label": { "th": "ศีรษะ" }, "tags": ["body:head"], "visibility": "exposed", "vital": true, "hitWeight": 1, "capabilities": {} },
       "face":    { "id": "face", "parent": "head", "label": { "th": "ใบหน้า" }, "tags": ["body:face"], "visibility": "face", "vital": false, "hitWeight": 1, "capabilities": { "speech": 0.3 } },
       "eye.l":   { "id": "eye.l", "parent": "face", "side": "l", "label": { "th": "ตาซ้าย" }, "tags": ["body:eye"], "visibility": "face", "vital": false, "hitWeight": 0.2, "capabilities": { "sight": 0.5 } },

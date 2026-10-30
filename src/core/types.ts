@@ -224,6 +224,12 @@ export interface Character {
    * แล้วจ่ายค่าน้ำนมค่าเลี้ยงดู + ค่าปรับ (amount) แต่งตามประเพณี หรือส่งตัวคืน (lore: kinship.elopement_three_seals)
    */
   eloped?: { withId: CharacterId; sinceDay: Day; amount: number; dueDay: Day; called?: true };
+  /**
+   * ตำแหน่งราชการ (ดู systems/career.ts) — ชื่อตำแหน่งจริงอยู่ใน social.title, ศักดินาใน social.sakdina
+   * favor: ความโปรดปรานของเจ้ากรม/ในหลวง (-1..1) ขึ้นจากงาน ลงจากความผิดและการถูกฟ้อง ค่อยๆ คลายกลับหา 0
+   * name: ราชทินนามที่ได้ (ใช้ซ้ำตอนเลื่อนจากหมื่นเป็นขุนชื่อเดียวกัน)
+   */
+  office?: { postId: string; name?: string; sinceDay: Day; favor: Signed };
 }
 
 /** ระยะจากเรือนของผู้เล่น — กำหนดว่าความตั้งใจต่อคนนี้กินแรงงานที่บ้านแค่ไหน */
@@ -486,7 +492,9 @@ export type Condition =
   /** มีคนผูกกับ role นี้ใน event (เช่น ยังมีคู่ครอง/พ่อแม่ที่มีชีวิต) */
   | { type: 'hasRole'; role: string }
   /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
-  | { type: 'canPay'; what: 'sinsot' | 'elope' };
+  | { type: 'canPay'; what: 'sinsot' | 'elope' }
+  /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
+  | { type: 'office'; minRank?: number; maxRank?: number };
 
 export type Effect =
   | {
@@ -515,6 +523,12 @@ export type Effect =
   | { op: 'marry'; role: string; with: string }
   /** ขั้นตอนแต่งงานของ role กับ with (สู่ขอ หมั้น แต่ง หนีตามกัน ค่าน้ำนม) — ดู systems/marriage.ts */
   | { op: 'marriage'; role: string; with: string; step: MarriageStep }
+  /** ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ — ดู systems/career.ts */
+  | { op: 'career'; role: string; action: 'enter' | 'promote' | 'demote' | 'dismiss' }
+  /** ความโปรดปรานในราชการ */
+  | { op: 'favor'; role: string; delta: number }
+  /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์) */
+  | { op: 'wealth'; role: string; delta?: number; perSakdina?: number }
   | { op: 'skill'; role: string; skill: string; delta: number }
   | { op: 'prestige'; role: string; delta: number };
 
@@ -549,7 +563,11 @@ export interface GameEventDef {
   variables?: Record<string, { oneOf: TagId[] }>;
   roles: Record<string, RoleFilter>;
   /** weight 0 = ไม่สุ่มขึ้นเอง เกิดได้เฉพาะเป็น followUp ของ event อื่น */
-  trigger: { ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number };
+  trigger: {
+    ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number;
+    /** เกิดเฉพาะคนที่รับราชการอยู่ในระดับนี้ (0 = มหาดเล็ก) */
+    office?: { minRank?: number; maxRank?: number };
+  };
   percepts: PerceptTemplate[];
   options: EventOption[];
 }
@@ -642,6 +660,28 @@ export interface IntentDef {
   failure: EventDefId;
   /** event แทรกระหว่างทาง (สุ่มเดือนละ balance.intent.midEventChance) */
   midEvents: Array<{ event: EventDefId; approaches?: string[]; needsElder?: boolean; minLabor?: number; maxAge?: number }>;
+}
+
+/** ตำแหน่งในกรม — บันไดจากทำเนียบศักดินา (lore: social.patrol_department_ladder, social.royal_pages_1680s) */
+export interface OfficePostDef {
+  id: string;
+  rank: number;
+  label: { th: string };
+  /** ชื่อตำแหน่งที่ได้ — {name} = ราชทินนาม; ไม่มี = ใช้ label (มหาดเล็กไม่มีบรรดาศักดิ์) */
+  title?: string;
+  sakdina: number;
+  /** อยู่ในตำแหน่งอย่างน้อยกี่ปีจึงเลื่อนได้ */
+  minYears: number;
+  /** มีคนเดียวในกรม — เลื่อนได้เมื่อตำแหน่งว่าง (สุ่ม) */
+  unique?: boolean;
+  loreRefs?: string[];
+}
+
+export interface OfficesDef {
+  department: { label: { th: string }; loreRefs?: string[] };
+  posts: OfficePostDef[];
+  /** ราชทินนามของหมื่น/ขุนในกรม — คู่เดียวกันทั้งสองระดับ */
+  names: string[];
 }
 
 /** บ้านของคนนอกตระกูล — อาชีพกำหนดฐานะและทักษะที่ได้เมื่อไปช่วยงาน */
@@ -754,6 +794,27 @@ export interface Balance {
     noviceAge: number;
     noviceChance: Unit;
   };
+  /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
+  career: {
+    /** ลูกขุนนางชายถวายตัวเป็นมหาดเล็กได้ช่วงอายุนี้ */
+    entryAge: [number, number];
+    /** มหาดเล็กแก่สุดไม่ถึง 25 — ถึงอายุนี้ได้ตำแหน่งในกรมหรือพ้นจากราชการ */
+    pageMaxAge: number;
+    /** ต่อปี: โอกาสที่พ่อแม่จะพาไปถวายตัว */
+    entryChance: Unit;
+    /** สัดส่วนแรงงานที่หายจากเรือนเพราะเข้าเวรในวัง */
+    dutyLabor: Unit;
+    /** ไม่มีเบี้ยหวัด — ของกำนัล/ส่วยตามตำแหน่งต่อปี ต่อศักดินา 1 (ตำลึง) */
+    incomePerSakdina: number;
+    /** ความโปรดปรานคลายกลับหา 0 ทุกปี (คูณ) */
+    favorDecay: Unit;
+    promoteAt: number;
+    punishAt: number;
+    /** ตำแหน่งเจ้ากรมว่างในปีหนึ่งๆ */
+    uniqueVacancyChance: Unit;
+    /** บารมีตระกูลที่ได้ต่อขั้นเมื่อเลื่อน */
+    promotePrestige: number;
+  };
   /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
   marriage: {
     /** สินสอดตามฐานะของฝ่ายหญิง (ตำลึง) */
@@ -835,6 +896,7 @@ export interface ContentDB {
   history: HistoricalEvent[];
   intents: Record<IntentKindId, IntentDef>;
   trades: TradeDef[];
+  offices: OfficesDef;
   balance: Balance;
 }
 

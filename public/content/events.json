@@ -345,5 +345,662 @@
       { "id": "return", "textKey": "event.milk_claim.return",
         "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "returnBride" } ] }
     ]
+  },
+  "career.present_page": {
+    "id": "career.present_page",
+    "textKey": "event.present_page",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "elder": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "go",
+        "textKey": "event.present_page.go",
+        "effects": [
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "enter"
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "textKey": "event.present_page.stay",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "elder",
+            "affection": -0.03
+          }
+        ],
+        "resist": [
+          {
+            "source": "bond",
+            "role": "elder",
+            "axis": "awe",
+            "weight": 1.0,
+            "reasonKey": "awe"
+          }
+        ]
+      }
+    ]
+  },
+  "career.promotion": {
+    "id": "career.promotion",
+    "textKey": "event.promotion",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "elder": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "accept",
+        "textKey": "event.promotion.accept",
+        "effects": [
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "promote"
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "textKey": "event.promotion.decline",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.1
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  "career.punished_page": {
+    "id": "career.punished_page",
+    "textKey": "event.punished_page",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "elder": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "take",
+        "textKey": "event.punished_page.take",
+        "effects": [
+          {
+            "op": "wound",
+            "role": "actor",
+            "part": {
+              "tag": "body:torso"
+            },
+            "kind": "cut",
+            "severity": [
+              0.15,
+              0.35
+            ],
+            "treatedByRole": "elder",
+            "treatmentQuality": 0.5
+          },
+          {
+            "op": "trauma",
+            "role": "actor",
+            "baseImpact": 0.35,
+            "comfortRole": "elder"
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.45
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "plead",
+        "textKey": "event.punished_page.plead",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "elder",
+            "delta": -10
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.35
+          },
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "elder",
+            "awe": 0.05
+          }
+        ],
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "elder"
+          }
+        ]
+      }
+    ]
+  },
+  "career.punished": {
+    "id": "career.punished",
+    "textKey": "event.punished",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "elder": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "demote",
+        "textKey": "event.punished.demote",
+        "effects": [
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "demote"
+          }
+        ]
+      },
+      {
+        "id": "cangue",
+        "textKey": "event.punished.cangue",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.15
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.45
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": -1
+          }
+        ],
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "pride",
+            "weight": 0.8,
+            "reasonKey": "proud"
+          }
+        ]
+      },
+      {
+        "id": "gift",
+        "textKey": "event.punished.gift",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "perSakdina": -0.05
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.4
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          }
+        ]
+      }
+    ]
+  },
+  "career.page_duty": {
+    "id": "career.page_duty",
+    "textKey": "event.page_duty",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 1.2,
+      "office": {
+        "maxRank": 0
+      },
+      "cooldownDays": 300
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "diligent",
+        "textKey": "event.page_duty.diligent",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.2
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ],
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.8,
+            "reasonKey": "shy"
+          }
+        ]
+      },
+      {
+        "id": "minimal",
+        "textKey": "event.page_duty.minimal",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      }
+    ]
+  },
+  "career.audience_late": {
+    "id": "career.audience_late",
+    "textKey": "event.audience_late",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0.5,
+      "office": {},
+      "cooldownDays": 540
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "fine",
+        "textKey": "event.audience_late.fine",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "perSakdina": -0.02
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.04
+          }
+        ]
+      },
+      {
+        "id": "excuse",
+        "textKey": "event.audience_late.excuse",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.12
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -0.5
+          }
+        ]
+      }
+    ]
+  },
+  "career.patrol_thief": {
+    "id": "career.patrol_thief",
+    "textKey": "event.patrol_thief",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 1.2,
+      "office": {
+        "minRank": 1
+      },
+      "cooldownDays": 300
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "lawful",
+        "textKey": "event.patrol_thief.lawful",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.22
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "bribe",
+        "textKey": "event.patrol_thief.bribe",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 8
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -2
+          },
+          {
+            "op": "followUp",
+            "event": "career.reported",
+            "chance": 0.35
+          }
+        ]
+      }
+    ]
+  },
+  "career.gift_offered": {
+    "id": "career.gift_offered",
+    "textKey": "event.gift_offered",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 1,
+      "office": {
+        "minRank": 1
+      },
+      "cooldownDays": 300
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "accept",
+        "textKey": "event.gift_offered.accept",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "perSakdina": 0.03
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -0.5
+          }
+        ]
+      },
+      {
+        "id": "refuse",
+        "textKey": "event.gift_offered.refuse",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.1
+          }
+        ]
+      }
+    ]
+  },
+  "career.rival_accuses": {
+    "id": "career.rival_accuses",
+    "textKey": "event.rival_accuses",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0.8,
+      "office": {
+        "minRank": 1
+      },
+      "cooldownDays": 540
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "explain",
+        "textKey": "event.rival_accuses.explain",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.1
+          }
+        ]
+      },
+      {
+        "id": "gift",
+        "textKey": "event.rival_accuses.gift",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "perSakdina": -0.04
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.05
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -0.5
+          }
+        ]
+      },
+      {
+        "id": "counter",
+        "textKey": "event.rival_accuses.counter",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.1
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1.5
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.05
+          }
+        ],
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.8,
+            "reasonKey": "shy"
+          }
+        ]
+      }
+    ]
+  },
+  "career.reported": {
+    "id": "career.reported",
+    "textKey": "event.reported",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "admit",
+        "textKey": "event.reported.admit",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.35
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          }
+        ]
+      },
+      {
+        "id": "deny",
+        "textKey": "event.reported.deny",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.2
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          }
+        ]
+      }
+    ]
+  },
+  "career.page_mistake": {
+    "id": "career.page_mistake",
+    "textKey": "event.page_mistake",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0.5,
+      "office": {
+        "maxRank": 0
+      },
+      "cooldownDays": 540
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "confess",
+        "textKey": "event.page_mistake.confess",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.2
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          }
+        ]
+      },
+      {
+        "id": "hide",
+        "textKey": "event.page_mistake.hide",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "followUp",
+            "event": "career.page_found_out",
+            "chance": 0.4
+          }
+        ]
+      }
+    ]
+  },
+  "career.page_found_out": {
+    "id": "career.page_found_out",
+    "textKey": "event.page_found_out",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "ok",
+        "textKey": "event.page_found_out.ok",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.4
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.08
+          }
+        ]
+      }
+    ]
   }
 }

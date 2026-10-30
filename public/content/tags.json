@@ -63,6 +63,7 @@
   { "id": "body:head", "parents": ["body:any"], "label": { "th": "ศีรษะ" } },
   { "id": "body:face", "parents": ["body:head"], "label": { "th": "ใบหน้า" } },
   { "id": "body:eye", "parents": ["body:face"], "label": { "th": "ตา" } },
+  { "id": "body:torso", "parents": ["body:any"], "label": { "th": "ลำตัว" } },
   { "id": "body:limb", "parents": ["body:any"], "label": { "th": "แขนขา" } },
   { "id": "body:arm", "parents": ["body:limb"], "label": { "th": "แขน" } },
   { "id": "body:hand", "parents": ["body:arm"], "label": { "th": "มือ" } },
