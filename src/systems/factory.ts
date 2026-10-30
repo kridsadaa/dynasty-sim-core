@@ -253,7 +253,10 @@ export function marriesThisYear(ctx: Ctx, sex: 'm' | 'f', age: number): boolean 
   const W = ctx.content.balance.world;
   const [min, max] = W.marriageAge[sex];
   if (age < min || age > max) return false;
-  return ctx.rng.chance(age === max ? 1 - W.neverMarryChance : 1 / (max - age + 1));
+  // ออกเรือนปีละ (1 − q)/n ของทั้งรุ่นเท่ากันทุกปี → โอกาสของคนที่ยังเหลือ = (1 − q)/(n − ปีที่ผ่านไป × (1 − q))
+  const n = max - min + 1;
+  const wed = 1 - W.neverMarryChance;
+  return ctx.rng.chance(wed / (n - (age - min) * wed));
 }
 
 /** ส่วนของคนอายุนี้ที่ออกเรือนไปแล้ว — ใช้กับคนนอกที่เพิ่งสร้าง */
@@ -262,6 +265,16 @@ export function marriedShare(ctx: Ctx, sex: 'm' | 'f', age: number): number {
   const [min, max] = W.marriageAge[sex];
   if (age < min) return 0;
   return (1 - W.neverMarryChance) * Math.min(1, (age - min) / (max - min + 1));
+}
+
+/**
+ * ป้ายสถานะของคนที่ยังไม่มีคู่: พ้นช่วงออกเรือนแล้ว ผู้หญิงเรียก "สาวแก่" (lore: kinship.unmarried_older_women)
+ * ผู้ชายยังไม่พบคำเฉพาะ · ยังไม่ถึงวัยคืน null
+ */
+export function singleLabel(ctx: Ctx, sex: 'm' | 'f', age: number): string | null {
+  if (age < 15) return null;
+  if (age <= ctx.content.balance.world.marriageAge[sex][1]) return 'ยังไม่ออกเรือน';
+  return sex === 'f' ? 'สาวแก่' : 'ไม่ออกเรือน';
 }
 
 /** อายุคู่ครองเพศ sex ของคนอายุ partnerAge: อยู่ในช่วงอายุออกเรือน ภรรยาอ่อนกว่า สามีแก่กว่า */

@@ -1,9 +1,9 @@
 import { formatLunarDay, formatSolar } from '../core/calendar';
-import { isAlive, lunarOf, solarOf, yearOf, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, lunarOf, solarOf, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, CharacterId, Estate, MarriageStep } from '../core/types';
 import { familiarity, setRelation } from './acquaintance';
-import { livingParents, livingSpouse, wed } from './factory';
+import { livingParents, livingSpouse, singleLabel, wed } from './factory';
 import { adjustBond } from './will';
 
 // ============================================================================
@@ -266,6 +266,10 @@ export function marriageStatus(ctx: Ctx, ch: Character): string[] {
     const months = Math.max(0, Math.ceil((ch.service.untilDay - S.meta.day) / MONTH));
     out.push(`ช่วยงานบ้านพ่อแม่ของ${S.characters[ch.service.hostId]?.name ?? 'คู่ครอง'}ชดใช้ อีก ${months} เดือน`);
   }
+  // พ้นวัยออกเรือนแล้วยังไม่เคยมีคู่
+  const age = ageOf(ctx, ch);
+  const never = (S.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0 && !ch.betrothal && !ch.eloped;
+  if (never && age > ctx.content.balance.world.marriageAge[ch.sex][1]) out.push(`${singleLabel(ctx, ch.sex, age)} — พ้นวัยออกเรือนแล้วยังไม่มีคู่`);
   return out;
 }
 

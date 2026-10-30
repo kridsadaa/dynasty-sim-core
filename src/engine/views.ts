@@ -4,7 +4,7 @@ import type { CapabilityId, Character } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, knownLocals, localOrigin, relationStrength, tradeOf } from '../systems/acquaintance';
 import { capability } from '../systems/body';
 import type { PreparedEvent } from '../systems/events';
-import { livingChildren, livingParents, livingSpouse } from '../systems/factory';
+import { livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus } from '../systems/career';
 import { choreSkills } from '../systems/chores';
@@ -143,7 +143,7 @@ export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
     .sort((a, b) => familiarity(ctx, me.id, b.id) - familiarity(ctx, me.id, a.id))
     .map((c) => {
       const age = ageOf(ctx, c);
-      const status = c.local!.wed ? 'ออกเรือนแล้ว' : age >= 15 && isSingle(ctx, c) ? 'ยังไม่ออกเรือน' : null;
+      const status = c.local!.wed ? 'ออกเรือนแล้ว' : isSingle(ctx, c) ? singleLabel(ctx, c.sex, age) : null;
       return {
         id: c.id, name: c.name, age,
         tie: me.betrothal?.toId === c.id ? 'คู่หมั้น' : me.eloped?.withId === c.id ? 'อยู่ด้วยกัน (ยังไม่ได้แต่ง)'
