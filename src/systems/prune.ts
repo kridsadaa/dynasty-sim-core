@@ -102,6 +102,8 @@ function collapseCharacter(ctx: Ctx, ch: Character, report: PruneReport): void {
   for (const id of ch.woundIds) delete S.wounds[id];
   for (const id of ch.bodyPartIds) delete S.bodyParts[id];
   for (const r of Object.values(S.relations)) if (r.from === ch.id || r.to === ch.id) delete S.relations[r.id];
+  // ความตั้งใจที่คนนี้ทำหรือเป็นเป้า — ไม่รอให้ tickIntents เดือนหน้าเก็บกวาด (ตายวันเดียวกับรอบ prune)
+  for (const i of Object.values(S.intents)) if (i.actorId === ch.id || i.targetId === ch.id) delete S.intents[i.id];
   for (const hh of Object.values(S.households)) hh.memberIds = hh.memberIds.filter((id) => id !== ch.id);
   for (const c of Object.values(S.characters)) c.caregiverIds = c.caregiverIds.filter((id) => id !== ch.id);
   delete S.characters[ch.id];
