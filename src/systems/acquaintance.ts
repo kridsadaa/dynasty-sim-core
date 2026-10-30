@@ -68,6 +68,21 @@ export function spawnLocal(ctx: Ctx, knower: Character, o: LocalOpts): Character
   return ch;
 }
 
+/**
+ * คนนอกต่างเพศที่ยังไม่มีคู่และอายุใกล้กัน (ไม่เกิน 6 ปี อย่างน้อย 13) — สุ่มจากคนที่ ch รู้จัก
+ * ไม่มีและ spawn → คนใหม่ระแวกบ้าน; ได้ใครมาก็อย่างน้อยเคยเห็นหน้ากัน
+ */
+export function singlePeer(ctx: Ctx, ch: Character, spawn: boolean): Character | undefined {
+  const age = ageOf(ctx, ch);
+  const sex = ch.sex === 'm' ? 'f' : 'm';
+  const close = (c: Character) => Math.abs(ageOf(ctx, c) - age) <= 6;
+  const candidates = knownLocals(ctx, ch).filter((c) => c.sex === sex && isSingle(ctx, c) && close(c) && ageOf(ctx, c) >= 13);
+  let other = ctx.rng.pick(candidates);
+  if (!other && spawn) other = spawnLocal(ctx, ch, { sex, age: Math.max(13, age + Math.floor(ctx.rng.range(-2, 3))), distance: 'near' });
+  if (other && familiarity(ctx, ch.id, other.id) <= 0) setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
+  return other;
+}
+
 /** ลบคนนอกที่ไม่มีใครในฉากเกี่ยวข้องแล้ว — ไม่มีลูก/คู่ในผัง จึงลบ node ได้เลย */
 export function forgetLocal(ctx: Ctx, ch: Character): void {
   const S = ctx.state;

@@ -55,6 +55,17 @@
     "outingAge": [13, 20],
     "outingsPerYear": 0.5
   },
+  "festivals": {
+    "minAge": 5,
+    "holyDaysPerYear": 2,
+    "templeFairsPerYear": 1,
+    "fairMonths": [1, 6],
+    "lanternMonth": 12,
+    "lanternChance": 0.6,
+    "bathingMonth": 5,
+    "bathingChance": 0.5,
+    "peerAge": [13, 25]
+  },
   "career": {
     "entryAge": [13, 20],
     "pageMaxAge": 25,

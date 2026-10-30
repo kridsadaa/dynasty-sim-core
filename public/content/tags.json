@@ -110,5 +110,8 @@
   { "id": "task:string_flowers", "parents": ["task:any"], "label": { "th": "ร้อยดอกไม้เป็นพวง" } },
   { "id": "task:fold_lotus", "parents": ["task:any"], "label": { "th": "พับกลีบบัว" } },
   { "id": "task:give_alms", "parents": ["task:any"], "label": { "th": "ใส่บาตรตอนเช้า" } },
-  { "id": "task:temple_offering", "parents": ["task:any"], "label": { "th": "จัดของไปถวายวัดวันพระ" } }
+  { "id": "task:temple_offering", "parents": ["task:any"], "label": { "th": "จัดของไปถวายวัดวันพระ" } },
+  { "id": "moon:any", "parents": [], "label": { "th": "ข้างขึ้นข้างแรม" }, "generalizeStop": true, "loreRefs": ["ritual.holy_days_1680s"] },
+  { "id": "moon:full", "parents": ["moon:any"], "label": { "th": "ขึ้นสิบห้าค่ำ" }, "loreRefs": ["ritual.holy_days_1680s"] },
+  { "id": "moon:dark", "parents": ["moon:any"], "label": { "th": "แรมสิบห้าค่ำ" }, "loreRefs": ["ritual.holy_days_1680s"] }
 ]

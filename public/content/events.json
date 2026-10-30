@@ -1563,5 +1563,345 @@
         ]
       }
     ]
+  },
+  "festival.holy_day": {
+    "id": "festival.holy_day",
+    "textKey": "event.holy_day",
+    "contextTags": [],
+    "variables": {
+      "moon": {
+        "oneOf": [
+          "moon:full",
+          "moon:dark"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "temple",
+        "textKey": "event.holy_day.temple",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "devotion",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "fast",
+        "textKey": "event.holy_day.fast",
+        "conditions": [
+          {
+            "type": "age",
+            "min": 8
+          }
+        ],
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1.5
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      },
+      {
+        "id": "fish",
+        "textKey": "event.holy_day.fish",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "piety",
+            "weight": 0.6,
+            "reasonKey": "pious"
+          }
+        ],
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      }
+    ]
+  },
+  "festival.temple_fair": {
+    "id": "festival.temple_fair",
+    "textKey": "event.temple_fair",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "stranger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "offer",
+        "textKey": "event.temple_fair.offer",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1.5
+          }
+        ]
+      },
+      {
+        "id": "lakhon",
+        "textKey": "event.temple_fair.lakhon",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.04
+          }
+        ]
+      },
+      {
+        "id": "box",
+        "textKey": "event.temple_fair.box",
+        "conditions": [
+          {
+            "type": "sex",
+            "is": "m"
+          },
+          {
+            "type": "age",
+            "min": 15,
+            "max": 40
+          }
+        ],
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.7,
+            "reasonKey": "timid"
+          }
+        ],
+        "effects": [
+          {
+            "op": "wound",
+            "role": "actor",
+            "part": {
+              "tag": "body:face"
+            },
+            "kind": "blunt",
+            "severity": [
+              0.05,
+              0.35
+            ]
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 0.5
+          }
+        ]
+      },
+      {
+        "id": "glance",
+        "textKey": "event.temple_fair.glance",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "stranger"
+          }
+        ],
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.5,
+            "reasonKey": "bashful"
+          }
+        ],
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "acquaintance",
+            "atLeast": 0.2
+          },
+          {
+            "op": "relation",
+            "role": "stranger",
+            "toward": "actor",
+            "kind": "acquaintance",
+            "atLeast": 0.15
+          }
+        ]
+      }
+    ]
+  },
+  "festival.lanterns": {
+    "id": "festival.lanterns",
+    "textKey": "event.lanterns",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "stranger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "small",
+        "textKey": "event.lanterns.small",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      },
+      {
+        "id": "big",
+        "textKey": "event.lanterns.big",
+        "conditions": [
+          {
+            "type": "age",
+            "min": 8
+          }
+        ],
+        "effects": [
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "handicraft",
+            "delta": 2
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "together",
+        "textKey": "event.lanterns.together",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "stranger"
+          }
+        ],
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.6,
+            "reasonKey": "bashful"
+          }
+        ],
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "acquaintance",
+            "atLeast": 0.4
+          },
+          {
+            "op": "relation",
+            "role": "stranger",
+            "toward": "actor",
+            "kind": "acquaintance",
+            "atLeast": 0.4
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "stranger",
+            "kind": "friend",
+            "atLeast": 0.2
+          }
+        ]
+      }
+    ]
+  },
+  "festival.bathing": {
+    "id": "festival.bathing",
+    "textKey": "event.bathing",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "parent": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "bathe",
+        "textKey": "event.bathing.bathe",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "parent",
+            "affection": 0.05
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          }
+        ]
+      },
+      {
+        "id": "hasty",
+        "textKey": "event.bathing.hasty",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "parent",
+            "affection": -0.02
+          }
+        ]
+      }
+    ]
   }
 }

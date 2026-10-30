@@ -496,6 +496,7 @@ export type Condition =
   | { type: 'estate'; in: Estate[] }
   /** มีคนผูกกับ role นี้ใน event (เช่น ยังมีคู่ครอง/พ่อแม่ที่มีชีวิต) */
   | { type: 'hasRole'; role: string }
+  | { type: 'sex'; is: 'm' | 'f' }
   /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
   | { type: 'canPay'; what: 'sinsot' | 'elope' }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
@@ -854,6 +855,24 @@ export interface Balance {
     /** วัยรุ่นที่ยังไม่มีคู่ ไปเที่ยวพายเรือเก็บดอกบัวเอง — ช่วงอายุ และครั้งต่อปี */
     outingAge: [number, number];
     outingsPerYear: number;
+  };
+  /**
+   * งานบุญ/งานประจำปีของผู้เล่น — เดือนในเกม = เดือนจันทรคติ วันที่ 15 เพ็ญ วันที่ 30 ดับ
+   * (lore: ritual.holy_days_1680s, ritual.temple_festival_1680s, ritual.floating_lanterns_1680s, ritual.fifth_month_bathing_1680s)
+   */
+  festivals: {
+    minAge: number;
+    /** ต่อปี: วันพระที่ขึ้นเป็น event (จากวันพระราว 24 วัน) */
+    holyDaysPerYear: number;
+    templeFairsPerYear: number;
+    /** งานวัดเฉพาะหน้าแล้ง: เดือนแรก..เดือนสุดท้าย */
+    fairMonths: [number, number];
+    lanternMonth: number;
+    lanternChance: number;
+    bathingMonth: number;
+    bathingChance: number;
+    /** ช่วงอายุที่อาจมีคนต่างเพศที่ยังไม่มีคู่ในงาน (แอบมอง ชวนไปลอยโคม) */
+    peerAge: [number, number];
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   career: {

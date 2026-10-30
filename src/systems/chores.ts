@@ -1,6 +1,6 @@
-import { ageOf, isAlive, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, must, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, ChoreDomainDef, ChoreTaskDef, TagId } from '../core/types';
-import { familiarity, isSingle, knownLocals, setRelation, spawnLocal } from './acquaintance';
+import { singlePeer } from './acquaintance';
 import { livingSpouse } from './factory';
 import { bond } from './will';
 
@@ -158,16 +158,7 @@ export function tickOutings(ctx: Ctx, away: number): ChoreEventRequest[] {
   if (!isAlive(ch) || away >= 1 || livingSpouse(ctx, ch) || ch.betrothal || ch.eloped) return [];
   const age = ageOf(ctx, ch);
   if (age < C.outingAge[0] || age > C.outingAge[1] || !ctx.rng.chance(C.outingsPerYear / 12)) return [];
-  const sex = ch.sex === 'm' ? 'f' : 'm';
-  const close = (c: Character) => Math.abs(ageOf(ctx, c) - age) <= 6;
-  const candidates = knownLocals(ctx, ch).filter((c) => c.sex === sex && isSingle(ctx, c) && close(c) && ageOf(ctx, c) >= 13);
-  let other = ctx.rng.pick(candidates);
-  if (!other) {
-    other = spawnLocal(ctx, ch, { sex, age: Math.max(13, age + Math.floor(ctx.rng.range(-2, 3))), distance: 'near' });
-    setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
-  } else if (familiarity(ctx, ch.id, other.id) <= 0) {
-    setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
-  }
+  const other = must(singlePeer(ctx, ch, true), 'peer');
   return [{ event: ch.sex === 'f' ? 'outing.lotus_f' : 'outing.lotus_m', bindings: { actor: ch.id, stranger: other.id }, vars: {} }];
 }
 

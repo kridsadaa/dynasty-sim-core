@@ -10,6 +10,7 @@ import {
 import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
 import { tickChores, tickOutings } from './chores';
+import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
@@ -116,6 +117,9 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       for (const line of r.log) out.push({ type: 'log', line });
     }
   }
+
+  // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่
+  for (const req of player ? tickFestivals(ctx, awayLabor(ctx, player)) : []) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
 
   // เหตุการณ์ของผู้เล่น
   if (isAlive(player) && ctx.rng.chance(B.world.eventsPerYear / B.daysPerYear)) {
