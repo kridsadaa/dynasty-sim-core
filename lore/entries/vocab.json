@@ -179,5 +179,120 @@
       { "sourceId": "src.phongsawadan_royal_autograph", "locator": "TODO — ตอนเสียกรุงครั้งที่ 2 (วันที่ยังอ้างจากความจำ ต้องเปิดตรวจ)" }
     ],
     "verified": false
+  },
+  {
+    "id": "vocab.portuguese_lingua_franca",
+    "domain": "vocab",
+    "title": "ภาษาโปรตุเกสเป็นภาษากลางระหว่างราชสำนักสยามกับชาวตะวันตกทุกชาติ",
+    "period": [
+      2199,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "หลักฐานที่มีเป็นสมัยพระนารายณ์ — ใช้ต่อในช่วงเกมเพราะชุมชนคาทอลิกเชื้อสายโปรตุเกสยังอยู่ที่อยุธยาจนเสียกรุง และหลังเสียกรุงลูกหลานไปอยู่กุฎีจีนและเป็นล่ามไทย–โปรตุเกสให้ราชการจนสมัยกรุงเทพฯ (src.ayutthaya_history_vandenberg อ้าง Cerutti, The Jesuits in Thailand — ยังไม่ได้ตรวจ); ยังไม่มีหลักฐานตรงสำหรับอยุธยาตอนปลาย",
+    "claim": {
+      "court": "ราชสำนักติดต่อชาวตะวันตกทุกชาติด้วยภาษาโปรตุเกส ทั้งการทูตและการค้า ทั้งภาษาพูดและภาษาเขียนในสนธิสัญญา จนสิ้นรัชสมัยพระนารายณ์",
+      "nobles": "คณะทูตฝรั่งเศสบันทึกว่าขุนนางอยุธยาหลายคนพูดโปรตุเกสได้ ข้าราชสำนักชั้นล่างก็ใช้สื่อสารได้ดี",
+      "relay": "ฟอลคอนเป็นล่ามโดยแปลฝรั่งเศสเป็นโปรตุเกสก่อน แล้วกราบบังคมทูลเป็นไทย; บาทหลวงตาชาร์ดเขียนจดหมายถึงฟอลคอนเป็นภาษาโปรตุเกส",
+      "earliest": "การเจรจาช่วงแรกผ่านล่ามชาวจีนและมลายู ต่อมาจึงมีชาวโปรตุเกสและลูกครึ่งโปรตุเกสที่พูดไทยได้",
+      "interpreters": "ลา ลูแบร์ใช้ 'ล่ามที่เป็นคริสเตียน'",
+      "spread": "บาทหลวงสอนภาษาโปรตุเกสและละตินแก่คนที่เข้าโบสถ์ทั้งไทยและต่างชาติ แต่ไม่พบพจนานุกรมไทย–โปรตุเกสในยุคนั้น"
+    },
+    "summary": "ชาวยุโรปและล่ามคาทอลิกในเกมพูด/เขียนภาษาโปรตุเกส ลงวันที่แบบโปรตุเกสตามปฏิทินสากล (core/calendar.ts formatPortuguese)",
+    "status": "inferred",
+    "citations": [
+      {
+        "sourceId": "src.jiraporn_portuguese_french_narai",
+        "locator": "TODO หน้า — ตอนการใช้ภาษาโปรตุเกสในราชสำนัก (อ้างประชุมพงศาวดาร ภาค 35–36 เล่ม 24 หน้า 17–18 และจดหมายเหตุเซเบเรต หน้า 29)"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XI",
+        "quote": "the Christian Interpreters, which I made use of"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "vocab.portuguese_terms_1680s",
+    "domain": "vocab",
+    "title": "คำที่ชาวโปรตุเกส (และชาวยุโรปที่ใช้ภาษาโปรตุเกส) ใช้เรียกของในสยาม",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "ใช้ในบทพูดของชาวยุโรปหรือล่ามในเกม ไม่ใช้ในคำพูดของคนสยาม",
+    "claim": {
+      "terms": {
+        "pagne": "ผ้านุ่ง (ลา ลูแบร์ว่ามาจากละติน pannus)",
+        "cange": "ข้าวต้มเหลวที่ให้คนป่วยกิน — 'ชาวโปรตุเกสแห่งอินเดีย' เรียก",
+        "choup": "ภาชนะตวงของเหลว ที่คนสยามเรียกทะนาน (canan)",
+        "chirole": "ประทุนที่คลุมที่นั่งขุนนางชั้นสูง คนสยามเรียก coup",
+        "pagode": "ใช้เรียกทั้งวัด (วิหาร) และพระพุทธรูป",
+        "zombaye": "faire la zombaye = หมอบกราบถวายฎีกาต่อพระเจ้าแผ่นดิน ลา ลูแบร์ไม่รู้ว่าชาวโปรตุเกสยืมคำนี้มาจากไหน"
+      }
+    },
+    "summary": "คลังคำสำหรับเขียนบทพูดของชาวต่างชาติ — คำที่ลา ลูแบร์ระบุตรงๆ ว่าเป็นคำของชาวโปรตุเกส",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. I",
+        "quote": "which the Portuguese do call Pagne"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. X",
+        "quote": "the Portuguese of the Indies do call it cange"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XIV",
+        "quote": "Canan in Siamese, Choup in Portuguese"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. V",
+        "quote": "what the Portugueses call Chirole, and the Siameses Coup"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XVII",
+        "quote": "the Portugueses do use the word Pagode, to signify equally the Idol and the Temple"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VIII",
+        "quote": "I know not from whence the Portugueses have borrow'd this way of speaking"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "vocab.foreign_languages_by_group",
+    "domain": "vocab",
+    "title": "ภาษาของชาวต่างชาติแต่ละกลุ่มในเกม: ยุโรป = โปรตุเกส, มุสลิม/มลายู = มลายู, จีน = จีน",
+    "period": [
+      2275,
+      2400
+    ],
+    "appliesAs": "mechanic",
+    "projection": "ราชสำนักแบ่งการค้าเป็นกรมท่าซ้าย (จีน ญี่ปุ่น ญวน ใต้พระยาโชฎึกราชเศรษฐี) กับกรมท่าขวา (ตะวันตกและมุสลิม เช่น อินเดีย อาหรับ ชวา มลายู ใต้ออกพระจุฬาราชมนตรี) และช่วงแรกใช้ล่ามจีนกับมลายู — เกมจึงให้ชาวต่างชาติแต่ละกลุ่มใช้ภาษาที่ติดต่อกับกรมนั้น; ภาษามลายูเป็นภาษาค้าขายของพ่อค้ามุสลิมเป็นการอนุมาน ยังไม่มีแหล่งในคลัง",
+    "claim": {
+      "european": "ภาษาโปรตุเกส (vocab.portuguese_lingua_franca)",
+      "muslimMaritime": "ภาษามลายู — ติดต่อผ่านกรมท่าขวา",
+      "chinese": "ภาษาจีนถิ่นของตน — ติดต่อผ่านกรมท่าซ้าย",
+      "persian": "ภาษาเปอร์เซียมีบทบาทในราชสำนักสมัยพระนารายณ์ ยังไม่ใช้ในเกมจนกว่าจะมีหลักฐานช่วงอยุธยาตอนปลาย"
+    },
+    "summary": "กติกาสำหรับเขียนบทชาวต่างชาติ — ไม่ใช่ทุกคนพูดโปรตุเกส",
+    "status": "inferred",
+    "citations": [
+      {
+        "sourceId": "src.jiraporn_portuguese_french_narai",
+        "locator": "TODO หน้า — ตอนการค้าสมัยพระนารายณ์ (อ้าง กำพล จำปาพันธ์ 2559 หน้า 86–97)"
+      }
+    ],
+    "verified": false
   }
 ]
