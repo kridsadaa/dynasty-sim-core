@@ -91,6 +91,12 @@ const SOLAR_MONTHS_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', '
 /** "10 เม.ย. 2223" */
 export const formatSolar = (d: SolarDate): string => `${d.day} ${SOLAR_MONTHS_TH[d.month - 1]} ${d.year}`;
 
+const SOLAR_MONTHS_PT = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+/** "10 de Abril de 1680" — วันที่ที่ชาวยุโรปและล่ามในเรื่องใช้ (lore: vocab.portuguese_lingua_franca) */
+export const formatPortuguese = (d: SolarDate): string =>
+  `${d.day} de ${SOLAR_MONTHS_PT[d.month - 1]} de ${d.year - BE_OFFSET}`;
+
 // --- จันทรคติ (สุริยยาตร์) ----------------------------------------------------
 
 const DAYS_IN_800_YEARS = 292207;

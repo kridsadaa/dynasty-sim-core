@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
-import { formatLunar, gregorianToJd, lunarFromJd, yearsToDays } from './core/calendar';
+import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
 import { dayOfYear, isAlive, makeCtx, yearOf, type Ctx } from './core/ctx';
 import type { ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
@@ -174,6 +174,8 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     const got = formatLunar(lunarFromJd(gregorianToJd(y, m, d)));
     return got === want ? [] : [`${y}-${m}-${d}: ${got} ≠ ${want}`];
   }));
+  const pt = formatPortuguese(solarDate(2280, gregorianToJd(1680, 4, 10) - epochJd(2280)));
+  check('วันที่แบบโปรตุเกส', pt === '10 de Abril de 1680' ? [] : [pt]);
   if (failed === before) console.log('  ✓ ตรงทุกวัน');
 }
 
