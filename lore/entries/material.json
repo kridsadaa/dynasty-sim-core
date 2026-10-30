@@ -106,5 +106,76 @@
     "status": "attested",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[30]" }],
     "verified": false
+  },
+  {
+    "id": "material.kitchen_tasks",
+    "domain": "material",
+    "title": "งานในครัว: มะพร้าว เครื่องเทศ กระเทียม หอม — กะทิและน้ำพริกแกงในครัวชาววังต้นรัตนโกสินทร์",
+    "period": [
+      2230,
+      2367
+    ],
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์ (2230) ยืนยันการสกัดน้ำมันจากมะพร้าวและน้ำจิ้มจากเครื่องเทศ กระเทียม หอม สมุนไพร; แกงกะทิกับน้ำพริกแกงปรากฏในกาพย์เห่ชมเครื่องคาวหวาน (รัชกาลที่ 2, 2352–2367) — อนุมานว่าการขูดมะพร้าว คั้นกะทิ และตำเครื่องแกงเป็นงานครัวของเรือนขุนนางปลายอยุธยาด้วย",
+    "claim": {
+      "coconut": "น้ำมันที่ใช้ทำอาหารสกัดจากมะพร้าว (ต้องขูด/คั้นมะพร้าว)",
+      "sauces": "น้ำจิ้มทำจากน้ำกับเครื่องเทศ กระเทียม หอม หรือสมุนไพร; กะปิเป็นเครื่องปรุงที่นิยม",
+      "slicing": "อาหารหั่นเป็นชิ้นมาก่อนเสิร์ฟ (ไม่ใช้ช้อนส้อม)",
+      "coconutCurry": "แกงเทโพในกาพย์เห่ชมเครื่องคาวหวานเป็นแกงกะทิใส่น้ำพริกแกงแดง (ตามการตีความสูตรของงานวิจัยการครัว)",
+      "gameTasks": [
+        "เด็ดผัก ล้างผัก",
+        "ขูดมะพร้าว",
+        "คั้นกะทิ",
+        "หั่นผักผลไม้",
+        "ตำเครื่องแกง",
+        "ทำแกงทั้งสำรับ"
+      ]
+    },
+    "summary": "ป้อนบันไดงานครัวในเกม — ขั้น 'ขูดมะพร้าว คั้นกะทิ ตำเครื่องแกง' เป็นการอนุมาน ยังไม่มีเอกสารสมัยอยุธยาบรรยายตรง; ระวังพริก (มาจากโลกใหม่) อย่าใส่ในข้อความจนกว่าจะมีหลักฐานช่วงเวลา",
+    "status": "inferred",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. IV",
+        "quote": "Their Sauces are plain, a little Water with some Spices, Garlic, Chibols"
+      },
+      {
+        "sourceId": "src.siripong_2567_royal_cuisine",
+        "locator": "รายการอาหาร ข้อ 6 แกงเทโพ",
+        "quote": "แกงเทโพ เป็นแกงใส่กะทิ โดยใช้น้ำพริกแกงแดง"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "material.crafts_1680s",
+    "domain": "material",
+    "title": "งานฝีมือ: ปักผ้าเป็น ทอผ้าฝ้ายน้อยและหยาบ ทุกคนทำได้นิดหน่อยทุกอย่าง",
+    "period": [
+      2230,
+      2231
+    ],
+    "appliesAs": "pattern",
+    "projection": "บันทึกช่วง 2230 ใช้เป็นแบบแผน — ไม่บอกว่าใครทำ (เพศ) ส่วนการสานเสื่อของหญิงมาจากงานบางชัน (kinship.child_chores_by_strength)",
+    "claim": {
+      "embroidery": "ชาวสยามปักผ้าเป็น ลวดลายสวย",
+      "weaving": "ทอผ้าฝ้ายได้น้อยและหยาบ เฉพาะในเมืองหลวง",
+      "generalist": "แต่ละคนหัดทำทุกอย่างได้นิดหน่อย"
+    },
+    "summary": "งานฝีมือในเกมจึงเป็นสานเสื่อ เย็บผ้า ปักผ้า มากกว่าทอผ้า",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XIII",
+        "quote": "They understand Embroidery, and their Designs please."
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XIII",
+        "quote": "every one applies himself to know how to do a little of all"
+      }
+    ],
+    "verified": false
   }
 ]

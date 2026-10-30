@@ -438,5 +438,44 @@
     "verified": false,
     "appliesAs": "pattern",
     "projection": "ขั้นตอนนับสินสองฝ่ายและเรือนหอที่บ้านพ่อตาสอดคล้องกับการอยู่บ้านฝ่ายหญิงที่ยังพบในยุคหลัง — ตัวเลข 100 cati เป็นเพดานของปี 2230 ใช้เป็นสเกลคร่าวๆ เท่านั้น"
+  },
+  {
+    "id": "kinship.child_chores_by_strength",
+    "domain": "kinship",
+    "title": "งานของเด็กเพิ่มตามแรง ลูกสาวทำครัว ลูกชายทำนา — แต่สลับกันได้",
+    "period": [
+      2393,
+      2503
+    ],
+    "appliesAs": "pattern",
+    "projection": "งานภาคสนามบางชัน (ชานกรุงเทพฯ ราว 2393–2503) — แบบแผนครัวเรือนชาวนาภาคกลางที่น่าจะเปลี่ยนช้า ใช้กำหนดว่าเด็กได้งานอะไรตามวัยและเพศ ไม่ใช่รายละเอียดฉาก; สอดคล้องกับลา ลูแบร์ที่เห็นผู้หญิงเป็นแรงงานหลักของบ้าน (kinship.women_labor_1680s)",
+    "claim": {
+      "byStrength": "เด็กรับงานใหม่ทีละขั้นตามแรงที่โตขึ้น",
+      "examples": "ขนฟืน เลี้ยงควาย ขนฟ่อนข้าวจากนาไปลานนวด",
+      "bySex": "อยากได้ลูกสาวไว้ทำครัว ลูกชายไว้ทำนาและบวช",
+      "flexible": "โตแล้วลูกสาวไถนาได้ ลูกชายถอนกล้าได้",
+      "girlCooking": "เด็กหญิงทำกับข้าวก่อนและหลังไปโรงเรียน",
+      "crafts": "หญิงชราสานเสื่อใต้ถุนเรือนขณะหลานเล่นอยู่"
+    },
+    "summary": "ฐานของระบบงานบ้าน: งานไล่ตามวัยและแรง ความคาดหวังต่างกันตามเพศแต่ไม่ตายตัว — ผู้หญิงปฏิเสธงานครัวยากกว่า",
+    "status": "inferred",
+    "citations": [
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "หน้า 47",
+        "quote": "farm children begin a new chore commensurate with their mounting strength"
+      },
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "หน้า 47",
+        "quote": "I want a girl for cooking, a boy for farmwork"
+      },
+      {
+        "sourceId": "src.sharp_hanks_1978_bangchan",
+        "locator": "หน้า 21",
+        "quote": "an old woman plaits a mat"
+      }
+    ],
+    "verified": false
   }
 ]
