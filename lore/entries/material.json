@@ -26,6 +26,7 @@
     "claim": { "item": "แตงกวา", "use": "กินดิบ", "note": "ชาวสยามเรียกว่าแตงโมชนิดหนึ่ง" },
     "summary": "แตงกวาเป็นผักในสวนสยามสมัยพระนารายณ์",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; พืชผักสวนครัวและวิธีกินเปลี่ยนช้า",
     "citations": [
       { "sourceId": "src.la_loubere", "locator": "เล่ม 1 ภาค 1 บทที่ 9 'Des Jardins des Siamois'", "quote": "de petits concombres" },
       { "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. IX 'Of the Gardens of the Siameses'" }
@@ -59,9 +60,10 @@
     },
     "summary": "ใช้กับฉาก 'โรงครัว' ของ event มีดบาด (ครัวอยู่ที่ลานบ้าน) และการแบ่งเรือนในรั้วเดียวกันของครัวเรือนขุนนาง",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; เรือนไม้ไผ่ยกสูงเพราะน้ำท่วมเป็นการปรับตัวต่อภูมิประเทศเดิม และเทียบได้กับจิตรกรรมวัดเกาะแก้วสุทธาราม พ.ศ. 2277 (attire.wat_ko_kaeo_reference) ซึ่งอยู่ในช่วงเกม — ใช้ในฉากได้",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[30]" }],
     "verified": false,
-    "gameRefs": { "tags": ["place:kitchen"] }
+    "gameRefs": { "tags": ["place:kitchen", "house:riverside"] }
   },
   {
     "id": "material.household_objects_1680s",
@@ -76,6 +78,7 @@
     },
     "summary": "ป้อน tag ontology เครื่องใช้ในครัวเรือน",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; เครื่องใช้ในครัวเรือนพื้นฐานเปลี่ยนช้า — สินค้านำเข้า (เครื่องกระเบื้อง) อาจเปลี่ยนแหล่งตามการค้าแต่ละยุค",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. III หน้า [34]" }],
     "verified": false
   },
@@ -93,6 +96,7 @@
     },
     "summary": "ป้อนสำรับอาหารใน event และ tag อาหาร",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; อาหารหลัก ข้าว ปลา กะปิ เป็นแบบแผนที่ยังพบในบันทึกต้นรัตนโกสินทร์",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. IV หน้า [35]–[36]", "quote": "their common Food is Rice and Fish" }],
     "verified": false
   },
@@ -104,7 +108,54 @@
     "claim": { "travel": "คนเดินทางใช้เรือของตนเป็นที่พักแรม", "royalProcession": "เมื่อพระเจ้าแผ่นดินเสด็จผ่าน ราษฎรลงจากเรือนมาที่ถนนหรือลงเรือเพื่อหมอบกราบ" },
     "summary": "ฉากการเดินทางควรเป็นทางน้ำเป็นหลัก",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; การเดินทางทางน้ำเป็นหลักผูกกับภูมิประเทศลุ่มเจ้าพระยาและยังเป็นเช่นนี้ถึงต้นรัตนโกสินทร์",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[30]" }],
     "verified": false
+  },
+  {
+    "id": "material.buried_valuables",
+    "domain": "material",
+    "title": "ฝังทองไว้ใต้ดิน รอดจากการปล้นตอนเสียกรุง (กลไกเกม)",
+    "period": [
+      2275,
+      2400
+    ],
+    "claim": {
+      "item": "ไหทองฝังดิน",
+      "mechanic": "ของที่ซ่อนไว้ (Item.hidden) ไม่เสียหายตอน shock ประวัติศาสตร์"
+    },
+    "summary": "ของในฉากเริ่มที่ให้ตระกูลมีทางรอดทางการเงินหลังเสียกรุง — ยังไม่มีแหล่งอ้างอิงเรื่องการฝังทรัพย์",
+    "status": "invented",
+    "rationale": "ต้องมีทรัพย์ชนิดที่รอดจาก shock เพื่อให้การล้างไพ่ไม่ทำให้ตระกูลจบทันที — ควรหาหลักฐานการฝังทรัพย์ก่อนหรือหลัง 2310 มาแทน",
+    "citations": [],
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "gold:buried_jar"
+      ]
+    }
+  },
+  {
+    "id": "material.family_craft_manual",
+    "domain": "material",
+    "title": "ตำราช่างประจำตระกูล (กลไกเกม)",
+    "period": [
+      2275,
+      2400
+    ],
+    "claim": {
+      "item": "ตำราช่างทอง",
+      "mechanic": "ของประจำตระกูล (ownerDynastyId) ไม่ถูกแบ่งมรดก ผู้นำถือแทน; Item.teaches เร่งการเรียนวิชา"
+    },
+    "summary": "ช่องทางเดียวที่ทักษะ \"ส่งต่อ\" ข้ามรุ่นได้ในเกม — ยังไม่มีแหล่งอ้างอิงเรื่องตำราช่างในครัวเรือนขุนนางผู้น้อย",
+    "status": "invented",
+    "rationale": "เกมไม่ส่งต่อ skill โดยตรง จึงต้องมีวัตถุที่ช่วยให้รุ่นถัดไปเรียนเร็วขึ้น — ควรหาหลักฐานการสืบวิชาช่างในตระกูล (เช่น ช่างทองหลวง) มาแทน",
+    "citations": [],
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "manual:goldsmith"
+      ]
+    }
   }
 ]

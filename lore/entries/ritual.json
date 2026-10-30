@@ -53,6 +53,8 @@
     },
     "summary": "ช่องทางรู้หนังสือที่มีหลักฐานร่วมยุค — ต่อกับระบบจดตำนานลงสมุดข่อย",
     "status": "attested",
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; การเรียนหนังสือที่วัดเป็นช่องทางหลักต่อเนื่องจนถึงต้นศตวรรษที่ 25 (ก่อนโรงเรียนสมัยใหม่) — อายุที่เข้าใช้เป็นแบบแผน",
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -176,6 +178,35 @@
       {
         "sourceId": "src.sharp_hanks_1978_bangchan",
         "locator": "บทที่ 8 หน้า 164–165; หน้า 88–89, 145"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "ritual.yu_fai_maternal_risk",
+    "domain": "ritual",
+    "title": "อยู่ไฟ 2–3 สัปดาห์ และความเสี่ยงตายของแม่",
+    "period": [
+      2373,
+      2398
+    ],
+    "claim": {
+      "duration": "2–3 สัปดาห์ข้างไฟ (Pallegoix); \"หลายสัปดาห์\" (Bowring)",
+      "risk": "Bowring ว่าการอยู่ไฟทำให้แม่ตายบ่อย ยกตัวอย่างเจ้าจอมที่สิ้นระหว่างอยู่ไฟ",
+      "relatedEntry": "ritual.yu_fai_placenta",
+      "gameMapping": "ยังไม่มีการตายจากการคลอด — ควรมีโอกาสแม่เสียชีวิตต่อการคลอดแต่ละครั้ง"
+    },
+    "summary": "การคลอดแต่ละครั้งเป็นความเสี่ยงของแม่ — ทำให้มีพ่อม่าย ลูกกำพร้าแม่ และการแต่งงานใหม่ในเกม",
+    "status": "attested",
+    "appliesAs": "pattern",
+    "citations": [
+      {
+        "sourceId": "src.pallegoix_1854_description",
+        "locator": "tome I หน้า 223–224"
+      },
+      {
+        "sourceId": "src.bowring_1857_kingdom",
+        "locator": "vol. I หน้า 120"
       }
     ],
     "verified": false

@@ -1,7 +1,10 @@
 {
   "generatedFrom": [
     "naming.names_bang_rachan_2308",
-    "naming.names_legal_cases"
+    "naming.names_legal_cases",
+    "naming.names_krung_kao_2386",
+    "naming.names_war_dispatch_2377",
+    "naming.names_minor_nobility_2272"
   ],
   "names": [
     {
@@ -18,7 +21,8 @@
       "estates": null,
       "loreRefs": [
         "naming.names_bang_rachan_2308",
-        "naming.names_legal_cases"
+        "naming.names_legal_cases",
+        "naming.names_war_dispatch_2377"
       ]
     },
     {
@@ -26,7 +30,8 @@
       "sex": "m",
       "estates": null,
       "loreRefs": [
-        "naming.names_bang_rachan_2308"
+        "naming.names_bang_rachan_2308",
+        "naming.names_krung_kao_2386"
       ]
     },
     {
@@ -58,7 +63,8 @@
       "sex": "m",
       "estates": null,
       "loreRefs": [
-        "naming.names_bang_rachan_2308"
+        "naming.names_bang_rachan_2308",
+        "naming.names_krung_kao_2386"
       ]
     },
     {
@@ -90,7 +96,8 @@
       "sex": "f",
       "estates": null,
       "loreRefs": [
-        "naming.names_legal_cases"
+        "naming.names_legal_cases",
+        "naming.names_minor_nobility_2272"
       ]
     },
     {
@@ -98,7 +105,8 @@
       "sex": "m",
       "estates": null,
       "loreRefs": [
-        "naming.names_legal_cases"
+        "naming.names_legal_cases",
+        "naming.names_minor_nobility_2272"
       ]
     },
     {
@@ -154,7 +162,8 @@
       "sex": "m",
       "estates": null,
       "loreRefs": [
-        "naming.names_legal_cases"
+        "naming.names_legal_cases",
+        "naming.names_war_dispatch_2377"
       ]
     },
     {
@@ -179,6 +188,665 @@
       "estates": null,
       "loreRefs": [
         "naming.names_legal_cases"
+      ]
+    },
+    {
+      "name": "มั่ง",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "นวม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ผูก",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "บัว",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เสง",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "รอด",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ขาว",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "อ่อน",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ม่วง",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ปาน",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "อยู่",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "จุ้ย",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "โม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "เขียว",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "เนียม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "เอี่ยม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "นิล",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "หอม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "อาจ",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "คลาย",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "แย้ม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ผึ่ง",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "อ่ำ",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "โพ",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "ยิ้ม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "โต",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เกิด",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "พุด",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "แตง",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "พุ่ม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ล้อม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ศรี",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "อ่วม",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "ขำ",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "ฤทธิ์",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "คง",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "คุ้ม",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "หนู",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386"
+      ]
+    },
+    {
+      "name": "แจ่ม",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_krung_kao_2386",
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "แก้ว",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "อิ่ม",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "ฟัก",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เถื่อน",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "วัน",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "รัก",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "จัน",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "กี",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เมฆ",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "อู",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "จำปา",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "สุข",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เสา",
+      "sex": "m",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เสน",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เพียร",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "กลีบ",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เพ็ง",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "ทอง",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เกิด",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "เลบ",
+      "sex": "f",
+      "estates": null,
+      "loreRefs": [
+        "naming.names_war_dispatch_2377"
+      ]
+    },
+    {
+      "name": "ทองดี",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "เสม",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "ทองอิน",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "บุญเมือง",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "ทองจีน",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "ชูโต",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "แวน",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "พู",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "ฉิม",
+      "sex": "m",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "หยก",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "ดาวเรือง",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "มา",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "แก้ว",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "นาค",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "สั้น",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "แตง",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "นวล",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
+      "name": "บุญรอด",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
       ]
     }
   ]

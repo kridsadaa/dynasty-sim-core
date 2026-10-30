@@ -7,8 +7,93 @@
     "claim": { "year": 2310, "kind": "war", "outcome": "กรุงศรีอยุธยาแตกแก่กองทัพพม่า" },
     "summary": "กรุงศรีอยุธยาเสียแก่พม่าใน พ.ศ. 2310 เกมใช้เป็น shock ล้างทรัพย์และจุดยึดของตำนานตระกูล",
     "status": "attested",
-    "citations": [{ "sourceId": "src.phongsawadan_phan_chanthanumat", "locator": "TODO: ตอนเสียกรุง" }],
+    "citations": [{ "sourceId": "src.phongsawadan_phan_chanthanumat", "locator": "TODO: ตอนเสียกรุง" }, { "sourceId": "src.boeles_1968_dutch_eyewitness_1767", "locator": "JSS 56(1) ทั้งบทความ — ยังไม่ได้อ่าน (PDF เป็นภาพสแกน)" }],
     "verified": false,
     "gameRefs": { "tags": ["history:fall_of_ayutthaya"] }
+  },
+  {
+    "id": "event.thonburi_succession_2325",
+    "domain": "event",
+    "title": "ผลัดแผ่นดินกรุงธนบุรี (พ.ศ. 2325)",
+    "period": [
+      2325,
+      2325
+    ],
+    "claim": {
+      "year": 2325,
+      "kind": "succession",
+      "outcome": "สิ้นรัชกาลสมเด็จพระเจ้าตากสิน เจ้าพระยาจักรีขึ้นครองราชย์ ตั้งกรุงรัตนโกสินทร์",
+      "factionRisk": "ขุนนางที่ผูกกับฝ่ายพระเจ้าตากบางส่วนถูกลงโทษ — ขอบเขตต้องตรวจกับพงศาวดาร",
+      "gameMapping": "rules.json history:thonburi_succession ริบทรัพย์/ถอดบรรดาศักดิ์ตระกูลที่มี faction:taksin_loyalist"
+    },
+    "summary": "จุดล้างไพ่ทางการเมืองหลังเสียกรุง: ตระกูลที่รุ่งเรืองเพราะรับราชการพระเจ้าตากเสี่ยงหมดอำนาจ",
+    "status": "attested",
+    "contested": "การลงโทษขุนนางฝ่ายพระเจ้าตาก \"เป็นวงกว้าง\" แค่ไหนยังไม่ได้ตรวจ — rules.json ใช้ purge ทั้งตระกูลซึ่งอาจแรงเกินหลักฐาน",
+    "citations": [
+      {
+        "sourceId": "src.phongsawadan_phan_chanthanumat",
+        "locator": "TODO: ตอนสิ้นรัชกาลกรุงธนบุรี"
+      }
+    ],
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "history:thonburi_succession",
+        "faction:taksin_loyalist"
+      ]
+    }
+  },
+  {
+    "id": "event.cholera_2363",
+    "domain": "event",
+    "title": "อหิวาตกโรคระบาดกรุงเทพฯ พ.ศ. 2363",
+    "period": [
+      2363,
+      2363
+    ],
+    "claim": {
+      "year": 2363,
+      "kind": "epidemic",
+      "duration": "ราว 15 วัน (เมษายน)",
+      "toll": "พระคลังบอก Crawfurd ว่าตาย \"สองในสิบ\" ของประชากร — น่าจะเกินจริง; งานรองประมาณ ~30,000 คนในกรุงเทพฯ",
+      "later": "ระบาดซ้ำราว 30 ปี; 2392 Pallegoix ว่าเมืองหลวง \"เกือบสิ้น\" (ดู event.cholera_2392)",
+      "gameMapping": "rules.json history มีแค่สงคราม/ผลัดแผ่นดิน — ควรเพิ่ม shock โรคระบาด (deathRisk ~0.1–0.2 สำหรับคนในเมืองหลวง ไม่ลดทรัพย์)"
+    },
+    "summary": "shock ประวัติศาสตร์แบบใหม่ที่ไม่เกี่ยวกับการเมือง: ฆ่าคน ไม่ปล้นทรัพย์",
+    "status": "attested",
+    "contested": "อัตรา 1 ใน 5 มาจากคำบอกเล่าของขุนนาง ไม่ใช่การนับ",
+    "citations": [
+      {
+        "sourceId": "src.crawfurd_1830_embassy",
+        "locator": "เล่ม 2 หน้า 229–230",
+        "quote": "carried off two persons in ten"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "event.cholera_2392",
+    "domain": "event",
+    "title": "อหิวาตกโรคระบาดกรุงเทพฯ พ.ศ. 2392",
+    "period": [
+      2392,
+      2392
+    ],
+    "claim": {
+      "year": 2392,
+      "kind": "epidemic",
+      "toll": "Pallegoix: เมืองหลวง \"presque décimée\"; บทความรอง (อ้างพงศาวดารรัชกาลที่ 3): เผาศพ 5,457 ศพที่วัด 3 แห่งใน 38 วัน"
+    },
+    "summary": "ระบาดครั้งที่สองในช่วงเกม — ใช้คู่กับ event.cholera_2363",
+    "status": "attested",
+    "contested": "ตัวเลข 5,457 ศพยังไม่ได้ตรวจกับพงศาวดารรัชกาลที่ 3 โดยตรง",
+    "citations": [
+      {
+        "sourceId": "src.pallegoix_1854_description",
+        "locator": "tome II หน้า 291",
+        "quote": "presque décimée"
+      }
+    ],
+    "verified": false
   }
 ]

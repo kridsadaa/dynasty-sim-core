@@ -122,6 +122,19 @@ for (const [period, ids] of outsideGame) {
 for (const t of tags) {
   for (const ref of t.loreRefs ?? []) if (!entryIds.has(ref)) errors.push(`tags.json › ${t.id}: loreRefs อ้าง ${ref} ที่ไม่มี`);
 }
+// อ้างกันสองทาง (lore/README ข้อ 4): tag.loreRefs ↔ entry.gameRefs.tags
+const tagsOfEntry = new Map(entries.map((e) => [e.id, new Set(e.gameRefs?.tags ?? [])]));
+const entriesOfTag = new Map(tags.map((t) => [t.id, new Set(t.loreRefs ?? [])]));
+for (const t of tags) {
+  for (const ref of t.loreRefs ?? []) {
+    if (entryIds.has(ref) && !tagsOfEntry.get(ref)?.has(t.id)) warnings.push(`tags.json › ${t.id}: อ้าง ${ref} แต่รายการนั้นไม่อ้าง tag นี้กลับใน gameRefs`);
+  }
+}
+for (const e of entries) {
+  for (const t of e.gameRefs?.tags ?? []) {
+    if (tagIds.has(t) && !entriesOfTag.get(t)?.has(e.id)) warnings.push(`${e.file} › ${e.id}: gameRefs อ้าง ${t} แต่ tag ไม่อ้างกลับใน loreRefs`);
+  }
+}
 
 // ---------- art → lore ----------
 // style.json / manifest.json อ้าง lore ได้ทุกระดับชั้น → เดินทั้งต้นไม้หา loreRefs

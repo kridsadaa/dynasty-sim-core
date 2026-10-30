@@ -16,6 +16,8 @@
     },
     "summary": "หลักฐานร่วมยุคที่ใกล้ slice ที่สุดเรื่องที่อยู่หลังแต่งงาน — ควรเปลี่ยนกลไกครัวเรือนของเกม",
     "status": "attested",
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; ลักษณผัวเมีย มาตรา 61 (ชำระ 2348) และงานภาคสนามบางชัน (2491–2500) พบแบบแผนเดียวกัน — หลักฐานสองฝั่งของ slice จึงใช้เป็นแบบแผนได้",
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -47,6 +49,8 @@
     },
     "summary": "โครง event chain การสู่ขอ — ระบบดวงชะตาของเกมใช้ตรงนี้ได้",
     "status": "attested",
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; ขั้นตอนสู่ขอผ่านแม่สื่อและหมอดูยังพบในงานพิธีกรรมสมัยหลัง — จำนวนครั้งและของที่ให้ใช้เป็นแบบแผน ไม่ใช่กฎตายตัว",
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -76,6 +80,8 @@
     "summary": "ต่างจากตัวบทลักษณมรดก (บุตรภริยาน้อยได้ 2.5 ส่วน) — อาจเป็นความเข้าใจของคนนอก หรือการปฏิบัติจริงต่างจากตัวบท; กฎแบ่งลูกตอนหย่าใช้ทำ event ได้ทันที",
     "status": "attested",
     "contested": "social.inheritance_by_mother_status (ตัวบทให้บุตรภริยาน้อยและทาสภริยาได้ส่วนแบ่ง)",
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี และเป็นมุมมองคนนอก; ขัดกับตัวบทลักษณมรดก (ชำระ 2348) หลายจุด — ใช้เป็นภาพการปฏิบัติจริงที่อาจต่างจากตัวบท ไม่ใช่กฎของเกม",
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -99,6 +105,8 @@
     },
     "summary": "ภรรยาดูแลนา/ค้าขายขณะสามีไม่อยู่ — ผู้หญิงควรมีบทบาททางเศรษฐกิจในเกม ไม่ใช่แค่แม่บ้าน",
     "status": "attested",
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; ระบบไพร่ที่ดึงผู้ชายไปเข้าเวรยังมีถึงต้นรัตนโกสินทร์ บทบาทเศรษฐกิจของผู้หญิงจึงน่าจะคงอยู่ — ระยะเวลาเข้าเวรเปลี่ยนตามรัชกาล",
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -135,7 +143,8 @@
       {
         "sourceId": "src.thawatchai_2560_phuamia",
         "locator": "หน้า 4, 8, 10–12 (อ้างมาตรา 50, 61)"
-      }
+      },
+      { "sourceId": "src.three_seals_law", "locator": "พระไอยการลักษณผัวเมีย มาตรา ๕๐, ๖๑ (ประมวลกฎหมายรัชกาลที่ 1 — ยังไม่ระบุสแกน)" }
     ],
     "verified": false
   },
@@ -158,6 +167,7 @@
     "summary": "แบบแผนที่สอดคล้องกับลา ลูแบร์เรื่องอยู่บ้านฝ่ายหญิง",
     "status": "inferred",
     "projection": "งานภาคสนามบางชัน 2491–2500 — ใช้เป็นแบบแผนครัวเรือนชาวนาภาคกลาง; ยิ่งตรงกับลา ลูแบร์ (2230) ยิ่งเชื่อได้ว่าเป็นแบบแผนเก่า",
+    "gameRefs": { "tags": ["house:riverside"] },
     "citations": [
       {
         "sourceId": "src.sharp_hanks_1978_bangchan",
@@ -242,6 +252,79 @@
         "sourceId": "src.sharp_hanks_1978_bangchan",
         "locator": "บทที่ 2 หน้า 47",
         "quote": "'milk money' that her husband or his parents pay her mother"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.marriage_age_1820s",
+    "domain": "kinship",
+    "title": "อายุแต่งงาน: สามัญชนชาย ~21 หญิง ~18; คนมีฐานะแต่งเร็วกว่า",
+    "period": [
+      2365,
+      2398
+    ],
+    "claim": {
+      "commoners": {
+        "men": "แทบไม่ต่ำกว่า 21",
+        "women": "แทบไม่ต่ำกว่า 18",
+        "who": "Crawfurd 2365"
+      },
+      "rank": "คนมีฐานะแต่งงานเร็วกว่ามาก (Crawfurd)",
+      "generalAge": "15–17 ปี (Pallegoix) — กลัวลูกสาวหนีตามผู้ชายถ้ารอช้า",
+      "bowring": "ชาย ~20 หญิง ~14 (Bowring 2400 — อาจคัดจาก Pallegoix)",
+      "earlier": "ลา ลูแบร์ (2230): เด็กหญิงมีลูกได้ตั้งแต่ 12 จึงแต่งงานเร็วมาก",
+      "gameMapping": "balance.world.marriageAge 20 / marriageAgeFemale 17 อยู่ในช่วงหลักฐาน แต่ตายตัว — ควรสุ่มเป็นช่วงและแยกตามชนชั้น และให้บางคนไม่แต่งเลย"
+    },
+    "summary": "หลักฐานขัดกันเอง (14–21 ปี) แต่ทุกแหล่งร่วมยุคเกม — ใช้เป็นช่วงสุ่ม ไม่ใช่ค่าเดียว",
+    "status": "attested",
+    "appliesAs": "pattern",
+    "contested": "Crawfurd ว่า \"สายมาก\" สำหรับเอเชีย ขณะที่ Pallegoix/Bowring ให้ 14–17 — อาจต่างตามชนชั้นหรือผู้สังเกตเห็นคนละกลุ่ม",
+    "citations": [
+      {
+        "sourceId": "src.crawfurd_1830_embassy",
+        "locator": "เล่ม 2 หน้า 226",
+        "quote": "rarely under twenty-one for the men, or eighteen"
+      },
+      {
+        "sourceId": "src.pallegoix_1854_description",
+        "locator": "tome I หน้า 229",
+        "quote": "ordinairement de quinze à dix-sept ans"
+      },
+      {
+        "sourceId": "src.bowring_1857_kingdom",
+        "locator": "vol. I หน้า 185"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "kinship.birth_spacing_breastfeeding",
+    "domain": "kinship",
+    "title": "ให้นมลูก 2–3 ปี → ลูกห่างกัน; หญิงแทบไม่มีลูกหลัง 40",
+    "period": [
+      2373,
+      2398
+    ],
+    "claim": {
+      "breastfeeding": "จนลูกอายุ 2 หรือ 3 ขวบ ควบกับข้าวและกล้วย (ยุโรป 5–6 เดือน)",
+      "fertilityEnd": "หญิงส่วนใหญ่ไม่มีลูกหลังอายุ 40 — ลา ลูแบร์ Part II ch. VII (2230 นอกช่วงรายการนี้ ใช้เป็นข้อสังเกตเสริมเท่านั้น)",
+      "elite": "ชายมีฐานะมีภรรยาหลายคน ลูกมาก (พระจอมเกล้าฯ ตรัสกับ Bowring ว่ามีพระราชโอรสธิดา 23 พระองค์)",
+      "gameMapping": "world.ts childAfterMarriageYears [2, 5] — ควรเปลี่ยนเป็นโอกาสตั้งครรภ์ต่อปีที่หยุดระหว่างให้นม ~2–3 ปี และหยุดที่อายุ 40"
+    },
+    "summary": "กลไกคุมระยะห่างการมีลูกที่มีหลักฐานร่วมยุคชัดที่สุด — ไม่พบตัวเลขจำนวนลูกต่อผู้หญิงของสยาม",
+    "status": "attested",
+    "appliesAs": "pattern",
+    "projection": "Pallegoix บรรยายทศวรรษ 2370–2390 และลา ลูแบร์บรรยาย 2230 — ช่วงเกมอยู่ระหว่างสองแหล่ง การให้นมนานเป็นแบบแผนครัวเรือนที่เปลี่ยนช้า; Reid (ผ่าน Henley 2005) ชี้ว่าการให้นมนานเป็นตัวคุมการเกิดหลักของอุษาคเนย์",
+    "citations": [
+      {
+        "sourceId": "src.pallegoix_1854_description",
+        "locator": "tome I หน้า 224",
+        "quote": "jusqu'à deux ans et même trois ans"
+      },
+      {
+        "sourceId": "src.bowring_1857_kingdom",
+        "locator": "vol. I หน้า 119–120"
       }
     ],
     "verified": false
