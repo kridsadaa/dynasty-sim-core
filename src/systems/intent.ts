@@ -1,3 +1,4 @@
+import { yearsToDays } from '../core/calendar';
 import { ageOf, isAlive, must, newId, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Estate, Intent, IntentApproachDef, IntentDef, IntentKindId } from '../core/types';
@@ -296,7 +297,7 @@ export function arrangedMatchEvent(ctx: Ctx): PreparedEvent | null {
   if ((S.familyNodes[player.familyNodeId]?.spouseIds.length ?? 0) > 0 || player.betrothal || player.eloped) return null;
   const current = activeIntent(ctx, player.id);
   if (current && ctx.content.intents[current.kind]?.target === 'court') return null;
-  const since = I.arrangedEveryYears * ctx.content.balance.daysPerYear;
+  const since = yearsToDays(I.arrangedEveryYears);
   const recent = Object.values(S.eventLog).some(
     (e) => e.defId === 'family.arranged_match' && e.bindings.actor === player.id && S.meta.day - e.day < since,
   );

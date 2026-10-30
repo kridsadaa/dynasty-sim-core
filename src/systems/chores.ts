@@ -1,3 +1,4 @@
+import { yearsToDays } from '../core/calendar';
 import { ageOf, isAlive, must, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, ChoreDomainDef, ChoreTaskDef, TagId } from '../core/types';
 import { singlePeer } from './acquaintance';
@@ -90,7 +91,7 @@ export function tickChores(ctx: Ctx, away: number): { lines: string[]; events: C
       lines.push(`${ch.name}เข้า${label(d.tag)}ไปช่วย${teacher.name}เองโดยไม่ต้องมีใครเรียก`, ...join(ctx, ch, d, teacher));
     } else if (incl <= C.autoNoAt) {
       if (st.askAfter === undefined) lines.push(`${ch.name}ไม่สนใจ${label(d.tag)} ผู้ใหญ่ก็ไม่ได้บังคับ`);
-      st.askAfter = S.meta.day + C.askAgainYears * ctx.content.balance.daysPerYear;
+      st.askAfter = S.meta.day + yearsToDays(C.askAgainYears);
     } else {
       events.push({ event: 'chore.ask', bindings, vars: { chore: d.tag, task: d.tasks[0]!.tag } });
     }
@@ -142,7 +143,7 @@ export function applyChore(
       return task ? learn(ctx, ch, d, task, teacher, factor) : [];
     }
     case 'decline':
-      stateOf(ch, d).askAfter = ctx.state.meta.day + ctx.content.balance.chores.askAgainYears * ctx.content.balance.daysPerYear;
+      stateOf(ch, d).askAfter = ctx.state.meta.day + yearsToDays(ctx.content.balance.chores.askAgainYears);
       return [];
   }
 }

@@ -3,7 +3,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
-import { isAlive, makeCtx, type Ctx } from './core/ctx';
+import { formatLunar, gregorianToJd, lunarFromJd, yearsToDays } from './core/calendar';
+import { dayOfYear, isAlive, makeCtx, yearOf, type Ctx } from './core/ctx';
 import type { ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
@@ -85,10 +86,10 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   bootstrapScenario(ctx);
   const S = ctx.state;
   let over = false;
-  for (let d = 0; d < content.balance.daysPerYear * YEARS && !over; d++) {
+  for (let d = 0; d < yearsToDays(YEARS) && !over; d++) {
     // กลางปี: ผู้เล่นที่ว่างอยู่ตั้งใจทำอะไรสักอย่างกับคนที่รู้จัก (สุ่มคน/สิ่งที่ตั้งใจ/วิธี) — ทดสอบระบบ intent
     const player = S.characters[S.meta.playerCharacterId];
-    if (S.meta.day % content.balance.daysPerYear === 180 && isAlive(player) && !activeIntent(ctx, player.id) && ctx.rng.chance(0.6)) {
+    if (dayOfYear(ctx, S.meta.day) === 180 && isAlive(player) && !activeIntent(ctx, player.id) && ctx.rng.chance(0.6)) {
       const options = knownLocals(ctx, player).flatMap((t) => Object.values(content.intents)
         .filter((def) => !targetProblem(ctx, def, player, t))
         .flatMap((def) => planIntent(ctx, def.id, player, t).filter((p) => !p.unavailable).map((p) => ({ def, t, p }))));
@@ -114,7 +115,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     }
   }
   const before = failed;
-  console.log(`seed ${seed}: ถึงปี ${content.balance.epochYear + Math.floor(S.meta.day / content.balance.daysPerYear)}${over ? ' (สิ้นสาย)' : ''}`
+  console.log(`seed ${seed}: ถึงปี ${yearOf(ctx, S.meta.day)}${over ? ' (สิ้นสาย)' : ''}`
     + ` · ตัวละคร ${Object.keys(S.characters).length} · node ${Object.keys(S.familyNodes).length}`
     + ` · เซฟ ${(JSON.stringify(S).length / 1024).toFixed(0)} KB`);
   invariants(ctx, over);
@@ -126,7 +127,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   const ctx = makeCtx(emptyState(7), content);
   const hero = bootstrapScenario(ctx);
   const S = ctx.state;
-  S.meta.day += content.balance.daysPerYear * 25;
+  S.meta.day += yearsToDays(25);
   const dyn = S.dynasties[S.meta.playerDynastyId]!;
   const headNodeBefore = dyn.headNodeId;
   const head = S.characters[S.familyNodes[headNodeBefore]!.characterId!]!;
@@ -148,6 +149,32 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   console.log('ผู้เล่นตายก่อนบิดา:');
   check('handover แตะตำแหน่งของคนที่ยังมีชีวิต', problems);
   if (failed === before) console.log('  ✓ ผู้นำ หัวเรือน และกฎในเรือนคงเดิม');
+}
+
+// [3] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
+{
+  const before = failed;
+  console.log('ปฏิทินจันทรคติ:');
+  const jdCases: Array<[number, number, number, boolean, number]> = [
+    // JD, จ.ศ., เดือน, เดือน 8 หลัง, วันที่ในเดือน (1–30)
+    [2337769, 1050, 8, false, 1],
+    [2337872, 1050, 11, false, 15],
+    [2337919, 1050, 1, false, 3],
+    [2392934, 1201, 8, true, 2],
+  ];
+  check('วันที่อ้างอิง', jdCases.flatMap(([jd, y, m, second, d]) => {
+    const l = lunarFromJd(jd);
+    return l.csYear === y && l.month === m && l.secondEighth === second && l.day === d ? [] : [`JD ${jd} → จ.ศ. ${l.csYear} เดือน ${l.month} วัน ${l.day}`];
+  }));
+  const chronicle: Array<[[number, number, number], string]> = [
+    [[1680, 4, 10], 'วันพุธ ขึ้น 12 ค่ำ เดือน 5 ปีวอก จ.ศ. 1042'], // vocab.chronicle_date_format
+    [[1767, 4, 7], 'วันอังคาร ขึ้น 9 ค่ำ เดือน 5 ปีกุน จ.ศ. 1129'], // เสียกรุงครั้งที่ 2
+  ];
+  check('วันที่ในพงศาวดาร', chronicle.flatMap(([[y, m, d], want]) => {
+    const got = formatLunar(lunarFromJd(gregorianToJd(y, m, d)));
+    return got === want ? [] : [`${y}-${m}-${d}: ${got} ≠ ${want}`];
+  }));
+  if (failed === before) console.log('  ✓ ตรงทุกวัน');
 }
 
 if (failed) {

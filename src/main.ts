@@ -305,7 +305,8 @@ engine.onPush((p) => {
       for (const l of p.lines) write(l);
       break;
     case 'progress':
-      $('date').textContent = `พ.ศ. ${p.year} · เดือน ${p.month} วัน ${p.dayOfMonth}`;
+      $('date').textContent = p.solar;
+      $('lunar').textContent = p.lunar;
       refreshSoon();
       break;
     case 'clock':
@@ -339,7 +340,8 @@ async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: s
     renderPlayer(v);
     renderKnown(await engine.request({ type: 'viewKnown' }));
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
-    $('date').textContent = `พ.ศ. ${v.year}`;
+    $('date').textContent = v.solar;
+    $('lunar').textContent = v.lunar;
     hasGame = true;
     clock = await engine.request({ type: 'pause' }); // เริ่ม/โหลดแล้วเวลาหยุดรอ ผู้เล่นกดเดินเอง
     renderClock();

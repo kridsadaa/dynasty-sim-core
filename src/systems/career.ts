@@ -1,3 +1,4 @@
+import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, OfficePostDef } from '../core/types';
 import { livingParents } from './factory';
@@ -16,8 +17,6 @@ import { livingParents } from './factory';
 //  lore: social.royal_pages_1680s, social.patrol_department_ladder, social.officers_no_salary_1680s,
 //        social.court_punishments_1680s, social.court_attendance_rules — ตัวเลขทั้งหมดเป็นค่าของเกม
 // ============================================================================
-
-const YEAR = (ctx: Ctx) => ctx.content.balance.daysPerYear;
 
 export function postOf(ctx: Ctx, ch: Character): OfficePostDef | undefined {
   return ch.office ? ctx.content.offices.posts.find((p) => p.id === ch.office!.postId) : undefined;
@@ -130,7 +129,7 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     player.social.wealth += income;
     lines.push(`ได้ของกำนัลและผลประโยชน์ตามตำแหน่ง ${income} ตำลึง`);
   }
-  const years = Math.floor((S.meta.day - player.office.sinceDay) / YEAR(ctx));
+  const years = Math.floor((S.meta.day - player.office.sinceDay) / DAYS_PER_YEAR);
   const favor = player.office.favor;
   const next = postAt(ctx, post.rank + 1);
   // มหาดเล็กเป็นชายหนุ่ม แก่สุดไม่ถึง 25 (lore: social.royal_pages_1680s) — ถึงวัยแล้วได้ตำแหน่งในกรม หรือพ้นไป
@@ -152,7 +151,7 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
 export function officeStatus(ctx: Ctx, ch: Character): string | null {
   const post = postOf(ctx, ch);
   if (!post || !ch.office) return null;
-  const years = Math.floor((ctx.state.meta.day - ch.office.sinceDay) / YEAR(ctx));
+  const years = Math.floor((ctx.state.meta.day - ch.office.sinceDay) / DAYS_PER_YEAR);
   const f = ch.office.favor;
   const mood = f >= 0.3 ? 'เป็นที่โปรดปราน' : f <= -0.3 ? 'กำลังถูกเพ่งเล็ง' : 'ทรงตัว';
   const where = post.rank === 0 ? 'ในวัง' : ctx.content.offices.department.label.th;

@@ -1,3 +1,4 @@
+import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Household, HouseholdId, HouseholdRule, TagId, Trait, TraitKindId } from '../core/types';
@@ -43,7 +44,7 @@ export function householdYearTick(ctx: Ctx, householdId: HouseholdId): string[] 
     }
     // (b) ซึมซับจากกฎของเรือน — ยิ่งโตมาใต้กฎนานยิ่งฝัง
     for (const rule of hh.rules) {
-      const years = (ctx.state.meta.day - Math.max(rule.sinceDay, child.birthDay)) / ctx.content.balance.daysPerYear;
+      const years = (ctx.state.meta.day - Math.max(rule.sinceDay, child.birthDay)) / DAYS_PER_YEAR;
       const p = S.ruleTransmitBase * clamp01(years / 5) * susceptibility;
       if (!ctx.rng.chance(p)) continue;
       const kind: TraitKindId = rule.statedReason === 'inauspicious' ? 'superstition' : 'aversion';

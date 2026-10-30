@@ -40,7 +40,9 @@
       ul { margin: 0; padding-left: 18px; font-size: 14px; }
       #status { color: var(--muted); font-size: 14px; }
       .clock { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-      #date { font-variant-numeric: tabular-nums; min-width: 11em; }
+      .dates { display: inline-flex; flex-direction: column; line-height: 1.2; min-width: 13em; }
+      #date { font-variant-numeric: tabular-nums; }
+      #lunar { font-size: 0.75em; color: var(--muted); }
       #play { min-width: 5.5em; }
       #play.playing { border-color: var(--accent); color: var(--accent); }
       #speed { letter-spacing: 2px; color: var(--accent); font-size: 12px; }
@@ -71,7 +73,7 @@
         <button id="load">โหลด autosave</button>
         <button id="loadSlot">โหลดที่บันทึกไว้</button>
         <span class="clock">
-          <span id="date"></span>
+          <span class="dates"><span id="date"></span><span id="lunar"></span></span>
           <button id="play" disabled title="เดิน/หยุดเวลา (Space)">▶ เดิน</button>
           <button id="slower" disabled title="ช้าลง (−)" aria-label="ช้าลง">−</button>
           <span id="speed" aria-live="polite"></span>

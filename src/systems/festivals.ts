@@ -1,4 +1,4 @@
-import { ageOf, dayOfYear, isAlive, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, lunarOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId } from '../core/types';
 import { singlePeer } from './acquaintance';
 import type { ChoreEventRequest } from './chores';
@@ -7,7 +7,7 @@ import { livingParents, livingSpouse } from './factory';
 // ============================================================================
 // Festivals — งานบุญและงานประจำปีของผู้เล่น (ทุกวัยตั้งแต่ minAge)
 //
-//  เดือนในเกม (30 วัน) ถือเป็นเดือนจันทรคติ: วันที่ 15 = เพ็ญ, วันที่ 30 = ดับ — วันละไม่เกินหนึ่งงาน
+//  ตามปฏิทินจันทรคติ (core/calendar.ts): เพ็ญ = ขึ้น 15 ค่ำ, ดับ = วันสุดท้ายของเดือน (แรม 14/15 ค่ำ) — วันละไม่เกินหนึ่งงาน
 //   ├─ เพ็ญเดือน 12: ลอยโคมเมื่อน้ำเริ่มลด                       (ritual.floating_lanterns_1680s)
 //   ├─ เพ็ญเดือน 5: รดน้ำพ่อแม่                                (ritual.fifth_month_bathing_1680s)
 //   ├─ วันพระ (เพ็ญ/ดับ): ไปวัดฟังเทศน์ ถือศีล หรือแอบไปหาปลา    (ritual.holy_days_1680s)
@@ -22,10 +22,9 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
   const F = ctx.content.balance.festivals;
   const ch = S.characters[S.meta.playerCharacterId];
   if (!isAlive(ch) || ageOf(ctx, ch) < F.minAge) return [];
-  const doy = dayOfYear(ctx, S.meta.day);
-  const month = Math.floor(doy / 30) + 1;
-  const date = (doy % 30) + 1;
-  const full = date === 15;
+  const l = lunarOf(ctx);
+  const month = l.month;
+  const full = l.waxing && l.phaseDay === 15;
   const req = (event: string, bindings: Record<string, CharacterId>, vars = {}) => [{ event, bindings: { actor: ch.id, ...bindings }, vars }];
 
   if (full && month === F.lanternMonth && ctx.rng.chance(F.lanternChance)) {
@@ -37,10 +36,11 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
     const parent = parents.find((p) => p.householdId === ch.householdId) ?? parents[0];
     if (parent) return req('festival.bathing', { parent: parent.id });
   }
-  if ((full || date === 30) && ctx.rng.chance(F.holyDaysPerYear / 24)) {
-    return req('festival.holy_day', {}, { moon: full ? 'moon:full' : 'moon:dark' });
+  // วันพระราวปีละ 25 วัน (เพ็ญและดับ 12–13 เดือน)
+  if ((full || l.lastDay) && ctx.rng.chance(F.holyDaysPerYear / 25)) {
+    return req('festival.holy_day', {}, { moon: full ? 'moon:full' : l.phaseDay === 14 ? 'moon:dark14' : 'moon:dark' });
   }
-  const fairDays = (F.fairMonths[1] - F.fairMonths[0] + 1) * 30;
+  const fairDays = (F.fairMonths[1] - F.fairMonths[0] + 1) * 29.5;
   if (month >= F.fairMonths[0] && month <= F.fairMonths[1] && ctx.rng.chance(F.templeFairsPerYear / fairDays)) {
     const peer = canCourt(ctx, ch) ? singlePeer(ctx, ch, true) : undefined;
     return req('festival.temple_fair', peer ? { stranger: peer.id } : {});

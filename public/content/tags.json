@@ -113,5 +113,6 @@
   { "id": "task:temple_offering", "parents": ["task:any"], "label": { "th": "จัดของไปถวายวัดวันพระ" } },
   { "id": "moon:any", "parents": [], "label": { "th": "ข้างขึ้นข้างแรม" }, "generalizeStop": true, "loreRefs": ["ritual.holy_days_1680s"] },
   { "id": "moon:full", "parents": ["moon:any"], "label": { "th": "ขึ้นสิบห้าค่ำ" }, "loreRefs": ["ritual.holy_days_1680s"] },
+  { "id": "moon:dark14", "parents": ["moon:any"], "label": { "th": "แรมสิบสี่ค่ำ" }, "loreRefs": ["ritual.holy_days_1680s"] },
   { "id": "moon:dark", "parents": ["moon:any"], "label": { "th": "แรมสิบห้าค่ำ" }, "loreRefs": ["ritual.holy_days_1680s"] }
 ]

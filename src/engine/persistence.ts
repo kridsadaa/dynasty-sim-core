@@ -1,3 +1,4 @@
+import { DAYS_PER_YEAR } from '../core/calendar';
 import type { GameState } from '../core/types';
 import type { PendingEventSnapshot } from '../systems/events';
 import type { SaveSlotInfo } from './protocol';
@@ -17,7 +18,7 @@ import type { SaveSlotInfo } from './protocol';
 
 const DB_NAME = 'dynasty-sim';
 const DB_VERSION = 1;
-export const CURRENT_SCHEMA = 1;
+export const CURRENT_SCHEMA = 2;
 
 type TableName = Exclude<keyof GameState, 'meta'>;
 const TABLES: TableName[] = [
@@ -26,7 +27,24 @@ const TABLES: TableName[] = [
 ];
 
 /** migration[v] แปลง state จาก schema v → v+1 */
-const migrations: Record<number, (s: GameState) => void> = {};
+const migrations: Record<number, (s: GameState) => void> = {
+  // ปี 360 วัน → วันจริงตามปฏิทิน (core/calendar.ts): ทุกฟิลด์ที่เป็นวันยืดตามสัดส่วน ปีที่ n ยังตรงกับปีที่ n
+  1: (s) => scaleDays(s, DAYS_PER_YEAR / 360),
+};
+
+/** ชื่อฟิลด์ที่เก็บ Day ใน GameState (ดู core/types.ts) */
+const DAY_KEYS = new Set([
+  'day', 'birthDay', 'deathDay', 'marriedDay', 'moveOutDay', 'weddingDay', 'untilDay', 'sinceDay', 'dueDay',
+  'askAfter', 'startDay', 'inflictedDay', 'stageSinceDay', 'acquiredDay', 'lastTriggeredDay',
+]);
+
+function scaleDays(node: unknown, k: number): void {
+  if (!node || typeof node !== 'object') return;
+  for (const [key, v] of Object.entries(node as Record<string, unknown>)) {
+    if (typeof v === 'number' && DAY_KEYS.has(key)) (node as Record<string, unknown>)[key] = Math.round(v * k);
+    else scaleDays(v, k);
+  }
+}
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 

@@ -1,4 +1,5 @@
-import { ageOf, isAlive, type Ctx } from '../core/ctx';
+import { DAYS_PER_YEAR } from '../core/calendar';
+import { ageOf, dayOfYear, isAlive, lunarOf, yearOf, yearsBetween, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
@@ -39,7 +40,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   const player = S.characters[S.meta.playerCharacterId];
 
   S.meta.day++;
-  const year = B.epochYear + Math.floor(S.meta.day / B.daysPerYear);
+  const year = yearOf(ctx, S.meta.day);
 
   // รายวัน: แผล
   const wounded = new Set(Object.values(S.wounds).map((w) => w.characterId));
@@ -51,8 +52,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     }
   }
 
-  // รายเดือน: ความตั้งใจของผู้เล่น (เกี้ยว ผูกมิตร) เดินหน้า กินแรงงานที่บ้าน และอาจมี event แทรก
-  if (S.meta.day % 30 === 0) {
+  // รายเดือน (ขึ้น 1 ค่ำ): ความตั้งใจของผู้เล่น (เกี้ยว ผูกมิตร) เดินหน้า กินแรงงานที่บ้าน และอาจมี event แทรก
+  if (lunarOf(ctx).day === 1) {
     const r = tickIntents(ctx);
     for (const line of r.lines) out.push({ type: 'log', line });
     for (const prepared of r.events) out.push({ type: 'event', prepared });
@@ -67,8 +68,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const req of m.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
   }
 
-  // รายปี (วันแรกของปี)
-  if (S.meta.day % B.daysPerYear === 0) {
+  // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
+  if (dayOfYear(ctx, S.meta.day) === 0) {
     for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', line });
     for (const hh of Object.values(S.households)) {
       const logs = householdYearTick(ctx, hh.id);
@@ -122,7 +123,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   for (const req of player ? tickFestivals(ctx, awayLabor(ctx, player)) : []) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
 
   // เหตุการณ์ของผู้เล่น
-  if (isAlive(player) && ctx.rng.chance(B.world.eventsPerYear / B.daysPerYear)) {
+  if (isAlive(player) && ctx.rng.chance(B.world.eventsPerYear / DAYS_PER_YEAR)) {
     const prepared = pickEvent(ctx, player);
     if (prepared) out.push({ type: 'event', prepared });
   }
@@ -222,9 +223,8 @@ export function lifeMilestones(
   onBirth?: (kid: Character, parent: Character, spouse: Character) => boolean,
 ): string[] {
   const W = ctx.content.balance.world;
-  const dpy = ctx.content.balance.daysPerYear;
   const day = ctx.state.meta.day;
-  const year = ctx.content.balance.epochYear + Math.floor(day / dpy);
+  const year = yearOf(ctx, day);
   const out: string[] = [];
   for (const ch of Object.values(ctx.state.characters)) {
     // คนในตระกูลเท่านั้น — คู่ครองคนนอกตามคู่ของตัวเอง
@@ -261,7 +261,7 @@ export function lifeMilestones(
     }
 
     // มีบุตรตามปีหลังแต่งงาน — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ
-    if (spouse && ch.marriedDay !== undefined && W.childAfterMarriageYears.includes(Math.floor((day - ch.marriedDay) / dpy))) {
+    if (spouse && ch.marriedDay !== undefined && W.childAfterMarriageYears.includes(yearsBetween(ctx, ch.marriedDay, day))) {
       const mother = ch.sex === 'f' ? ch : spouse;
       const father = ch.sex === 'm' ? ch : spouse;
       const sex = ctx.rng.chance(0.5) ? 'm' : 'f';

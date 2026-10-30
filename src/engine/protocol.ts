@@ -60,7 +60,8 @@ export type Reply = { id: number; ok: true; data: unknown } | { id: number; ok: 
 export type Push =
   | { type: 'ready' }
   | { type: 'log'; year: number; lines: string[] }
-  | { type: 'progress'; day: number; year: number; month: number; dayOfMonth: number }
+  /** solar: วันที่สุริยคติสำหรับผู้เล่น · lunar: วันจันทรคติแบบที่คนในเรื่องใช้ */
+  | { type: 'progress'; day: number; year: number; solar: string; lunar: string }
   | { type: 'clock'; clock: ClockState }
   | { type: 'pendingEvent'; event: EventView }
   | { type: 'handover'; deceased: string; heir: string; lines: string[] }
@@ -87,6 +88,9 @@ export interface CharacterView {
   name: string;
   age: number;
   year: number;
+  /** วันที่สุริยคติ / จันทรคติ ณ ตอนนี้ (แถบวันที่) */
+  solar: string;
+  lunar: string;
   estate: string;
   title: string | null;
   wealth: number;

@@ -1,4 +1,5 @@
-import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
+import { formatLunar, formatSolar } from '../core/calendar';
+import { ageOf, isAlive, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
 import type { CapabilityId, Character } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, knownLocals, localOrigin, relationStrength, tradeOf } from '../systems/acquaintance';
 import { capability } from '../systems/body';
@@ -33,6 +34,8 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     name: ch.name,
     age: ageOf(ctx, ch),
     year: yearOf(ctx, ctx.state.meta.day),
+    solar: formatSolar(solarOf(ctx)),
+    lunar: formatLunar(lunarOf(ctx)),
     estate: ctx.tags.def(estateTag) ? ctx.tags.label(estateTag) : ch.social.estate,
     title: ch.social.title,
     wealth: Math.round(ch.social.wealth),

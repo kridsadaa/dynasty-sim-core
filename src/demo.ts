@@ -4,7 +4,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
-import { ageOf, isAlive, makeCtx, must, yearOf, type Ctx } from './core/ctx';
+import { yearsToDays } from './core/calendar';
+import { ageOf, isAlive, makeCtx, must, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB, Dynasty, TagId } from './core/types';
 import { capability, tickWounds } from './systems/body';
 import { chooseOption, prepareEvent } from './systems/events';
@@ -54,7 +55,7 @@ function monteCarlo(N: number): void {
         const ctx = makeCtx(emptyState(1000 + i * 7919 + age * 31 + (option === 'cry' ? 0 : 17)), content);
         const mother = spawnCharacter(ctx, { name: 'แม่', sex: 'f', birthYear: 2260, estate: 'phrai_som' });
         const child = spawnCharacter(ctx, { name: 'ลูก', sex: 'm', birthYear: 2280, estate: 'phrai_som', mother });
-        ctx.state.meta.day = child.birthDay + age * B.daysPerYear;
+        ctx.state.meta.day = child.birthDay + yearsToDays(age);
         const p = prepareEvent(ctx, 'childhood.kitchen_cut', { actor: child.id, caregiver: mother.id });
         const tr = chooseOption(ctx, p, option).trauma[0];
         const cats = new Set((tr?.branches ?? []).map((b) => category(ctx, b.target)));
@@ -87,7 +88,7 @@ function story(seed: number, verbose: boolean): boolean {
   const say = (...a: unknown[]) => {
     if (verbose) console.log(...a);
   };
-  const setYear = (y: number) => (ctx.state.meta.day = (y - B.epochYear) * B.daysPerYear + 5);
+  const setYear = (y: number) => (ctx.state.meta.day = yearStart(ctx, y) + 5);
   const saveSize = () => `${(JSON.stringify(ctx.state).length / 1024).toFixed(1)} KB`;
 
   setYear(2284);
@@ -122,7 +123,7 @@ function story(seed: number, verbose: boolean): boolean {
   ctx.state.meta.playerDynastyId = dyn.id;
 
   // ---------------- เหตุการณ์ในวัยเด็ก ----------------
-  ctx.state.meta.day = hero.birthDay + 6 * B.daysPerYear + 130; // ต้นหน้าฝน
+  ctx.state.meta.day = hero.birthDay + yearsToDays(6) + 130; // ต้นหน้าฝน
   const prepared = prepareEvent(ctx, 'childhood.kitchen_cut', { actor: hero.id, caregiver: mother.id }, { target_food: 'food:pumpkin' });
   const rep = chooseOption(ctx, prepared, 'cry');
   const tr = must(rep.trauma[0], 'trauma');

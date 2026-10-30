@@ -762,7 +762,6 @@ export interface HistoricalEvent {
 
 export interface Balance {
   epochYear: number;
-  daysPerYear: number;
   trauma: {
     memoryThreshold: Unit;
     formativeThreshold: Unit;
@@ -791,7 +790,7 @@ export interface Balance {
     scarChance: Record<WoundKind, Unit>;
     healDaysBase: number;
     healDaysPerSeverity: number;
-    rainySeason: [number, number]; // day-of-year
+    rainySeason: [number, number]; // วันที่เท่าไรของปีสุริยคติ (0 = 1 ม.ค.)
     festerLossChance: Unit;
   };
   social: {
@@ -857,15 +856,15 @@ export interface Balance {
     outingsPerYear: number;
   };
   /**
-   * งานบุญ/งานประจำปีของผู้เล่น — เดือนในเกม = เดือนจันทรคติ วันที่ 15 เพ็ญ วันที่ 30 ดับ
+   * งานบุญ/งานประจำปีของผู้เล่น — เดือนและวันพระตามปฏิทินจันทรคติ (core/calendar.ts)
    * (lore: ritual.holy_days_1680s, ritual.temple_festival_1680s, ritual.floating_lanterns_1680s, ritual.fifth_month_bathing_1680s)
    */
   festivals: {
     minAge: number;
-    /** ต่อปี: วันพระที่ขึ้นเป็น event (จากวันพระราว 24 วัน) */
+    /** ต่อปี: วันพระที่ขึ้นเป็น event (จากวันเพ็ญและวันดับราว 25 วัน) */
     holyDaysPerYear: number;
     templeFairsPerYear: number;
-    /** งานวัดเฉพาะหน้าแล้ง: เดือนแรก..เดือนสุดท้าย */
+    /** งานวัดเฉพาะหน้าแล้ง: เดือนจันทรคติแรก..สุดท้าย (1 = เดือนอ้าย) */
     fairMonths: [number, number];
     lanternMonth: number;
     lanternChance: number;

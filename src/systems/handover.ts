@@ -1,3 +1,4 @@
+import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, Relation, TagId } from '../core/types';
@@ -339,7 +340,7 @@ function crystallizeTaboos(ctx: Ctx, dead: Character, heir: Character, heirNode:
   // (b) กฎในเรือนของผู้ตายที่อยู่นานพอ → ข้อห้ามตระกูล
   const hh = dead.householdId ? ctx.state.households[dead.householdId] : undefined;
   for (const rule of hh?.rules ?? []) {
-    const years = (ctx.state.meta.day - rule.sinceDay) / ctx.content.balance.daysPerYear;
+    const years = (ctx.state.meta.day - rule.sinceDay) / DAYS_PER_YEAR;
     if (years < B.tabooMinYears) continue;
     const existing = dyn.taboos.find((t) => t.target === rule.target || ctx.tags.isA(rule.target, t.target));
     if (existing) {

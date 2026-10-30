@@ -1,4 +1,4 @@
-import type { Ctx } from '../core/ctx';
+import { yearStart, type Ctx } from '../core/ctx';
 import type { Character, ItemId, TagId } from '../core/types';
 import { createDynasty, createHousehold, marry, spawnCharacter } from './factory';
 
@@ -7,8 +7,7 @@ import { createDynasty, createHousehold, marry, spawnCharacter } from './factory
  * TODO: ย้ายไปเป็น scenarios.json เมื่อมีหลายฉาก
  */
 export function bootstrapScenario(ctx: Ctx, heroName = 'บุญมา'): Character {
-  const B = ctx.content.balance;
-  ctx.state.meta.day = (2288 - B.epochYear) * B.daysPerYear;
+  ctx.state.meta.day = yearStart(ctx, 2288);
   const father = spawnCharacter(ctx, { name: 'หมื่นอิน', sex: 'm', birthYear: 2255, estate: 'noble', wealth: 600 });
   const dyn = createDynasty(ctx, 'บ้านริมคลองตะเคียน', father, 'faction:taksin_loyalist');
   father.social.title = 'หมื่นอินทรรักษา';

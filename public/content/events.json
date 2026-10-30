@@ -1572,6 +1572,7 @@
       "moon": {
         "oneOf": [
           "moon:full",
+          "moon:dark14",
           "moon:dark"
         ]
       }

@@ -1,4 +1,5 @@
-import { dayOfYear, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
+import { daysInYear, yearsToDays } from '../core/calendar';
+import { dayOfYear, isAlive, must, newId, yearOf, yearStart, type Ctx } from '../core/ctx';
 import type {
   Character, Dynasty, DynastyId, Estate, FamilyNode, GameState, Household, HouseholdId, Parentage, Personality,
 } from '../core/types';
@@ -6,7 +7,7 @@ import type {
 export function emptyState(seed: number): GameState {
   return {
     meta: {
-      schemaVersion: 1, // ต้องตรงกับ CURRENT_SCHEMA ใน engine/persistence.ts
+      schemaVersion: 2, // ต้องตรงกับ CURRENT_SCHEMA ใน engine/persistence.ts
       seed, rngState: seed, day: 0, nextSerial: 1,
       playerCharacterId: '' as Character['id'], playerDynastyId: '' as DynastyId,
     },
@@ -63,7 +64,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
   // คนที่เกิดในปีนี้หรือก่อนหน้า: วันเกิดของปีนี้ต้องผ่านมาแล้ว → เด็กเกิดใหม่ไม่มีวันเกิดในอนาคต (อายุ -1)
   // และคู่ครองที่สร้างด้วย birthYear = ปีนี้ − อายุ ได้อายุตรงตามที่ตั้งใจ (ทอยสุ่มครั้งเดียวเท่าเดิม)
   const now = ctx.state.meta.day;
-  const birthDaySpan = o.birthYear <= yearOf(ctx, now) ? dayOfYear(ctx, now) + 1 : B.daysPerYear;
+  const birthDaySpan = o.birthYear <= yearOf(ctx, now) ? dayOfYear(ctx, now) + 1 : daysInYear(o.birthYear);
   const ch: Character = {
     id: newId(ctx, 'chr'),
     familyNodeId: node.id,
@@ -72,7 +73,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     name: o.name,
     sex: o.sex,
     handedness: ctx.rng.chance(0.1) ? 'l' : 'r',
-    birthDay: (o.birthYear - B.epochYear) * B.daysPerYear + Math.floor(ctx.rng.range(0, birthDaySpan)),
+    birthDay: yearStart(ctx, o.birthYear) + Math.floor(ctx.rng.range(0, birthDaySpan)),
     deathDay: null,
     deathCause: null,
     anatomyId: 'human',
@@ -205,7 +206,7 @@ export function wed(ctx: Ctx, ch: Character, spouse: Character): string {
   marry(ctx, ch, spouse);
   ch.marriedDay = day;
   delete spouse.local; // คนรู้จักนอกตระกูลที่แต่งเข้ามา กลายเป็นคนในเรือน
-  const stay = Math.round(ctx.rng.range(W.stayYears[0], W.stayYears[1])) * ctx.content.balance.daysPerYear;
+  const stay = yearsToDays(Math.round(ctx.rng.range(W.stayYears[0], W.stayYears[1])));
 
   const parentsHome = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
   if (ch.sex === 'f') {

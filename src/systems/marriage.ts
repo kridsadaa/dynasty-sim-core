@@ -1,4 +1,5 @@
-import { isAlive, yearOf, type Ctx } from '../core/ctx';
+import { formatLunarDay, formatSolar } from '../core/calendar';
+import { isAlive, lunarOf, solarOf, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, CharacterId, Estate, MarriageStep } from '../core/types';
 import { familiarity, setRelation } from './acquaintance';
@@ -251,7 +252,7 @@ export function tickMarriage(ctx: Ctx): { lines: string[]; events: MarriageEvent
 export function marriageStatus(ctx: Ctx, ch: Character): string[] {
   const S = ctx.state;
   const out: string[] = [];
-  const dateOf = (day: number) => `เดือน ${Math.floor((day % ctx.content.balance.daysPerYear) / MONTH) + 1} พ.ศ. ${yearOf(ctx, day)}`;
+  const dateOf = (day: number) => `${formatLunarDay(lunarOf(ctx, day))} (${formatSolar(solarOf(ctx, day))})`;
   if (ch.betrothal) {
     const to = S.characters[ch.betrothal.toId];
     const ok = canPay(ctx, ch, ch.betrothal.sinsot);

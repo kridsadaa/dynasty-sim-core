@@ -1,3 +1,4 @@
+import { fullYears, lunarDate, solarDate, yearStartDay, type LunarDate, type SolarDate } from './calendar';
 import { Rng } from './rng';
 import { TagIndex } from './tags';
 import type { Character, ContentDB, Day, GameState } from './types';
@@ -28,13 +29,26 @@ export function must<T>(v: T | undefined | null, what: string): T {
   return v;
 }
 
-export const yearOf = (ctx: Ctx, day: Day): number =>
-  ctx.content.balance.epochYear + Math.floor(day / ctx.content.balance.daysPerYear);
+/** พ.ศ. ตามปฏิทินสุริยคติ (ขึ้นปีใหม่ 1 ม.ค.) */
+export const yearOf = (ctx: Ctx, day: Day): number => solarDate(ctx.content.balance.epochYear, day).year;
 
-export const dayOfYear = (ctx: Ctx, day: Day): number => day % ctx.content.balance.daysPerYear;
+/** วันที่เท่าไรของปีสุริยคติ เริ่ม 0 = 1 ม.ค. */
+export const dayOfYear = (ctx: Ctx, day: Day): number => solarDate(ctx.content.balance.epochYear, day).dayOfYear;
 
+export const solarOf = (ctx: Ctx, day: Day = ctx.state.meta.day): SolarDate => solarDate(ctx.content.balance.epochYear, day);
+
+export const lunarOf = (ctx: Ctx, day: Day = ctx.state.meta.day): LunarDate => lunarDate(ctx.content.balance.epochYear, day);
+
+/** วันในเกมของ 1 ม.ค. ปี พ.ศ. year */
+export const yearStart = (ctx: Ctx, year: number): Day => yearStartDay(ctx.content.balance.epochYear, year);
+
+/** ครบกี่ปีเต็มจากวัน from ถึงวัน to */
+export const yearsBetween = (ctx: Ctx, from: Day, to: Day = ctx.state.meta.day): number =>
+  fullYears(ctx.content.balance.epochYear, from, to);
+
+/** อายุเต็มปี (ผ่านวันเกิดปีนี้แล้วหรือยัง) */
 export const ageOf = (ctx: Ctx, ch: Character, day: Day = ctx.state.meta.day): number =>
-  Math.floor((day - ch.birthDay) / ctx.content.balance.daysPerYear);
+  fullYears(ctx.content.balance.epochYear, ch.birthDay, day);
 
 export type Living = Character & { deathDay: null };
 

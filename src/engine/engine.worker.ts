@@ -1,5 +1,6 @@
 import { buildContentDB } from '../content';
-import { makeCtx, commitRng, dayOfYear, must, yearOf, type Ctx } from '../core/ctx';
+import { formatLunar, formatSolar } from '../core/calendar';
+import { makeCtx, commitRng, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
 import type { ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
@@ -126,8 +127,8 @@ function step(c: Ctx, days: number, lines: string[]): 'done' | 'event' | 'gameOv
 }
 
 function pushProgress(c: Ctx) {
-  const doy = dayOfYear(c, c.state.meta.day);
-  push({ type: 'progress', day: c.state.meta.day, year: yearOf(c, c.state.meta.day), month: Math.floor(doy / 30) + 1, dayOfMonth: (doy % 30) + 1 });
+  const day = c.state.meta.day;
+  push({ type: 'progress', day, year: yearOf(c, day), solar: formatSolar(solarOf(c, day)), lunar: formatLunar(lunarOf(c, day)) });
 }
 
 async function runClock(c: Ctx): Promise<void> {

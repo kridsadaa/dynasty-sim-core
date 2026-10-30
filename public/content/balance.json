@@ -1,6 +1,5 @@
 {
   "epochYear": 2280,
-  "daysPerYear": 360,
   "trauma": {
     "memoryThreshold": 0.2,
     "formativeThreshold": 0.4,
@@ -18,7 +17,7 @@
     "scarChance": { "cut": 0.9, "stab": 1.0, "burn": 1.2, "blunt": 0.3, "fracture": 0.2, "bite": 0.9 },
     "healDaysBase": 7,
     "healDaysPerSeverity": 40,
-    "rainySeason": [120, 240],
+    "rainySeason": [135, 300],
     "festerLossChance": 0.35
   },
   "social": {

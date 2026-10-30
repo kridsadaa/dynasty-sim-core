@@ -1,4 +1,4 @@
-import { must, newId, type Ctx } from '../core/ctx';
+import { must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type {
   Character, Claim, ClaimSlot, Dynasty, FamilyNode, Legend, LegendId, Memory, PerceptRole, TagId,
@@ -49,7 +49,7 @@ export function seedLegendsFromLife(ctx: Ctx, ch: Character, node: FamilyNode, d
         magnitude: 1,
         heroism: 0,
         supernatural: [],
-        year: ctx.content.balance.epochYear + Math.floor(scar.acquiredDay / ctx.content.balance.daysPerYear),
+        year: yearOf(ctx, scar.acquiredDay),
       };
       const legend: Legend = {
         id: newId(ctx, 'lgd'),
