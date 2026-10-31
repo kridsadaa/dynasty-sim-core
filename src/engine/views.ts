@@ -255,7 +255,7 @@ function effectHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'
 /** ตัวเลือกที่เป็นขั้นตอนแต่งงาน → บอกราคาและโอกาสไว้ก่อนเลือก */
 function optionHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects']): string | undefined {
   for (const e of effects) {
-    if (e.op === 'career') {
+    if (e.op === 'career' && e.action !== 'restore' && e.action !== 'decline') {
       const ch = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
       if (ch) return careerHint(ctx, ch, e.action, e.dept);
     }

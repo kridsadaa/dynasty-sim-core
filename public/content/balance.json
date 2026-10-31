@@ -86,7 +86,8 @@
     "punishAt": -0.45,
     "uniqueVacancyChance": 0.07,
     "promotePrestige": 2,
-    "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }]
+    "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }],
+    "recallYears": [2311, 2313]
   },
   "marriage": {
     "sinsotByEstate": { "royal": 400, "noble": 60, "phrai_luang": 10, "phrai_som": 8, "that": 2, "monk": 0, "merchant": 30, "foreigner": 20 },

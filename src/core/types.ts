@@ -243,6 +243,8 @@ export interface Character {
    */
   /** deptId: กรมที่สังกัด — ไม่มี = ยังเป็นมหาดเล็ก (หรือเซฟเก่า = กรมแรก) */
   office?: { postId: string; deptId?: string; name?: string; sinceDay: Day; favor: Signed };
+  /** ตำแหน่งที่หมดไปเพราะราชสำนักล่ม (เสียกรุง 2310) — แผ่นดินใหม่อาจให้คงยศเดิม (career.recall) */
+  formerOffice?: { postId: string; deptId?: string; name?: string; title: string | null };
   /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
   ordainedYear?: number;
   /** minor = เมียกลางนอก (เมียน้อย) — ลูกเป็นบุตรภรรยาน้อย; ไม่มี = เมียหลวง/ไม่ใช่เมียใคร */
@@ -572,7 +574,7 @@ export type Effect =
    * ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, assign = พ้นมหาดเล็กไปสังกัดกรม dept แล้วเลื่อนหนึ่งขั้น,
    * promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ — ดู systems/career.ts
    */
-  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss'; dept?: string }
+  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline'; dept?: string }
   /** ความโปรดปรานในราชการ */
   | { op: 'favor'; role: string; delta: number }
   /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์) */
@@ -822,6 +824,10 @@ export interface HistoricalEvent {
     everyone?: boolean;
     /** ฝักฝ่ายที่โดนริบราชบาดาล */
     purgeFactions?: string[];
+    /** ตระกูลในฝักฝ่ายนั้นโดนจริงด้วยโอกาสนี้ (ไม่ระบุ = ทุกตระกูล) — การกวาดล้างจริงมักแคบกว่าทั้งฝ่าย */
+    purgeChance?: Unit;
+    /** ความเสี่ยงตายเฉพาะคนอายุช่วงนี้ (ศึก: ชายในวัยถูกเกณฑ์) — ไม่ระบุ = ทุกวัย */
+    ages?: [number, number];
     /** ราชสำนักล่ม — ทุกคนที่มีตำแหน่งราชการหมดตำแหน่ง (เสียกรุง 2310) */
     endsOffices?: boolean;
   };
@@ -1048,6 +1054,8 @@ export interface Balance {
      * ฝักฝ่ายมีผลตอน shock ที่ purgeFactions ระบุ แล้วหมดไปหลังจากนั้น
      */
     factionByEra: Array<{ from: number; to: number; faction: string }>;
+    /** หลังราชสำนักล่ม: ผู้ที่เคยมีตำแหน่งถูกเรียกเข้ารับราชการคงยศเดิมในปีช่วงนี้ (lore: event.fall_of_ayutthaya_2310) */
+    recallYears: [number, number];
   };
   /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
   marriage: {

@@ -78,12 +78,27 @@ function addPrestige(ctx: Ctx, ch: Character, delta: number): void {
 
 /** ทำ action ราชการจาก effect ของ event — คืนบรรทัด log */
 export function applyCareer(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss', deptId?: string,
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline', deptId?: string,
 ): string[] {
   const C = ctx.content.balance.career;
   const post = postOf(ctx, ch);
   const dept = deptOf(ctx, ch);
   switch (action) {
+    case 'restore': {
+      // แผ่นดินใหม่ให้คงยศเดิม (lore: event.fall_of_ayutthaya_2310 "พระราชทานฐานาศักดิ์แก่เสนาบดีให้คง...ดังเก่า")
+      const f = ch.formerOffice;
+      delete ch.formerOffice;
+      const to = f && (ctx.content.offices.departments.find((d) => d.id === f.deptId) ?? ctx.content.offices.departments[0]!);
+      const back = f && to?.posts.find((p) => p.id === f.postId);
+      if (!f || !to || !back || ch.office) return [];
+      ch.office = { postId: back.id, ...(f.deptId ? { deptId: f.deptId } : {}), ...(f.name ? { name: f.name } : {}), sinceDay: ctx.state.meta.day, favor: 0 };
+      ch.social.title = f.title;
+      ch.social.sakdina = back.sakdina;
+      return [`${ch.name}เข้ารับราชการในแผ่นดินใหม่ คงยศเดิม${f.title ? ` เป็น${f.title}` : ''}`];
+    }
+    case 'decline':
+      delete ch.formerOffice;
+      return [];
     case 'enter': {
       if (ch.office) return [];
       const first = must(postAt(dept, 0), 'post rank 0');
@@ -155,6 +170,12 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   const elder = parents.find((p) => p.householdId === player.householdId) ?? parents[0];
   const bind = { actor: player.id, ...(elder ? { elder: elder.id } : {}) };
 
+  if (!player.office && player.formerOffice) {
+    // ราชสำนักใหม่เรียกผู้ที่เคยมีตำแหน่ง — ผ่านช่วงปีไปแล้วก็หมดโอกาส
+    if (year >= C.recallYears[0] && year <= C.recallYears[1]) events.push({ event: 'career.recall', bindings: bind });
+    else if (year > C.recallYears[1]) delete player.formerOffice;
+    return { lines, events };
+  }
   if (!player.office) {
     const age = ageOf(ctx, player);
     if (player.sex === 'm' && player.social.estate === 'noble' && elder && age >= C.entryAge[0] && age <= C.entryAge[1]

@@ -2160,5 +2160,15 @@
       { "id": "scholars", "textKey": "event.assign_department.scholars", "conditions": [ { "type": "skill", "skill": "literacy", "min": 30 } ],
         "effects": [ { "op": "career", "role": "actor", "action": "assign", "dept": "royal_scholars" } ] }
     ]
+  },
+  "career.recall": {
+    "id": "career.recall", "textKey": "event.recall", "contextTags": [],
+    "roles": { "actor": {}, "elder": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "serve", "textKey": "event.recall.serve",
+        "effects": [ { "op": "career", "role": "actor", "action": "restore" } ] },
+      { "id": "stay", "textKey": "event.recall.stay",
+        "effects": [ { "op": "career", "role": "actor", "action": "decline" }, { "op": "stress", "role": "actor", "delta": -0.03 } ] }
+    ]
   }
 }

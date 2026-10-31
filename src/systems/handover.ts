@@ -594,7 +594,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
     out.push(`== ${ctx.tags.label(ev.tag)} (${ev.year}) ==`);
     for (const dyn of Object.values(ctx.state.dynasties)) {
       const members = Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c));
-      const purged = !!dyn.faction && (ev.shock.purgeFactions ?? []).includes(dyn.faction);
+      const purged = !!dyn.faction && (ev.shock.purgeFactions ?? []).includes(dyn.faction) && ctx.rng.chance(ev.shock.purgeChance ?? 1);
       for (const m of members) {
         const loss = ctx.rng.range(ev.shock.wealthLoss[0], ev.shock.wealthLoss[1]);
         m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : loss);
@@ -603,7 +603,10 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
           m.social.title = null;
         }
         if (m.office && (purged || ev.shock.endsOffices)) {
-          if (!purged) out.push(`${m.name}หมดตำแหน่ง${m.social.title ? ` ${m.social.title}` : ''} — ราชสำนักไม่มีอยู่อีกแล้ว`);
+          if (!purged) {
+            out.push(`${m.name}หมดตำแหน่ง${m.social.title ? ` ${m.social.title}` : ''} — ราชสำนักไม่มีอยู่อีกแล้ว`);
+            m.formerOffice = { postId: m.office.postId, ...(m.office.deptId ? { deptId: m.office.deptId } : {}), ...(m.office.name ? { name: m.office.name } : {}), title: m.social.title };
+          }
           applyCareer(ctx, m, 'dismiss');
         }
       }
@@ -620,9 +623,11 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
       if (purged) dyn.prestige *= 0.5;
     }
     // คนตาย: คนในตระกูล หรือทุกคนในฉากเมื่อเป็นโรคระบาด/ข้าวยาก (lore: event.cholera_*, event.famine_2310_2313)
+    // ศึกหลังเสียกรุงเสี่ยงเฉพาะคนวัยถูกเกณฑ์ (ages) — ตัวเลขของเกม พงศาวดารไม่มียอดตายฝ่ายไทย
     const how = ev.kind === 'plague' ? 'ด้วย' : 'ใน';
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c) || isGraced(ctx, c) || (!ev.shock.everyone && !c.dynastyId)) continue;
+      if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
       if (!ctx.rng.chance(ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk)) continue;
       markDead(ctx, c, ev.tag);
       out.push(`${c.name} เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
