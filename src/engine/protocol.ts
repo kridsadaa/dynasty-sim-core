@@ -212,6 +212,8 @@ export interface TreeNodeView {
   alive: boolean;
   /** ตัวละครถูก prune แล้ว เหลือแต่ชื่อในผัง */
   pruned: boolean;
+  /** แยกไปอยู่ที่อื่นทั้งที่ยังมีชีวิต (ญาติห่างไกล) — ไม่ได้ตาย */
+  drifted: boolean;
   /** คู่ครองคนนอก (ไม่มีพ่อแม่ในผัง) */
   marriedIn: boolean;
   parentage: string | null; // null = ภรรยาเอก/ไม่ต้องบอก

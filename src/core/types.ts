@@ -394,6 +394,8 @@ export interface FamilyNode {
   } | null;
   legendIds: LegendId[];
   pruneLevel: 0 | 1; // 0 = มี Character เต็ม, 1 = เหลือ node อย่างเดียว
+  /** ปีที่แยกไปอยู่ที่อื่นทั้งที่ยังมีชีวิต (prune: driftKinDistance) — ไม่มี = ตายในฉาก */
+  driftedYear?: number;
 }
 
 export interface FamilyTaboo {
@@ -413,6 +415,10 @@ export interface BranchSummary {
   label: string;
   memberCount: number;
   generations: number;
+  /** ชื่อต้นสายที่รวมอยู่ในบรรทัดนี้ (ลูกหลายคนของคนเดียวกันรวมเป็นบรรทัดเดียว) — เซฟเก่าไม่มี */
+  names?: string[];
+  /** มีคนในสายที่แยกไปอยู่ที่อื่นทั้งที่ยังมีชีวิต */
+  drifted?: boolean;
 }
 
 export interface Dynasty {
@@ -1025,6 +1031,11 @@ export interface Balance {
   };
   prune: {
     keepKinDistance: number;
+    /**
+     * ญาติที่ยังมีชีวิตแต่ห่างจากผู้เล่นเกินนี้ (นับขั้นในผังตระกูล) แยกไปอยู่ที่อื่น — ออกจากการจำลอง เหลือแต่ชื่อในผัง
+     * ต้องมากกว่า 2 × ระยะของทายาทที่ไกลที่สุด (หลาน ลูกของพี่น้อง = 3) ไม่งั้นญาติใกล้ของทายาทคนใหม่อาจแยกไปแล้ว
+     */
+    driftKinDistance: number;
     eventLogMaxAgeDays: number;
     lightMemoryKeep: number;
   };

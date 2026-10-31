@@ -356,7 +356,7 @@ function renderTree(v: TreeView) {
 
   const personButton = (id: string) => {
     const n = byId.get(id)!;
-    const cls = ['person', n.alive ? '' : 'dead', n.pruned ? 'pruned' : '', id === v.playerNodeId ? 'me' : '', id === inspecting ? 'selected' : '']
+    const cls = ['person', n.alive || n.drifted ? '' : 'dead', n.pruned ? 'pruned' : '', id === v.playerNodeId ? 'me' : '', id === inspecting ? 'selected' : '']
       .filter(Boolean).join(' ');
     const b = button(`${n.sex === 'm' ? '♂' : '♀'} ${n.name} (${n.birthYear}–${n.deathYear ?? ''})`, () => void inspect(id), cls);
     b.dataset.node = id;
@@ -365,7 +365,7 @@ function renderTree(v: TreeView) {
     if (id === v.playerNodeId) frag.append(el('span', 'ผู้เล่น', 'badge'));
     if (id === v.headNodeId) frag.append(el('span', 'ผู้นำตระกูล', 'badge'));
     if (n.parentage) frag.append(el('span', ` ${n.parentage}`, 'muted'));
-    if (n.pruned) frag.append(el('span', ' เหลือแต่ชื่อ', 'muted'));
+    if (n.pruned) frag.append(el('span', n.drifted ? ' แยกไปอยู่ที่อื่น' : ' เหลือแต่ชื่อ', 'muted'));
     return frag;
   };
 

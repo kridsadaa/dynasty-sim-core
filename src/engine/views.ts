@@ -354,6 +354,7 @@ export function treeView(ctx: Ctx): TreeView {
         deathYear: n.deathYear ?? (ch?.deathDay != null ? yearOf(ctx, ch.deathDay) : null),
         alive: isAlive(ch),
         pruned: !ch,
+        drifted: n.driftedYear !== undefined,
         // คู่ครองคนนอก = ไม่มีพ่อแม่ในผัง และไม่ใช่ต้นตระกูล
         marriedIn: !founders.has(n.id) && !inTree(n.fatherId) && !inTree(n.motherId),
         parentage: parentageLabel(n.parentage),
@@ -425,7 +426,9 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     return {
       nodeId: node.id, name: node.name, sex: node.sex,
       lifespan: `${node.birthYear}–${deathYear ?? '?'}`,
-      status: `เหลือแต่ชื่อในผังตระกูล${cause ? ` · ${ctx.tags.label(cause)}` : ''}`,
+      status: node.driftedYear !== undefined
+        ? `แยกไปอยู่ที่อื่นตั้งแต่ พ.ศ. ${node.driftedYear} — ขาดการติดต่อกับตระกูล`
+        : `เหลือแต่ชื่อในผังตระกูล${cause ? ` · ${ctx.tags.label(cause)}` : ''}`,
       facts, sections,
     };
   }

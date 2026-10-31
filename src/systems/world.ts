@@ -10,6 +10,7 @@ import {
 } from './factory';
 import { applyHistoricalShocks, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
+import { pruneState } from './prune';
 import { tickChores, tickOutings } from './chores';
 import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
@@ -121,6 +122,9 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       out.push({ type: 'log', kind: 'inherit', line: `มรดกของ${r.deceased} ตกถึง${r.heir} ผู้นำตระกูลคนใหม่` });
       for (const line of r.log) out.push({ type: 'log', kind: 'inherit', line });
     }
+    // ยุบคนตายทุกปี ไม่รอ handover ครั้งหน้า (ซึ่งอาจห่างหลายสิบปี) — หลังแบ่งมรดกและสร้าง event งานศพแล้ว
+    // คนที่ event ยังรอคำตอบอ้างถึง (งานศพ) และผู้เล่นที่เพิ่งตาย (worker ทำ handover ต่อ) ยุบรอบหน้า
+    pruneState(ctx);
   }
 
   // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่

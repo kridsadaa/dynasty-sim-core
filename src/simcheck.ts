@@ -99,6 +99,8 @@ function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
     const now = S.characters[id as keyof typeof S.characters];
     if (now && now.deathDay === null) continue;
     tracked.delete(id);
+    // แยกไปอยู่ที่อื่นทั้งที่ยังมีชีวิต (prune: driftKinDistance) — หยุดนับ ไม่ใช่ตาย
+    if (!now && ch.deathDay === null) continue;
     // ทอยตาย 1 ม.ค. สำหรับปีที่เพิ่งผ่านไป → นับที่อายุของปีนั้น (ให้ตรงกับคน-ปีที่นับต้นปี)
     const age = Math.max(0, Math.min(MAX_AGE, ageOf(ctx, ch, (ch.deathDay ?? S.meta.day) - 1)));
     deathsAt[age]++;

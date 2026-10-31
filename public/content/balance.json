@@ -118,5 +118,5 @@
     "distanceWeights": { "near": 0.55, "town": 0.35, "far": 0.1 },
     "oppositeSexWhenSingle": 0.65
   },
-  "prune": { "keepKinDistance": 3, "eventLogMaxAgeDays": 3600, "lightMemoryKeep": 3 }
+  "prune": { "keepKinDistance": 3, "driftKinDistance": 6, "eventLogMaxAgeDays": 3600, "lightMemoryKeep": 3 }
 }
