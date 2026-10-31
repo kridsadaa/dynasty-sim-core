@@ -8,7 +8,7 @@ import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, type Ctx } from './core/ctx
 import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
-import { heirCandidates, markDead, performHandover } from './systems/handover';
+import { estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
 import { knownLocals } from './systems/acquaintance';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
@@ -46,6 +46,8 @@ function invariants(ctx: Ctx, ended: boolean): void {
     check('เรือนที่หัวเรือนไม่มีชีวิต', Object.values(S.households).filter((h) => !alive(h.headId)).map((h) => h.id));
     check('สมาชิกเรือนที่ตายแล้ว', Object.values(S.households).flatMap((h) => h.memberIds.filter((id) => !alive(id))));
     check('คนตายที่ยังถือเงิน', Object.values(S.characters).filter((c) => !isAlive(c) && c.social.wealth > 0.5).map((c) => c.name));
+    // ผู้นำตายโดยมีญาติในตระกูล → ต้องส่งต่อ; ว่างได้เฉพาะตอนสิ้นสาย
+    check('ผู้นำตระกูลที่ไม่มีชีวิต', Object.values(S.dynasties).filter((d) => !alive(S.familyNodes[d.headNodeId]?.characterId)).map((d) => d.name));
   }
   check('ความตั้งใจที่ผู้ทำ/เป้าหมายไม่อยู่แล้ว', Object.values(S.intents).filter((i) => !alive(i.actorId) || !S.characters[i.targetId]).map((i) => i.id));
   check('ขั้นตอนแต่งงานค้างอยู่กับคนที่ไม่มีแล้ว', Object.values(S.characters).flatMap((c) =>
@@ -219,7 +221,61 @@ demographyReport();
   if (failed === before) console.log('  ✓ ผู้นำ หัวเรือน และกฎในเรือนคงเดิม');
 }
 
-// [3] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
+// [3] ผู้เล่นไม่มีบุตร → พี่น้องสืบตำแหน่งและได้มรดกในฐานะญาติ (ไม่ตกเป็นของหลวง)
+{
+  const ctx = makeCtx(emptyState(11), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(25);
+  const dyn = S.dynasties[S.meta.playerDynastyId]!;
+  const heroNode = S.familyNodes[hero.familyNodeId]!;
+  const father = S.characters[S.familyNodes[heroNode.fatherId!]!.characterId!]!;
+  const sibling = Object.values(S.characters).find((c) => c !== hero && S.familyNodes[c.familyNodeId]?.fatherId === heroNode.fatherId)!;
+  markDead(ctx, father, 'situation:old_age');
+  performHandover(ctx, father.id, hero.id, { asPlayer: false });
+  hero.social.wealth = 100;
+  markDead(ctx, hero, 'situation:old_age');
+  const problems: string[] = [];
+  if (heirCandidates(ctx, hero)[0]?.ch.id !== sibling.id) problems.push(`ผู้สืบคนแรกคือ ${heirCandidates(ctx, hero)[0]?.ch.name ?? 'ไม่มี'} ไม่ใช่พี่น้อง`);
+  const heirs = estateHeirs(ctx, hero);
+  if (heirs.find((h) => h.ch.id === sibling.id)?.relation !== 'fullSibling') problems.push('พี่น้องไม่อยู่ในผู้รับมรดกฐานะพี่น้องร่วมบิดามารดา');
+  // งานศพคิดจากทรัพย์ทั้งหมด อาจกินเงินสดหมด → นับทั้งเงินและของที่ได้
+  const worth = (c: Character) => c.social.wealth + Object.values(S.items).filter((i) => i.ownerCharacterId === c.id).reduce((a, i) => a + i.value, 0);
+  const before = worth(sibling);
+  performHandover(ctx, hero.id);
+  if (S.meta.playerCharacterId !== sibling.id) problems.push('ผู้เล่นไม่ได้สลับไปเป็นพี่น้อง');
+  if (dyn.headNodeId !== sibling.familyNodeId) problems.push('ผู้นำตระกูลไม่ได้ไปที่พี่น้อง');
+  if (worth(sibling) <= before) problems.push('พี่น้องไม่ได้มรดก');
+  const b = failed;
+  console.log('ผู้เล่นไม่มีบุตร:');
+  check('ญาติสืบแทน', problems);
+  if (failed === b) console.log(`  ✓ ${sibling.name} สืบตำแหน่งและได้มรดกร่วมกับญาติอีก ${heirs.length - 1} คน`);
+}
+
+// [4] บุตรตายก่อน → หลานเป็นผู้สืบก่อนพี่น้อง และได้มรดกในฐานะหลาน
+{
+  const ctx = makeCtx(emptyState(12), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(60);
+  const wife = spawnCharacter(ctx, { name: 'ภรรยา', sex: 'f', birthYear: 2288, estate: 'noble', dynastyId: null, householdId: null });
+  marry(ctx, hero, wife);
+  const son = spawnCharacter(ctx, { name: 'ลูกชาย', sex: 'm', birthYear: 2310, estate: 'noble', father: hero, mother: wife });
+  const sonWife = spawnCharacter(ctx, { name: 'สะใภ้', sex: 'f', birthYear: 2312, estate: 'noble', dynastyId: null, householdId: null });
+  marry(ctx, son, sonWife);
+  const grandson = spawnCharacter(ctx, { name: 'หลานชาย', sex: 'm', birthYear: 2328, estate: 'noble', father: son, mother: sonWife });
+  markDead(ctx, son, 'situation:old_age');
+  markDead(ctx, hero, 'situation:old_age');
+  const problems: string[] = [];
+  if (heirCandidates(ctx, hero)[0]?.ch.id !== grandson.id) problems.push('ผู้สืบคนแรกไม่ใช่หลาน');
+  if (!estateHeirs(ctx, hero).some((h) => h.ch.id === grandson.id && h.relation === 'grandchild')) problems.push('หลานไม่อยู่ในผู้รับมรดก');
+  const b = failed;
+  console.log('บุตรตายก่อน:');
+  check('หลานรับแทน', problems);
+  if (failed === b) console.log('  ✓ หลานเป็นผู้สืบและได้ส่วนมรดก');
+}
+
+// [5] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
 {
   const before = failed;
   console.log('ปฏิทินจันทรคติ:');
