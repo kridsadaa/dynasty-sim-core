@@ -259,12 +259,20 @@ export function marriesThisYear(ctx: Ctx, sex: 'm' | 'f', age: number): boolean 
   return ctx.rng.chance(wed / (n - (age - min) * wed));
 }
 
-/** ส่วนของคนอายุนี้ที่ออกเรือนไปแล้ว — ใช้กับคนนอกที่เพิ่งสร้าง */
+/** ส่วนของคนอายุนี้ที่ออกเรือนไปแล้ว รวมรอบของปีนี้ — คนนอกถูกสร้างหลังรอบออกเรือนประจำปี จึงไม่ได้ทอยปีนี้อีก */
 export function marriedShare(ctx: Ctx, sex: 'm' | 'f', age: number): number {
   const W = ctx.content.balance.world;
   const [min, max] = W.marriageAge[sex];
   if (age < min) return 0;
-  return (1 - W.neverMarryChance) * Math.min(1, (age - min) / (max - min + 1));
+  return (1 - W.neverMarryChance) * Math.min(1, (age - min + 1) / (max - min + 1));
+}
+
+/**
+ * อายุของคนนอกที่สร้างมาเป็นคนยังไม่มีคู่ (คนให้เกี้ยว): ไม่ต่ำกว่า lo และไม่ถึงปีสุดท้ายของช่วง
+ * — สร้างหลังรอบออกเรือนของปีนั้นแล้ว ถ้าสร้างตอนอายุครบช่วงพอดีจะไม่มีโอกาสออกเรือนอีกเลย
+ */
+export function singleSpawnAge(ctx: Ctx, sex: 'm' | 'f', age: number, lo: number): number {
+  return Math.min(ctx.content.balance.world.marriageAge[sex][1] - 1, Math.max(lo, age));
 }
 
 /**

@@ -1,6 +1,6 @@
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, Distance, RelationKind, TradeDef } from '../core/types';
-import { livingSpouse, marriedShare, marriesThisYear, namesInUse, pickName, spawnCharacter } from './factory';
+import { livingSpouse, marriedShare, marriesThisYear, namesInUse, pickName, singleSpawnAge, spawnCharacter } from './factory';
 
 // ============================================================================
 // คนรู้จักนอกตระกูล — เพื่อนบ้าน คนต่างตำบล คนต่างเมืองที่พบในงานวัด
@@ -76,12 +76,13 @@ export function spawnLocal(ctx: Ctx, knower: Character, o: LocalOpts): Character
  * ไม่มีและ spawn → คนใหม่ระแวกบ้าน; ได้ใครมาก็อย่างน้อยเคยเห็นหน้ากัน
  */
 export function singlePeer(ctx: Ctx, ch: Character, spawn: boolean): Character | undefined {
-  const age = ageOf(ctx, ch);
   const sex = ch.sex === 'm' ? 'f' : 'm';
+  // อายุราวคราวเดียวกัน แต่ไม่เลยช่วงออกเรือนของอีกฝ่าย (คนใหม่ไม่ใช่สาวแก่)
+  const age = singleSpawnAge(ctx, sex, ageOf(ctx, ch), 13);
   const close = (c: Character) => Math.abs(ageOf(ctx, c) - age) <= 6;
   const candidates = knownLocals(ctx, ch).filter((c) => c.sex === sex && isSingle(ctx, c) && close(c) && ageOf(ctx, c) >= 13);
   let other = ctx.rng.pick(candidates);
-  if (!other && spawn) other = spawnLocal(ctx, ch, { sex, age: Math.max(13, age + Math.floor(ctx.rng.range(-2, 3))), distance: 'near', single: true });
+  if (!other && spawn) other = spawnLocal(ctx, ch, { sex, age: singleSpawnAge(ctx, sex, age + Math.floor(ctx.rng.range(-2, 3)), 13), distance: 'near', single: true });
   if (other && familiarity(ctx, ch.id, other.id) <= 0) setRelation(ctx, ch.id, other.id, 'acquaintance', 0.05);
   return other;
 }
@@ -157,8 +158,7 @@ export function meetPeople(ctx: Ctx): string[] {
     const sex = opposite ? (player.sex === 'm' ? 'f' : 'm') : ctx.rng.chance(0.5) ? player.sex : player.sex === 'm' ? 'f' : 'm';
     // วัยหนุ่มสาวต่างเพศที่ยังไม่มีคู่: อยู่ในช่วงอายุออกเรือน ผู้หญิงมักอ่อนกว่า · อื่นๆ รุ่นราวคราวเดียวกัน (ออกเรือนแล้วหรือยังตามวัย)
     const r = ctx.rng.range(0, 1);
-    const [min, max] = W.marriageAge[sex];
-    const inRange = (a: number) => Math.min(max, Math.max(min - 2, a));
+    const inRange = (a: number) => singleSpawnAge(ctx, sex, a, W.marriageAge[sex][0] - 2);
     const otherAge = opposite
       ? inRange(sex === 'f' ? age - 1 - Math.floor(r * 7) : age + 1 + Math.floor(r * 7))
       : Math.max(3, age - 3 + Math.floor(r * 7));
