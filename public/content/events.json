@@ -2063,5 +2063,33 @@
         ]
       }
     ]
+  },
+  "family.hard_to_raise": {
+    "id": "family.hard_to_raise",
+    "textKey": "event.hard_to_raise",
+    "contextTags": [],
+    "roles": { "actor": {}, "child": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "khwan", "textKey": "event.hard_to_raise.khwan",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -3 },
+          { "op": "stress", "role": "actor", "delta": -0.04 }
+        ] },
+      { "id": "monk", "textKey": "event.hard_to_raise.monk", "conditions": [ { "type": "sex", "is": "m", "role": "child" } ],
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -2 },
+          { "op": "merit", "role": "actor", "delta": 0.5 },
+          { "op": "stress", "role": "actor", "delta": -0.03 }
+        ] },
+      { "id": "ugly_name", "textKey": "event.hard_to_raise.ugly_name", "input": "name",
+        "effects": [
+          { "op": "name", "role": "child", "by": "input" },
+          { "op": "stress", "role": "actor", "delta": -0.03 }
+        ] },
+      { "id": "wait", "textKey": "event.hard_to_raise.wait",
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.04 } ] }
+    ]
   }
 }

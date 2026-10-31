@@ -15,7 +15,7 @@ import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
-import { mortalityYearTick } from './mortality';
+import { frailty, hardToRaiseEvent, mortalityYearTick } from './mortality';
 import { kinDeathEvent } from './mourning';
 
 // ============================================================================
@@ -75,6 +75,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', line });
     // ตายในปีที่ผ่านมา (เด็ก ไข้ทรพิษ ป่วย ชรา) — ก่อนการเกิด/แต่งงาน/พบคนใหม่ของปีนี้ ไม่ให้ event ผูกกับคนที่จะตาย
     for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', line });
+    const frail = hardToRaiseEvent(ctx);
+    if (frail) out.push({ type: 'event', prepared: frail });
     for (const hh of Object.values(S.households)) {
       const logs = householdYearTick(ctx, hh.id);
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', line });
@@ -269,7 +271,7 @@ export function lifeMilestones(
         sex, birthYear: year, estate: ch.social.estate, father, mother,
       });
       // แม่ตายตอนคลอด (lore: health.childbirth_deaths) — ก่อน event ตั้งชื่อ จะได้ไม่ให้แม่ที่ตายแล้วตั้งชื่อ
-      const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(W.childbirthDeathRisk);
+      const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(Math.min(1, W.childbirthDeathRisk * frailty(ctx, mother)));
       if (motherDied) markDead(ctx, mother, 'situation:childbirth');
       // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log
       const naming = onBirth?.(kid, ch, spouse) ?? false;

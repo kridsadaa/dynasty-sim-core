@@ -86,6 +86,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     social: { estate: o.estate, sakdina: 0, title: null, patronId: null, wealth: o.wealth ?? 0, debt: 0 },
     horoscope: { weekday: Math.floor(ctx.rng.range(0, 7)), yearAnimal: (o.birthYear - 2280 + 12) % 12, omenTags: [] },
     lod: 'full',
+    constitution: inheritConstitution(ctx, o.father, o.mother),
   };
   node.characterId = ch.id;
   ctx.state.familyNodes[node.id] = node;
@@ -94,6 +95,16 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
   motherNode?.childIds.push(node.id);
   if (ch.householdId) ctx.state.households[ch.householdId]?.memberIds.push(ch.id);
   return ch;
+}
+
+/**
+ * ร่างกายแต่กำเนิด: คนนอก/คนรุ่นแรกสุ่มจากประชากร ลูกได้ค่าเฉลี่ยพ่อแม่บางส่วน (ฝ่ายที่ไม่รู้ = 0)
+ * ค่าเฉลี่ยพ่อแม่กระจาย ±√½ → ส่วนสุ่ม √(1 − b²/2) ทำให้ลูกยังกระจาย ±1 เท่าประชากร
+ */
+function inheritConstitution(ctx: Ctx, father: Character | undefined, mother: Character | undefined): number {
+  const b = father || mother ? ctx.content.balance.constitution.inherit : 0;
+  const mid = ((father?.constitution ?? 0) + (mother?.constitution ?? 0)) / 2;
+  return Math.round((b * mid + Math.sqrt(1 - (b * b) / 2) * ctx.rng.normal()) * 100) / 100;
 }
 
 /** ชื่อชั่วคราวจนกว่า lore จะมีรายชื่อพอ — ไม่ได้มาจากเอกสาร */

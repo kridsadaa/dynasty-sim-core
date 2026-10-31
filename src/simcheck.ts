@@ -86,6 +86,9 @@ const MAX_AGE = 110;
 const exposure = new Array<number>(MAX_AGE + 1).fill(0); // คน-ปี: นับคนที่มีชีวิตตามอายุทุก 1 ม.ค.
 const deathsAt = new Array<number>(MAX_AGE + 1).fill(0);
 let extinct = 0; // seed ที่ตระกูลสิ้นสายก่อนจบ
+// ร่างกายแต่กำเนิดของคนตาย แยกตามอายุที่ตาย [ผลรวม, จำนวน] — คนตายเด็กควรต่ำกว่าคนที่อยู่ถึงแก่
+const constitutionAt = { young: [0, 0], old: [0, 0] };
+let hardToRaise = 0;
 
 /** คนในตระกูลที่ตายวันนี้ — คนที่ตายแล้วถูก prune ทิ้งในวันเดียวกันก็นับ (เก็บ object ไว้เอง) */
 function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
@@ -95,7 +98,10 @@ function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
     if (now && now.deathDay === null) continue;
     tracked.delete(id);
     // ทอยตาย 1 ม.ค. สำหรับปีที่เพิ่งผ่านไป → นับที่อายุของปีนั้น (ให้ตรงกับคน-ปีที่นับต้นปี)
-    deathsAt[Math.max(0, Math.min(MAX_AGE, ageOf(ctx, ch, (ch.deathDay ?? S.meta.day) - 1)))]++;
+    const age = Math.max(0, Math.min(MAX_AGE, ageOf(ctx, ch, (ch.deathDay ?? S.meta.day) - 1)));
+    deathsAt[age]++;
+    const bucket = age < 5 ? constitutionAt.young : age >= 50 ? constitutionAt.old : undefined;
+    if (bucket) { bucket[0] += ch.constitution ?? 0; bucket[1]++; }
   }
   for (const c of Object.values(S.characters)) if (isAlive(c) && !c.local) tracked.set(c.id, c);
   if (dayOfYear(ctx, S.meta.day) === 0) for (const c of tracked.values()) exposure[Math.min(MAX_AGE, ageOf(ctx, c))]++;
@@ -132,6 +138,8 @@ function demographyReport(): void {
   for (const [label, v, lo, hi, f] of rows) {
     console.log(`  ${v >= lo && v <= hi ? '✓' : '⚠'} ${label} ${f(v)} (เป้า ${f(lo, false)}–${f(hi)})`);
   }
+  const mean = ([sum, n]: number[]) => (n ? sum! / n : 0).toFixed(2);
+  console.log(`  ร่างกายแต่กำเนิดเฉลี่ย: ตายก่อน 5 ขวบ ${mean(constitutionAt.young)} · ตายอายุ 50 ขึ้นไป ${mean(constitutionAt.old)} · event เด็กเลี้ยงยาก ${hardToRaise} ครั้ง`);
 }
 
 // [1] รันโลก
@@ -155,6 +163,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     for (const sig of advanceDay(ctx)) {
       if (sig.type === 'event') {
         // เลือกตัวเลือกแรกที่ไม่ล็อก แล้วเล่น event ต่อเนื่อง (followUp) จนจบสาย
+        if (sig.prepared.def.id === 'family.hard_to_raise') hardToRaise++;
         for (let p: PreparedEvent | null = sig.prepared; p; ) {
           const opt = p.options.find((o) => !p!.locked.has(o.id));
           if (!opt) throw new Error(`seed ${seed}: event ${p.def.id} ไม่มีตัวเลือกที่เลือกได้`);

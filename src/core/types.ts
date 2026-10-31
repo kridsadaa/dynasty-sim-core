@@ -207,6 +207,13 @@ export interface Character {
 
   /** วันแต่งงาน — นับปีสำหรับการมีบุตรและการแยกเรือน (optional: เซฟเก่าไม่มี) */
   marriedDay?: Day;
+  /**
+   * ร่างกายแต่กำเนิด (ซ่อน ผู้เล่นไม่เห็นตัวเลข): ค่ามาตรฐาน กลาง 0 ส่วนเบี่ยงเบน 1 — ต่ำ = ขี้โรค สูง = แข็งแรง
+   * ได้จากพ่อแม่บางส่วน ปรับความเสี่ยงตายรายปี (systems/mortality.ts) ไม่มี = 0 (เซฟเก่า)
+   */
+  constitution?: number;
+  /** เคยถูกทักว่าเลี้ยงยากแล้ว — event ขึ้นครั้งเดียว (lore: psyche.hard_to_raise_child) */
+  hardToRaise?: true;
   /** เคยเป็นไข้ทรพิษแล้วรอด — ไม่เป็นซ้ำ (lore: health.smallpox_endemic) */
   hadSmallpox?: boolean;
   /** ก่อนวันนี้ไม่ตายด้วยโรค/ความชรา/โรคระบาด — ใช้กับตัวละครแรกของผู้เล่น (ความสะดวกของเกม ไม่ใช่ประวัติศาสตร์) */
@@ -501,7 +508,8 @@ export type Condition =
   | { type: 'estate'; in: Estate[] }
   /** มีคนผูกกับ role นี้ใน event (เช่น ยังมีคู่ครอง/พ่อแม่ที่มีชีวิต) */
   | { type: 'hasRole'; role: string }
-  | { type: 'sex'; is: 'm' | 'f' }
+  /** role = เช็กคนใน role นั้นแทน actor */
+  | { type: 'sex'; is: 'm' | 'f'; role?: string }
   /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
   | { type: 'canPay'; what: 'sinsot' | 'elope' }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
@@ -857,6 +865,18 @@ export interface Balance {
     smallpoxAttack: Unit;
     smallpoxFatality: Unit;
     smallpoxScarChance: Unit;
+  };
+  /**
+   * ร่างกายแต่กำเนิด (Character.constitution) — ตัวเลขเป็นของเกม ไม่มีหลักฐานสมัยนั้น
+   * ลูก = inherit × ค่าเฉลี่ยพ่อแม่ + ส่วนสุ่ม (ปรับให้ทั้งประชากรยังกระจาย 0 ± 1 ทุกรุ่น ไม่แข็งแรงขึ้นเรื่อยๆ)
+   */
+  constitution: {
+    inherit: number;
+    /** ความเสี่ยงตาย × e^(−riskPerSD × ค่า) หารค่าเฉลี่ยของตัวคูณ → อัตราตายรวมของเด็กแรกเกิดเท่าเดิม */
+    riskPerSD: number;
+    /** ลูกผู้เล่นที่ค่าต่ำกว่านี้ ถูกทักว่าเลี้ยงยากเมื่ออายุ hardToRaiseAge */
+    hardToRaiseBelow: number;
+    hardToRaiseAge: number;
   };
   world: {
     eventsPerYear: number;

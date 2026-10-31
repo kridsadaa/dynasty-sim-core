@@ -22,6 +22,12 @@ export class Rng {
     return this.next() < p;
   }
 
+  /** ค่าสุ่มแจกแจงปกติ กลาง 0 ส่วนเบี่ยงเบน 1 (Box–Muller) */
+  normal(): number {
+    const u = 1 - this.next(); // (0, 1] — log(0) ไม่ได้
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * this.next());
+  }
+
   pick<T>(items: readonly T[]): T | undefined {
     return items[Math.floor(this.next() * items.length)];
   }

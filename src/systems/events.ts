@@ -158,8 +158,10 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       return c.in.includes(ch.social.estate);
     case 'hasRole':
       return !!bindings[c.role];
-    case 'sex':
-      return ch.sex === c.is;
+    case 'sex': {
+      const who = c.role ? ctx.state.characters[bindings[c.role]!] : ch;
+      return who?.sex === c.is;
+    }
     case 'canPay': {
       const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.eloped?.amount;
       return amount !== undefined && canPay(ctx, ch, amount);
