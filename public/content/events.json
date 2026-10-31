@@ -2017,7 +2017,11 @@
         "oneOf": [
           "situation:smallpox",
           "situation:childbirth",
-          "history:cholera_2363"
+          "history:cholera_2363",
+          "history:cholera_2365",
+          "history:cholera_2392",
+          "history:fall_of_ayutthaya",
+          "history:thonburi_succession"
         ]
       }
     },
