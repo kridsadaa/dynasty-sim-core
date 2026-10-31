@@ -4,8 +4,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
-import { dayOfYear, isAlive, makeCtx, yearOf, type Ctx } from './core/ctx';
-import type { ContentDB } from './core/types';
+import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, type Ctx } from './core/ctx';
+import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { heirCandidates, markDead, performHandover } from './systems/handover';
@@ -80,11 +80,65 @@ function invariants(ctx: Ctx, ended: boolean): void {
   }).map((w) => w.id));
 }
 
+// ---- ตารางชีพของคนในตระกูล (รวมคู่ครองและปู่ย่าตายาย ไม่นับคนนอกซึ่งสุ่มอายุตามวัยผู้เล่น) ----
+// รายงานอย่างเดียว ไม่ทำให้ sim:check ล้ม — ใช้วัดว่าระบบเกิด/ตายทำให้กลุ่มอายุสมจริงแค่ไหน
+const MAX_AGE = 110;
+const exposure = new Array<number>(MAX_AGE + 1).fill(0); // คน-ปี: นับคนที่มีชีวิตตามอายุทุก 1 ม.ค.
+const deathsAt = new Array<number>(MAX_AGE + 1).fill(0);
+
+/** คนในตระกูลที่ตายวันนี้ — คนที่ตายแล้วถูก prune ทิ้งในวันเดียวกันก็นับ (เก็บ object ไว้เอง) */
+function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
+  const S = ctx.state;
+  for (const [id, ch] of tracked) {
+    const now = S.characters[id as keyof typeof S.characters];
+    if (now && now.deathDay === null) continue;
+    tracked.delete(id);
+    deathsAt[Math.min(MAX_AGE, ageOf(ctx, ch, ch.deathDay ?? S.meta.day))]++;
+  }
+  for (const c of Object.values(S.characters)) if (isAlive(c) && !c.local) tracked.set(c.id, c);
+  if (dayOfYear(ctx, S.meta.day) === 0) for (const c of tracked.values()) exposure[Math.min(MAX_AGE, ageOf(ctx, c))]++;
+}
+
+/**
+ * เป้าเป็นช่วงกว้างๆ ของตารางชีพแบบจำลองสังคมก่อนยุคอุตสาหกรรม (ชีพคาดแรกเกิดราว 25–40 ปี) — ไม่ใช่ข้อมูลอยุธยา
+ * ยังไม่มี lore เรื่องอัตราตายสมัยนั้น
+ */
+function demographyReport(): void {
+  const l = [1];
+  for (let a = 0; a <= MAX_AGE; a++) {
+    const m = exposure[a]! ? deathsAt[a]! / exposure[a]! : 1;
+    l.push(l[a]! * Math.exp(-m));
+  }
+  const e = (x: number) => l.slice(x, -1).reduce((s, v, i) => s + (v + l[x + i + 1]!) / 2, 0) / l[x]!;
+  const people = exposure.reduce((a, b) => a + b, 0);
+  const share = (lo: number, hi: number) => exposure.slice(lo, hi + 1).reduce((a, b) => a + b, 0) / people;
+  let acc = 0;
+  const medianAge = exposure.findIndex((n) => (acc += n) >= people / 2);
+  const pct = (x: number, unit = true) => `${+(100 * x).toFixed(1)}${unit ? '%' : ''}`;
+  const yrs = (x: number, unit = true) => `${+x.toFixed(1)}${unit ? ' ปี' : ''}`;
+  const rows: Array<[string, number, number, number, (x: number, unit?: boolean) => string]> = [
+    ['ชีพคาดเฉลี่ยแรกเกิด', e(0), 25, 40, yrs],
+    ['ตายก่อน 1 ขวบ', 1 - l[1]!, 0.15, 0.3, pct],
+    ['รอดถึงอายุ 15', l[15]!, 0.5, 0.7, pct],
+    ['ชีพคาดที่อายุ 50', e(50), 12, 20, yrs],
+    ['อายุ 50 แล้วอยู่ถึง 70', l[70]! / l[50]!, 0.25, 0.5, pct],
+    ['คนที่มีชีวิต อายุ 0–14', share(0, 14), 0.33, 0.42, pct],
+    ['คนที่มีชีวิต อายุ 60 ขึ้นไป', share(60, MAX_AGE), 0.04, 0.09, pct],
+    ['อายุมัธยฐานของคนที่มีชีวิต', medianAge, 18, 25, yrs],
+  ];
+  console.log(`ประชากรในตระกูล (${people} คน-ปี · ตาย ${deathsAt.reduce((a, b) => a + b, 0)} คน) — รายงาน ไม่นับเป็นข้อผิด:`);
+  for (const [label, v, lo, hi, f] of rows) {
+    console.log(`  ${v >= lo && v <= hi ? '✓' : '⚠'} ${label} ${f(v)} (เป้า ${f(lo, false)}–${f(hi)})`);
+  }
+}
+
 // [1] รันโลก
 for (let seed = 1; seed <= SEEDS; seed++) {
   const ctx = makeCtx(emptyState(seed), content);
   bootstrapScenario(ctx);
   const S = ctx.state;
+  const tracked = new Map<string, Character>();
+  trackDemography(ctx, tracked);
   let over = false;
   for (let d = 0; d < yearsToDays(YEARS) && !over; d++) {
     // กลางปี: ผู้เล่นที่ว่างอยู่ตั้งใจทำอะไรสักอย่างกับคนที่รู้จัก (สุ่มคน/สิ่งที่ตั้งใจ/วิธี) — ทดสอบระบบ intent
@@ -113,6 +167,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
         performHandover(ctx, dead.id);
       }
     }
+    trackDemography(ctx, tracked);
   }
   const before = failed;
   console.log(`seed ${seed}: ถึงปี ${yearOf(ctx, S.meta.day)}${over ? ' (สิ้นสาย)' : ''}`
@@ -121,6 +176,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   invariants(ctx, over);
   if (failed === before) console.log(over ? '  ✓ invariant ครบ (ข้ามข้อมรดกเพราะเกมจบ)' : '  ✓ invariant ครบ');
 }
+demographyReport();
 
 // [2] ผู้เล่นตายก่อนผู้นำตระกูล (บิดา) → ผู้นำ หัวเรือน และกฎในเรือนของบิดาต้องไม่เปลี่ยน
 {
