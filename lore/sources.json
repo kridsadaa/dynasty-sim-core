@@ -618,5 +618,151 @@
     "reliability": 4,
     "url": "https://so06.tci-thaijo.org/index.php/pub_jss/article/view/158246",
     "notes": "ยังไม่ได้อ่านฉบับเต็ม — ใช้ข้อสรุปเรื่องอายุของตัวบทจากบทคัดย่อ"
+  },
+  {
+    "id": "src.pallegoix_1854",
+    "title": "Description du royaume Thai ou Siam (ปาลเลอกัวซ์ 1854)",
+    "author": "Jean-Baptiste Pallegoix",
+    "kind": "primary",
+    "composedYear": 2397,
+    "describesPeriod": [
+      2373,
+      2397
+    ],
+    "reliability": 4,
+    "url": "https://archive.org/details/descriptionduro00pallgoog",
+    "notes": "สังฆราชคาทอลิกที่อยู่สยามราว ค.ศ. 1830–1854 (รัชกาลที่ 3–4); เล่ม 2 อยู่ที่ https://archive.org/details/descriptionduro02pallgoog; ข้อความฝรั่งเศสจาก OCR ของ archive.org มีตัวอักษรเพี้ยนบ้าง"
+  },
+  {
+    "id": "src.crawfurd_1830",
+    "title": "Journal of an Embassy from the Governor-General of India to the Courts of Siam and Cochin China (ฉบับพิมพ์ครั้งที่ 2, 1830)",
+    "author": "John Crawfurd",
+    "kind": "primary",
+    "composedYear": 2373,
+    "describesPeriod": [
+      2363,
+      2365
+    ],
+    "reliability": 4,
+    "url": "https://archive.org/details/b29350815_0002",
+    "notes": "คณะทูตอังกฤษในกรุงเทพฯ ค.ศ. 1822 (รัชกาลที่ 2) — ช่วงเริ่ม 2363 เพราะเล่าอหิวาต์ปีนั้นจากคำบอกของคนในกรุงเทพฯ; พิมพ์ครั้งแรก 1828; เล่ม 1 อยู่ที่ https://archive.org/details/b29350815_0001; ตัวเลขผู้ตายอหิวาต์ 2363 เป็นคำบอกเล่าของพระคลัง ไม่ใช่ที่ครอว์เฟิร์ดเห็นเอง"
+  },
+  {
+    "id": "src.bowring_1857",
+    "title": "The Kingdom and People of Siam (1857) เล่ม 1",
+    "author": "John Bowring",
+    "kind": "primary",
+    "composedYear": 2400,
+    "describesPeriod": [
+      2373,
+      2400
+    ],
+    "reliability": 3,
+    "url": "https://archive.org/details/kingdompeoplesi1bowr",
+    "notes": "ทูตอังกฤษ ค.ศ. 1855 อยู่สยามไม่นาน — หลายตอนเรียบเรียงจากปาลเลอกัวซ์และแบรดลีย์ (เช่นตารางอายุคนไข้) และบางตอนสรุปกฎหมายสยามเอง ไม่ใช่ตัวบทกฎหมาย"
+  },
+  {
+    "id": "src.bangkok_calendar",
+    "title": "The Bangkok Calendar (ฉบับปี 1861–1865)",
+    "author": "Dan Beach Bradley (บรรณาธิการ/ผู้พิมพ์)",
+    "kind": "primary",
+    "composedYear": 2408,
+    "describesPeriod": [
+      2378,
+      2408
+    ],
+    "reliability": 3,
+    "url": "https://archive.org/details/b24862010",
+    "notes": "ปฏิทินรายปีของมิชชันนารีอเมริกันในกรุงเทพฯ — ฉบับ 1865 (ตอน Siamese Obstetrics, Introduction of Vaccination) อยู่ที่ URL นี้; ฉบับอื่นรวมอยู่ที่ https://archive.org/details/bangkokcalendar1861 (ระบุปีของแต่ละฉบับในชุดนั้นยังไม่แน่ชัด); มุมมองหมอฝรั่งที่ต่อต้านการอยู่ไฟ"
+  },
+  {
+    "id": "src.phongsawadan_r2_thiphakorawong",
+    "title": "พระราชพงษาวดารกรุงรัตนโกสินทร รัชกาลที่ ๒ ฉบับเจ้าพระยาทิพากรวงศ์",
+    "author": "เจ้าพระยาทิพากรวงศ์ (ขำ บุนนาค)",
+    "kind": "primary",
+    "describesPeriod": [
+      2352,
+      2367
+    ],
+    "reliability": 4,
+    "url": "https://vajirayana.org/พระราชพงษาวดาร-กรุงรัตนโกสินทร-รัชกาลที่-๒",
+    "notes": "เรียบเรียงสมัยรัชกาลที่ 4–5 จากเอกสารราชการ — ยังไม่ได้ตรวจปีที่เรียบเรียงจึงไม่ใส่ composedYear"
+  },
+  {
+    "id": "src.phongsawadan_r3_thiphakorawong",
+    "title": "พระราชพงศาวดารกรุงรัตนโกสินทร์ รัชชกาลที่ ๓ ฉบับเจ้าพระยาทิพากรวงศ์",
+    "author": "เจ้าพระยาทิพากรวงศ์ (ขำ บุนนาค)",
+    "kind": "primary",
+    "describesPeriod": [
+      2367,
+      2394
+    ],
+    "reliability": 4,
+    "url": "https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓",
+    "notes": "เรียบเรียงสมัยรัชกาลที่ 4–5 — ยังไม่ได้ตรวจปีที่เรียบเรียงจึงไม่ใส่ composedYear"
+  },
+  {
+    "id": "src.phongsawadan_thonburi_chanthanumat",
+    "title": "พระราชพงศาวดารกรุงธนบุรี ฉบับพันจันทนุมาศ (เจิม) ในประชุมพงศาวดาร ภาคที่ 65",
+    "kind": "primary",
+    "describesPeriod": [
+      2310,
+      2325
+    ],
+    "reliability": 4,
+    "url": "https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_65/พงศาวดาร",
+    "notes": "พิมพ์ในประชุมพงศาวดาร พ.ศ. 2480 — ยังไม่ได้ตรวจปีที่ชำระจึงไม่ใส่ composedYear"
+  },
+  {
+    "id": "src.french_missions_phak39",
+    "title": "ประชุมพงศาวดาร ภาคที่ 39 จดหมายเหตุของคณะบาทหลวงฝรั่งเศส",
+    "kind": "primary",
+    "composedYear": 2313,
+    "describesPeriod": [
+      2309,
+      2313
+    ],
+    "reliability": 4,
+    "url": "https://th.wikisource.org/wiki/ประชุมพงศาวดาร_ภาคที่_๓๙",
+    "notes": "จดหมายของบาทหลวงที่เขียนในเวลานั้น แปลเป็นไทยและพิมพ์ภายหลัง — composedYear คือปีของจดหมายฉบับหลังสุดที่อ้าง"
+  },
+  {
+    "id": "src.terwiel_1988_inoculation",
+    "title": "B.J. Terwiel, Acceptance and Rejection: The First Inoculation and Vaccination Campaigns in Thailand, Journal of the Siam Society 76 (1988)",
+    "kind": "secondary",
+    "composedYear": 2531,
+    "describesPeriod": [
+      2363,
+      2400
+    ],
+    "reliability": 4,
+    "url": "https://thesiamsociety.org/wp-content/uploads/1988/03/JSS_076_0n_Terwiel_AcceptanceAndRejectionOfInoculationAndVaccination.pdf",
+    "notes": "อ้างบันทึกประจำวันของแบรดลีย์ที่ยังไม่ตีพิมพ์ — ยังไม่ได้เห็นบันทึกต้นฉบับ"
+  },
+  {
+    "id": "src.carmichael_2011_mortality",
+    "title": "G.A. Carmichael, Exploring Thailand's mortality transition with the aid of life tables, Asia Pacific Viewpoint 52(1) (2011)",
+    "kind": "secondary",
+    "composedYear": 2554,
+    "describesPeriod": [
+      2463,
+      2553
+    ],
+    "reliability": 4,
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3175806",
+    "notes": "ทะเบียนเกิด-ตายของไทยเริ่มราว พ.ศ. 2463 — ตัวเลขทั้งหมดในบทความนี้หลังช่วงเกมเกือบศตวรรษ"
+  },
+  {
+    "id": "src.feltus_1924_house",
+    "title": "George Haws Feltus, Samuel Reynolds House of Siam (1924)",
+    "kind": "secondary",
+    "composedYear": 2467,
+    "describesPeriod": [
+      2390,
+      2419
+    ],
+    "reliability": 2,
+    "url": "https://gutenberg.org/cache/epub/68647/pg68647-images.html",
+    "notes": "ชีวประวัติหมอมิชชันนารี เรียบเรียงจากจดหมายของเฮาส์ — ตัวเลข 'ไม่ต่ำกว่าสี่หมื่น' ของอหิวาต์ 2392 เป็นคำของผู้เรียบเรียง ไม่ได้บอกว่ามาจากเอกสารทางการใด"
   }
 ]

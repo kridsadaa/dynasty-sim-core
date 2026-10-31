@@ -11,7 +11,7 @@ export type YearRange = [number, number];
 
 // ค่าที่อนุญาตของฟิลด์ enum — validator ใช้ตรวจตอนรัน (type อ้างจากอาร์เรย์เหล่านี้เพื่อไม่ให้หลุดกัน)
 export const SOURCE_KINDS = ['primary', 'secondary', 'visual', 'ethnographic'] as const;
-export const LORE_DOMAINS = ['event', 'social', 'naming', 'vocab', 'belief', 'material', 'attire', 'place', 'kinship', 'ritual', 'psyche'] as const;
+export const LORE_DOMAINS = ['event', 'social', 'naming', 'vocab', 'belief', 'material', 'attire', 'place', 'kinship', 'ritual', 'psyche', 'health'] as const;
 export const LORE_STATUSES = ['attested', 'inferred', 'invented'] as const;
 export const APPLIES_AS = ['fact', 'pattern', 'mechanic'] as const;
 
@@ -43,6 +43,7 @@ export interface Source {
  * kinship = เครือญาติ ที่อยู่หลังแต่งงาน ครัวเรือน
  * ritual  = พิธีตามช่วงชีวิต
  * psyche  = ขวัญ การเลี้ยงดู ความกลัวและการเยียวยาแบบพื้นบ้าน
+ * health  = โรค การตาย อายุขัย การเกิด — ฐานของความเสี่ยงตายในเกม
  */
 export type LoreDomain = (typeof LORE_DOMAINS)[number];
 

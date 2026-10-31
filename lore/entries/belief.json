@@ -215,5 +215,57 @@
       }
     ],
     "verified": false
+  },
+  {
+    "id": "belief.bad_death_burial",
+    "domain": "belief",
+    "title": "ตายร้ายไม่เผาทันที — ฝังไว้ก่อนแล้วขุดเผาภายหลัง",
+    "period": [
+      2230,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "who": [
+        "หญิงตายตอนคลอดหรือตายขณะมีครรภ์",
+        "ทารกตายในครรภ์",
+        "ตายด้วยไข้ทรพิษหรือโรคระบาด",
+        "ตายกะทันหัน จมน้ำ อุบัติเหตุ ฆ่าตัวตาย",
+        "นักโทษประหาร"
+      ],
+      "laLoubere": "เชื่อว่าความตายแบบนี้ไม่เกิดกับคนบริสุทธิ์; ศพไข้ทรพิษขุดขึ้นเผาหลัง 3 ปีขึ้นไป เพราะเคยเห็นว่าขุดเร็วแล้วโรคกลับมา",
+      "later": "Bangkok Calendar (ราว 2407): ฝังไว้เดือนสองเดือนแล้วขุดเผา เพราะกลัวว่าเผาเร็ววิญญาณจะมาหลอกญาติให้ตายผิดธรรมชาติ",
+      "term": "คำว่า 'ผีตายทั้งกลม' ยังไม่พบในเอกสารช่วงเกม (เจอแค่ในพจนานุกรมและงานสมัยหลัง)",
+      "gameMapping": "งานศพของคนตายร้ายเลื่อนออกไป (ต่อกับ ritual.funeral_cremation) และเป็นที่มาของ event ผีได้"
+    },
+    "summary": "ตายแบบไหนถึงเรียกว่าตายร้าย และศพจัดการต่างจากคนตายปกติอย่างไร — ใช้กับสาเหตุตายใหม่ (คลอด โรคระบาด)",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XX",
+        "quote": "nor Infants dead-born, nor Women that die in Child-bed"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. IV",
+        "quote": "they dare not do it till three years after, or longer"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "vol. 2 p. 19",
+        "quote": "women dying pregnant, or in child-birth ; persons who come to a sudden death ; persons who die of the small-pox, and malefactors"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "vol. 1 pp. 142–143 (ศพหญิงตายตอนคลอดเป็นที่ต้องการของหมอผี)"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับราว 1864 หน้า 68 (Why are some bodies buried) — ในชุด bangkokcalendar1861",
+        "quote": "their spirits will come and haunt their friends"
+      }
+    ],
+    "verified": false
   }
 ]

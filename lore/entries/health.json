@@ -1,0 +1,248 @@
+[
+  {
+    "id": "health.smallpox_endemic",
+    "domain": "health",
+    "title": "ไข้ทรพิษเป็นโรคร้ายที่สุดของสยาม มาทุกปีช่วงหน้าแล้ง",
+    "period": [
+      2230,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "laLoubere": "โรคระบาดจริงของสยามคือไข้ทรพิษ บ่อยครั้งทำลายล้างอย่างน่ากลัว (2230–31)",
+      "crawfurd": "ไข้ทรพิษกับอหิวาต์เป็นโรคเดียวที่ลดจำนวนคนอย่างมีนัย; ไข้ทรพิษมาบ่อยและตายมาก (2365)",
+      "season": "แบรดลีย์ (2381): กลับมาทุกปี ตั้งแต่สิ้นฤดูฝนราวสามเดือนของหน้าแล้ง",
+      "families": "แบรดลีย์ (ธ.ค. 2381): ครอบครัวที่อยู่มานานแทบทุกครอบครัวเสียคนไปสองสามคนขึ้นไป",
+      "children": "ปาลเลอกัวซ์ (2397): บางปีพาเด็กไปถึงหนึ่งในสาม แม้เริ่มปลูกฝีแล้ว",
+      "inoculation": "2381–82 รัชกาลที่ 3 ให้หมอหลวงเรียนปลูกฝีแบบเอาหนองคน (variolation) มีคนปลูกหลายพัน; การปลูกฝีด้วยวัคซีนเริ่มในช่วงนี้แต่ยังไม่แพร่หลาย",
+      "gap": "ไม่พบไข้ทรพิษระบาดในพงศาวดารช่วง 2275–2310 (ค้นประชุมพงศาวดาร ภาค 37–38 แล้ว ยังไม่ได้ค้นฉบับพระราชหัตถเลขาและฉบับหลวงประเสริฐ); ก่อนช่วงเกม จดหมายบาทหลวงฝรั่งเศสบันทึกการระบาดราว ค.ศ. 1690s (ตายเกือบ 8 หมื่นคน) และ ค.ศ. 1712–13",
+      "gameMapping": "โรคประจำถิ่นที่ฆ่าเด็กมากที่สุด: ความเสี่ยงรายปีของเด็ก และบางปีระบาดหนัก"
+    },
+    "summary": "เอกสารสามยุค (2230, 2365, 2381–2397) ตรงกันว่าไข้ทรพิษเป็นตัวฆ่าหลัก โดยเฉพาะเด็ก แต่ไม่มีใครให้อัตราตายรายปี",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. IV (Concerning the Table of the Siameses)",
+        "quote": "the real Plague of this Country is the Small Pox: It oftentimes makes dreadful ravage"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "vol. 2 p. 229",
+        "quote": "often visits the country and proves very fatal"
+      },
+      {
+        "sourceId": "src.pallegoix_1854",
+        "locator": "vol. 1 ch. 12 (Principales maladies) pp. 343–344",
+        "quote": "la petite vérole emporte quelquefois le tiers des enfants"
+      },
+      {
+        "sourceId": "src.terwiel_1988_inoculation",
+        "locator": "pp. 183, 188–190 (อ้างบันทึกแบรดลีย์ ธ.ค. 2381 และ 19 ม.ค. 2382)"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "health.children_dying_young",
+    "domain": "health",
+    "title": "เด็กตายตั้งแต่เล็กเป็นเรื่องธรรมดา — มีธรรมเนียมรองรับ แต่ตัวเลขมีแค่สมัยหลัง",
+    "period": [
+      2230,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "laLoubere": "เด็กที่ตายก่อนอายุ 3–4 ขวบมักยกให้แร้งกาตามธรรมเนียมทำทาน; เจ้าหน้าที่เริ่มลงบัญชีเด็กเมื่ออายุ 3–4 ขวบ; พ่อแม่ไว้ทุกข์ให้ลูกบ่อยกว่าลูกไว้ทุกข์ให้พ่อแม่",
+      "pallegoix": "โรคหลักของเด็กคือพยาธิ ไข้ทรพิษ และอีกโรคหนึ่งที่อ่าน OCR ไม่ชัด (อาจเป็นหัด)",
+      "missionaryInfant": "ลูกสาววัย 7 เดือนของหมอมิชชันนารีตายด้วยไข้ทรพิษ พ.ย. 2385 (Bangkok Calendar)",
+      "rates": "ไม่มีตัวเลขในช่วงเกม; ตัวเลขแรกมาจากทะเบียนสมัยหลัง: กรุงเทพฯ ทศวรรษที่จบ มี.ค. 2473 ทารกตายเฉลี่ย 234 ต่อเกิดมีชีพ 1,000 ทั้งประเทศราวหนึ่งในสาม; ชีพคาดแรกเกิด (ปรับแล้ว) พ.ศ. 2480 ชาย 36.0 หญิง 38.8 ปี",
+      "gameMapping": "ความเสี่ยงตายของเด็ก โดยเฉพาะขวบปีแรกและก่อน 5 ขวบ; ตัวเลขทศวรรษ 2470 เป็นค่าตั้งต้น"
+    },
+    "summary": "ลา ลูแบร์ยืนยันว่าเด็กตายเล็กบ่อยพอจะมีธรรมเนียมจัดการศพเด็กโดยเฉพาะ ส่วนอัตราต้องยืมจากทะเบียนทศวรรษ 2463–2480",
+    "status": "inferred",
+    "projection": "ตัวเลขทารกตายและชีพคาดมาจากทะเบียนราษฎร์ 2463–2480 ซึ่งมีการปลูกฝีและการแพทย์สมัยใหม่บ้างแล้ว — ช่วงเกมไม่น่าดีกว่านี้ (อนุมาน) จึงใช้เป็นค่าต่ำสุดของความเสี่ยง",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. IV",
+        "quote": "They do generally give them the Children, which die before three or four years old."
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. IV (Concerning the Offices of Judicatory)",
+        "quote": "The Sassedi begins to enter down Children upon the Rolls, when they are three or four Years old."
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XX (Of the Burials of the Chineses and Siameses)"
+      },
+      {
+        "sourceId": "src.pallegoix_1854",
+        "locator": "vol. 1 ch. 12 pp. 343–344"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 93 (Introduction of Vaccination)"
+      },
+      {
+        "sourceId": "src.carmichael_2011_mortality",
+        "locator": "หัวข้อ A life table perspective (อ้าง Varavarn 2000 และ Rungpitarangsi 1974)"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "health.childbirth_deaths",
+    "domain": "health",
+    "title": "แม่ตายตอนคลอดมีจริง แต่ไม่มีอัตรา",
+    "period": [
+      2230,
+      2400
+    ],
+    "sex": "f",
+    "appliesAs": "pattern",
+    "claim": {
+      "laLoubere": "คลอดลูกเจ็บปวดมาก; หญิงที่ตายตอนคลอดและเด็กตายในครรภ์ไม่ถูกเผา เพราะเชื่อว่าความตายแบบนี้ไม่เกิดกับคนบริสุทธิ์",
+      "cases": "เจ้าจอมมารดาในรัชกาลที่ 4 ตายด้วยตกเลือดตอนคลอดลูกคนที่ 5 (6 พ.ย. 2404); เบาริงเล่าถึงภรรยาสาวของชาวสยามคนหนึ่งที่ตายขณะ 'อยู่หน้าไฟ'",
+      "doctorView": "หมอมิชชันนารีเห็นว่าการอยู่ไฟทำให้แม่ป่วยและทารกตาย — มุมมองหมอฝรั่งที่ต่อต้านธรรมเนียม",
+      "rate": "ไม่พบอัตราการตายตอนคลอดในเอกสารช่วงเกม",
+      "gameMapping": "การคลอดแต่ละครั้งเสี่ยงให้แม่ตาย (ตัวเลขต้องตั้งเอง); ศพฝังก่อนเผา (belief.bad_death_burial); อยู่ไฟ ritual.yu_fai_placenta"
+    },
+    "summary": "หลักฐานยืนยันว่าแม่ตายตอนคลอดเกิดขึ้นและมีธรรมเนียมเฉพาะ แต่ความถี่เป็นเรื่องที่เกมต้องตั้งเอง",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XX",
+        "quote": "nor Infants dead-born, nor Women that die in Child-bed"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. X (What the Siameses do know in Medicine and Chymistry)"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 78–83 (Siamese Obstetrics)",
+        "quote": "died of uterine hemorrhage Nov. 6th 1861 at the time of the birth of her 5th child"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "vol. 1 p. 120",
+        "quote": "died while “before the fire,”"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "health.longevity_old_age",
+    "domain": "health",
+    "title": "คนอายุ 70–80 พบได้บ่อย แม้ชีวิตโดยรวมไม่ยืน",
+    "period": [
+      2230,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "laLoubere": "ชาวสยามไม่ได้อายุยืนกว่าและป่วยไม่น้อยกว่าชาวยุโรป",
+      "pallegoix": "ร่างกายไม่แข็งแรงนัก แต่พบคนแก่ 80 ปีบ่อย บางคนอ้างว่าร้อยปี (หลายคนไม่รู้อายุตัวเอง)",
+      "clinic": "คนไข้ของแบรดลีย์ 2378–79 จำนวน 3,650 คน: อายุ 60–70 ปี 268 คน 70–80 ปี 98 คน 80–90 ปี 23 คน 90–100 ปี 3 คน (ตัวอย่างคนไข้ ไม่ใช่ตารางชีพ)",
+      "registers": "บัญชีคนนับเฉพาะชายอายุ 20–70 ปี (ปาลเลอกัวซ์); อายุปลดชรา 60 หรือ 70 ยังไม่ได้ตรวจกับตัวบท",
+      "law": "ตามที่เบาริงสรุป คนอายุเกิน 70 และต่ำกว่า 7 ขวบเป็นพยานไม่ได้",
+      "bowring": "โดยรวมอัตราตายต่ำกว่าและโอกาสรอดสูงกว่าประเทศส่วนใหญ่ในเส้นรุ้งเดียวกัน",
+      "care": "ไม่ค่อยมีใครไม่เคารพคนแก่; ญาติเลี้ยงดูคนแก่ ไม่ปล่อยให้ขอทาน (ลา ลูแบร์)",
+      "gameMapping": "ความเสี่ยงตามวัยต้องให้คนอายุ 70–80 มีให้เห็นพอสมควร"
+    },
+    "summary": "ชีพคาดแรกเกิดต่ำเพราะเด็กตาย แต่คนที่รอดเป็นผู้ใหญ่อยู่ถึง 70–80 ได้ไม่ยาก — กฎหมายและทะเบียนใช้ 70 เป็นเส้นแบ่งความชรา",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. IV",
+        "quote": "they live not longer, and their Life is not less attack'd with Diseases than ours"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XV (A Character of the Siameses in general)"
+      },
+      {
+        "sourceId": "src.pallegoix_1854",
+        "locator": "vol. 1 ch. 7 p. 244",
+        "quote": "j'ai même vu plusieurs centenaires"
+      },
+      {
+        "sourceId": "src.pallegoix_1854",
+        "locator": "vol. 1 ch. 8 p. 300",
+        "quote": "on ne compte que les hommes depuis l'âge de vingt ans jusqu'à soixante-dix"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "vol. 1 pp. 395–397 (ตารางอายุคนไข้ของแบรดลีย์)"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "vol. 1 p. 177",
+        "quote": "persons above seventy or under seven years of age"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "vol. 1 p. 146",
+        "quote": "the average mortality is less, and the chance of life greater"
+      }
+    ],
+    "verified": false
+  },
+  {
+    "id": "health.population_stationary",
+    "domain": "health",
+    "title": "ประชากรสยามแทบไม่เพิ่ม — ลูกห่างเพราะให้นมนาน",
+    "period": [
+      2230,
+      2400
+    ],
+    "appliesAs": "pattern",
+    "claim": {
+      "fertility": "มีลูกได้ตั้งแต่ราว 12 ปี ส่วนใหญ่ไม่มีลูกหลัง 40; มีลูกแฝดบ่อย (ลา ลูแบร์)",
+      "nursing": "แม่ให้นมลูก 2–3 ปี พร้อมป้อนข้าวกล้วย (ปาลเลอกัวซ์) — ลูกจึงเกิดห่างกัน",
+      "birthOrder": "ธรรมเนียมอยู่ไฟลดจำนวนวันตามลำดับลูก จนลูกคนที่ 7 ไม่ต้องอยู่ไฟ — แปลว่ามีครอบครัวที่มีลูกถึง 7 คน แต่ไม่ใช่ค่าเฉลี่ย",
+      "stagnant": "ประชากรเพิ่มเพราะคนจีนอพยพเข้ามาเท่านั้น อาจคงที่ (ปาลเลอกัวซ์ 2397; ครอว์เฟิร์ด 2365 ว่าคนจีนน่าจะเป็นกลุ่มเดียวที่เพิ่ม)",
+      "causesClaimed": "ลา ลูแบร์โทษภาษีและการหย่าร้าง ปาลเลอกัวซ์โทษทาสและการมีหลายเมีย",
+      "birthsPerWoman": "ไม่พบตัวเลขเฉลี่ยลูกต่อแม่ในเอกสารช่วงเกม",
+      "gameMapping": "ถ้ามีเด็กตาย การเกิดต้องมากพอให้แต่ละรุ่นราวคงที่ ไม่ใช่โตเท่าตัว"
+    },
+    "summary": "ผู้สังเกตสองยุค (2230 และ 2365–2397) เห็นตรงกันว่าประชากรไม่ค่อยโต — เกมตอนนี้โตเท่าตัวทุกรุ่นซึ่งขัดกับข้อนี้",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. VII (Concerning the Marriage and Divorce of the Siameses)",
+        "quote": "the Siameses are fruitful, and do very frequently bring Twins."
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part I ch. III (Concerning the History and Origine of the Siameses)"
+      },
+      {
+        "sourceId": "src.pallegoix_1854",
+        "locator": "vol. 1 ch. 7 p. 224",
+        "quote": "jusqu'à deux ans et même trois ans"
+      },
+      {
+        "sourceId": "src.pallegoix_1854",
+        "locator": "vol. 1 ch. 7 p. 244",
+        "quote": "la population n'augmente que par l'arrivée annuelle des Chinois"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 81 (Siamese Obstetrics)",
+        "quote": "with her seventh child, she may dispense with the fire altogether"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "vol. 2 p. 228",
+        "quote": "probably are the only portion of the population that is doing so"
+      }
+    ],
+    "verified": false
+  }
+]
