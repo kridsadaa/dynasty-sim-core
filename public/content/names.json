@@ -9,307 +9,402 @@
       "name": "แท่น",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308"
+      ]
     },
     {
       "name": "อิน",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308",
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "เมือง",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308"
+      ]
     },
     {
       "name": "ดอก",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308"
+      ]
     },
     {
       "name": "ทองแก้ว",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308"
+      ]
     },
     {
       "name": "ทองเหม็น",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308"
+      ]
     },
     {
       "name": "เรือง",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_bang_rachan_2308"
+      "loreRefs": [
+        "naming.names_bang_rachan_2308"
+      ]
     },
     {
       "name": "บุญศรี",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "ป้อม",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "ก่ำ",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "สา",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "ทองอยู่",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "เยน",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "สน",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "บุญมา",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "สิงโต",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "ทองรอด",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "สระ",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "คง",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "โสม",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "ทอง",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "บู่",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_legal_cases"
+      "loreRefs": [
+        "naming.names_legal_cases"
+      ]
     },
     {
       "name": "สร้อย",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "บัว",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "พลอย",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "เดือน",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "พุด",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "เอี้ยง",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "จัน",
       "sex": "f",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "หาญ",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "กล้า",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ช้าง",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "มั่น",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ยอด",
       "sex": "m",
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ปาน",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ดำ",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "แดง",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "น้อย",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ใจ",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "เพิ่ม",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "พัด",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ผิน",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "หมู",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "พร",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "ดี",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "พูน",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     },
     {
       "name": "มิ่ง",
       "sex": null,
       "estates": null,
-      "loreRef": "naming.names_designer_list",
+      "loreRefs": [
+        "naming.names_designer_list"
+      ],
       "invented": true
     }
   ]

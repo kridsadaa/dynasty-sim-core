@@ -54,6 +54,17 @@ function birthDayFor(ctx: Ctx, birthYear: number): Day {
   return day;
 }
 
+/**
+ * ชื่อในข้อความที่ผู้เล่นอ่าน: ต่อท้ายปีเกิดเมื่อมีคนอื่นในผังตระกูลชื่อเดียวกัน
+ * (ญาติใกล้ชิดไม่ซ้ำชื่อกันอยู่แล้ว แต่ญาติห่างหรือคนที่ตายไปแล้วซ้ำได้)
+ */
+export function displayName(ctx: Ctx, who: Character | FamilyNode): string {
+  const node = 'familyNodeId' in who ? ctx.state.familyNodes[who.familyNodeId] : who;
+  if (!node) return who.name;
+  const twin = Object.values(ctx.state.familyNodes).some((n) => n.id !== node.id && n.name === node.name && n.dynastyId === node.dynastyId);
+  return twin ? `${node.name} (เกิด ${node.birthYear})` : node.name;
+}
+
 export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
   const B = ctx.content.balance;
   const birthDay = birthDayFor(ctx, o.birthYear);

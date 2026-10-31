@@ -4,10 +4,10 @@ import type { CapabilityId, Character, FamilyNode, Item, Parentage, Personality,
 import { DISTANCE_TH, familiarity, isSingle, knownLocals, localOrigin, relationStrength, tradeOf } from '../systems/acquaintance';
 import { capability } from '../systems/body';
 import type { PreparedEvent } from '../systems/events';
-import { livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
+import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus } from '../systems/career';
-import { RELATION_TH } from '../systems/handover';
+import { PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
 import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
@@ -301,11 +301,9 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
 // ผังตระกูล + หน้าดูตัวละคร — ใช้เล่นทดสอบ/debug ระบบ จึงโชว์ข้อมูลภายในมากกว่าหน้าตัวละครปกติ (เช่น ปมแฝง นิสัยเป็นตัวเลข)
 // ---------------------------------------------------------------------------
 
-const PARENTAGE_TH: Partial<Record<Parentage, string>> = {
-  minor_wife: 'บุตรภรรยาน้อย',
-  slave_wife: 'บุตรภรรยาทาส',
-  adopted: 'บุตรบุญธรรม',
-};
+/** สถานะแม่ในผัง — ภรรยาหลวง/ไม่ทราบ เป็นค่าปกติ ไม่ต้องแสดง */
+const parentageLabel = (p: Parentage): string | null =>
+  p === 'principal_wife' || p === 'unknown' ? null : PARENTAGE_TH[p];
 
 const PERSONALITY_TH: Record<keyof Personality, string> = {
   neuroticism: 'หวั่นไหว',
@@ -358,7 +356,7 @@ export function treeView(ctx: Ctx): TreeView {
         pruned: !ch,
         // คู่ครองคนนอก = ไม่มีพ่อแม่ในผัง และไม่ใช่ต้นตระกูล
         marriedIn: !founders.has(n.id) && !inTree(n.fatherId) && !inTree(n.motherId),
-        parentage: PARENTAGE_TH[n.parentage] ?? null,
+        parentage: parentageLabel(n.parentage),
         fatherId: n.fatherId,
         motherId: n.motherId,
         spouseIds: n.spouseIds.filter(inTree),
@@ -373,8 +371,14 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   const S = ctx.state;
   const node = must(S.familyNodes[nodeId as FamilyNode['id']], `ไม่พบ ${nodeId} ในผังตระกูล`);
   const ch = node.characterId ? S.characters[node.characterId] : undefined;
-  const nodeName = (id: FamilyNode['id'] | null) => (id ? S.familyNodes[id]?.name : undefined);
-  const charName = (id: Character['id'] | null) => (id ? S.characters[id]?.name : undefined) ?? '?';
+  const nodeName = (id: FamilyNode['id'] | null) => {
+    const n = id ? S.familyNodes[id] : undefined;
+    return n ? displayName(ctx, n) : undefined;
+  };
+  const charName = (id: Character['id'] | null) => {
+    const c = id ? S.characters[id] : undefined;
+    return c ? displayName(ctx, c) : '?';
+  };
   const deathYear = node.deathYear ?? (ch?.deathDay != null ? yearOf(ctx, ch.deathDay) : null);
   const cause = ch?.deathCause ?? node.summary?.causeOfDeath ?? null;
   const names = (ids: Array<FamilyNode['id'] | null>) => ids.map(nodeName).filter((x): x is string => !!x);
@@ -392,7 +396,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   if (dyn?.headNodeId === node.id) facts.push(['ตำแหน่ง', `ผู้นำตระกูล${dyn.name}`]);
   const parents = names([node.fatherId, node.motherId]);
   if (parents.length) facts.push(['บิดามารดา', parents.join(' · ')]);
-  const parentage = PARENTAGE_TH[node.parentage];
+  const parentage = parentageLabel(node.parentage);
   if (parentage) facts.push(['ฐานะในบ้าน', parentage]);
   facts.push(['รุ่นที่', String(node.generation)]);
   const spouses = names(node.spouseIds);
@@ -407,6 +411,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     if (sm) {
       facts.push(['ชนชั้น', estateLabel(ctx, sm.estate)]);
       if (sm.title) facts.push(['บรรดาศักดิ์', sm.title]);
+      if (sm.merit) facts.push(['บุญ', sm.merit.toFixed(1)]);
       section('ปมที่คนยังจำได้', sm.notableTraits.map((x) =>
         `${ctx.content.traitKinds[x.kind]?.label.th ?? x.kind}${x.target ? ctx.tags.label(x.target) : ''}`));
       const partLabel = partLabelOf(ctx, 'human');

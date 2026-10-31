@@ -1,7 +1,7 @@
 import { must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type {
-  Character, Claim, ClaimSlot, Dynasty, FamilyNode, Legend, LegendId, Memory, PerceptRole, TagId,
+  Character, Claim, ClaimSlot, Dynasty, FamilyNode, Legend, LegendId, Memory, PartDefId, PerceptRole, Scar, TagId,
 } from '../core/types';
 
 // ============================================================================
@@ -26,46 +26,55 @@ const ROLE_TO_SLOT: Partial<Record<PerceptRole, ClaimSlot>> = {
   agent: 'adversary',
 };
 
-/** ตอนตาย: แผลเป็นที่มองเห็นได้ + ความทรงจำต้นเหตุ → Legend */
+/**
+ * ตอนตาย: แผลเป็นที่มองเห็นได้ + ความทรงจำต้นเหตุ → Legend
+ * เหตุการณ์เดียวที่ทิ้งแผลหลายแห่งเป็นเรื่องเล่าเรื่องเดียว — รวมตาม originMemoryId ใช้แผลที่หนักที่สุดเป็นหลักฐาน
+ */
 export function seedLegendsFromLife(ctx: Ctx, ch: Character, node: FamilyNode, dynasty: Dynasty): LegendId[] {
   const anatomy = must(ctx.content.anatomies[ch.anatomyId], ch.anatomyId);
-  const out: LegendId[] = [];
+  const stories = new Map<string, { partDefId: PartDefId; scar: Scar }>();
   for (const pid of ch.bodyPartIds) {
     const part = ctx.state.bodyParts[pid];
     const def = part && anatomy.parts[part.partDefId];
     if (!part || !def || def.visibility === 'internal' || def.visibility === 'covered') continue;
     for (const scar of part.scars) {
       if (scar.severity < 0.3) continue;
-      const mem: Memory | undefined = scar.originMemoryId ? ctx.state.memories[scar.originMemoryId] : undefined;
-      const slots: Claim['slots'] = {};
-      for (const p of mem?.percepts ?? []) {
-        const slot = ROLE_TO_SLOT[p.role];
-        if (slot && !slots[slot]) slots[slot] = p.tag;
-      }
-      const truth: Claim = {
-        template: 'acquired_scar',
-        subjectNodeId: node.id,
-        slots,
-        magnitude: 1,
-        heroism: 0,
-        supernatural: [],
-        year: yearOf(ctx, scar.acquiredDay),
-      };
-      const legend: Legend = {
-        id: newId(ctx, 'lgd'),
-        dynastyId: dynasty.id,
-        truth,
-        current: structuredClone(truth),
-        generationsRetold: 0,
-        divergence: 0,
-        writtenRecord: false,
-        physicalEvidence: { partDefId: part.partDefId, kind: scar.kind },
-      };
-      ctx.state.legends[legend.id] = legend;
-      dynasty.legendIds.push(legend.id);
-      node.legendIds.push(legend.id);
-      out.push(legend.id);
+      const key = scar.originMemoryId ?? `${part.partDefId}|${scar.kind}|${scar.acquiredDay}`;
+      const prev = stories.get(key);
+      if (!prev || scar.severity > prev.scar.severity) stories.set(key, { partDefId: part.partDefId, scar });
     }
+  }
+  const out: LegendId[] = [];
+  for (const { partDefId, scar } of stories.values()) {
+    const mem: Memory | undefined = scar.originMemoryId ? ctx.state.memories[scar.originMemoryId] : undefined;
+    const slots: Claim['slots'] = {};
+    for (const p of mem?.percepts ?? []) {
+      const slot = ROLE_TO_SLOT[p.role];
+      if (slot && !slots[slot]) slots[slot] = p.tag;
+    }
+    const truth: Claim = {
+      template: 'acquired_scar',
+      subjectNodeId: node.id,
+      slots,
+      magnitude: 1,
+      heroism: 0,
+      supernatural: [],
+      year: yearOf(ctx, scar.acquiredDay),
+    };
+    const legend: Legend = {
+      id: newId(ctx, 'lgd'),
+      dynastyId: dynasty.id,
+      truth,
+      current: structuredClone(truth),
+      generationsRetold: 0,
+      divergence: 0,
+      writtenRecord: false,
+      physicalEvidence: { partDefId, kind: scar.kind },
+    };
+    ctx.state.legends[legend.id] = legend;
+    dynasty.legendIds.push(legend.id);
+    node.legendIds.push(legend.id);
+    out.push(legend.id);
   }
   return out;
 }

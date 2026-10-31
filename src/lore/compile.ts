@@ -14,19 +14,28 @@ const entries = readdirSync(join(root, 'lore', 'entries'))
 const isNameList = (c: Record<string, unknown>): c is NameListClaim & Record<string, unknown> => c.kind === 'nameList';
 
 const pool: NamePool = { generatedFrom: [], names: [] };
-const seen = new Set<string>();
+const seen = new Map<string, NamePool['names'][number]>();
 for (const e of entries) {
   // ชื่อที่แต่งขึ้นเข้าตัวสุ่มได้แต่ติดป้าย invented — pickName ใช้ชื่อที่มีในเอกสารก่อนเสมอเมื่อใช้ซ้ำเท่ากัน
   if (e.domain !== 'naming' || !isNameList(e.claim)) continue;
   pool.generatedFrom.push(e.id);
+  const invented = e.status === 'invented';
   for (const n of e.claim.names) {
     const key = `${n.name}|${n.sex ?? ''}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    pool.names.push({
-      name: n.name, sex: n.sex ?? null, estates: e.estates ?? null, loreRef: e.id,
-      ...(e.status === 'invented' ? { invented: true as const } : {}),
-    });
+    const prev = seen.get(key);
+    if (prev) {
+      // ชื่อซ้ำข้ามรายการ → รวม ไม่ทิ้งชนชั้น/ที่มาของรายการหลัง; มีเอกสารแหล่งใดแหล่งหนึ่งก็ไม่นับเป็นชื่อแต่ง
+      prev.estates = prev.estates && e.estates ? [...new Set([...prev.estates, ...e.estates])] : null;
+      if (!prev.loreRefs.includes(e.id)) prev.loreRefs.push(e.id);
+      if (!invented) delete prev.invented;
+      continue;
+    }
+    const row: NamePool['names'][number] = {
+      name: n.name, sex: n.sex ?? null, estates: e.estates ?? null, loreRefs: [e.id],
+      ...(invented ? { invented: true as const } : {}),
+    };
+    seen.set(key, row);
+    pool.names.push(row);
   }
 }
 

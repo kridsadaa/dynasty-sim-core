@@ -383,7 +383,7 @@ function renderTree(v: TreeView) {
         line.append(personButton(sid));
       } else {
         // ญาติแต่งกันเอง — คู่ครองมีบรรทัดของตัวเองอยู่ในสายพ่อแม่
-        line.append(el('span', sp.name, 'muted'));
+        line.append(el('span', `${sp.name} (${sp.birthYear})`, 'muted'));
       }
     }
     const kids = [...new Set(n.childIds)].filter((k) => byId.has(k)).sort((a, b) => byId.get(a)!.birthYear - byId.get(b)!.birthYear);
@@ -397,7 +397,7 @@ function renderTree(v: TreeView) {
     for (const k of kids) {
       if (placed.has(k)) {
         // ลูกของญาติที่แต่งกันเอง — แสดงเต็มครั้งเดียว อีกฝั่งอ้างถึง
-        ul.append(el('li', `${byId.get(k)!.name} (ดูในสายอีกฝั่ง)`, 'muted'));
+        ul.append(el('li', `${byId.get(k)!.name} (${byId.get(k)!.birthYear}) — ดูในสายอีกฝั่ง`, 'muted'));
       } else ul.append(renderNode(k));
     }
     for (const b of branches) ul.append(el('li', `${b.label} — ${b.memberCount} คน ${b.generations} รุ่น (ยุบเหลือบรรทัดเดียว)`, 'muted'));
