@@ -68,33 +68,53 @@ function livingKids(ctx: Ctx, node: FamilyNode | undefined): Character[] {
     .filter(isAlive);
 }
 
-/** พี่น้องร่วมพ่อหรือร่วมแม่ที่ยังมีชีวิตและอยู่ตระกูลเดียวกัน */
-export function livingSiblings(ctx: Ctx, ch: Character): Character[] {
-  const nodes = ctx.state.familyNodes;
-  const node = nodes[ch.familyNodeId];
-  const sibs = [node?.fatherId, node?.motherId].flatMap((p) => (p ? livingKids(ctx, nodes[p]) : []));
-  return [...new Set(sibs)].filter((s) => s.id !== ch.id && !!s.dynastyId && s.dynastyId === ch.dynastyId);
-}
-
-/** ผู้รับมรดก: ลูก — ไม่มีลูกจึงตกแก่พี่น้อง (ลำดับหลังเป็นของเกม ยังไม่ได้ตรวจกับลักษณมรดก) */
-export function estateHeirs(ctx: Ctx, deceased: Character): Character[] {
-  const kids = livingKids(ctx, ctx.state.familyNodes[deceased.familyNodeId]);
-  return kids.length ? kids : livingSiblings(ctx, deceased);
+/** node ของลูกทุกคน รวมคนที่ตายแล้ว — ใช้หาหลานที่พ่อแม่ตายไปก่อน */
+function childNodes(ctx: Ctx, node: FamilyNode | undefined): FamilyNode[] {
+  return (node?.childIds ?? []).map((id) => ctx.state.familyNodes[id]).filter((n): n is FamilyNode => !!n);
 }
 
 /**
- * ผู้สืบต่อเป็นผู้นำตระกูล/ตัวละครผู้เล่น: ลูกและพี่น้อง — ผู้ใหญ่มาก่อนเด็กเสมอ (มีผู้ใหญ่ก็ไม่ให้เด็กขึ้นเป็นรุ่นถัดไป)
- * ในผู้ใหญ่หรือในเด็กด้วยกัน ลูกมาก่อนพี่น้อง แล้วเรียงตามฐานะแม่ (ลักษณมรดก) และอายุ
+ * ญาติที่ยังมีชีวิตในตระกูลเดียวกัน เรียงจากใกล้ไปไกล: ลูก, หลาน (ลูกของลูก), พี่น้อง (ร่วมพ่อหรือแม่), หลาน (ลูกของพี่น้อง)
+ * — สายของตัวเองก่อนสายพี่น้อง
+ */
+function kinTiers(ctx: Ctx, ch: Character): Character[][] {
+  const nodes = ctx.state.familyNodes;
+  const node = nodes[ch.familyNodeId];
+  const sibNodes = [...new Set([node?.fatherId, node?.motherId].flatMap((p) => (p ? childNodes(ctx, nodes[p]) : [])))]
+    .filter((n) => n.id !== ch.familyNodeId);
+  const sameLine = (c: Character) => !!c.dynastyId && c.dynastyId === ch.dynastyId;
+  return [
+    livingKids(ctx, node),
+    childNodes(ctx, node).flatMap((n) => livingKids(ctx, n)),
+    sibNodes.map((n) => (n.characterId ? ctx.state.characters[n.characterId] : undefined)).filter(isAlive),
+    sibNodes.flatMap((n) => livingKids(ctx, n)),
+  ].map((tier) => [...new Set(tier)].filter(sameLine));
+}
+
+/** พี่น้องร่วมพ่อหรือร่วมแม่ที่ยังมีชีวิตและอยู่ตระกูลเดียวกัน */
+export function livingSiblings(ctx: Ctx, ch: Character): Character[] {
+  return kinTiers(ctx, ch)[2]!;
+}
+
+/** ผู้รับมรดก: ลูก → หลาน → พี่น้อง → ลูกของพี่น้อง กลุ่มแรกที่มีคน (ลำดับหลังลูกเป็นของเกม ยังไม่ได้ตรวจกับลักษณมรดก) */
+export function estateHeirs(ctx: Ctx, deceased: Character): Character[] {
+  return kinTiers(ctx, deceased).find((tier) => tier.length) ?? [];
+}
+
+/**
+ * ผู้สืบต่อเป็นผู้นำตระกูล/ตัวละครผู้เล่น: ลูก หลาน พี่น้อง และลูกของพี่น้อง
+ * ผู้ใหญ่มาก่อนเด็กเสมอ (มีผู้ใหญ่ก็ไม่ให้เด็กขึ้นเป็นรุ่นถัดไป); ในผู้ใหญ่หรือในเด็กด้วยกัน ญาติใกล้มาก่อน (ตาม kinTiers)
+ * แล้วเรียงตามฐานะแม่ (ลักษณมรดก) และอายุ
  */
 export function heirCandidates(ctx: Ctx, deceased: Character): Array<{ ch: Character; score: number }> {
   const B = ctx.content.balance.inheritance;
-  const kids = livingKids(ctx, ctx.state.familyNodes[deceased.familyNodeId]);
-  const score = (ch: Character, isKid: boolean) => {
+  const score = (ch: Character, tier: number) => {
     const n = must(ctx.state.familyNodes[ch.familyNodeId], 'heir node');
     const age = ageOf(ctx, ch);
-    return (age >= 15 ? 100 : 0) + (isKid ? 10 : 0) + B.shareByParentage[n.parentage] + age * 0.01;
+    return (age >= 15 ? 100 : 0) + (3 - tier) * 10 + B.shareByParentage[n.parentage] + age * 0.01;
   };
-  return [...kids.map((ch) => ({ ch, score: score(ch, true) })), ...livingSiblings(ctx, deceased).map((ch) => ({ ch, score: score(ch, false) }))]
+  return kinTiers(ctx, deceased)
+    .flatMap((tier, i) => tier.map((ch) => ({ ch, score: score(ch, i) })))
     .sort((a, b) => b.score - a.score);
 }
 
