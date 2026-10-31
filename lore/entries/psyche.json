@@ -157,6 +157,7 @@
     "summary": "ช่องทางที่ปมความกลัวถูกสร้างโดยตั้งใจ — ผู้ใหญ่ที่มี superstition แรงอาจ 'สอน' ความกลัวให้เด็ก",
     "status": "inferred",
     "projection": "หลักฐานชิ้นเดียว (เรื่องเล่าส่วนตัว) — ใช้เป็นแบบแผนแบบระวัง",
+    "gameRefs": { "tags": ["supernatural:phi"] },
     "citations": [{ "sourceId": "src.anuman_1954_phi", "locator": "หน้า 171" }],
     "verified": false
   },

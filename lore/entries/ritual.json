@@ -53,6 +53,8 @@
     },
     "summary": "ช่องทางรู้หนังสือที่มีหลักฐานร่วมยุค — ต่อกับระบบจดตำนานลงสมุดข่อย",
     "status": "attested",
+    "appliesAs": "pattern",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; การเรียนหนังสือที่วัดเป็นช่องทางหลักต่อเนื่องจนถึงต้นศตวรรษที่ 25 (ก่อนโรงเรียนสมัยใหม่) — อายุที่เข้าใช้เป็นแบบแผน",
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -255,7 +257,15 @@
         "quote": "They preach the next day after every new and every full Moon, and the People are ever very constant in the Temples"
       }
     ],
-    "verified": false
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "moon:any",
+        "moon:full",
+        "moon:dark14",
+        "moon:dark"
+      ]
+    }
   },
   {
     "id": "ritual.temple_festival_1680s",

@@ -7,9 +7,41 @@
     "claim": { "year": 2310, "kind": "war", "outcome": "กรุงศรีอยุธยาแตกแก่กองทัพพม่า" },
     "summary": "กรุงศรีอยุธยาเสียแก่พม่าใน พ.ศ. 2310 เกมใช้เป็น shock ล้างทรัพย์และจุดยึดของตำนานตระกูล",
     "status": "attested",
-    "citations": [{ "sourceId": "src.phongsawadan_phan_chanthanumat", "locator": "TODO: ตอนเสียกรุง" }],
+    "citations": [{ "sourceId": "src.phongsawadan_phan_chanthanumat", "locator": "TODO: ตอนเสียกรุง" }, { "sourceId": "src.boeles_1968_dutch_eyewitness_1767", "locator": "JSS 56(1) ทั้งบทความ — ยังไม่ได้อ่าน (PDF เป็นภาพสแกน)" }],
     "verified": false,
     "gameRefs": { "tags": ["history:fall_of_ayutthaya"] }
+  },
+  {
+    "id": "event.thonburi_succession_2325",
+    "domain": "event",
+    "title": "ผลัดแผ่นดินกรุงธนบุรี (พ.ศ. 2325)",
+    "period": [
+      2325,
+      2325
+    ],
+    "claim": {
+      "year": 2325,
+      "kind": "succession",
+      "outcome": "สิ้นรัชกาลสมเด็จพระเจ้าตากสิน เจ้าพระยาจักรีขึ้นครองราชย์ ตั้งกรุงรัตนโกสินทร์",
+      "factionRisk": "ขุนนางที่ผูกกับฝ่ายพระเจ้าตากบางส่วนถูกลงโทษ — ขอบเขตต้องตรวจกับพงศาวดาร",
+      "gameMapping": "rules.json history:thonburi_succession ริบทรัพย์/ถอดบรรดาศักดิ์ตระกูลที่มี faction:taksin_loyalist"
+    },
+    "summary": "จุดล้างไพ่ทางการเมืองหลังเสียกรุง: ตระกูลที่รุ่งเรืองเพราะรับราชการพระเจ้าตากเสี่ยงหมดอำนาจ",
+    "status": "attested",
+    "contested": "การลงโทษขุนนางฝ่ายพระเจ้าตาก \"เป็นวงกว้าง\" แค่ไหนยังไม่ได้ตรวจ — rules.json ใช้ purge ทั้งตระกูลซึ่งอาจแรงเกินหลักฐาน",
+    "citations": [
+      {
+        "sourceId": "src.phongsawadan_phan_chanthanumat",
+        "locator": "TODO: ตอนสิ้นรัชกาลกรุงธนบุรี"
+      }
+    ],
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "history:thonburi_succession",
+        "faction:taksin_loyalist"
+      ]
+    }
   },
   {
     "id": "event.famine_2310_2313",
@@ -44,7 +76,12 @@
         "quote": "ในปีนี้ ได้มีคนตายมีจำนวนมากกว่า เมื่อครั้งพม่าเข้ามาตีกรุงศรีอยุธยา"
       }
     ],
-    "verified": false
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "history:famine_after_fall"
+      ]
+    }
   },
   {
     "id": "event.cholera_2363",
@@ -82,7 +119,13 @@
         "quote": "it carried off two persons in ten, or a fifth part of the whole population"
       }
     ],
-    "verified": false
+    "contested": "อัตรา 1 ใน 5 มาจากคำบอกเล่าของขุนนาง ไม่ใช่การนับ",
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "history:cholera_2363"
+      ]
+    }
   },
   {
     "id": "event.cholera_2365",
@@ -108,7 +151,12 @@
         "quote": "directed the people to keep at home, and abstain from all work for seven days"
       }
     ],
-    "verified": false
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "history:cholera_2365"
+      ]
+    }
   },
   {
     "id": "event.cholera_2392",
@@ -144,6 +192,11 @@
         "locator": "ch. VI pp. 78–84"
       }
     ],
-    "verified": false
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "history:cholera_2392"
+      ]
+    }
   }
 ]

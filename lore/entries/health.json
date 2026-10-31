@@ -41,7 +41,12 @@
         "locator": "pp. 183, 188–190 (อ้างบันทึกแบรดลีย์ ธ.ค. 2381 และ 19 ม.ค. 2382)"
       }
     ],
-    "verified": false
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "situation:smallpox"
+      ]
+    }
   },
   {
     "id": "health.children_dying_young",
@@ -132,7 +137,12 @@
         "quote": "died while “before the fire,”"
       }
     ],
-    "verified": false
+    "verified": false,
+    "gameRefs": {
+      "tags": [
+        "situation:childbirth"
+      ]
+    }
   },
   {
     "id": "health.longevity_old_age",

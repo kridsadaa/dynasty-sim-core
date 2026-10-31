@@ -5,11 +5,12 @@
     "kind": "primary",
     "describesPeriod": [
       1893,
-      2310
+      2325
     ],
     "reliability": 4,
     "url": "https://vajirayana.org",
-    "notes": "ชำระสมัยรัตนโกสินทร์ตอนต้น — ตรวจปีที่ชำระแล้วเติม composedYear; ฉบับพิมพ์อยู่ในประชุมพงศาวดาร"
+    "notes": "ไม่มีบานแผนกลงศักราช — ใส่ปลายรัชกาลที่ 1 (2352) เป็นค่าอนุรักษ์ เพราะงานวิชาการระบุว่าชำระในรัชกาลที่ 1; บทความศิลปวัฒนธรรมเสนอว่าเนื้อความสมัยธนบุรีน่าเขียนราว 2320–2321 ส่วนที่เหลือเติมภายหลัง (https://www.silpa-mag.com/?p=89001); ปี 2338 (จ.ศ. 1157) ที่บทความเดียวกันอ้างเป็นบานแผนกการชำระพงศาวดารครั้งแรกในรัตนโกสินทร์ — ยังไม่พบว่าเป็นบานแผนกของฉบับนี้; ฉบับพิมพ์อยู่ในประชุมพงศาวดาร; เนื้อความต่อถึงสมัยกรุงธนบุรี (บทความเดียวกันอ้างถึงเนื้อความสมัยธนบุรีของฉบับนี้) — ปลายช่วงที่ 2325 ต้องตรวจกับฉบับพิมพ์",
+    "composedYear": 2352
   },
   {
     "id": "src.three_seals_law",
@@ -513,6 +514,112 @@
     "url": "https://archive.org/details/oapen-20.500.12657-62036",
     "license": "Open access (OAPEN)",
     "notes": "งานภาคสนาม 2491–2500 ใกล้มีนบุรี + ประวัติบอกเล่าย้อนถึงการตั้งชุมชนกลางศตวรรษที่ 19"
+  },
+  {
+    "id": "src.boeles_1968_dutch_eyewitness_1767",
+    "title": "An Eyewitness Account in Dutch of the Destruction of Ayudhya 1767 (Journal of the Siam Society 56.1)",
+    "author": "J. J. Boeles",
+    "kind": "primary",
+    "composedYear": 2310,
+    "describesPeriod": [
+      2310,
+      2310
+    ],
+    "reliability": 3,
+    "url": "https://thesiamsociety.org/wp-content/uploads/1968/03/JSS_056_1f_Boeles_EyewitnessAccountInDutchOfDestructionOfAyudhya1767.pdf",
+    "notes": "บทความ พ.ศ. 2511 ที่เผยแพร่บันทึกผู้เห็นเหตุการณ์ชาวดัตช์ — composedYear เป็นปีของบันทึกตามชื่อบทความ ยังไม่ได้อ่านว่าผู้บันทึกเป็นใครและเขียนเมื่อไรจริง; ผู้เขียนบทความอ่านจากชื่อไฟล์ (Boeles) ต้องตรวจชื่อเต็ม"
+  },
+  {
+    "id": "src.henley_2005_population",
+    "title": "Population and the Means of Subsistence: Explaining the Historical Demography of Island Southeast Asia (JSEAS 36.3)",
+    "author": "David Henley",
+    "kind": "secondary",
+    "composedYear": 2548,
+    "describesPeriod": [
+      2100,
+      2450
+    ],
+    "reliability": 4,
+    "url": "https://oxis.org/articles-k-z/henley-2005.pdf",
+    "notes": "ศึกษาหมู่เกาะ ไม่ใช่สยาม — ใช้เป็นตัวเลขเปรียบเทียบเท่านั้น; สรุปข้อเสนอของ Anthony Reid เรื่องการคุมกำเนิดด้วยการให้นมนาน"
+  },
+  {
+    "id": "src.carmichael_2008_demography",
+    "title": "Demographic disequilibrium in early twentieth century Thailand (Asian Population Studies 4.2)",
+    "author": "Gordon A. Carmichael",
+    "kind": "secondary",
+    "composedYear": 2551,
+    "describesPeriod": [
+      2393,
+      2480
+    ],
+    "reliability": 4,
+    "url": "https://doi.org/10.1080/17441730802247265",
+    "notes": "ยังไม่ได้อ่านฉบับเต็ม — อ้างผ่านรายงานค้นคว้า: ก่อน ค.ศ. 1850 อัตราเกิดกับตายใกล้กัน"
+  },
+  {
+    "id": "src.prachum_69_krung_kao_2386",
+    "title": "ประชุมพงศาวดาร ภาคที่ ๖๙ (เอกสารราชการเรื่องกรุงเก่า สมัยรัชกาลที่ 3)",
+    "kind": "primary",
+    "composedYear": 2388,
+    "describesPeriod": [
+      2386,
+      2388
+    ],
+    "reliability": 4,
+    "url": "https://th.wikisource.org/wiki/ประชุมพงศาวดาร_ภาคที่_๖๙",
+    "notes": "ใบบอก/คำให้การคดีความที่กรุงเก่า ราว ค.ศ. 1843–1845 พิมพ์ 2481 — ชื่อคนธรรมดาจำนวนมาก"
+  },
+  {
+    "id": "src.prachum_67_war_2377",
+    "title": "ประชุมพงศาวดาร ภาคที่ ๖๗ (ใบบอกและคำให้การศึกเขมร พ.ศ. 2377)",
+    "kind": "primary",
+    "composedYear": 2377,
+    "describesPeriod": [
+      2377,
+      2377
+    ],
+    "reliability": 4,
+    "url": "https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_67_(2481)",
+    "notes": "บัญชีไพร่พลแนวรบเขมร — บางคนอาจไม่ใช่คนภาคกลาง; พิมพ์ 2481"
+  },
+  {
+    "id": "src.damrong_prapheni_thai",
+    "title": "ปาฐกถาเรื่องประเพณีไทย (ชุมนุมพระนิพนธ์)",
+    "author": "สมเด็จฯ กรมพระยาดำรงราชานุภาพ",
+    "kind": "secondary",
+    "describesPeriod": [
+      2300,
+      2450
+    ],
+    "reliability": 3,
+    "url": "https://th.wikisource.org/wiki/ชุมนุมพระนิพนธ์_(บางเรื่อง)/๗๐",
+    "notes": "ปาฐกถาต้นพุทธศตวรรษที่ 25 บรรยายธรรมเนียม \"คนโบราณ\" — ปีที่แสดงยังไม่ได้ตรวจ"
+  },
+  {
+    "id": "src.amnat_thaksa_naming",
+    "title": "ตำราทักษากับการตั้งชื่อของคนไทย (วรรณวิทัศน์ ม.ธรรมศาสตร์)",
+    "author": "อำนาจ ปักษาสุข",
+    "kind": "secondary",
+    "describesPeriod": [
+      2300,
+      2550
+    ],
+    "reliability": 3,
+    "url": "https://so06.tci-thaijo.org/index.php/VANNAVIDAS/article/download/48400/40209/",
+    "notes": "ไม่ระบุว่าสามัญชนเริ่มใช้ทักษาเมื่อไร"
+  },
+  {
+    "id": "src.thwiki_rama1_kin",
+    "title": "วิกิพีเดียภาษาไทย: หน้าพระประวัติพระญาติรัชกาลที่ 1 และสมเด็จพระอมรินทรามาตย์ (อ้างราชสกุลวงศ์ กรมศิลปากร)",
+    "kind": "secondary",
+    "describesPeriod": [
+      2272,
+      2325
+    ],
+    "reliability": 2,
+    "url": "https://th.wikipedia.org/wiki/สมเด็จพระอมรินทรามาตย์",
+    "notes": "ทางไปหาราชสกุลวงศ์ — ต้องตรวจกับหนังสือราชสกุลวงศ์ก่อน verified"
   },
   {
     "id": "src.apichaya_2563_phuamia",

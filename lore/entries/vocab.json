@@ -39,6 +39,8 @@
     },
     "summary": "ราคาเบี้ยไม่คงที่ — เหมาะกับระบบเศรษฐกิจที่ค่าเงินย่อยแกว่ง; ยังไม่มีอัตราของอยุธยาตอนปลาย",
     "status": "inferred",
+    "appliesAs": "pattern",
+    "projection": "อัตราจากบันทึกชาวต่างชาติ 2173–2233 ก่อน slice — ใช้เฉพาะ \"แบบแผน\" ว่าค่าเบี้ยผันผวนตามเรือที่ขนเบี้ยเข้า ไม่ใช้ตัวเลขเป็นอัตราของยุคเกม",
     "citations": [
       { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XIV 'Of the Traffic'" },
       { "sourceId": "src.ayutthaya_history_vandenberg", "locator": "หน้า Misc_Currency1.html (อ้าง Van Vliet หน้า 171–172, Gervaise หน้า 101–102, Kaempfer หน้า 67)" }
@@ -63,6 +65,7 @@
     },
     "summary": "สรรพนามบุรุษที่ 1 มีหลายคำตามคู่สนทนา (นาย-ทาส, ราษฎร-เจ้านาย, เสมอกัน, พระสงฆ์) — ใช้ทำระบบระดับภาษาในบทสนทนา",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; สรรพนามตามฐานะเป็นโครงสร้างภาษาที่เปลี่ยนช้า — คำเฉพาะต้องตรวจกับวรรณคดีอยุธยาตอนปลายก่อนใช้ในบทสนทนา",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. VIII", "quote": "the word ca… ought to be naturally only in the mouth of a Slave" }],
     "verified": false
   },
@@ -111,6 +114,7 @@
     },
     "summary": "ฐานของปฏิทินจันทรคติในเกม (core/calendar.ts) ที่แทนปี 360 วันแล้ว",
     "status": "attested",
+    "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; ปฏิทินจันทรคติไทยใช้ต่อเนื่องจนเปลี่ยนเป็นสุริยคติ พ.ศ. 2432",
     "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. VIII 'Of the Husbandry and the Difference of the Seasons'", "quote": "They have two years together consisting of twelve months, and a third of thirteen." }],
     "verified": false
   },
@@ -142,6 +146,7 @@
     },
     "summary": "ใช้เป็นรูปแบบวันที่ในจดหมาย/บันทึกในเกม — ต้องเปิดคำนำพงศาวดารฉบับหลวงประเสริฐยืนยันถ้อยคำจริง",
     "status": "inferred",
+    "projection": "คำนำพงศาวดารฉบับหลวงประเสริฐ (2223) — รูปแบบเดียวกัน (ศักราช + ปีนักษัตร + เดือน + ขึ้น/แรม + วัน) ปรากฏในตัวบทกฎหมายตราสามดวงที่ชำระ 2348 เช่นอารัมภบทลักษณมรดก จึงใช้ได้ตลอดช่วงเกม",
     "citations": [{ "sourceId": "src.wiki_luang_prasoet", "locator": "หมายเหตุเรื่องคำนำ (preface)" }],
     "verified": false
   },
@@ -153,6 +158,7 @@
     "claim": { "codified": 2444, "ayutthayaUse": "ยังไม่มีหลักฐาน — ข้อความว่าใช้มาตั้งแต่อยุธยาไม่มีแหล่งอ้าง" },
     "summary": "ระวังการใช้ 'ทุ่ม/โมง' ในข้อความยุคอยุธยาจนกว่าจะพบหลักฐาน ใช้ 'ยาม' หรือบรรยายเวลาด้วยธรรมชาติ (ไก่ขัน ตะวันบ่าย) ไปก่อน",
     "status": "inferred",
+    "projection": "รายการนี้บันทึกว่าระบบ 6 ชั่วโมงเป็นแบบแผนหลังยุคเกม (2444) — ใช้เป็นข้อระวังคำผิดยุค ไม่ใช่ข้อเท็จจริงในฉาก",
     "citations": [{ "sourceId": "src.wiki_six_hour_clock", "locator": "หัวข้อประวัติ (อ้างราชกิจจานุเบกษา 17:206)" }],
     "verified": false
   },
