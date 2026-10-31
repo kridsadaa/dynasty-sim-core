@@ -41,7 +41,8 @@ export function bootstrapScenario(ctx: Ctx, heroName = 'บุญมา'): Chara
     name: 'แย้ม', sex: 'f', birthYear: 2262, estate: 'noble', householdId: hh.id,
     father: maternalGrandfather, mother: maternalGrandmother,
   });
-  // แต่งต้นปี 2279 → ตัวเอกเป็นลูกคนแรกปี 2281 น้องเกิดปี 2284 · แม่ยังมีลูกได้อีกระหว่างเล่น
+  // birthYear ในฉากนี้ = 2288 − อายุ ณ วันเริ่ม (ปีเกิดจริงถอยได้หนึ่งปี ดู factory.birthDayFor)
+  // แต่งต้นปี 2279 → ตัวเอก (7 ขวบ) เป็นลูกคนแรก น้อง 4 ขวบ · แม่ยังมีลูกได้อีกระหว่างเล่น
   father.marriedDay = yearStart(ctx, 2279);
   marry(ctx, father, mother, father.marriedDay);
   const hero = spawnCharacter(ctx, { name: heroName, sex: 'm', birthYear: 2281, estate: 'noble', father, mother });

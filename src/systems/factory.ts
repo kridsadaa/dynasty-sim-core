@@ -1,7 +1,7 @@
 import { daysInYear, yearsToDays } from '../core/calendar';
-import { dayOfYear, isAlive, must, newId, yearOf, yearStart, type Ctx } from '../core/ctx';
+import { dayOfYear, isAlive, must, newId, yearOf, yearsBetween, yearStart, type Ctx } from '../core/ctx';
 import type {
-  Character, Dynasty, DynastyId, Estate, FamilyNode, GameState, Household, HouseholdId, Parentage, Personality,
+  Character, Day, Dynasty, DynastyId, Estate, FamilyNode, GameState, Household, HouseholdId, Parentage, Personality,
 } from '../core/types';
 
 export function emptyState(seed: number): GameState {
@@ -30,8 +30,34 @@ export interface SpawnOpts {
   wealth?: number;
 }
 
+/**
+ * วันเกิดตาม birthYear ที่ผู้เรียกส่งมา
+ *   เกิดปีนี้: วันเกิดต้องไม่เลยวันนี้ → เด็กเกิดใหม่ไม่มีวันเกิดในอนาคต (อายุ -1)
+ *   ปีก่อนๆ: ผู้เรียกหมายถึง "อายุ ปีนี้ − birthYear ณ วันนี้" (คู่ครอง/คนรู้จักสร้างด้วย ปีนี้ − อายุ, ฉากเริ่มเกม)
+ *     → สุ่มในช่วงหนึ่งปีที่ให้อายุนั้นพอดี ปีเกิดจริงจึงอาจเป็น birthYear − 1
+ *     สุ่มแค่ในปี birthYear ถึงวันนี้ → สร้างตอนต้นปี (ฉากเริ่มเกม) เกิดวันแรกของปีเหมือนกันหมด
+ *     สุ่มทั้งปี birthYear → ส่วนใหญ่ยังไม่ถึงวันเกิด อายุขาดไปหนึ่งปี
+ *   ปีหน้าขึ้นไป: สุ่มทั้งปี
+ */
+function birthDayFor(ctx: Ctx, birthYear: number): Day {
+  const now = ctx.state.meta.day;
+  const thisYear = yearOf(ctx, now);
+  const roll = (span: number) => Math.floor(ctx.rng.range(0, span));
+  if (birthYear > thisYear) return yearStart(ctx, birthYear) + roll(daysInYear(birthYear));
+  if (birthYear === thisYear) return yearStart(ctx, birthYear) + roll(dayOfYear(ctx, now) + 1);
+  const age = thisYear - birthYear;
+  // วันที่เดียวกับวันนี้ในปี birthYear คือวันเกิดช้าสุดที่ยังอายุครบ — ถอยได้ไม่เกินหนึ่งปีจากวันนั้น
+  let day = yearStart(ctx, birthYear) + Math.min(dayOfYear(ctx, now), daysInYear(birthYear) - 1) - roll(daysInYear(birthYear - 1));
+  // 29 ก.พ. ทำให้คลาดได้หนึ่งวัน
+  while (yearsBetween(ctx, day, now) > age) day++;
+  while (yearsBetween(ctx, day, now) < age) day--;
+  return day;
+}
+
 export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
   const B = ctx.content.balance;
+  const birthDay = birthDayFor(ctx, o.birthYear);
+  const birthYear = yearOf(ctx, birthDay);
   const rnd = () => Math.round(ctx.rng.range(0.15, 0.85) * 100) / 100;
   const p: Personality = {
     neuroticism: rnd(), imagination: rnd(), boldness: rnd(), agreeableness: rnd(),
@@ -48,7 +74,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     dynastyId,
     name: o.name,
     sex: o.sex,
-    birthYear: o.birthYear,
+    birthYear,
     deathYear: null,
     fatherId: fatherNode?.id ?? null,
     motherId: motherNode?.id ?? null,
@@ -61,10 +87,6 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     legendIds: [],
     pruneLevel: 0,
   };
-  // คนที่เกิดในปีนี้หรือก่อนหน้า: วันเกิดของปีนี้ต้องผ่านมาแล้ว → เด็กเกิดใหม่ไม่มีวันเกิดในอนาคต (อายุ -1)
-  // และคู่ครองที่สร้างด้วย birthYear = ปีนี้ − อายุ ได้อายุตรงตามที่ตั้งใจ (ทอยสุ่มครั้งเดียวเท่าเดิม)
-  const now = ctx.state.meta.day;
-  const birthDaySpan = o.birthYear <= yearOf(ctx, now) ? dayOfYear(ctx, now) + 1 : daysInYear(o.birthYear);
   const ch: Character = {
     id: newId(ctx, 'chr'),
     familyNodeId: node.id,
@@ -73,7 +95,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     name: o.name,
     sex: o.sex,
     handedness: ctx.rng.chance(0.1) ? 'l' : 'r',
-    birthDay: yearStart(ctx, o.birthYear) + Math.floor(ctx.rng.range(0, birthDaySpan)),
+    birthDay,
     deathDay: null,
     deathCause: null,
     anatomyId: 'human',
@@ -84,7 +106,7 @@ export function spawnCharacter(ctx: Ctx, o: SpawnOpts): Character {
     stress: 0,
     merit: 0,
     social: { estate: o.estate, sakdina: 0, title: null, patronId: null, wealth: o.wealth ?? 0, debt: 0 },
-    horoscope: { weekday: Math.floor(ctx.rng.range(0, 7)), yearAnimal: (o.birthYear - 2280 + 12) % 12, omenTags: [] },
+    horoscope: { weekday: Math.floor(ctx.rng.range(0, 7)), yearAnimal: (birthYear - 2280 + 12) % 12, omenTags: [] },
     lod: 'full',
     constitution: inheritConstitution(ctx, o.father, o.mother),
   };

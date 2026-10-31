@@ -134,6 +134,7 @@ function pushProgress(c: Ctx) {
 async function runClock(c: Ctx): Promise<void> {
   let carry = 0;
   let lastSave = Date.now();
+  let stoppedForEvent = false;
   const lines: string[] = [];
   try {
     while (playing && ctx === c) {
@@ -146,7 +147,7 @@ async function runClock(c: Ctx): Promise<void> {
       if (stop === 'event') {
         playing = false;
         resumeAfterEvent = true;
-        for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
+        stoppedForEvent = true;
       } else if (stop === 'gameOver') {
         playing = false;
         ended = true;
@@ -159,8 +160,14 @@ async function runClock(c: Ctx): Promise<void> {
     }
   } finally {
     pushClock();
-    // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
-    if (!ended && ctx === c) await save('autosave');
+    try {
+      // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
+      if (!ended && ctx === c) await save('autosave');
+    } finally {
+      // ส่ง event หลังเซฟเสร็จ — saveState รอเปิด IndexedDB ก่อนเขียน ถ้า UI เปิดปุ่มตัวเลือกก่อน choose แทรกได้
+      // เซฟจะได้ state หลังเลือกแต่ pending ก่อนเลือก → โหลดแล้วเลือก event เดิมซ้ำ
+      if (stoppedForEvent && ctx === c) for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
+    }
   }
 }
 
