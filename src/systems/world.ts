@@ -1,5 +1,5 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
-import { ageOf, dayOfYear, isAlive, lunarOf, yearOf, yearsBetween, type Ctx } from '../core/ctx';
+import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
@@ -8,13 +8,14 @@ import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
-import { applyHistoricalShocks, heirCandidates, markDead, performHandover, settleDeath } from './handover';
+import { applyHistoricalShocks, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
 import { tickChores, tickOutings } from './chores';
 import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
+import { mortalityYearTick } from './mortality';
 
 // ============================================================================
 // World tick — 1 call = 1 วัน. Pure function ของ (state, content, rng) → deterministic
@@ -71,6 +72,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
   if (dayOfYear(ctx, S.meta.day) === 0) {
     for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', line });
+    // ตายในปีที่ผ่านมา (เด็ก ไข้ทรพิษ ป่วย ชรา) — ก่อนการเกิด/แต่งงาน/พบคนใหม่ของปีนี้ ไม่ให้ event ผูกกับคนที่จะตาย
+    for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', line });
     for (const hh of Object.values(S.households)) {
       const logs = householdYearTick(ctx, hh.id);
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', line });
@@ -87,14 +90,6 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const career = careerYearTick(ctx);
     for (const line of career.lines) out.push({ type: 'log', line });
     for (const req of career.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
-    for (const ch of Object.values(S.characters)) {
-      if (!isAlive(ch)) continue;
-      const over = ageOf(ctx, ch) - B.world.oldAgeStart;
-      if (over > 0 && ctx.rng.chance(over * B.world.oldAgeYearlyRisk)) {
-        markDead(ctx, ch, 'situation:old_age');
-        if (ch.id !== player?.id) out.push({ type: 'log', line: `${ch.name} ถึงแก่กรรม` });
-      }
-    }
     // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
     const diedToday = Object.values(S.characters).filter((ch) => ch.deathDay === S.meta.day && ch.id !== player?.id);
     const isHeadWithHeir = (ch: Character) =>
@@ -259,9 +254,9 @@ export function lifeMilestones(
       }
     }
 
-    // มีบุตรตามปีหลังแต่งงาน — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ
-    if (spouse && ch.marriedDay !== undefined && W.childAfterMarriageYears.includes(yearsBetween(ctx, ch.marriedDay, day))) {
-      const mother = ch.sex === 'f' ? ch : spouse;
+    // มีบุตร — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ
+    const mother = ch.sex === 'f' ? ch : spouse;
+    if (spouse && mother && ch.marriedDay !== undefined && conceives(ctx, ch, mother, year)) {
       const father = ch.sex === 'm' ? ch : spouse;
       const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
       // ชื่อผู้เล่นห้ามซ้ำเสมอ — เรื่องทั้งเกมเล่าผ่านคนนี้
@@ -269,12 +264,28 @@ export function lifeMilestones(
         name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, spouse), namesInUse(ctx, ch.dynastyId, year)),
         sex, birthYear: year, estate: ch.social.estate, father, mother,
       });
+      // แม่ตายตอนคลอด (lore: health.childbirth_deaths) — ก่อน event ตั้งชื่อ จะได้ไม่ให้แม่ที่ตายแล้วตั้งชื่อ
+      const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(W.childbirthDeathRisk);
+      if (motherDied) markDead(ctx, mother, 'situation:childbirth');
       // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log
       const naming = onBirth?.(kid, ch, spouse) ?? false;
       out.push(naming ? `${ch.name} มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name} มีบุตร: ${kid.name}`);
+      if (motherDied && mother.id !== ctx.state.meta.playerCharacterId) out.push(`${mother.name} ตายตอนคลอด`);
     }
   }
   return out;
+}
+
+/**
+ * ปีนี้มีลูกไหม (lore: health.population_stationary): แต่งมาแล้วอย่างน้อยปีหนึ่ง แม่ยังไม่เกิน maxMotherAge
+ * และลูกคนก่อนเกินกำหนดหย่านม (minGapYears) แล้ว
+ */
+function conceives(ctx: Ctx, ch: Character, mother: Character, year: number): boolean {
+  const B = ctx.content.balance.world.births;
+  if (yearsBetween(ctx, must(ch.marriedDay, 'marriedDay')) < 1 || ageOf(ctx, mother) > B.maxMotherAge) return false;
+  const nodes = ctx.state.familyNodes;
+  const last = Math.max(-Infinity, ...(nodes[ch.familyNodeId]?.childIds ?? []).map((id) => nodes[id]?.birthYear ?? -Infinity));
+  return year - last >= B.minGapYears && ctx.rng.chance(B.yearlyChance);
 }
 
 function marryOut(ctx: Ctx, ch: Character, year: number): string {

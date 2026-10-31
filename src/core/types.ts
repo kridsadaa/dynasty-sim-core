@@ -206,6 +206,8 @@ export interface Character {
 
   /** วันแต่งงาน — นับปีสำหรับการมีบุตรและการแยกเรือน (optional: เซฟเก่าไม่มี) */
   marriedDay?: Day;
+  /** ก่อนวันนี้ไม่ตายด้วยโรค/ความชรา/โรคระบาด — ใช้กับตัวละครแรกของผู้เล่น (ความสะดวกของเกม ไม่ใช่ประวัติศาสตร์) */
+  deathGraceUntil?: Day;
   /** วันที่คู่นี้จะแยกเรือนออกจากบ้านพ่อแม่ (ยกเว้นลูกที่อยู่ดูแลพ่อแม่) */
   moveOutDay?: Day;
   /**
@@ -751,6 +753,10 @@ export interface HistoricalEvent {
     /** สัดส่วนทรัพย์ที่ไม่ได้ซ่อนซึ่งสูญเสีย */
     wealthLoss: [Unit, Unit];
     deathRisk: Unit;
+    /** ความเสี่ยงตายแยกเพศ (แทน deathRisk) — อหิวาต์ 2363 ผู้หญิงตายมากกว่า */
+    deathRiskBySex?: { m: Unit; f: Unit };
+    /** โรคระบาด/ข้าวยาก: ตายได้ทุกคนในฉาก (คนนอกด้วย) ไม่ใช่แค่คนในตระกูล */
+    everyone?: boolean;
     /** ฝักฝ่ายที่โดนริบราชบาดาล */
     purgeFactions?: string[];
   };
@@ -821,10 +827,31 @@ export interface Balance {
     tabooForgetBelow: Unit;
     tabooMutateChance: Unit;
   };
+  /**
+   * ความเสี่ยงตายรายปีตามอายุ (systems/mortality.ts) — ทอยทุก 1 ม.ค. ด้วยอายุของปีที่เพิ่งผ่านไป
+   * ทิศทางจาก lore หมวด health; ตัวเลขเป็นของเกม ปรับให้ตารางชีพใน sim:check อยู่ในเป้า
+   */
+  mortality: {
+    /** ขวบปีแรก (lore: health.children_dying_young — ทะเบียนทศวรรษ 2470 ทารกตายราว 1 ใน 4–3) */
+    infant: Unit;
+    /** อายุ 1–4 ต่อปี */
+    young: Unit;
+    /** อายุ 5–14 ต่อปี */
+    child: Unit;
+    /** อายุ 15 ถึง oldFrom ต่อปี: ไข้ โรคบิด (lore: health.longevity_old_age) */
+    adult: Unit;
+    /** ตั้งแต่อายุนี้ความเสี่ยงเพิ่มเท่าตัวทุก oldDoublingYears ปี เริ่มจาก oldBase */
+    oldFrom: number;
+    oldBase: Unit;
+    oldDoublingYears: number;
+    /** อายุตั้งแต่นี้ขึ้นไปนับว่าตายเพราะชรา (ต่ำกว่านี้ = ป่วยตาย) */
+    oldAgeCause: number;
+    /** ไข้ทรพิษระบาดหนักปีละกี่ส่วน และเพิ่มความเสี่ยงเด็กอายุต่ำกว่า 15 เท่าไรในปีนั้น (lore: health.smallpox_endemic) */
+    smallpoxYearChance: Unit;
+    smallpoxChildRisk: Unit;
+  };
   world: {
     eventsPerYear: number;
-    oldAgeStart: number;
-    oldAgeYearlyRisk: number; // ต่อปีที่เกิน oldAgeStart
     /**
      * ช่วงอายุออกเรือนตามเพศ — แต่ละปีในช่วงมีโอกาสเท่ากัน (lore: kinship.marry_young_1680s)
      * ตัวเลขเป็นของเกม: ลา ลูแบร์บอกแค่ว่าแต่งกันอายุน้อยมาก
@@ -832,8 +859,13 @@ export interface Balance {
     marriageAge: { f: [number, number]; m: [number, number] };
     /** ส่วนที่ครบช่วงอายุแล้วไม่ออกเรือนเลยตลอดชีวิต */
     neverMarryChance: Unit;
-    /** มีบุตรเมื่อแต่งงานได้กี่ปี */
-    childAfterMarriageYears: number[];
+    /**
+     * การมีบุตร (lore: health.population_stationary): ให้นมลูก 2–3 ปีจึงเว้นอย่างน้อย minGapYears หลังลูกคนก่อน
+     * แล้วมีโอกาสปีละ yearlyChance จนแม่อายุ maxMotherAge — ตัวเลขเป็นของเกม ตั้งให้แต่ละรุ่นราวคงที่เมื่อรวมเด็กตาย
+     */
+    births: { minGapYears: number; yearlyChance: Unit; maxMotherAge: number };
+    /** แม่ตายตอนคลอดต่อการคลอดหนึ่งครั้ง (lore: health.childbirth_deaths — ไม่มีอัตราในเอกสาร ตัวเลขเป็นของเกม) */
+    childbirthDeathRisk: Unit;
     /** โอกาสที่ลูกของผู้เล่นพาหลานมาให้ผู้เล่นตั้งชื่อ */
     grandchildNamingChance: Unit;
     /** อยู่บ้านพ่อแม่ (ฝ่ายหญิงหรือฝ่ายชาย) กี่ปีก่อนแยกเรือน (lore: kinship.uxorilocal_then_neolocal_1680s) */

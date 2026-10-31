@@ -35,7 +35,7 @@ const migrations: Record<number, (s: GameState) => void> = {
 /** ชื่อฟิลด์ที่เก็บ Day ใน GameState (ดู core/types.ts) */
 const DAY_KEYS = new Set([
   'day', 'birthDay', 'deathDay', 'marriedDay', 'moveOutDay', 'weddingDay', 'untilDay', 'sinceDay', 'dueDay',
-  'askAfter', 'startDay', 'inflictedDay', 'stageSinceDay', 'acquiredDay', 'lastTriggeredDay',
+  'deathGraceUntil', 'askAfter', 'startDay', 'inflictedDay', 'stageSinceDay', 'acquiredDay', 'lastTriggeredDay',
 ]);
 
 function scaleDays(node: unknown, k: number): void {

@@ -49,10 +49,17 @@
   { "id": "situation:war", "parents": ["situation:combat"], "label": { "th": "ศึกสงคราม" } },
   { "id": "situation:craft", "parents": ["situation:any"], "label": { "th": "งานช่าง" } },
   { "id": "situation:old_age", "parents": ["situation:any"], "label": { "th": "ชราภาพ" } },
+  { "id": "situation:illness", "parents": ["situation:any"], "label": { "th": "เจ็บไข้" } },
+  { "id": "situation:smallpox", "parents": ["situation:illness"], "label": { "th": "ไข้ทรพิษ" }, "loreRefs": ["health.smallpox_endemic"] },
+  { "id": "situation:childbirth", "parents": ["situation:any"], "label": { "th": "ตายตอนคลอด" }, "loreRefs": ["health.childbirth_deaths", "belief.bad_death_burial"] },
 
   { "id": "history:fall_of_ayutthaya", "parents": ["situation:war"], "label": { "th": "ศึกเสียกรุงครั้งที่สอง" }, "prestige": 0.9,
     "loreRefs": ["event.fall_of_ayutthaya_2310"] },
   { "id": "history:thonburi_succession", "parents": ["situation:any"], "label": { "th": "การผลัดแผ่นดินกรุงธนบุรี" } },
+  { "id": "history:famine_after_fall", "parents": ["situation:any"], "label": { "th": "ข้าวยากหมากแพงหลังเสียกรุง" }, "loreRefs": ["event.famine_2310_2313"] },
+  { "id": "history:cholera_2363", "parents": ["situation:illness"], "label": { "th": "ไข้ป่วงใหญ่ปีมะโรง" }, "loreRefs": ["event.cholera_2363"] },
+  { "id": "history:cholera_2365", "parents": ["situation:illness"], "label": { "th": "ไข้ป่วงปีมะเมีย" }, "loreRefs": ["event.cholera_2365"] },
+  { "id": "history:cholera_2392", "parents": ["situation:illness"], "label": { "th": "ไข้ป่วงปีระกา" }, "loreRefs": ["event.cholera_2392"] },
 
   { "id": "supernatural:omen", "parents": [], "label": { "th": "นิมิตประหลาด" } },
   { "id": "supernatural:guardian_spirit", "parents": [], "label": { "th": "ผีบรรพบุรุษ" } },

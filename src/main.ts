@@ -357,7 +357,7 @@ $('new').onclick = async () => {
   if (clock.playing) await clockCmd({ type: 'pause' });
   openModal(
     el('h2', 'เริ่มชีวิตใหม่'),
-    el('p', 'ลูกชายวัย 4 ขวบของขุนนางชั้นผู้น้อย ปลายกรุงศรีอยุธยา พ.ศ. 2288'),
+    el('p', 'ลูกชายคนโตวัย 7 ขวบของขุนนางชั้นผู้น้อย ปลายกรุงศรีอยุธยา พ.ศ. 2288'),
     nameForm('ชื่อตัวละคร', 'บุญมา', 'เริ่ม', (name) => void start('new', name), closeModal),
   );
 };

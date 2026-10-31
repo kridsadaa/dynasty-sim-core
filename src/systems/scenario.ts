@@ -5,10 +5,10 @@ import { createDynasty, createHousehold, marry, namesInUse, pickName, relativeNa
 import { snapshotToNode } from './handover';
 
 /**
- * ฉากเริ่มต้น (ปลายอยุธยา พ.ศ. 2288): ลูกชายวัย 4 ขวบของขุนนางชั้นผู้น้อย
- * โลกมีอดีตมาก่อน: พ่อแม่แต่งกันมา 9 ปี มีพี่คนหนึ่ง ปู่ล่วงลับแล้ว ย่า ตา ยายยังอยู่ และมีผู้ใหญ่ข้างบ้าน
+ * ฉากเริ่มต้น (ปลายอยุธยา พ.ศ. 2288): ลูกชายคนโตวัย 7 ขวบของขุนนางชั้นผู้น้อย
+ * โลกมีอดีตมาก่อน: พ่อแม่แต่งกันมา 9 ปี มีน้องคนหนึ่ง ปู่ล่วงลับแล้ว ย่า ตา ยายยังอยู่ และมีผู้ใหญ่ข้างบ้าน
  * ตัวเลขปีของเรื่องหลังเป็นของเกม (ไม่ได้มาจากเอกสาร) แต่ตั้งให้ตรงกฎของระบบ:
- * แม่ออกเรือนอายุ 17 พ่ออายุ 22 (ในช่วง balance.world.marriageAge) ลูกเกิดปีที่ 2 กับ 5 หลังแต่ง (childAfterMarriageYears)
+ * แม่ออกเรือนอายุ 17 พ่ออายุ 22 (ในช่วง balance.world.marriageAge) ลูกห่างกัน 3 ปี (balance.world.births)
  * TODO: ย้ายไปเป็น scenarios.json เมื่อมีหลายฉาก
  */
 export function bootstrapScenario(ctx: Ctx, heroName = 'บุญมา'): Character {
@@ -41,15 +41,18 @@ export function bootstrapScenario(ctx: Ctx, heroName = 'บุญมา'): Chara
     name: 'แย้ม', sex: 'f', birthYear: 2262, estate: 'noble', householdId: hh.id,
     father: maternalGrandfather, mother: maternalGrandmother,
   });
-  // แต่งต้นปี 2279 → ลูกคนแรกปี 2281 คนที่สองคือตัวเอกปี 2284 · ทั้งคู่พ้นปีมีลูกแล้ว ไม่มีน้องเพิ่ม
+  // แต่งต้นปี 2279 → ตัวเอกเป็นลูกคนแรกปี 2281 น้องเกิดปี 2284 · แม่ยังมีลูกได้อีกระหว่างเล่น
   father.marriedDay = yearStart(ctx, 2279);
   marry(ctx, father, mother, father.marriedDay);
+  const hero = spawnCharacter(ctx, { name: heroName, sex: 'm', birthYear: 2281, estate: 'noble', father, mother });
+  // เริ่มที่ 7 ขวบ พ้นช่วงที่เด็กตายมากที่สุด (ก่อน 3–4 ขวบ lore: health.children_dying_young) และไม่ตายด้วยโรคจนอายุ 15
+  // — ความสะดวกของเกม ผู้เล่นจะได้ไม่จบเกมก่อนได้เล่น; ความโหดของยุคเห็นผ่านน้องและเด็กรอบตัวแทน
+  hero.deathGraceUntil = yearStart(ctx, 2281 + 15);
   const siblingSex = ctx.rng.chance(0.5) ? 'm' : 'f';
   spawnCharacter(ctx, {
     name: pickName(ctx, siblingSex, 'noble', new Set([...relativeNames(ctx, father, mother), heroName]), namesInUse(ctx, dyn.id, 2288)),
-    sex: siblingSex, birthYear: 2281, estate: 'noble', father, mother,
+    sex: siblingSex, birthYear: 2284, estate: 'noble', father, mother,
   });
-  const hero = spawnCharacter(ctx, { name: heroName, sex: 'm', birthYear: 2284, estate: 'noble', father, mother });
 
   const items: Array<[TagId, 'house' | 'land' | 'gold' | 'manual', number, boolean]> = [
     ['house:riverside', 'house', 200, false],

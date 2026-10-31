@@ -85,6 +85,7 @@ function invariants(ctx: Ctx, ended: boolean): void {
 const MAX_AGE = 110;
 const exposure = new Array<number>(MAX_AGE + 1).fill(0); // คน-ปี: นับคนที่มีชีวิตตามอายุทุก 1 ม.ค.
 const deathsAt = new Array<number>(MAX_AGE + 1).fill(0);
+let extinct = 0; // seed ที่ตระกูลสิ้นสายก่อนจบ
 
 /** คนในตระกูลที่ตายวันนี้ — คนที่ตายแล้วถูก prune ทิ้งในวันเดียวกันก็นับ (เก็บ object ไว้เอง) */
 function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
@@ -93,7 +94,8 @@ function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
     const now = S.characters[id as keyof typeof S.characters];
     if (now && now.deathDay === null) continue;
     tracked.delete(id);
-    deathsAt[Math.min(MAX_AGE, ageOf(ctx, ch, ch.deathDay ?? S.meta.day))]++;
+    // ทอยตาย 1 ม.ค. สำหรับปีที่เพิ่งผ่านไป → นับที่อายุของปีนั้น (ให้ตรงกับคน-ปีที่นับต้นปี)
+    deathsAt[Math.max(0, Math.min(MAX_AGE, ageOf(ctx, ch, (ch.deathDay ?? S.meta.day) - 1)))]++;
   }
   for (const c of Object.values(S.characters)) if (isAlive(c) && !c.local) tracked.set(c.id, c);
   if (dayOfYear(ctx, S.meta.day) === 0) for (const c of tracked.values()) exposure[Math.min(MAX_AGE, ageOf(ctx, c))]++;
@@ -126,7 +128,7 @@ function demographyReport(): void {
     ['คนที่มีชีวิต อายุ 60 ขึ้นไป', share(60, MAX_AGE), 0.04, 0.09, pct],
     ['อายุมัธยฐานของคนที่มีชีวิต', medianAge, 18, 25, yrs],
   ];
-  console.log(`ประชากรในตระกูล (${people} คน-ปี · ตาย ${deathsAt.reduce((a, b) => a + b, 0)} คน) — รายงาน ไม่นับเป็นข้อผิด:`);
+  console.log(`ประชากรในตระกูล (${people} คน-ปี · ตาย ${deathsAt.reduce((a, b) => a + b, 0)} คน · สิ้นสาย ${extinct}/${SEEDS} seed) — รายงาน ไม่นับเป็นข้อผิด:`);
   for (const [label, v, lo, hi, f] of rows) {
     console.log(`  ${v >= lo && v <= hi ? '✓' : '⚠'} ${label} ${f(v)} (เป้า ${f(lo, false)}–${f(hi)})`);
   }
@@ -169,6 +171,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     }
     trackDemography(ctx, tracked);
   }
+  if (over) extinct++;
   const before = failed;
   console.log(`seed ${seed}: ถึงปี ${yearOf(ctx, S.meta.day)}${over ? ' (สิ้นสาย)' : ''}`
     + ` · ตัวละคร ${Object.keys(S.characters).length} · node ${Object.keys(S.familyNodes).length}`

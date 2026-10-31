@@ -61,6 +61,16 @@
     { "tag": "history:fall_of_ayutthaya", "year": 2310, "kind": "war",
       "shock": { "wealthLoss": [0.5, 0.9], "deathRisk": 0.15 } },
     { "tag": "history:thonburi_succession", "year": 2325, "kind": "succession",
-      "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.02, "purgeFactions": ["faction:taksin_loyalist"] } }
+      "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.02, "purgeFactions": ["faction:taksin_loyalist"] } },
+    { "tag": "history:famine_after_fall", "year": 2311, "kind": "famine",
+      "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.06, "everyone": true } },
+    { "tag": "history:famine_after_fall", "year": 2312, "kind": "famine",
+      "shock": { "wealthLoss": [0.0, 0.0], "deathRisk": 0.04, "everyone": true } },
+    { "tag": "history:cholera_2363", "year": 2363, "kind": "plague",
+      "shock": { "wealthLoss": [0.0, 0.0], "deathRisk": 0.2, "deathRiskBySex": { "m": 0.13, "f": 0.27 }, "everyone": true } },
+    { "tag": "history:cholera_2365", "year": 2365, "kind": "plague",
+      "shock": { "wealthLoss": [0.0, 0.0], "deathRisk": 0.02, "everyone": true } },
+    { "tag": "history:cholera_2392", "year": 2392, "kind": "plague",
+      "shock": { "wealthLoss": [0.0, 0.0], "deathRisk": 0.2, "everyone": true } }
   ]
 }

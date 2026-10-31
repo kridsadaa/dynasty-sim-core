@@ -32,6 +32,9 @@ export interface HandoverReport {
   prune: PruneReport;
 }
 
+/** ตัวละครแรกของผู้เล่นไม่ตายด้วยโรค/ชรา/โรคระบาดจนพ้นวัยเด็ก (Character.deathGraceUntil) */
+export const isGraced = (ctx: Ctx, ch: Character) => ch.deathGraceUntil !== undefined && ctx.state.meta.day < ch.deathGraceUntil;
+
 export function markDead(ctx: Ctx, ch: Character, cause: TagId): void {
   ch.deathDay = ctx.state.meta.day;
   ch.deathCause = cause;
@@ -399,10 +402,6 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
           out.push(`${m.name} ถูกริบราชบาดาล ถอดจาก${m.social.title}`);
           m.social.title = null;
         }
-        if (ctx.rng.chance(ev.shock.deathRisk)) {
-          markDead(ctx, m, ev.tag);
-          out.push(`${m.name} เสียชีวิตใน${ctx.tags.label(ev.tag)}`);
-        }
       }
       // ทรัพย์ที่ไม่ได้ซ่อน (เรือน ที่ดินในกรุง ตำรา) เสียหาย — ทองที่ฝังดินรอด
       for (const it of Object.values(ctx.state.items)) {
@@ -413,6 +412,14 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
         it.condition = clamp01(it.condition - loss);
       }
       if (purged) dyn.prestige *= 0.5;
+    }
+    // คนตาย: คนในตระกูล หรือทุกคนในฉากเมื่อเป็นโรคระบาด/ข้าวยาก (lore: event.cholera_*, event.famine_2310_2313)
+    const how = ev.kind === 'plague' ? 'ด้วย' : 'ใน';
+    for (const c of Object.values(ctx.state.characters)) {
+      if (!isAlive(c) || isGraced(ctx, c) || (!ev.shock.everyone && !c.dynastyId)) continue;
+      if (!ctx.rng.chance(ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk)) continue;
+      markDead(ctx, c, ev.tag);
+      out.push(`${c.name} เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
     }
   }
   return out;
