@@ -1,7 +1,7 @@
 import { ageOf, dayOfYear, must, newId, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type {
-  AnatomyTemplate, BodyPart, BodyPartId, CapabilityId, Character, EventInstanceId,
+  AnatomyTemplate, BodyPart, BodyPartId, CapabilityId, Character, EventInstanceId, MemoryId,
   Modifier, PartDefId, PartSelector, Scar, TagId, Visibility, Wound, WoundKind,
 } from '../core/types';
 
@@ -189,7 +189,7 @@ function finalizeWound(ctx: Ctx, ch: Character, w: Wound, lost: boolean): WoundO
   if (lost) {
     part.status = 'missing';
     part.integrity = 0;
-    scar = makeScar(ctx, 'stump', 1, def.visibility, def.tags, w, age);
+    scar = makeScar(ctx, 'stump', 1, def.visibility, def.tags, w.memoryId, age);
     result = 'lost_part';
   } else {
     const infected = w.complications.length > 0;
@@ -197,7 +197,7 @@ function finalizeWound(ctx: Ctx, ch: Character, w: Wound, lost: boolean): WoundO
     const loss = w.severity * w.severity * 0.6 + (infected ? 0.2 : 0);
     part.integrity = clamp01(part.integrity - loss);
     if (ctx.rng.chance(clamp01(B.scarChance[w.kind] * w.severity + (infected ? 0.3 : 0)))) {
-      scar = makeScar(ctx, w.kind, w.severity, def.visibility, def.tags, w, age);
+      scar = makeScar(ctx, w.kind, w.severity, def.visibility, def.tags, w.memoryId, age);
     }
     if (part.integrity < 0.95) part.status = 'impaired';
     result = part.integrity < 0.95 ? 'impaired' : scar ? 'scarred' : 'healed_clean';
@@ -214,8 +214,15 @@ function finalizeWound(ctx: Ctx, ch: Character, w: Wound, lost: boolean): WoundO
   return { woundId: w.id, partDefId: w.partDefId, result, scar, integrityAfter: part.integrity };
 }
 
+/** แผลเป็นที่ไม่ได้มาจากบาดแผล เช่น รอยไข้ทรพิษ (ฝีดาษ) บนหน้า */
+export function addScar(ctx: Ctx, ch: Character, partDefId: PartDefId, kind: Scar['kind'], severity: number): void {
+  const def = must(anatomyOf(ctx, ch).parts[partDefId], partDefId);
+  ensurePart(ctx, ch, partDefId).scars.push(makeScar(ctx, kind, severity, def.visibility, def.tags, null, ageOf(ctx, ch)));
+}
+
 function makeScar(
-  ctx: Ctx, kind: Scar['kind'], severity: number, visibility: Visibility, partTags: TagId[], w: Wound, age: number,
+  ctx: Ctx, kind: Scar['kind'], severity: number, visibility: Visibility, partTags: TagId[], originMemoryId: MemoryId | null,
+  age: number,
 ): Scar {
   const modifiers: Modifier[] = [];
   for (const rule of ctx.content.scarRules) {
@@ -228,5 +235,5 @@ function makeScar(
     // สเกล modifier ตามความรุนแรงของแผล
     for (const mod of rule.modifiers) modifiers.push({ ...mod, value: mod.op === 'add' ? mod.value * severity : mod.value });
   }
-  return { kind, severity, acquiredDay: ctx.state.meta.day, ageAtTime: age, originMemoryId: w.memoryId, modifiers };
+  return { kind, severity, acquiredDay: ctx.state.meta.day, ageAtTime: age, originMemoryId, modifiers };
 }

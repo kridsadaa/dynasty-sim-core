@@ -16,6 +16,7 @@ import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
 import { mortalityYearTick } from './mortality';
+import { kinDeathEvent } from './mourning';
 
 // ============================================================================
 // World tick — 1 call = 1 วัน. Pure function ของ (state, content, rng) → deterministic
@@ -90,6 +91,9 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const career = careerYearTick(ctx);
     for (const line of career.lines) out.push({ type: 'log', line });
     for (const req of career.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
+    // ญาติใกล้ชิดของผู้เล่นตายปีนี้ → งานศพ (คนที่ใกล้ที่สุด)
+    const mourning = kinDeathEvent(ctx);
+    if (mourning) out.push({ type: 'event', prepared: mourning });
     // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
     const diedToday = Object.values(S.characters).filter((ch) => ch.deathDay === S.meta.day && ch.id !== player?.id);
     const isHeadWithHeir = (ch: Character) =>

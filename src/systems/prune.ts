@@ -29,9 +29,10 @@ export function pruneState(ctx: Ctx): PruneReport {
   const dist = kinDistances(ctx, player.familyNodeId);
   const ancestors = ancestorSet(ctx, player.familyNodeId);
 
-  // L0 → L1
+  // L0 → L1 — ยกเว้นคนตายที่ event ยังไม่ได้ตอบอ้างถึงอยู่ (งานศพที่ตายวันเดียวกับ handover) ยุบรอบหน้า
+  const pending = new Set(Object.values(S.eventLog).filter((e) => e.optionId === null).flatMap((e) => Object.values(e.bindings)));
   for (const ch of Object.values(S.characters)) {
-    if (isAlive(ch) || ch.id === player.id) continue;
+    if (isAlive(ch) || ch.id === player.id || pending.has(ch.id)) continue;
     collapseCharacter(ctx, ch, report);
   }
 

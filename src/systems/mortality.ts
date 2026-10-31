@@ -1,5 +1,6 @@
 import { ageOf, isAlive, type Ctx } from '../core/ctx';
-import type { TagId } from '../core/types';
+import type { PartDefId, TagId } from '../core/types';
+import { addScar } from './body';
 import { isGraced, markDead } from './handover';
 
 // ============================================================================
@@ -8,12 +9,12 @@ import { isGraced, markDead } from './handover';
 // คนที่รอดเป็นผู้ใหญ่อยู่ถึง 70–80 ได้ ตัวเลขทั้งหมดอยู่ใน balance.mortality
 // ============================================================================
 
-/** ความเสี่ยงตายในหนึ่งปีของคนที่อายุ age ตลอดปีนั้น */
-export function yearlyDeathRisk(ctx: Ctx, age: number, smallpoxYear: boolean): number {
+/** ความเสี่ยงตายด้วยโรคทั่วไป/ชราในหนึ่งปีของคนที่อายุ age ตลอดปีนั้น (ไม่รวมไข้ทรพิษ) */
+export function yearlyDeathRisk(ctx: Ctx, age: number): number {
   const M = ctx.content.balance.mortality;
   const base = age < 1 ? M.infant : age < 5 ? M.young : age < 15 ? M.child : age < M.oldFrom ? M.adult
     : M.oldBase * 2 ** ((age - M.oldFrom) / M.oldDoublingYears);
-  return Math.min(1, base + (smallpoxYear && age < 15 ? M.smallpoxChildRisk : 0));
+  return Math.min(1, base);
 }
 
 /** คืน log — ผู้เล่นที่ตายไม่ขึ้นใน log (world ส่ง playerDied เอง) */
@@ -23,21 +24,33 @@ export function mortalityYearTick(ctx: Ctx): string[] {
   const day = S.meta.day;
   const smallpox = ctx.rng.chance(M.smallpoxYearChance);
   const out: string[] = smallpox ? ['ปีที่ผ่านมาไข้ทรพิษระบาดหนักช่วงหน้าแล้ง'] : [];
+  const died = (name: string, age: number, cause: TagId) => {
+    const when = age < 1 ? 'ยังไม่ทันขวบ' : age < 15 ? `อายุ ${age} ขวบ` : `อายุ ${age} ปี`;
+    out.push(cause === 'situation:old_age' ? `${name} ถึงแก่กรรม ${when}`
+      : cause === 'situation:smallpox' ? `${name} ตายด้วยไข้ทรพิษ ${when}`
+        : age < 15 ? `${name} เจ็บไข้ตาย ${when}` : `${name} เจ็บไข้ถึงแก่กรรม ${when}`);
+  };
   for (const ch of Object.values(S.characters)) {
-    if (!isAlive(ch) || isGraced(ctx, ch)) continue;
+    if (!isAlive(ch)) continue;
     const age = ageOf(ctx, ch, day - 1);
     if (age < 0) continue;
-    const risk = yearlyDeathRisk(ctx, age, smallpox);
-    if (!ctx.rng.chance(risk)) continue;
-    // ปีไข้ทรพิษ: เด็กที่ตายเพราะส่วนที่ระบาดเพิ่มขึ้นนับว่าตายด้วยไข้ทรพิษ
-    const cause: TagId = age >= M.oldAgeCause ? 'situation:old_age'
-      : smallpox && age < 15 && ctx.rng.chance(M.smallpoxChildRisk / risk) ? 'situation:smallpox' : 'situation:illness';
+    const isPlayer = ch.id === S.meta.playerCharacterId;
+    // ปีไข้ทรพิษ: เด็กที่ยังไม่เคยเป็นติดได้ — รอดแล้วไม่เป็นซ้ำ บางคนมีรอยบนหน้าไปตลอดชีวิต
+    if (smallpox && age < 15 && !ch.hadSmallpox && ctx.rng.chance(M.smallpoxAttack)) {
+      if (!isGraced(ctx, ch) && ctx.rng.chance(M.smallpoxFatality)) {
+        markDead(ctx, ch, 'situation:smallpox');
+        if (!isPlayer) died(ch.name, age, 'situation:smallpox');
+        continue;
+      }
+      ch.hadSmallpox = true;
+      const scarred = ctx.rng.chance(M.smallpoxScarChance);
+      if (scarred) addScar(ctx, ch, 'face' as PartDefId, 'pox', ctx.rng.range(0.2, 0.6));
+      if (isPlayer) out.push(`${ch.name}รอดจากไข้ทรพิษ${scarred ? ' แต่มีรอยแผลเป็นบนหน้า' : ''}`);
+    }
+    if (isGraced(ctx, ch) || !ctx.rng.chance(yearlyDeathRisk(ctx, age))) continue;
+    const cause: TagId = age >= M.oldAgeCause ? 'situation:old_age' : 'situation:illness';
     markDead(ctx, ch, cause);
-    if (ch.id === S.meta.playerCharacterId) continue;
-    const when = age < 1 ? 'ยังไม่ทันขวบ' : age < 15 ? `อายุ ${age} ขวบ` : `อายุ ${age} ปี`;
-    out.push(cause === 'situation:old_age' ? `${ch.name} ถึงแก่กรรม ${when}`
-      : cause === 'situation:smallpox' ? `${ch.name} ตายด้วยไข้ทรพิษ ${when}`
-        : age < 15 ? `${ch.name} เจ็บไข้ตาย ${when}` : `${ch.name} เจ็บไข้ถึงแก่กรรม ${when}`);
+    if (!isPlayer) died(ch.name, age, cause);
   }
   return out;
 }

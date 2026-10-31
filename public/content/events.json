@@ -1904,5 +1904,164 @@
         ]
       }
     ]
+  },
+  "family.death": {
+    "id": "family.death",
+    "textKey": "event.death",
+    "contextTags": [],
+    "variables": {
+      "tie": {
+        "oneOf": [
+          "kin:parent",
+          "kin:husband",
+          "kin:wife",
+          "kin:son",
+          "kin:daughter",
+          "kin:elder_brother",
+          "kin:elder_sister",
+          "kin:younger_brother",
+          "kin:younger_sister",
+          "kin:grandson",
+          "kin:granddaughter",
+          "kin:paternal_grandfather",
+          "kin:paternal_grandmother",
+          "kin:maternal_grandfather",
+          "kin:maternal_grandmother"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {},
+      "deceased": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "merit",
+        "textKey": "event.death.merit",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -5
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "mourn",
+        "textKey": "event.death.mourn",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.06
+          }
+        ]
+      },
+      {
+        "id": "endure",
+        "textKey": "event.death.endure",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.1
+          }
+        ]
+      }
+    ]
+  },
+  "family.death_bad": {
+    "id": "family.death_bad",
+    "textKey": "event.death_bad",
+    "contextTags": [],
+    "variables": {
+      "tie": {
+        "oneOf": [
+          "kin:parent",
+          "kin:husband",
+          "kin:wife",
+          "kin:son",
+          "kin:daughter",
+          "kin:elder_brother",
+          "kin:elder_sister",
+          "kin:younger_brother",
+          "kin:younger_sister",
+          "kin:grandson",
+          "kin:granddaughter",
+          "kin:paternal_grandfather",
+          "kin:paternal_grandmother",
+          "kin:maternal_grandfather",
+          "kin:maternal_grandmother"
+        ]
+      },
+      "cause": {
+        "oneOf": [
+          "situation:smallpox",
+          "situation:childbirth",
+          "history:cholera_2363"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {},
+      "deceased": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "bury",
+        "textKey": "event.death_bad.bury",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.3
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          }
+        ]
+      },
+      {
+        "id": "cremate",
+        "textKey": "event.death_bad.cremate",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.12
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": -0.5
+          }
+        ]
+      }
+    ]
   }
 }

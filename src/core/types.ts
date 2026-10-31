@@ -126,7 +126,8 @@ export interface Wound {
 
 /** value object — ร่องรอยถาวร */
 export interface Scar {
-  kind: WoundKind | 'stump';
+  /** pox = รอยไข้ทรพิษ (ไม่ได้มาจากบาดแผล) */
+  kind: WoundKind | 'stump' | 'pox';
   severity: Unit;
   acquiredDay: Day;
   ageAtTime: number;
@@ -206,6 +207,8 @@ export interface Character {
 
   /** วันแต่งงาน — นับปีสำหรับการมีบุตรและการแยกเรือน (optional: เซฟเก่าไม่มี) */
   marriedDay?: Day;
+  /** เคยเป็นไข้ทรพิษแล้วรอด — ไม่เป็นซ้ำ (lore: health.smallpox_endemic) */
+  hadSmallpox?: boolean;
   /** ก่อนวันนี้ไม่ตายด้วยโรค/ความชรา/โรคระบาด — ใช้กับตัวละครแรกของผู้เล่น (ความสะดวกของเกม ไม่ใช่ประวัติศาสตร์) */
   deathGraceUntil?: Day;
   /** วันที่คู่นี้จะแยกเรือนออกจากบ้านพ่อแม่ (ยกเว้นลูกที่อยู่ดูแลพ่อแม่) */
@@ -846,9 +849,14 @@ export interface Balance {
     oldDoublingYears: number;
     /** อายุตั้งแต่นี้ขึ้นไปนับว่าตายเพราะชรา (ต่ำกว่านี้ = ป่วยตาย) */
     oldAgeCause: number;
-    /** ไข้ทรพิษระบาดหนักปีละกี่ส่วน และเพิ่มความเสี่ยงเด็กอายุต่ำกว่า 15 เท่าไรในปีนั้น (lore: health.smallpox_endemic) */
+    /**
+     * ไข้ทรพิษ (lore: health.smallpox_endemic): ระบาดหนักปีละกี่ส่วน; ปีนั้นเด็กอายุต่ำกว่า 15 ที่ยังไม่เคยเป็นติดเท่าไร
+     * ติดแล้วตายเท่าไร รอดแล้วมีรอยบนหน้าเท่าไร — รอดแล้วไม่เป็นซ้ำ; ตัวเลขเป็นของเกม
+     */
     smallpoxYearChance: Unit;
-    smallpoxChildRisk: Unit;
+    smallpoxAttack: Unit;
+    smallpoxFatality: Unit;
+    smallpoxScarChance: Unit;
   };
   world: {
     eventsPerYear: number;
