@@ -440,12 +440,13 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   facts.unshift(['อายุ', `${ageOf(ctx, ch, ch.deathDay ?? S.meta.day)} ปี`], ['ชนชั้น', estateLabel(ctx, ch.social.estate)]);
   if (ch.social.title) facts.push(['บรรดาศักดิ์', ch.social.title]);
   if (ch.ordainedYear !== undefined) facts.push(['บวชเรียน', `พ.ศ. ${ch.ordainedYear}`]);
+  if (ch.topknotCutYear !== undefined) facts.push(['โกนจุก', `พ.ศ. ${ch.topknotCutYear}`]);
   const office = officeStatus(ctx, ch);
   if (office) facts.push(['ราชการ', office]);
   facts.push(['เงินสด', `${Math.round(ch.social.wealth)} ตำลึง${ch.social.debt ? ` · หนี้ ${Math.round(ch.social.debt)}` : ''}`]);
   facts.push(['ศักดินา', String(ch.social.sakdina)]);
   if (ch.social.patronId) facts.push(['มูลนาย', charName(ch.social.patronId)]);
-  facts.push(['ความเครียด', percent(ch.stress)], ['บุญ', ch.merit.toFixed(1)], ['ถนัดมือ', ch.handedness === 'l' ? 'ซ้าย' : 'ขวา']);
+  facts.push(['ความหนักใจ', percent(ch.stress)], ['บุญ', ch.merit.toFixed(1)], ['ถนัดมือ', ch.handedness === 'l' ? 'ซ้าย' : 'ขวา']);
   const hh = ch.householdId ? S.households[ch.householdId] : undefined;
   if (hh) facts.push(['เรือน', `${hh.headId === ch.id ? 'เป็นหัวเรือน' : `อยู่เรือนของ${charName(hh.headId)}`} · ${hh.memberIds.length} คน`]);
 

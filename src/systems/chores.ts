@@ -153,7 +153,7 @@ export function applyChore(
 
 /**
  * วัยรุ่นที่ยังไม่มีคู่: บางครั้งชวนกันพายเรือไปเก็บดอกบัวเอง — เรือโคลงตกน้ำ คนต่างเพศมาช่วย/ไปช่วยเขา
- * (ฉากแต่งจากภาพจำในละคร lore: kinship.lotus_boat_meeting) คนต่างเพศเป็นคนรู้จักที่ยังไม่มีคู่ ไม่มีก็เป็นคนใหม่ระแวกบ้าน
+ * (ฉากแต่งจากภาพจำในละคร lore: kinship.lotus_boat_meeting) คนต่างเพศเป็นคนรู้จักที่ยังไม่มีคู่ ไม่มีก็เป็นคนใหม่ละแวกบ้าน
  */
 export function tickOutings(ctx: Ctx, away: number): ChoreEventRequest[] {
   const S = ctx.state;

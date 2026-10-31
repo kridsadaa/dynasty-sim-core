@@ -258,17 +258,17 @@ export function wed(ctx: Ctx, ch: Character, spouse: Character): string {
     // เขยเข้าเรือนพ่อแม่ฝ่ายหญิง (ลักษณผัวเมีย ม.61 รองรับชายที่ไปอยู่บ้านฝ่ายหญิง)
     joinHousehold(ctx, spouse, parentsHome ?? createHousehold(ctx, ch));
     ch.moveOutDay = day + stay;
-    return `${ch.name} แต่งงานกับ${spouse.name} เขยเข้ามาอยู่เรือนพ่อแม่ฝ่ายหญิง`;
+    return `${ch.name}แต่งงานกับ${spouse.name} เขยเข้ามาอยู่เรือนพ่อแม่ฝ่ายหญิง`;
   }
   if (parentsHome && ctx.rng.chance(W.patrilocalChance)) {
     joinHousehold(ctx, spouse, parentsHome);
     ch.moveOutDay = day + stay;
-    return `${ch.name} แต่งงานกับ${spouse.name} พาภรรยามาอยู่เรือนพ่อแม่`;
+    return `${ch.name}แต่งงานกับ${spouse.name} พาภรรยามาอยู่เรือนพ่อแม่`;
   }
   // ไปอยู่กับครอบครัวภรรยา — ครอบครัวฝ่ายหญิงไม่ได้จำลอง จึงนับเป็นเรือนใหม่ของคู่นี้
   const home = createHousehold(ctx, ch);
   joinHousehold(ctx, spouse, home);
-  return `${ch.name} แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวภรรยา`;
+  return `${ch.name}แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวภรรยา`;
 }
 
 export function createDynasty(ctx: Ctx, name: string, founder: Character, faction: string | null): Dynasty {

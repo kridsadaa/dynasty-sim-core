@@ -131,7 +131,7 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir'
         const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
         const cands = heirCandidates(c, dead);
         if (!cands.length) {
-          lines.push({ kind: 'death', text: `${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
+          lines.push({ kind: 'death', text: `${dead.name}สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
           return 'gameOver';
         }
         if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
@@ -292,7 +292,7 @@ async function handle(cmd: Command): Promise<unknown> {
         t.branches.map((b) => `ฝังใจ: ${describeTrait(c, must(c.state.traits[b.traitId], 'trait'))}`),
       );
       if (rep.wounds.length) lines.unshift(`บาดเจ็บ ${rep.wounds.length} แห่ง`);
-      if (rep.strained) lines.unshift('ฝืนใจทำ — เครียดขึ้น');
+      if (rep.strained) lines.unshift('ฝืนใจทำ — หนักใจขึ้น');
       if (rep.named) lines.push(`ตั้งชื่อว่า "${rep.named.name}"`);
       lines.push(...rep.notes);
       // ตัวเลือกพาไป event ถัดไปทันที (ช่วยงานครัว → มีดบาด) — UI ถาม viewPending ต่อ

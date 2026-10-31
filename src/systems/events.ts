@@ -12,6 +12,7 @@ import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
 import { divorce, takeMinorWife } from './wives';
+import { markNursing, markTopknot } from './lifeEvents';
 
 // ============================================================================
 // Contextual Event Injection
@@ -358,6 +359,14 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'merit':
         ch.merit += e.delta;
         break;
+      case 'topknot':
+        report.notes.push(markTopknot(ctx, ch));
+        break;
+      case 'nurse': {
+        const other = who(e.toward);
+        if (other) report.notes.push(...markNursing(ctx, ch, other, e.neglected));
+        break;
+      }
       case 'takeWife': {
         const other = who(e.with);
         if (other) report.notes.push(takeMinorWife(ctx, ch, other));

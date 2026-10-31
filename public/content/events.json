@@ -2170,5 +2170,44 @@
       { "id": "stay", "textKey": "event.recall.stay",
         "effects": [ { "op": "career", "role": "actor", "action": "decline" }, { "op": "stress", "role": "actor", "delta": -0.03 } ] }
     ]
+  },
+  "ritual.topknot": {
+    "id": "ritual.topknot", "textKey": "event.topknot", "contextTags": [],
+    "roles": { "actor": {}, "child": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "grand", "textKey": "event.topknot.grand",
+        "effects": [ { "op": "topknot", "role": "child" }, { "op": "wealth", "role": "actor", "delta": -25 },
+          { "op": "prestige", "role": "actor", "delta": 1 }, { "op": "merit", "role": "actor", "delta": 1 },
+          { "op": "bond", "role": "child", "toward": "actor", "affection": 0.05 } ] },
+      { "id": "temple", "textKey": "event.topknot.temple",
+        "effects": [ { "op": "topknot", "role": "child" }, { "op": "wealth", "role": "actor", "delta": -3 }, { "op": "merit", "role": "actor", "delta": 1 } ] },
+      { "id": "wait", "textKey": "event.topknot.wait",
+        "effects": [ { "op": "bond", "role": "child", "toward": "actor", "affection": -0.02 } ] }
+    ]
+  },
+  "family.parent_illness": {
+    "id": "family.parent_illness", "textKey": "event.parent_illness", "contextTags": [],
+    "roles": { "actor": {}, "elder": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "nurse", "textKey": "event.parent_illness.nurse",
+        "effects": [ { "op": "nurse", "role": "actor", "toward": "elder", "neglected": false }, { "op": "stress", "role": "actor", "delta": 0.05 },
+          { "op": "merit", "role": "actor", "delta": 2 }, { "op": "bond", "role": "elder", "toward": "actor", "affection": 0.1 } ] },
+      { "id": "money", "textKey": "event.parent_illness.money",
+        "effects": [ { "op": "nurse", "role": "actor", "toward": "elder", "neglected": false }, { "op": "wealth", "role": "actor", "delta": -10 },
+          { "op": "merit", "role": "actor", "delta": 1 }, { "op": "bond", "role": "elder", "toward": "actor", "affection": 0.03 } ] },
+      { "id": "leave", "textKey": "event.parent_illness.leave",
+        "effects": [ { "op": "nurse", "role": "actor", "toward": "elder", "neglected": true }, { "op": "bond", "role": "elder", "toward": "actor", "affection": -0.1 } ] }
+    ]
+  },
+  "ritual.elder_precepts": {
+    "id": "ritual.elder_precepts", "textKey": "event.elder_precepts", "contextTags": [],
+    "roles": { "actor": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "temple", "textKey": "event.elder_precepts.temple",
+        "effects": [ { "op": "merit", "role": "actor", "delta": 3 }, { "op": "stress", "role": "actor", "delta": -0.06 }, { "op": "favor", "role": "actor", "delta": -0.05 } ] },
+      { "id": "home", "textKey": "event.elder_precepts.home",
+        "effects": [ { "op": "merit", "role": "actor", "delta": 1 }, { "op": "stress", "role": "actor", "delta": -0.02 } ] },
+      { "id": "busy", "textKey": "event.elder_precepts.busy", "effects": [] }
+    ]
   }
 }

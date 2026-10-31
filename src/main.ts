@@ -682,7 +682,7 @@ async function start(from: 'new' | string, heroName?: string) {
     endingShown = false;
     collapsed.clear();
     startYear(v.year);
-    write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ "${from}": ${v.name}`, 'system');
+    write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ${v.name}` : `โหลดเซฟ "${from}": ${v.name}`, 'system');
     renderPlayer(v);
     renderKnown(await engine.request({ type: 'viewKnown' }));
     renderDynasty(await engine.request({ type: 'viewDynasty' }));

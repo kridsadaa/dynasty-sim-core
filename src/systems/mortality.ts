@@ -37,9 +37,9 @@ export function mortalityYearTick(ctx: Ctx): string[] {
   const out: string[] = smallpox ? ['ปีที่ผ่านมาไข้ทรพิษระบาดหนักช่วงหน้าแล้ง'] : [];
   const died = (name: string, age: number, cause: TagId) => {
     const when = age < 1 ? 'ยังไม่ทันขวบ' : age < 15 ? `อายุ ${age} ขวบ` : `อายุ ${age} ปี`;
-    out.push(cause === 'situation:old_age' ? `${name} ถึงแก่กรรม ${when}`
-      : cause === 'situation:smallpox' ? `${name} ตายด้วยไข้ทรพิษ ${when}`
-        : age < 15 ? `${name} เจ็บไข้ตาย ${when}` : `${name} เจ็บไข้ถึงแก่กรรม ${when}`);
+    out.push(cause === 'situation:old_age' ? `${name}ถึงแก่กรรม ${when}`
+      : cause === 'situation:smallpox' ? `${name}ตายด้วยไข้ทรพิษ ${when}`
+        : age < 15 ? `${name}เจ็บไข้ตาย ${when}` : `${name}เจ็บไข้ถึงแก่กรรม ${when}`);
   };
   for (const ch of Object.values(S.characters)) {
     if (!isAlive(ch)) continue;

@@ -249,6 +249,12 @@ export interface Character {
   ordainedYear?: number;
   /** minor = เมียกลางนอก (เมียน้อย) — ลูกเป็นบุตรภรรยาน้อย; ไม่มี = เมียหลวง/ไม่ใช่เมียใคร */
   wifeRank?: 'minor';
+  /** ปีที่โกนจุก (lore: ritual.topknot_cutting) */
+  topknotCutYear?: number;
+  /** ปีที่ป่วยหนักล่าสุด (event family.parent_illness) — ไม่ถามซ้ำในปีเดียวกัน */
+  illYear?: number;
+  /** ลูกที่ไม่ได้รักษาไข้คนนี้ — ได้มรดกจากคนนี้กึ่งส่วน (lore: social.nursing_cremation_condition) */
+  neglectedBy?: CharacterId[];
   /**
    * งานบ้านต่อหมวด (ดู systems/chores.ts): joined = เคยตกลงเข้าไปช่วยแล้ว (ครั้งต่อไปไม่ถามซ้ำ ข้ามไปหัดขั้นใหม่),
    * tasks = ขั้นที่หัดได้แล้ว, askAfter = ไม่ยอมช่วย — จะถูกเรียกอีกหลังวันนี้
@@ -596,6 +602,10 @@ export type Effect =
   | { op: 'takeWife'; role: string; with: string }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
   | { op: 'divorce'; role: string; with: string }
+  /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
+  | { op: 'topknot'; role: string }
+  /** role ดูแล toward ที่ป่วยหนักหรือไม่ — neglected = ไม่ได้รักษาไข้ */
+  | { op: 'nurse'; role: string; toward: string; neglected: boolean }
   | { op: 'prestige'; role: string; delta: number };
 
 /**
@@ -1018,6 +1028,18 @@ export interface Balance {
     divorceChance: Unit;
     /** ส่วนของเงินผู้เล่นที่เมียได้ไปตอนหย่า (แทน "คืนสิน" เพราะเกมไม่ได้เก็บสินเดิมของเมีย) */
     wealthShare: Unit;
+  };
+  /** event วัยผู้ใหญ่/ชรา (systems/lifeEvents.ts) — ตัวเลขเป็นของเกม */
+  life: {
+    /** โกนจุกตอนอายุเหล่านี้ (lore: ritual.topknot_cutting ว่า 11 หรือ 13) */
+    topknotAges: number[];
+    adultAge: number;
+    /** พ่อแม่อายุถึงนี้อาจป่วยหนัก ปีละ illnessChance */
+    illnessAge: number;
+    illnessChance: Unit;
+    /** ผู้เล่นอายุถึงนี้อาจไปถือศีล ปีละ preceptsChance */
+    elderAge: number;
+    preceptsChance: Unit;
   };
   /** บวชเรียน (lore: ritual.ordination) — ตัวเลขเป็นของเกม */
   ordination: {

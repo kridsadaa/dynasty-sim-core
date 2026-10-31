@@ -68,7 +68,7 @@ export function householdYearTick(ctx: Ctx, householdId: HouseholdId): string[] 
           awareness: 'knows_cause', // เด็กรู้ว่ากลัวเพราะถูกเล่าเรื่องผี
           origin: { type: 'social', fromNodeId: adult.familyNodeId, fromKind: 'superstition', fromTarget: 'supernatural:phi' },
         });
-        log.push(`${child.name} ${reinforced ? 'กลัวผีหนักขึ้น' : 'เริ่มกลัวผี'} เพราะ${adult.name}ขู่ให้เข้านอน`);
+        log.push(`${child.name}${reinforced ? 'กลัวผีหนักขึ้น' : 'เริ่มกลัวผี'} เพราะ${adult.name}ขู่ให้เข้านอน`);
         break;
       }
     }
@@ -95,7 +95,7 @@ function formRules(ctx: Ctx, hh: Household, log: string[]): void {
       statedReason: reasonFor(t),
     };
     hh.rules.push(rule);
-    log.push(`${head.name} ตั้งกฎในเรือน: ${rule.kind === 'ban' ? 'ห้ามมี' : 'ต้องทำพิธีเมื่อเจอ'}${ctx.tags.label(t.target)} (เหตุผลที่บอก: ${rule.statedReason})`);
+    log.push(`${head.name}ตั้งกฎในเรือน: ${rule.kind === 'ban' ? 'ห้ามมี' : 'ต้องทำพิธีเมื่อเจอ'}${ctx.tags.label(t.target)} (เหตุผลที่บอก: ${rule.statedReason})`);
   }
 }
 
@@ -128,5 +128,5 @@ function transmit(
     origin: { type: 'social', fromNodeId: fromNode, fromKind: kind, fromTarget: target },
   });
   const label = must(ctx.content.traitKinds[newKind], newKind).label.th;
-  log.push(`${child.name} ${reinforced ? 'ฝังลึกขึ้น' : 'ซึมซับ'}: ${label}${ctx.tags.label(newTarget)} จาก${from.name}${newTarget !== target ? ` (เพี้ยนจาก${ctx.tags.label(target)})` : ''}`);
+  log.push(`${child.name}${reinforced ? 'ฝังลึกขึ้น' : 'ซึมซับ'}: ${label}${ctx.tags.label(newTarget)} จาก${from.name}${newTarget !== target ? ` (เพี้ยนจาก${ctx.tags.label(target)})` : ''}`);
 }

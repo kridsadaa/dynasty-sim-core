@@ -73,7 +73,7 @@ export function spawnLocal(ctx: Ctx, knower: Character, o: LocalOpts): Character
 
 /**
  * คนนอกต่างเพศที่ยังไม่มีคู่และอายุใกล้กัน (ไม่เกิน 6 ปี อย่างน้อย 13) — สุ่มจากคนที่ ch รู้จัก
- * ไม่มีและ spawn → คนใหม่ระแวกบ้าน; ได้ใครมาก็อย่างน้อยเคยเห็นหน้ากัน
+ * ไม่มีและ spawn → คนใหม่ละแวกบ้าน; ได้ใครมาก็อย่างน้อยเคยเห็นหน้ากัน
  */
 export function singlePeer(ctx: Ctx, ch: Character, spawn: boolean): Character | undefined {
   const sex = ch.sex === 'm' ? 'f' : 'm';
@@ -100,7 +100,7 @@ export function forgetLocal(ctx: Ctx, ch: Character): void {
   delete S.characters[ch.id];
 }
 
-export const DISTANCE_TH: Record<Distance, string> = { near: 'ระแวกบ้าน', town: 'ต่างตำบล', far: 'ต่างเมือง' };
+export const DISTANCE_TH: Record<Distance, string> = { near: 'ละแวกบ้าน', town: 'ต่างตำบล', far: 'ต่างเมือง' };
 
 /** "ลูกสาวบ้านช่างทอง" — ใช้ใน log และแผงคนที่รู้จัก */
 export function localOrigin(ctx: Ctx, ch: Character): string {

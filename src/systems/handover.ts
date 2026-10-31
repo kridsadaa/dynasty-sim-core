@@ -136,8 +136,8 @@ const KIN_TH: Record<KinRelation, string> = {
   fullSibling: 'พี่น้องร่วมบิดามารดา',
   paternalHalfSibling: 'พี่น้องร่วมบิดา',
   maternalHalfSibling: 'พี่น้องร่วมมารดา',
-  nibling: 'หลาน (ลูกของพี่น้อง)',
-  grandNibling: 'เหลน (หลานของพี่น้อง)',
+  nibling: 'หลาน ลูกของพี่น้อง',
+  grandNibling: 'เหลน หลานของพี่น้อง',
   grandparent: 'ปู่ย่าตายาย',
   uncleAunt: 'ลุงป้าน้าอา',
   cousin: 'ลูกพี่ลูกน้อง',
@@ -210,9 +210,14 @@ export function estateHeirs(ctx: Ctx, dead: Character): EstateHeir[] {
   const parentageOf = (h: Character) => must(ctx.state.familyNodes[h.familyNodeId], 'node').parentage;
   // สิทธิ์ต่างกันเพราะสถานะแม่ → บอกสถานะ (ทุกคนสถานะเดียวกัน = แบ่งเท่ากัน ไม่ต้องอธิบาย)
   const mixed = new Set(kids.map(parentageOf)).size > 1;
-  return kids.map((ch) => ({
-    ch, weight: B.shareByParentage[parentageOf(ch)], label: mixed ? PARENTAGE_TH[parentageOf(ch)] : null, relation: 'child' as const,
-  }));
+  // ไม่ได้รักษาไข้ → กึ่งส่วน (lore: social.nursing_cremation_condition — ตัวบทให้กึ่งส่วนเมื่อทำได้อย่างเดียว ไม่ได้เลยเมื่ออยู่ใกล้แต่ไม่มา)
+  const neglected = new Set(dead.neglectedBy ?? []);
+  return kids.map((ch) => {
+    const label = [mixed ? PARENTAGE_TH[parentageOf(ch)] : null, neglected.has(ch.id) ? 'ไม่ได้รักษาไข้' : null].filter(Boolean).join(', ');
+    return {
+      ch, weight: B.shareByParentage[parentageOf(ch)] * (neglected.has(ch.id) ? 0.5 : 1), label: label || null, relation: 'child' as const,
+    };
+  });
 }
 
 /**
@@ -285,7 +290,7 @@ export function performHandover(
     (dyn.headHistory ??= []).push({ nodeId: heirNode.id, name: heir.name, fromYear: yearOf(ctx, ctx.state.meta.day) });
   }
   log.push(...carryRelations(ctx, dead, heir));
-  if (dead.social.title) log.push(`บรรดาศักดิ์ "${dead.social.title}" ไม่ตกทอด — ${heir.name} ต้องถวายตัวรับราชการเอง`);
+  if (dead.social.title) log.push(`บรรดาศักดิ์ "${dead.social.title}" ไม่ตกทอด — ${heir.name}ต้องถวายตัวรับราชการเอง`);
 
   // [7] taboos
   const newGeneration = heirNode.generation > (dyn.agedGeneration ?? -Infinity);
@@ -383,7 +388,7 @@ function holdFuneral(ctx: Ctx, dead: Character): string {
   dead.merit += funeral * 0.01;
   const node = ctx.state.familyNodes[dead.familyNodeId];
   if (node?.summary) node.summary.merit = dead.merit; // snapshot ทำไปแล้วตอน markDead — บุญจากงานศพต้องตามไปด้วย
-  return `งานศพ ${dead.name} ใช้ ${funeral.toFixed(0)} ตำลึง` +
+  return `งานศพ${dead.name} ใช้ ${funeral.toFixed(0)} ตำลึง` +
     (soldText ? ` (ขาย${soldText} เพื่อจัดงาน)` : '') +
     ` → บารมีตระกูล +${(dyn ? funeral * B.funeralPrestigePerTamlueng : 0).toFixed(1)}`;
 }
@@ -497,7 +502,7 @@ function carryRelations(ctx: Ctx, dead: Character, heir: Character): string[] {
     // ทายาทมีความสัมพันธ์แบบเดียวกันกับคนนี้อยู่แล้วและแรงกว่า → ไม่เขียนทับ
     if ((ctx.state.relations[inherited.id]?.strength ?? -Infinity) >= inherited.strength) continue;
     ctx.state.relations[inherited.id] = inherited;
-    out.push(`${heir.name} รับ${RELATION_TH[r.kind]}กับ${ctx.state.characters[other]?.name ?? '?'} ต่อจากผู้ตาย (${Math.round(inherited.strength * 100)}%)`);
+    out.push(`${heir.name}รับ${RELATION_TH[r.kind]}กับ${ctx.state.characters[other]?.name ?? '?'} ต่อจากผู้ตาย (${Math.round(inherited.strength * 100)}%)`);
   }
   return out;
 }
@@ -538,7 +543,7 @@ function crystallizeTaboos(
       out.push(t.strength < B.tabooForgetBelow
         ? `ข้อห้าม${ctx.tags.label(t.target)} ถูกลืมไปตามกาลเวลา`
         // "ผิดผี" เป็นคำของอีสาน — ตระกูลภาคกลางนับถือผีปู่ย่าตายาย (lore: belief.phit_phi_regional)
-        : `${heir.name} ฝ่าฝืนข้อห้าม${ctx.tags.label(t.target)} (ล่วงเกินผีปู่ย่าตายาย)`);
+        : `${heir.name}ฝ่าฝืนข้อห้าม${ctx.tags.label(t.target)} (ล่วงเกินผีปู่ย่าตายาย)`);
     }
   }
 
@@ -599,7 +604,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
         const loss = ctx.rng.range(ev.shock.wealthLoss[0], ev.shock.wealthLoss[1]);
         m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : loss);
         if (purged && m.social.title) {
-          out.push(`${m.name} ถูกริบราชบาดาล ถอดจาก${m.social.title}`);
+          out.push(`${m.name}ถูกริบราชบาดาล ถอดจาก${m.social.title}`);
           m.social.title = null;
         }
         if (m.office && (purged || ev.shock.endsOffices)) {
@@ -630,7 +635,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
       if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
       if (!ctx.rng.chance(ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk)) continue;
       markDead(ctx, c, ev.tag);
-      out.push(`${c.name} เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
+      out.push(`${c.name}เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
     }
   }
   return out;

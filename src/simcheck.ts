@@ -12,6 +12,7 @@ import { estateHeirs, heirCandidates, markDead, performHandover } from './system
 import { knownLocals } from './systems/acquaintance';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
+import { markNursing } from './systems/lifeEvents';
 import { advanceDay } from './systems/world';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -279,7 +280,31 @@ demographyReport();
   if (failed === b) console.log('  ✓ หลานเป็นผู้สืบและได้ส่วนมรดก');
 }
 
-// [5] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
+// [5] ลูกที่ไม่ได้รักษาไข้พ่อได้มรดกกึ่งส่วน — ติดราชการได้รับยกเว้น (lore: social.nursing_cremation_condition)
+{
+  const ctx = makeCtx(emptyState(13), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(20);
+  const heroNode = S.familyNodes[hero.familyNodeId]!;
+  const father = S.characters[S.familyNodes[heroNode.fatherId!]!.characterId!]!;
+  const sibling = Object.values(S.characters).find((c) => c !== hero && S.familyNodes[c.familyNodeId]?.fatherId === heroNode.fatherId)!;
+  const weightOf = (c: Character) => estateHeirs(ctx, father).find((h) => h.ch.id === c.id)?.weight ?? 0;
+  const before = weightOf(hero);
+  markNursing(ctx, hero, father, true);
+  const problems: string[] = [];
+  if (Math.abs(weightOf(hero) - before / 2) > 1e-9) problems.push(`น้ำหนักมรดก ${before} → ${weightOf(hero)} ไม่ใช่กึ่งหนึ่ง`);
+  if (weightOf(sibling) !== before) problems.push('พี่น้องที่รักษาไข้เสียส่วนไปด้วย');
+  sibling.office = { postId: 'muen', deptId: 'patrol', sinceDay: S.meta.day, favor: 0 };
+  markNursing(ctx, sibling, father, true);
+  if (weightOf(sibling) !== before) problems.push('ติดราชการแต่ยังเสียส่วน');
+  const b = failed;
+  console.log('ไม่ได้รักษาไข้:');
+  check('มรดกกึ่งส่วน', problems);
+  if (failed === b) console.log('  ✓ ไม่ได้รักษาไข้ได้กึ่งส่วน ติดราชการได้เต็มส่วน');
+}
+
+// [6] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
 {
   const before = failed;
   console.log('ปฏิทินจันทรคติ:');

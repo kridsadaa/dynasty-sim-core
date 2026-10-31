@@ -13,6 +13,7 @@ import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, livingWives, minorWifeEvent } from './wives';
+import { elderPreceptsEvent, parentIllnessEvent, topknotEvent } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
 import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
@@ -98,6 +99,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (ordination) out.push({ type: 'event', prepared: ordination });
     const minorWife = minorWifeEvent(ctx);
     if (minorWife) out.push({ type: 'event', prepared: minorWife });
+    // วัยผู้ใหญ่และวัยชรา: โกนจุกลูก พ่อแม่ป่วยหนัก ถือศีลวันพระ
+    for (const life of [topknotEvent(ctx), parentIllnessEvent(ctx), elderPreceptsEvent(ctx)]) {
+      if (life) out.push({ type: 'event', prepared: life });
+    }
     const split = divorceEvent(ctx);
     if (split) out.push({ type: 'event', prepared: split });
     // ความลับตำนานแตก: ญาติที่ทันเห็นเรื่องจริงเล่าให้ฟัง — ส่งข้อความตำนานทั้งสองแบบเป็นตัวแปรของ event
@@ -280,7 +285,7 @@ export function lifeMilestones(
     // เป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) → อ่านออกเขียนได้ จดตำนานลงสมุดข่อยได้ตอนสืบทอด
     if (ch.sex === 'm' && age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
       ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, 40);
-      out.push(`${ch.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
+      out.push(`${ch.name}ไปเป็นเณรเรียนหนังสือที่วัด`);
     }
     // บวชเรียนหนึ่งพรรษา (lore: ritual.ordination) — พ่อแม่ได้บุญ; ผู้เล่นตัดสินใจเองผ่าน ordinationEvent
     const O = ctx.content.balance.ordination;
@@ -290,7 +295,7 @@ export function lifeMilestones(
       ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, O.literacy);
       ch.merit += 2;
       for (const p of livingParents(ctx, ch)) p.merit += 2;
-      out.push(`${ch.name} บวชเรียนหนึ่งพรรษา`);
+      out.push(`${ch.name}บวชเรียนหนึ่งพรรษา`);
     }
 
     const neverMarried = (ctx.state.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0;
@@ -305,11 +310,11 @@ export function lifeMilestones(
       if (hh && head && livingChildren(ctx, head).some((c) => c.id === ch.id)) {
         const siblingsAtHome = livingChildren(ctx, head).filter((c) => c.householdId === hh.id);
         if (pickCaregiverChild(siblingsAtHome)?.id === ch.id) {
-          out.push(`${ch.name} อยู่ดูแล${head.name}ต่อที่เรือนเดิม`);
+          out.push(`${ch.name}อยู่ดูแล${head.name}ต่อที่เรือนเดิม`);
         } else {
           const home = createHousehold(ctx, ch);
           for (const m of [spouse, ...livingChildren(ctx, ch)]) if (m && m.householdId === hh.id) joinHousehold(ctx, m, home);
-          out.push(`${ch.name} แยกเรือนออกจากบ้าน${head.name}`);
+          out.push(`${ch.name}แยกเรือนออกจากบ้าน${head.name}`);
         }
       }
     }
@@ -332,8 +337,8 @@ export function lifeMilestones(
       if (motherDied) markDead(ctx, mother, 'situation:childbirth');
       // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log
       const naming = onBirth?.(kid, ch, partner) ?? false;
-      out.push(naming ? `${ch.name} มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name} มีบุตร: ${kid.name}`);
-      if (motherDied && mother.id !== ctx.state.meta.playerCharacterId) out.push(`${mother.name} ตายตอนคลอด`);
+      out.push(naming ? `${ch.name}มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name}มีบุตร: ${kid.name}`);
+      if (motherDied && mother.id !== ctx.state.meta.playerCharacterId) out.push(`${mother.name}ตายตอนคลอด`);
     }
   }
   return out;
