@@ -36,11 +36,7 @@
     { "id": "inj.scar.face.intimidate",
       "match": { "type": "scar", "visibility": ["face"], "minSeverity": 0.3 },
       "requireContext": ["situation:combat"],
-      "addOptions": [ { "id": "inj.scar.intimidate", "textKey": "inject.scar.intimidate", "effects": [] } ] },
-    { "id": "inj.capability.fine.craft",
-      "match": { "type": "capability", "capability": "manipulation.fine", "below": 0.9 },
-      "requireContext": ["situation:craft"],
-      "appendEffects": [ { "op": "skill", "role": "actor", "skill": "craft", "delta": -1 } ] }
+      "addOptions": [{ "id": "inj.scar.intimidate", "textKey": "inject.scar.intimidate", "effects": [{ "op": "favor", "role": "actor", "delta": 0.18 }, { "op": "merit", "role": "actor", "delta": 1 }, { "op": "prestige", "role": "actor", "delta": 0.5 }] }] }
   ],
   "claimTemplates": {
     "acquired_scar": {

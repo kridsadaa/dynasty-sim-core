@@ -1,6 +1,6 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
-import type { Character, GameEventDef } from '../core/types';
+import type { Character, GameEventDef, TagId } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { meetPeople } from './acquaintance';
@@ -11,6 +11,7 @@ import {
 import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
 import { pruneState } from './prune';
+import { legendTruthEvent, renderLegend } from './legend';
 import { tickChores, tickOutings } from './chores';
 import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
@@ -94,6 +95,16 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     // บวชก่อนแต่ง (การบวชยุติการสมรส lore: kinship.marriage_law_three_seals) — ถามก่อนผู้ใหญ่ทาบทามคู่
     const ordination = ordinationEvent(ctx);
     if (ordination) out.push({ type: 'event', prepared: ordination });
+    // ความลับตำนานแตก: ญาติที่ทันเห็นเรื่องจริงเล่าให้ฟัง — ส่งข้อความตำนานทั้งสองแบบเป็นตัวแปรของ event
+    const truth = player && isAlive(player) ? legendTruthEvent(ctx) : null;
+    if (truth) {
+      out.push({
+        type: 'event',
+        prepared: prepareEvent(ctx, 'family.legend_truth', { actor: player!.id, elder: truth.witness.id }, {
+          legend: truth.legend.id, told: renderLegend(ctx, truth.legend, 'current'), truth: renderLegend(ctx, truth.legend, 'truth'),
+        } as Record<string, TagId>),
+      });
+    }
     const match = arrangedMatchEvent(ctx);
     if (match) out.push({ type: 'event', prepared: match });
     // ราชการ: ถวายตัว รายได้ตามตำแหน่ง เลื่อนยศ/ถูกลงโทษ

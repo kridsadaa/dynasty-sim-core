@@ -79,6 +79,30 @@ export function seedLegendsFromLife(ctx: Ctx, ch: Character, node: FamilyNode, d
   return out;
 }
 
+/**
+ * ความลับตำนานแตก: ตำนานที่คลาดจากความจริงมาก และยังมีคนที่ทันเห็นเรื่องจริง (อายุ ≥ 10 ปีตอนเกิดเรื่อง) ยังมีชีวิต
+ * → ปีละ chance ผู้ใหญ่คนนั้นเล่าเรื่องจริงให้ผู้เล่นฟัง (กลไกของเกม — ยังไม่มี lore)
+ */
+export function legendTruthEvent(ctx: Ctx): { legend: Legend; witness: Character } | null {
+  const S = ctx.state;
+  const B = ctx.content.balance.legend;
+  const player = S.characters[S.meta.playerCharacterId];
+  if (!player || player.deathDay !== null || !ctx.rng.chance(B.truthChance)) return null;
+  const dyn = S.dynasties[S.meta.playerDynastyId];
+  if (!dyn) return null;
+  for (const id of dyn.legendIds) {
+    const legend = S.legends[id];
+    if (!legend || legend.truthToldYear !== undefined || legend.divergence < B.truthMinDivergence) continue;
+    // คนที่ทันเห็น: ญาติ คู่ครองที่แต่งเข้ามา หรือผู้ใหญ่ข้างบ้าน — ใครก็ได้ที่ยังมีชีวิตและอายุ ≥ 10 ปีตอนเกิดเรื่อง
+    const witness = Object.values(S.characters)
+      .filter((c) => c.deathDay === null && c.id !== player.id
+        && (S.familyNodes[c.familyNodeId]?.birthYear ?? Infinity) <= legend.truth.year - 10)
+      .sort((a, b) => a.birthDay - b.birthDay)[0];
+    if (witness) return { legend, witness };
+  }
+  return null;
+}
+
 export type DriftOp = 'glorify' | 'magnify' | 'anchor' | 'supernatural' | 'forget' | 'conflate';
 
 /** เล่าต่อ 1 รุ่น — teller คือคนที่ถ่ายทอดเรื่องให้รุ่นถัดไป (ปกติคือทายาท) */

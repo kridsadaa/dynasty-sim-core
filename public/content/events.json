@@ -660,7 +660,7 @@
   "career.patrol_thief": {
     "id": "career.patrol_thief",
     "textKey": "event.patrol_thief",
-    "contextTags": [],
+    "contextTags": ["situation:combat"],
     "roles": {
       "actor": {}
     },
@@ -2111,6 +2111,18 @@
       { "id": "later", "textKey": "event.ordination.later",
         "effects": [ { "op": "bond", "role": "actor", "toward": "elder", "affection": -0.04 }, { "op": "stress", "role": "actor", "delta": 0.03 } ],
         "resist": [ { "source": "bond", "role": "elder", "axis": "awe", "weight": 1.0, "reasonKey": "awe" } ] }
+    ]
+  },
+  "family.legend_truth": {
+    "id": "family.legend_truth", "textKey": "event.legend_truth", "contextTags": [],
+    "roles": { "actor": {}, "elder": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "reveal", "textKey": "event.legend_truth.reveal",
+        "effects": [ { "op": "legend", "role": "actor", "action": "reveal" }, { "op": "merit", "role": "actor", "delta": 1 } ] },
+      { "id": "record", "textKey": "event.legend_truth.record", "conditions": [ { "type": "skill", "skill": "literacy", "min": 30 } ],
+        "effects": [ { "op": "legend", "role": "actor", "action": "record" }, { "op": "merit", "role": "actor", "delta": 1 } ] },
+      { "id": "keep", "textKey": "event.legend_truth.keep",
+        "effects": [ { "op": "legend", "role": "actor", "action": "keep" }, { "op": "stress", "role": "actor", "delta": 0.04 } ] }
     ]
   }
 }

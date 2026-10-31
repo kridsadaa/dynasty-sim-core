@@ -108,6 +108,12 @@ function odds(ctx: Ctx, def: IntentDef, ap: IntentApproachDef, actor: Character,
     const bold = (actor.personality.boldness - 0.5) * 0.2;
     push(bold >= 0 ? 'bold' : 'shy', bold);
   }
+  if (def.target === 'befriend') {
+    const story = scarModifiers(ctx, actor, new Set())
+      .filter((m) => m.stat === 'social:story_hook' && m.op === 'add')
+      .reduce((a, m) => a + m.value, 0);
+    push('story', Math.min(story, 0.3) * 0.5);
+  }
   if (def.target === 'court') {
     const attraction = scarModifiers(ctx, actor, new Set())
       .filter((m) => m.stat === 'social:attraction' && m.op === 'add')

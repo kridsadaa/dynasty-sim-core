@@ -103,7 +103,7 @@
   { "id": "chore:any", "parents": [], "label": { "th": "งาน" }, "generalizeStop": true},
   { "id": "chore:kitchen", "parents": ["chore:any"], "label": { "th": "งานในโรงครัว" } },
   { "id": "chore:housework", "parents": ["chore:any"], "label": { "th": "งานบ้าน" } },
-  { "id": "chore:craft", "parents": ["chore:any"], "label": { "th": "งานฝีมือ" } },
+  { "id": "chore:craft", "parents": ["chore:any", "situation:craft"], "label": { "th": "งานฝีมือ" } },
   { "id": "task:any", "parents": [], "label": { "th": "งาน" }, "generalizeStop": true},
   { "id": "task:prep_veg", "parents": ["task:any"], "label": { "th": "เด็ดผักล้างผัก" } },
   { "id": "task:grate_coconut", "parents": ["task:any"], "label": { "th": "ขูดมะพร้าว" } },

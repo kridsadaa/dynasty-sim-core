@@ -464,6 +464,8 @@ export interface Legend {
   divergence: Unit;
   writtenRecord: boolean; // จดลงสมุดข่อยแล้ว → บิดเบือนช้าลง
   physicalEvidence: { partDefId: PartDefId; kind: Scar['kind'] } | null;
+  /** ปีที่มีคนทันเห็นเล่าเรื่องจริงให้ผู้เล่นฟัง (event ความลับตำนานแตก) — เกิดได้ครั้งเดียวต่อเรื่อง */
+  truthToldYear?: number;
 }
 
 // ============================================================================
@@ -532,7 +534,9 @@ export type Condition =
   /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
   | { type: 'canPay'; what: 'sinsot' | 'elope' }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
-  | { type: 'office'; minRank?: number; maxRank?: number };
+  | { type: 'office'; minRank?: number; maxRank?: number }
+  /** ทักษะอย่างน้อย min (เช่น อ่านออกเขียนได้ literacy) */
+  | { type: 'skill'; skill: string; min: number };
 
 export type Effect =
   | {
@@ -575,6 +579,11 @@ export type Effect =
   | { op: 'skill'; role: string; skill: string; delta: number }
   /** บวชเรียนหนึ่งพรรษาแล้วสึก — จด Character.ordainedYear */
   | { op: 'ordain'; role: string }
+  /**
+   * ตำนานในตัวแปร $legend ของ event: reveal = เล่าเรื่องจริงให้ลูกหลาน (ตำนานกลับเป็นความจริง บารมีที่เคยได้จากการเสริมแต่งหายไป),
+   * record = reveal แล้วจดลงสมุดข่อย, keep = ปล่อยไว้อย่างเดิม
+   */
+  | { op: 'legend'; role: string; action: 'reveal' | 'record' | 'keep' }
   | { op: 'prestige'; role: string; delta: number };
 
 /**
@@ -848,6 +857,10 @@ export interface Balance {
     baseDrift: number;
     writtenRecordDamp: Unit;
     maxOpsPerGeneration: number;
+    /** ต่อปี: โอกาสที่ญาติซึ่งทันเห็นเรื่องจริงจะเล่าให้ผู้เล่นฟัง (ความลับตำนานแตก) */
+    truthChance: Unit;
+    /** ตำนานต้องคลาดจากความจริงอย่างน้อยเท่านี้ถึงจะเป็น "ความลับ" */
+    truthMinDivergence: Unit;
   };
   inheritance: {
     shareByParentage: Record<Parentage, number>;

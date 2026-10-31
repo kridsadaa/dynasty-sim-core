@@ -28,7 +28,7 @@
   "inject.aversion.refuse": "ปฏิเสธ{target}อย่างไม่ไว้หน้าใคร",
   "inject.superstition.ward": "แอบออกไปทำพิธีปัดรังควาน (ถือเคล็ดเรื่อง{target})",
   "inject.obsession.fixate": "จ้องมอง{target}อย่างหลงใหลจนลืมตัว",
-  "inject.scar.intimidate": "เผยแผลเป็นบนใบหน้า ข่มขวัญอีกฝ่าย",
+  "inject.scar.intimidate": "เผยแผลเป็นบนใบหน้า ข่มขวัญอีกฝ่ายให้ถอยไปเอง",
   "wound.stage.bleeding": "เลือดยังไหล",
   "wound.stage.open": "แผลยังเปิด",
   "wound.stage.infected": "แผลกำเริบ",
@@ -103,6 +103,7 @@
   "intent.factor.bold": "ใจกล้า เข้าหาคนเก่ง",
   "intent.factor.shy": "ขี้อาย",
   "intent.factor.scar": "แผลเป็นบนใบหน้า",
+  "intent.factor.story": "แผลเป็นมีเรื่องเล่า คนอยากรู้จัก",
   "intent.factor.age_gap": "อายุห่างกัน",
   "intent.factor.events": "เรื่องระหว่างทาง",
   "intent.unavailable.far": "ไกลเกินกว่าจะไปมาหาสู่",
@@ -247,5 +248,10 @@
   "event.ordination": "{actor}อายุครบบวชแล้ว ลูกผู้ชายบวชให้พ่อแม่ได้เกาะชายผ้าเหลือง อยู่วัดอย่างน้อยหนึ่งพรรษาแล้วจึงสึกออกมาตั้งตัว",
   "event.ordination.grand": "ให้{elder}จัดงานใหญ่ ทำขวัญนาคที่เรือนแล้วแห่ไปวัด (40 ตำลึง)",
   "event.ordination.quiet": "บวชเงียบๆ ไม่ต้องจัดงาน (8 ตำลึง)",
-  "event.ordination.later": "ขอเลื่อนไปก่อน ยังไม่พร้อม"
+  "event.ordination.later": "ขอเลื่อนไปก่อน ยังไม่พร้อม",
+  "event.legend_truth.title": "เรื่องจริงที่ไม่มีใครเล่า",
+  "event.legend_truth": "{elder}ซึ่งทันเห็นเหตุการณ์เรียก{actor}ไปคุยตามลำพัง ลูกหลานเล่ากันว่า「{told}」 แต่ที่จริงแล้ว「{truth}」",
+  "event.legend_truth.reveal": "เล่าเรื่องจริงให้ลูกหลานฟัง แม้ตระกูลจะดูยิ่งใหญ่น้อยลง",
+  "event.legend_truth.record": "เล่าเรื่องจริง แล้วจดลงสมุดข่อยไว้ไม่ให้เพี้ยนอีก",
+  "event.legend_truth.keep": "เก็บไว้คนเดียว ปล่อยให้ตำนานเป็นอย่างที่เล่ากัน"
 }

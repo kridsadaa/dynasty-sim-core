@@ -274,7 +274,8 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
     const kin = ch && (ch.familyNodeId === actorNode?.motherId ? 'แม่' : ch.familyNodeId === actorNode?.fatherId ? 'พ่อ' : '');
     vars[role] = ch ? `${kin}${ch.name}` : role;
   }
-  for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.label(v);
+  // ตัวแปรส่วนใหญ่เป็น tag → ชื่อไทย; บาง event ส่งข้อความมาตรงๆ (ตำนานที่เล่ากับเรื่องจริง)
+  for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.def(v) ? ctx.tags.label(v) : v;
   const willNote = (id: string) => {
     const r = p.resist.get(id);
     if (!r) return undefined;

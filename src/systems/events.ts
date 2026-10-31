@@ -2,7 +2,7 @@ import { ageOf, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type {
   Character, Condition, Effect, EventInstance, EventOption, GameEventDef, Percept,
-  TagId, Trait, VarRef, WoundId,
+  TagId, Trait, VarRef, WoundId, LegendId,
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
@@ -94,6 +94,8 @@ export function prepareEvent(
 
   const vars: Record<string, TagId> = {};
   for (const [k, v] of Object.entries(def.variables ?? {})) vars[k] = varOverride[k] ?? must(ctx.rng.pick(v.oneOf), k);
+  // ตัวแปรที่ผู้เรียกส่งมาแต่ def ไม่ได้ประกาศ (เช่น ข้อความตำนานใน family.legend_truth) — ใส่ไว้ตามที่ส่งมา
+  for (const [k, v] of Object.entries(varOverride)) vars[k] ??= v;
   const sub = (t: TagId | VarRef): TagId => (isVar(t) ? must(vars[t.slice(1)], t) : t);
 
   const instance: EventInstance = {
@@ -170,6 +172,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       const rank = officeRank(ctx, ch);
       return rank !== undefined && rank >= (c.minRank ?? 0) && rank <= (c.maxRank ?? Infinity);
     }
+    case 'skill':
+      return (ch.skills[c.skill] ?? 0) >= c.min;
   }
 }
 
@@ -294,6 +298,10 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
   for (const e of [...opt.effects, ...p.extraEffects]) {
     if (e.op === 'followUp') {
       if (!report.followUp && ctx.rng.chance(e.chance)) report.followUp = e.event;
+      continue;
+    }
+    if (e.op === 'legend') {
+      report.notes.push(...applyLegendTruth(ctx, p.actor, p.instance.vars['legend'] as string | undefined, e.action));
       continue;
     }
     const ch = who(e.role);
@@ -437,3 +445,24 @@ function buildPercepts(p: PreparedEvent): Percept[] {
     return entityId ? { tag, role: t.role, salience: t.salience, entityId } : { tag, role: t.role, salience: t.salience };
   });
 }
+
+/**
+ * ความลับตำนานแตก — ผลของการตัดสินใจ (event family.legend_truth)
+ * บารมีที่ได้จากการเสริมแต่งหายไปตามที่ตำนานคลาดจากความจริง (ตัวเลขของเกม)
+ */
+function applyLegendTruth(ctx: Ctx, teller: Character, legendId: string | undefined, action: 'reveal' | 'record' | 'keep'): string[] {
+  const legend = legendId ? ctx.state.legends[legendId as LegendId] : undefined;
+  if (!legend) return [];
+  legend.truthToldYear = yearOf(ctx, ctx.state.meta.day);
+  if (action === 'keep') return [`${teller.name}เก็บเรื่องจริงไว้คนเดียว ตำนานยังเล่ากันอย่างเดิม`];
+  const dyn = ctx.state.dynasties[legend.dynastyId];
+  const lost = Math.round(legend.divergence * 5 * 10) / 10;
+  if (dyn) dyn.prestige = Math.max(0, dyn.prestige - lost);
+  legend.current = structuredClone(legend.truth);
+  legend.divergence = 0;
+  if (action === 'record') legend.writtenRecord = true;
+  return [
+    `${teller.name}เล่าเรื่องจริงให้ลูกหลานฟัง${action === 'record' ? ' แล้วจดลงสมุดข่อยไว้' : ''} — บารมีตระกูล −${lost}`,
+  ];
+}
+

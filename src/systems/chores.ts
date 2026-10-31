@@ -2,6 +2,7 @@ import { yearsToDays } from '../core/calendar';
 import { ageOf, isAlive, must, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, ChoreDomainDef, ChoreTaskDef, TagId } from '../core/types';
 import { singlePeer } from './acquaintance';
+import { capability } from './body';
 import { livingSpouse } from './factory';
 import { bond } from './will';
 
@@ -31,8 +32,10 @@ const stateOf = (ch: Character, d: ChoreDomainDef) => ((ch.chores ??= {})[d.id] 
 
 const skillOf = (ch: Character, d: ChoreDomainDef) => ch.skills[d.skill] ?? 0;
 
-function addSkill(ch: Character, d: ChoreDomainDef, amount: number): void {
-  ch.skills[d.skill] = Math.min(100, skillOf(ch, d) + amount);
+/** งานช่าง (situation:craft) ใช้นิ้ว — นิ้วบาดเจ็บ/พิการ หัดได้ช้าลงตามความคล่องของมือ */
+function addSkill(ctx: Ctx, ch: Character, d: ChoreDomainDef, amount: number): void {
+  const hands = ctx.tags.isA(d.tag, 'situation:craft' as TagId) ? capability(ctx, ch, 'manipulation.fine') : 1;
+  ch.skills[d.skill] = Math.min(100, skillOf(ch, d) + amount * hands);
 }
 
 /** ขั้นถัดไปที่ถึงวัยและถึงฝีมือ และยังไม่ได้หัด */
@@ -100,7 +103,7 @@ export function tickChores(ctx: Ctx, away: number): { lines: string[]; events: C
 
   const task = nextTask(ctx, ch, d);
   if (!task) {
-    addSkill(ch, d, C.practiceGain); // หัดครบแล้ว ทำซ้ำเงียบๆ
+    addSkill(ctx, ch, d, C.practiceGain); // หัดครบแล้ว ทำซ้ำเงียบๆ
     if (d.practiceMerit) ch.merit += d.practiceMerit;
     return { lines, events };
   }
@@ -123,7 +126,7 @@ function join(ctx: Ctx, ch: Character, d: ChoreDomainDef, teacher: Character | u
 function learn(ctx: Ctx, ch: Character, d: ChoreDomainDef, task: ChoreTaskDef, teacher: Character | undefined, factor: number): string[] {
   const st = stateOf(ch, d);
   if (!st.tasks.includes(task.id)) st.tasks.push(task.id);
-  addSkill(ch, d, task.gain * factor);
+  addSkill(ctx, ch, d, task.gain * factor);
   if (task.merit) ch.merit += task.merit;
   const what = ctx.tags.label(task.tag);
   return [teacher ? `${teacher.name}สอนให้${ch.name}${what}` : `${ch.name}หัด${what}ได้แล้ว`];
