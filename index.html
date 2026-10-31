@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>หนึ่งตระกูล — Dynasty Sim</title>
     <style>
-      :root { --bg: #f6f1e7; --fg: #2b2118; --muted: #7a6a58; --line: #d9ccb6; --accent: #8a3b12; --panel: #fffaf0; --good: #3f7a3a; }
+      :root { --bg: #f6f1e7; --fg: #2b2118; --muted: #7a6a58; --line: #d9ccb6; --accent: #8a3b12; --panel: #fffaf0; --good: #3f7a3a; --sel: #f1e2c8; }
       @media (prefers-color-scheme: dark) {
-        :root { --bg: #1b1713; --fg: #eee3d2; --muted: #a8977f; --line: #3a3128; --accent: #e08a52; --panel: #241f1a; --good: #9ccc8a; }
+        :root { --bg: #1b1713; --fg: #eee3d2; --muted: #a8977f; --line: #3a3128; --accent: #e08a52; --panel: #241f1a; --good: #9ccc8a; --sel: #3a2c20; }
       }
       * { box-sizing: border-box; }
       body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 "Sarabun", system-ui, sans-serif; }
-      main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: 1fr 320px; }
-      @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+      main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) 340px; }
+      @media (max-width: 800px) { main { grid-template-columns: minmax(0, 1fr); } }
       header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
       header h1 { font-size: 20px; margin: 0 auto 0 0; }
       button { font: inherit; padding: 6px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; cursor: pointer; }
@@ -24,6 +24,48 @@
       #log p { margin: 2px 0; }
       #log .year { color: var(--accent); font-weight: 600; margin-top: 8px; }
       #log .handover { border-left: 3px solid var(--accent); padding-left: 8px; }
+      #log .handover-head { font-weight: 600; }
+      #log .system { color: var(--muted); }
+      [hidden] { display: none !important; }
+
+      /* แท็บ */
+      .tabs { display: flex; gap: 4px; margin-bottom: -1px; }
+      .tabs button { border-radius: 6px 6px 0 0; border-bottom-color: transparent; background: transparent; }
+      .tabs button[aria-selected="true"] { background: var(--panel); border-color: var(--line); border-bottom-color: var(--panel); font-weight: 600; }
+      .tab { border-top-left-radius: 0; }
+      .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+      .chips label { cursor: pointer; white-space: nowrap; }
+
+      /* ผังตระกูล */
+      #tree { max-height: 65vh; overflow: auto; font-size: 14px; }
+      #tree ul { list-style: none; padding-left: 18px; border-left: 1px dashed var(--line); margin-left: 6px; }
+      #tree > ul { border-left: none; padding-left: 0; margin-left: 0; }
+      #tree li { margin: 2px 0; }
+      #tree details > summary { cursor: pointer; }
+      #tree details:not([open]) > summary::after { content: " …"; color: var(--muted); }
+      #tree .person { padding: 0 6px; border: 1px solid transparent; background: none; text-align: left; border-radius: 4px; }
+      #tree .person.dead { color: var(--muted); }
+      #tree .person.pruned { font-style: italic; }
+      #tree .person.selected { background: var(--sel); border-color: var(--accent); }
+      #tree .person.me { font-weight: 700; }
+      .badge { font-size: 12px; color: var(--accent); margin-left: 4px; }
+
+      /* เซฟ */
+      .saveform { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+      .saveform input { flex: 1 1 160px; min-width: 0; font: inherit; padding: 5px 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; }
+      .slot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+      .slot .info { flex: 1 1 220px; min-width: 0; font-size: 14px; }
+      .slot .info b { display: block; }
+
+      /* หน้าดูตัวละคร */
+      #inspect { margin-bottom: 16px; }
+      #inspect .top { display: flex; align-items: baseline; gap: 8px; }
+      #inspect .top h2 { margin: 0 auto 0 0; color: var(--fg); font-size: 17px; }
+      #inspect dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 14px; margin: 8px 0; }
+      #inspect dt { color: var(--muted); }
+      #inspect dd { margin: 0; }
+      #inspect h3 { font-size: 14px; color: var(--muted); margin: 10px 0 4px; }
+      .who { padding: 0; border: none; background: none; font-weight: 600; text-decoration: underline dotted; }
       #backdrop { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(0 0 0 / .45); }
       #backdrop[hidden] { display: none; }
       #event { width: min(560px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: 0 12px 40px rgb(0 0 0 / .35); }
@@ -39,8 +81,8 @@
       #event .opt.strained .note { color: var(--accent); }
       ul { margin: 0; padding-left: 18px; font-size: 14px; }
       #status { color: var(--muted); font-size: 14px; }
-      .clock { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-      .dates { display: inline-flex; flex-direction: column; line-height: 1.2; min-width: 13em; }
+      .clock { display: inline-flex; flex-wrap: wrap; max-width: 100%; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+      .dates { display: inline-flex; flex-direction: column; line-height: 1.2; min-width: min(13em, 100%); }
       #date { font-variant-numeric: tabular-nums; }
       #lunar { font-size: 0.75em; color: var(--muted); }
       #play { min-width: 5.5em; }
@@ -70,8 +112,6 @@
         <h1>หนึ่งตระกูล</h1>
         <span id="status">กำลังโหลด…</span>
         <button id="new">เริ่มใหม่</button>
-        <button id="load">โหลด autosave</button>
-        <button id="loadSlot">โหลดที่บันทึกไว้</button>
         <span class="clock">
           <span class="dates"><span id="date"></span><span id="lunar"></span></span>
           <button id="play" disabled title="เดิน/หยุดเวลา (Space)">▶ เดิน</button>
@@ -79,12 +119,31 @@
           <span id="speed" aria-live="polite"></span>
           <button id="faster" disabled title="เร็วขึ้น (+)" aria-label="เร็วขึ้น">+</button>
         </span>
-        <button id="save" disabled>บันทึก</button>
       </header>
       <div>
-        <section><h2>บันทึก</h2><div id="log"></div></section>
+        <nav class="tabs" role="tablist">
+          <button role="tab" data-tab="log">บันทึก</button>
+          <button role="tab" data-tab="tree">ผังตระกูล</button>
+          <button role="tab" data-tab="saves">เซฟ/โหลด</button>
+        </nav>
+        <section class="tab" id="tab-log">
+          <div class="chips" id="filters"></div>
+          <div id="log"></div>
+        </section>
+        <section class="tab" id="tab-tree" hidden>
+          <div class="chips"><span id="treeInfo"></span><button id="findMe">ไปที่ตัวละครผู้เล่น</button></div>
+          <div id="tree"></div>
+        </section>
+        <section class="tab" id="tab-saves" hidden>
+          <form class="saveform" id="saveForm">
+            <input id="slotName" maxlength="40" required placeholder="ชื่อช่องเซฟ" value="เซฟ 1" aria-label="ชื่อช่องเซฟ" />
+            <button id="saveBtn" type="submit" disabled>บันทึกลงช่องนี้</button>
+          </form>
+          <div id="slots"></div>
+        </section>
       </div>
       <aside>
+        <section id="inspect" hidden></section>
         <section id="player"><h2>ตัวละคร</h2></section>
         <section id="known" style="margin-top:16px"><h2>คนที่รู้จัก</h2></section>
         <section id="dynasty" style="margin-top:16px"><h2>ตระกูล</h2></section>

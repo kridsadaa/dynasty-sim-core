@@ -9,9 +9,9 @@ import { bootstrapScenario } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
 import { deleteSlot, listSlots, loadState, saveState } from './persistence';
-import type { ClockState, Command, Push, ReplyData, Request, WorkerMessage } from './protocol';
+import type { ClockState, Command, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
-import { dynastyView, eventView, intentPlanView, knownView, playerView, type TextTable } from './views';
+import { dynastyView, eventView, inspectView, intentPlanView, knownView, playerView, treeView, type TextTable } from './views';
 
 // ============================================================================
 // Simulation Worker — เจ้าของ GameState แต่เพียงผู้เดียว
@@ -102,18 +102,18 @@ function clockState(): ClockState {
 const pushClock = () => push({ type: 'clock', clock: clockState() });
 
 /** เดินทีละวัน n วัน — หยุดก่อนครบถ้ามี event หรือสิ้นสาย */
-function step(c: Ctx, days: number, lines: string[]): 'done' | 'event' | 'gameOver' {
+function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'gameOver' {
   for (let i = 0; i < days; i++) {
     let stop: 'done' | 'event' | 'gameOver' = 'done';
     for (const sig of advanceDay(c)) {
-      if (sig.type === 'log') lines.push(sig.line);
+      if (sig.type === 'log') lines.push({ kind: sig.kind, text: sig.line });
       else if (sig.type === 'event') {
         pending.set(sig.prepared.instance.id, sig.prepared);
         stop = 'event';
       } else {
         const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
         if (!heirCandidates(c, dead).length) {
-          lines.push(`${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย`);
+          lines.push({ kind: 'death', text: `${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
           return 'gameOver';
         }
         if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
@@ -135,7 +135,7 @@ async function runClock(c: Ctx): Promise<void> {
   let carry = 0;
   let lastSave = Date.now();
   let stoppedForEvent = false;
-  const lines: string[] = [];
+  const lines: LogLine[] = [];
   try {
     while (playing && ctx === c) {
       carry += SPEED_DAYS_PER_SEC[speed]! / TICKS_PER_SEC;
@@ -261,6 +261,10 @@ async function handle(cmd: Command): Promise<unknown> {
       return playerView(need(), text);
     case 'viewDynasty':
       return dynastyView(need());
+    case 'viewTree':
+      return treeView(need());
+    case 'viewCharacter':
+      return inspectView(need(), cmd.nodeId, text);
     case 'viewKnown':
       return knownView(need(), text);
     case 'planIntent':

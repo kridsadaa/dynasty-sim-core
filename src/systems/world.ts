@@ -23,8 +23,11 @@ import { kinDeathEvent } from './mourning';
 // ไม่รู้จัก DOM / Worker / IndexedDB เลย → รันได้ทั้งใน Worker, Node (test/demo) และ server ถ้าจำเป็น
 // ============================================================================
 
+/** หมวดของบรรทัดใน log — UI ใช้กรอง ('choice' มาจากฝั่ง UI/worker ตอนผู้เล่นเลือกหรือสั่งเอง) */
+export type LogKind = 'family' | 'death' | 'inherit' | 'body' | 'household' | 'daily' | 'people' | 'career' | 'history' | 'choice';
+
 export type WorldSignal =
-  | { type: 'log'; line: string }
+  | { type: 'log'; kind: LogKind; line: string }
   | { type: 'event'; prepared: PreparedEvent }
   | { type: 'playerDied' };
 
@@ -50,48 +53,48 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const ch = S.characters[cid];
     if (!ch) continue;
     for (const o of tickWounds(ctx, ch)) {
-      if (ch.id === player?.id) out.push({ type: 'log', line: `แผลของ${ch.name}${WOUND_RESULT_TH[o.result]}${o.scar ? ' (กลายเป็นแผลเป็น)' : ''}` });
+      if (ch.id === player?.id) out.push({ type: 'log', kind: 'body', line: `แผลของ${ch.name}${WOUND_RESULT_TH[o.result]}${o.scar ? ' (กลายเป็นแผลเป็น)' : ''}` });
     }
   }
 
   // รายเดือน (ขึ้น 1 ค่ำ): ความตั้งใจของผู้เล่น (เกี้ยว ผูกมิตร) เดินหน้า กินแรงงานที่บ้าน และอาจมี event แทรก
   if (lunarOf(ctx).day === 1) {
     const r = tickIntents(ctx);
-    for (const line of r.lines) out.push({ type: 'log', line });
+    for (const line of r.lines) out.push({ type: 'log', kind: 'people', line });
     for (const prepared of r.events) out.push({ type: 'event', prepared });
     // งานบ้านของเด็ก: ถูกเรียกไปช่วย หัดขั้นใหม่ หรือนิสัยตัดสินเอง
     const chores = player ? tickChores(ctx, awayLabor(ctx, player)) : { lines: [], events: [] };
-    for (const line of chores.lines) out.push({ type: 'log', line });
+    for (const line of chores.lines) out.push({ type: 'log', kind: 'daily', line });
     for (const req of chores.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
     for (const req of player ? tickOutings(ctx, awayLabor(ctx, player)) : []) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
     // หมั้นถึงวันนัด / ถูกทวงค่าน้ำนม / ช่วยงานบ้านพ่อตาแม่ยาย
     const m = tickMarriage(ctx);
-    for (const line of m.lines) out.push({ type: 'log', line });
+    for (const line of m.lines) out.push({ type: 'log', kind: 'family', line });
     for (const req of m.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
   }
 
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
   if (dayOfYear(ctx, S.meta.day) === 0) {
-    for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', line });
+    for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', kind: 'history', line });
     // ตายในปีที่ผ่านมา (เด็ก ไข้ทรพิษ ป่วย ชรา) — ก่อนการเกิด/แต่งงาน/พบคนใหม่ของปีนี้ ไม่ให้ event ผูกกับคนที่จะตาย
-    for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', line });
+    for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', kind: 'death', line });
     const frail = hardToRaiseEvent(ctx);
     if (frail) out.push({ type: 'event', prepared: frail });
     for (const hh of Object.values(S.households)) {
       const logs = householdYearTick(ctx, hh.id);
-      if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', line });
+      if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', kind: 'household', line });
     }
     for (const line of lifeMilestones(ctx, (kid, parent, spouse) => {
       const naming = namingEvent(ctx, kid, parent, spouse);
       if (naming) out.push({ type: 'event', prepared: naming });
       return !!naming;
-    })) out.push({ type: 'log', line });
-    for (const line of meetPeople(ctx)) out.push({ type: 'log', line });
+    })) out.push({ type: 'log', kind: 'family', line });
+    for (const line of meetPeople(ctx)) out.push({ type: 'log', kind: 'people', line });
     const match = arrangedMatchEvent(ctx);
     if (match) out.push({ type: 'event', prepared: match });
     // ราชการ: ถวายตัว รายได้ตามตำแหน่ง เลื่อนยศ/ถูกลงโทษ
     const career = careerYearTick(ctx);
-    for (const line of career.lines) out.push({ type: 'log', line });
+    for (const line of career.lines) out.push({ type: 'log', kind: 'career', line });
     for (const req of career.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
     // ญาติใกล้ชิดของผู้เล่นตายปีนี้ → งานศพ (คนที่ใกล้ที่สุด)
     const mourning = kinDeathEvent(ctx);
@@ -103,7 +106,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     // คนทั่วไป → งานศพ แบ่งมรดก ออกจากเรือน; ทำก่อน handover เพราะ handover prune ตัวละครที่ตายแล้วทิ้ง
     for (const ch of diedToday.filter((c) => !isHeadWithHeir(c))) {
       const r = settleDeath(ctx, ch);
-      if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', line });
+      if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', kind: 'inherit', line });
     }
     // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
     for (const ch of diedToday.filter(isHeadWithHeir)) {
@@ -115,8 +118,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       }
       const heirId = cands.some((c) => c.ch.id === player?.id) ? player!.id : undefined;
       const r = performHandover(ctx, ch.id, heirId, { asPlayer: false });
-      out.push({ type: 'log', line: `มรดกของ${r.deceased} ตกถึง${r.heir} ผู้นำตระกูลคนใหม่` });
-      for (const line of r.log) out.push({ type: 'log', line });
+      out.push({ type: 'log', kind: 'inherit', line: `มรดกของ${r.deceased} ตกถึง${r.heir} ผู้นำตระกูลคนใหม่` });
+      for (const line of r.log) out.push({ type: 'log', kind: 'inherit', line });
     }
   }
 

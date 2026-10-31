@@ -1,5 +1,7 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
-import type { CharacterView, ClockState, DynastyView, EventView, IntentPlanView, KnownPersonView } from './engine/protocol';
+import type {
+  CharacterView, ClockState, DynastyView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo, TreeView,
+} from './engine/protocol';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
 
@@ -11,6 +13,32 @@ const el = (tag: string, text?: string, cls?: string) => {
   if (cls) e.className = cls;
   return e;
 };
+const button = (text: string, onclick: () => void, cls?: string) => {
+  const b = el('button', text, cls) as HTMLButtonElement;
+  b.type = 'button';
+  b.onclick = onclick;
+  return b;
+};
+const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
+
+/** localStorage อาจโยน (private mode / ปิด storage) — เป็นแค่ความสะดวก ไม่ใช่ state ของเกม */
+const prefs = {
+  get<T>(key: string, fallback: T): T {
+    try {
+      const raw = localStorage.getItem(`dynasty-sim:${key}`);
+      return raw === null ? fallback : (JSON.parse(raw) as T);
+    } catch {
+      return fallback;
+    }
+  },
+  set(key: string, value: unknown): void {
+    try {
+      localStorage.setItem(`dynasty-sim:${key}`, JSON.stringify(value));
+    } catch {
+      /* ไม่เป็นไร */
+    }
+  },
+};
 
 const log = $('log');
 const status = $('status');
@@ -18,9 +46,102 @@ let lastYear = 0;
 let hasGame = false;
 let clock: ClockState = { playing: false, speed: 2, maxSpeed: 5, ended: false };
 
-function write(line: string, cls?: string) {
-  log.append(el('p', line, cls));
-  log.scrollTop = log.scrollHeight;
+// ---------------- แท็บ: บันทึก / ผังตระกูล / เซฟ ----------------
+type Tab = 'log' | 'tree' | 'saves';
+let tab: Tab = 'saves';
+
+function showTab(next: Tab) {
+  tab = next;
+  for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === next));
+  for (const t of ['log', 'tree', 'saves'] as const) $(`tab-${t}`).hidden = t !== next;
+  if (next === 'tree' && hasGame) void refreshTree();
+  if (next === 'saves') void refreshSlots();
+}
+for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.onclick = () => showTab(b.dataset.tab as Tab);
+
+// ---------------- บันทึก (log): แยกเป็นก้อนรายปี กรองตามหมวดได้ ----------------
+const KIND_TH: Record<LogKind, string> = {
+  family: 'ครอบครัว',
+  death: 'การตาย',
+  inherit: 'มรดก/สืบทอด',
+  body: 'ร่างกาย',
+  household: 'เรือน/ปม',
+  daily: 'งานบ้าน',
+  people: 'ผู้คน',
+  career: 'ราชการ',
+  history: 'บ้านเมือง',
+  choice: 'การตัดสินใจ',
+};
+const KINDS = Object.keys(KIND_TH) as LogKind[];
+// เก็บหมวดที่ซ่อน ไม่ใช่หมวดที่แสดง — หมวดที่เพิ่มทีหลังจะแสดงเองแม้ผู้เล่นเคยตั้งตัวกรองไว้
+const shown = new Set<LogKind>(KINDS.filter((k) => !prefs.get<LogKind[]>('logHidden', []).includes(k)));
+const counts = new Map<LogKind, number>();
+const countLabels = new Map<LogKind, HTMLElement>();
+let yearBlock: HTMLElement | null = null;
+
+for (const k of KINDS) {
+  const label = el('label');
+  const box = el('input') as HTMLInputElement;
+  box.type = 'checkbox';
+  box.checked = shown.has(k);
+  box.onchange = () => {
+    if (box.checked) shown.add(k);
+    else shown.delete(k);
+    prefs.set('logHidden', KINDS.filter((x) => !shown.has(x)));
+    applyFilter();
+  };
+  const count = el('span', '', 'muted');
+  countLabels.set(k, count);
+  label.append(box, ` ${KIND_TH[k]} `, count);
+  $('filters').append(label);
+}
+
+const lineVisible = (p: HTMLElement) => {
+  const k = p.dataset.kind as LogKind | 'system' | undefined;
+  return !k || k === 'system' || shown.has(k);
+};
+
+/** ก้อนปีที่ไม่มีบรรทัดไหนผ่านตัวกรอง → ซ่อนหัว พ.ศ. ด้วย */
+function updateBlock(block: HTMLElement) {
+  if (!block.classList.contains('yr')) return;
+  block.hidden = ![...block.querySelectorAll<HTMLElement>('p[data-kind]')].some(lineVisible);
+}
+
+function applyFilter() {
+  for (const p of log.querySelectorAll<HTMLElement>('p[data-kind]')) p.hidden = !lineVisible(p);
+  for (const b of log.querySelectorAll<HTMLElement>('.yr')) updateBlock(b);
+}
+
+function clearLog() {
+  log.replaceChildren();
+  yearBlock = null;
+  lastYear = 0;
+  counts.clear();
+  for (const c of countLabels.values()) c.textContent = '';
+}
+
+function startYear(year: number) {
+  if (year === lastYear && yearBlock) return;
+  lastYear = year;
+  yearBlock = el('div', undefined, 'yr');
+  yearBlock.append(el('p', `พ.ศ. ${year}`, 'year'));
+  log.append(yearBlock);
+}
+
+function write(text: string, kind: LogKind | 'system', cls?: string) {
+  const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
+  const target = yearBlock ?? log;
+  const p = el('p', text, cls ?? (kind === 'system' ? 'system' : undefined));
+  p.dataset.kind = kind;
+  p.hidden = !lineVisible(p);
+  target.append(p);
+  updateBlock(target);
+  if (kind !== 'system') {
+    counts.set(kind, (counts.get(kind) ?? 0) + 1);
+    countLabels.get(kind)!.textContent = `(${counts.get(kind)})`;
+  }
+  // เลื่อนตามเฉพาะตอนผู้เล่นอยู่ท้ายบันทึก — ไม่ดึงกลับถ้ากำลังเลื่อนอ่านย้อนหลัง
+  if (atBottom) log.scrollTop = log.scrollHeight;
 }
 
 // ---------------- นาฬิกา: เวลาเดินเองใน worker, UI แค่สั่งเดิน/หยุด/ปรับความเร็ว ----------------
@@ -33,7 +154,7 @@ function renderClock() {
   play.disabled = !hasGame || clock.ended || modalOpen();
   $<HTMLButtonElement>('slower').disabled = !hasGame || clock.speed <= 1;
   $<HTMLButtonElement>('faster').disabled = !hasGame || clock.speed >= clock.maxSpeed;
-  $<HTMLButtonElement>('save').disabled = !hasGame;
+  $<HTMLButtonElement>('saveBtn').disabled = !hasGame;
   $('speed').textContent = '●'.repeat(clock.speed) + '○'.repeat(clock.maxSpeed - clock.speed);
   $('speed').title = `ความเร็ว ${clock.speed}/${clock.maxSpeed}`;
   status.textContent = clock.ended ? 'ตระกูลสิ้นสาย' : modalOpen() ? 'รอการตัดสินใจ' : clock.playing ? '' : 'หยุดเวลา';
@@ -44,7 +165,7 @@ async function clockCmd(cmd: { type: 'play' } | { type: 'pause' } | { type: 'set
   try {
     clock = await engine.request(cmd);
   } catch (e) {
-    error = (e as Error).message;
+    error = errorText(e);
   }
   renderClock();
   if (!error) return;
@@ -66,7 +187,9 @@ function refreshSoon() {
 function renderPlayer(v: CharacterView) {
   const box = $('player');
   box.replaceChildren(el('h2', 'ตัวละคร'));
-  box.append(el('div', `${v.title ? v.title + ' ' : ''}${v.name} อายุ ${v.age} ปี (พ.ศ. ${v.year})`));
+  const who = el('div');
+  who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
+  box.append(who);
   box.append(el('div', `ชนชั้น: ${v.estate} · ทรัพย์ ${v.wealth} ตำลึง`));
   if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));
   const list = (title: string, items: string[]) => {
@@ -86,13 +209,12 @@ function renderPlayer(v: CharacterView) {
     const i = v.intent;
     const card = el('div', undefined, 'intent');
     const head = el('div', undefined, 'row');
-    const quit = el('button', 'เลิก') as HTMLButtonElement;
-    quit.title = 'เลิกความตั้งใจนี้';
-    quit.onclick = async () => {
+    const quit = button('เลิก', async () => {
       const r = await engine.request({ type: 'abandonIntent' });
-      for (const l of r.lines) write(l);
+      for (const l of r.lines) write(l, 'choice');
       await refresh();
-    };
+    });
+    quit.title = 'เลิกความตั้งใจนี้';
     head.append(el('strong', `ตั้งใจ${i.title}`), quit);
     const bar = el('progress') as HTMLProgressElement;
     Object.assign(bar, { max: 100, value: i.progress });
@@ -101,7 +223,7 @@ function renderPlayer(v: CharacterView) {
     card.title = i.factors.map((f) => `${f.value > 0 ? '+' : ''}${f.value}% ${f.label}`).join('\n');
     box.append(card);
   }
-  lastYear = v.year;
+  playerNodeId = v.nodeId;
 }
 
 // ---------------- คนที่รู้จัก: ญาติ (พับไว้) + คนนอกตระกูล พร้อมปุ่มสิ่งที่ตั้งใจทำได้ ----------------
@@ -110,15 +232,11 @@ let kinOpen = false;
 function personRow(p: KnownPersonView): HTMLElement {
   const row = el('div', undefined, `person${p.focus ? ' focus' : ''}`);
   const who = el('div');
-  who.append(el('strong', p.name), document.createTextNode(` ${p.age} ปี · `), el('span', p.tie, 'tie'));
+  who.append(button(p.name, () => void inspect(p.nodeId), 'who'), document.createTextNode(` ${p.age} ปี · `), el('span', p.tie, 'tie'));
   row.append(who, el('div', p.detail, 'muted'));
   if (p.actions.length) {
     const acts = el('div', undefined, 'acts');
-    for (const a of p.actions) {
-      const b = el('button', a.label) as HTMLButtonElement;
-      b.onclick = () => void openPlan(p.id, a.kind);
-      acts.append(b);
-    }
+    for (const a of p.actions) acts.append(button(a.label, () => void openPlan(p.id, a.kind)));
     row.append(acts);
   }
   return row;
@@ -154,7 +272,7 @@ async function openPlan(targetId: string, kind: string) {
   try {
     plan = await engine.request({ type: 'planIntent', targetId, kind });
   } catch (e) {
-    status.textContent = (e as Error).message;
+    status.textContent = errorText(e);
     resume();
     return;
   }
@@ -176,21 +294,20 @@ async function openPlan(targetId: string, kind: string) {
       try {
         const r = await engine.request({ type: 'startIntent', targetId, kind, approach: a.id });
         closeModal();
-        write(`→ ตั้งใจ${plan.title}: ${a.label}`);
-        for (const l of r.lines) write(l);
+        write(`→ ตั้งใจ${plan.title}: ${a.label}`, 'choice');
+        for (const l of r.lines) write(l, 'choice');
         await refresh();
         resume();
       } catch (e) {
-        modal.append(el('p', (e as Error).message, 'error'));
+        modal.append(el('p', errorText(e), 'error'));
       }
     };
     return b;
   });
-  const back = el('button', 'ย้อนกลับ') as HTMLButtonElement;
-  back.onclick = () => {
+  const back = button('ย้อนกลับ', () => {
     closeModal();
     resume();
-  };
+  });
   const row = el('div', undefined, 'row');
   row.append(back);
   openModal(el('h2', plan.title), el('p', plan.text), ...(plan.replaces ? [el('p', plan.replaces, 'triggered')] : []), ...buttons, row);
@@ -213,7 +330,201 @@ async function refresh() {
   renderPlayer(await engine.request({ type: 'viewPlayer' }));
   renderKnown(await engine.request({ type: 'viewKnown' }));
   renderDynasty(await engine.request({ type: 'viewDynasty' }));
+  // ผังสร้างใหม่ทั้งก้อน — ทำตอนเวลาหยุด ไม่ทำทุก tick ระหว่างเดิน (ไม่งั้นเลื่อน/กดในผังไม่ได้)
+  if (tab === 'tree' && !clock.playing) await refreshTree();
+  if (inspecting) await inspect(inspecting, false);
 }
+
+// ---------------- ผังตระกูล: เริ่มจากต้นตระกูล ลูกซ้อนใต้พ่อแม่ คู่ครองคนนอกอยู่บรรทัดเดียวกับคู่ ----------------
+let playerNodeId: string | null = null;
+/** สายที่ผู้เล่นพับไว้ — คงไว้ตอนสร้างผังใหม่ */
+const collapsed = new Set<string>();
+
+async function refreshTree() {
+  try {
+    renderTree(await engine.request({ type: 'viewTree' }));
+  } catch (e) {
+    $('tree').replaceChildren(el('p', errorText(e), 'muted'));
+  }
+}
+
+function renderTree(v: TreeView) {
+  const byId = new Map(v.nodes.map((n) => [n.id, n]));
+  const placed = new Set<string>();
+  const branchesAt = new Map<string, TreeView['branches']>();
+  for (const b of v.branches) branchesAt.set(b.rootNodeId, [...(branchesAt.get(b.rootNodeId) ?? []), b]);
+
+  const personButton = (id: string) => {
+    const n = byId.get(id)!;
+    const cls = ['person', n.alive ? '' : 'dead', n.pruned ? 'pruned' : '', id === v.playerNodeId ? 'me' : '', id === inspecting ? 'selected' : '']
+      .filter(Boolean).join(' ');
+    const b = button(`${n.sex === 'm' ? '♂' : '♀'} ${n.name} (${n.birthYear}–${n.deathYear ?? ''})`, () => void inspect(id), cls);
+    b.dataset.node = id;
+    const frag = document.createDocumentFragment();
+    frag.append(b);
+    if (id === v.playerNodeId) frag.append(el('span', 'ผู้เล่น', 'badge'));
+    if (id === v.headNodeId) frag.append(el('span', 'ผู้นำตระกูล', 'badge'));
+    if (n.parentage) frag.append(el('span', ` ${n.parentage}`, 'muted'));
+    if (n.pruned) frag.append(el('span', ' เหลือแต่ชื่อ', 'muted'));
+    return frag;
+  };
+
+  const renderNode = (id: string): HTMLElement => {
+    const n = byId.get(id)!;
+    placed.add(id);
+    const line = el('span');
+    line.append(personButton(id));
+    for (const sid of n.spouseIds) {
+      const sp = byId.get(sid);
+      if (!sp) continue;
+      line.append(el('span', ' ⚭ ', 'muted'));
+      if (sp.marriedIn) {
+        placed.add(sid);
+        line.append(personButton(sid));
+      } else {
+        // ญาติแต่งกันเอง — คู่ครองมีบรรทัดของตัวเองอยู่ในสายพ่อแม่
+        line.append(el('span', sp.name, 'muted'));
+      }
+    }
+    const kids = [...new Set(n.childIds)].filter((k) => byId.has(k)).sort((a, b) => byId.get(a)!.birthYear - byId.get(b)!.birthYear);
+    const branches = branchesAt.get(id) ?? [];
+    const li = el('li');
+    if (!kids.length && !branches.length) {
+      li.append(line);
+      return li;
+    }
+    const ul = el('ul');
+    for (const k of kids) {
+      if (placed.has(k)) {
+        // ลูกของญาติที่แต่งกันเอง — แสดงเต็มครั้งเดียว อีกฝั่งอ้างถึง
+        ul.append(el('li', `${byId.get(k)!.name} (ดูในสายอีกฝั่ง)`, 'muted'));
+      } else ul.append(renderNode(k));
+    }
+    for (const b of branches) ul.append(el('li', `${b.label} — ${b.memberCount} คน ${b.generations} รุ่น (ยุบเหลือบรรทัดเดียว)`, 'muted'));
+    const details = el('details') as HTMLDetailsElement;
+    details.open = !collapsed.has(id);
+    details.ontoggle = () => (details.open ? collapsed.delete(id) : collapsed.add(id));
+    const summary = el('summary');
+    summary.append(line);
+    details.append(summary, ul);
+    li.append(details);
+    return li;
+  };
+
+  const box = $('tree');
+  const scroll = box.scrollTop;
+  const root = el('ul');
+  if (byId.has(v.founderNodeId)) root.append(renderNode(v.founderNodeId));
+  // ใครที่ไม่ถูกวางจากต้นตระกูล = ผังขาดตอน (เช่น prune ตัดพ่อแม่ทิ้ง) — โชว์ไว้ให้เห็น ไม่ซ่อน
+  const orphans = v.nodes.filter((n) => !placed.has(n.id) && !n.marriedIn);
+  for (const n of orphans) if (!placed.has(n.id)) root.append(renderNode(n.id));
+  const strays = v.nodes.filter((n) => !placed.has(n.id) && n.marriedIn);
+  if (strays.length) {
+    const li = el('li', 'คู่ครองที่ไม่ผูกกับใครในผัง: ', 'muted');
+    for (const n of strays) li.append(personButton(n.id));
+    root.append(li);
+  }
+  box.replaceChildren(root);
+  box.scrollTop = scroll;
+  $('treeInfo').textContent = `${v.dynastyName} · ${v.nodes.length} คนในผัง · ยังมีชีวิต ${v.nodes.filter((n) => n.alive).length}` +
+    (orphans.length ? ` · ขาดตอน ${orphans.length}` : '');
+}
+
+$('findMe').onclick = () => {
+  const b = playerNodeId ? $('tree').querySelector<HTMLElement>(`[data-node="${CSS.escape(playerNodeId)}"]`) : null;
+  b?.scrollIntoView({ block: 'center' });
+  b?.focus();
+};
+
+// ---------------- หน้าดูตัวละคร ----------------
+let inspecting: string | null = null;
+
+async function inspect(nodeId: string, reveal = true) {
+  inspecting = nodeId;
+  for (const b of document.querySelectorAll<HTMLElement>('#tree .person')) b.classList.toggle('selected', b.dataset.node === nodeId);
+  try {
+    renderInspect(await engine.request({ type: 'viewCharacter', nodeId }));
+    // จอแคบ: แผงอยู่ใต้บันทึก — เลื่อนไปให้เห็น (จอกว้างแผงอยู่ข้างๆ เห็นอยู่แล้ว)
+    if (reveal && matchMedia('(max-width: 800px)').matches) $('inspect').scrollIntoView({ block: 'start' });
+  } catch (e) {
+    // คนนี้ถูกยุบออกจากผังไปแล้ว (prune) — ปิดหน้าแล้วบอกเหตุ
+    closeInspect();
+    status.textContent = errorText(e);
+  }
+}
+
+function closeInspect() {
+  inspecting = null;
+  $('inspect').hidden = true;
+  for (const b of document.querySelectorAll<HTMLElement>('#tree .person.selected')) b.classList.remove('selected');
+}
+
+function renderInspect(v: InspectView) {
+  const box = $('inspect');
+  const top = el('div', undefined, 'top');
+  top.append(el('h2', `${v.sex === 'm' ? '♂' : '♀'} ${v.name}`), button('ปิด', closeInspect));
+  const dl = el('dl');
+  for (const [k, val] of v.facts) dl.append(el('dt', k), el('dd', val));
+  box.replaceChildren(top, el('div', `${v.lifespan} · ${v.status}`, 'muted'), dl);
+  for (const s of v.sections) {
+    const ul = el('ul');
+    for (const i of s.items) ul.append(el('li', i));
+    box.append(el('h3', s.title), ul);
+  }
+  box.hidden = false;
+}
+
+// ---------------- เซฟ/โหลด ----------------
+let slots: SaveSlotInfo[] = [];
+
+async function refreshSlots() {
+  try {
+    slots = (await engine.request({ type: 'listSaves' })).sort((a, b) => b.savedAt - a.savedAt);
+  } catch (e) {
+    $('slots').replaceChildren(el('p', `อ่านรายการเซฟไม่ได้: ${errorText(e)}`, 'muted'));
+    return;
+  }
+  const box = $('slots');
+  if (!slots.length) {
+    box.replaceChildren(el('p', 'ยังไม่มีเซฟ — ระหว่างเวลาเดินเกมจะบันทึกอัตโนมัติในช่อง "autosave"', 'muted'));
+    return;
+  }
+  box.replaceChildren(...slots.map((s) => {
+    const row = el('div', undefined, 'slot');
+    const info = el('div', undefined, 'info');
+    const when = new Date(s.savedAt).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+    info.append(
+      el('b', s.slot === 'autosave' ? 'autosave (บันทึกอัตโนมัติ)' : s.slot),
+      el('span', `พ.ศ. ${s.year} · ${s.playerName} · ${s.dynastyName} · ${when} · ${(s.bytes / 1024).toFixed(0)} KB`, 'muted'),
+    );
+    row.append(info, button('โหลด', () => void start(s.slot)), button('ลบ', () => void removeSlot(s.slot)));
+    return row;
+  }));
+}
+
+async function removeSlot(slot: string) {
+  if (!confirm(`ลบเซฟ "${slot}"? ลบแล้วกู้คืนไม่ได้`)) return;
+  try {
+    await engine.request({ type: 'deleteSave', slot });
+    status.textContent = `ลบเซฟ "${slot}" แล้ว`;
+  } catch (e) {
+    status.textContent = `ลบไม่สำเร็จ: ${errorText(e)}`;
+  }
+  await refreshSlots();
+}
+
+$('saveForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const slot = $<HTMLInputElement>('slotName').value.trim();
+  if (slots.some((s) => s.slot === slot) && !confirm(`ช่อง "${slot}" มีเซฟอยู่แล้ว บันทึกทับ?`)) return;
+  try {
+    const s = await engine.request({ type: 'save', slot });
+    status.textContent = `บันทึก "${s.slot}" แล้ว (${(s.bytes / 1024).toFixed(1)} KB)`;
+  } catch (err) {
+    status.textContent = `บันทึกไม่สำเร็จ: ${errorText(err)}`;
+  }
+  await refreshSlots();
+};
 
 // ---------------- modal: event ทุกอันและหน้าตั้งชื่อ ----------------
 const modal = $('event');
@@ -232,12 +543,10 @@ const closeModal = () => {
 function nameForm(label: string, value: string, submitText: string, onSubmit: (name: string) => void, onCancel: () => void): HTMLFormElement {
   const form = el('form') as HTMLFormElement;
   const input = el('input') as HTMLInputElement;
-  Object.assign(input, { value, required: true, maxLength: 20, pattern: '[\u0E00-\u0E7F]+', title: 'อักษรไทย ไม่มีช่องว่าง' });
+  Object.assign(input, { value, required: true, maxLength: 20, pattern: '[฀-๿]+', title: 'อักษรไทย ไม่มีช่องว่าง' });
   input.setAttribute('aria-label', label);
   const ok = el('button', submitText) as HTMLButtonElement;
-  const cancel = el('button', 'ย้อนกลับ') as HTMLButtonElement;
-  cancel.type = 'button';
-  cancel.onclick = onCancel;
+  const cancel = button('ย้อนกลับ', onCancel);
   const row = el('div', undefined, 'row');
   row.append(cancel, ok);
   form.append(el('label', label), input, row);
@@ -254,14 +563,14 @@ async function choose(ev: EventView, o: EventView['options'][number], name?: str
   try {
     const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id, name });
     closeModal();
-    write(`→ ${o.text}`);
-    for (const l of r.lines) write(l);
+    write(`→ ${o.text}`, 'choice');
+    for (const l of r.lines) write(l, 'choice');
     await refresh();
     await showPending(); // event ต่อเนื่อง (ถ้ามี) — ไม่มีแล้ว worker เดินเวลาต่อเอง
   } catch (e) {
     // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
     await showPending();
-    modal.append(el('p', (e as Error).message, 'error'));
+    modal.append(el('p', errorText(e), 'error'));
   }
 }
 
@@ -288,7 +597,7 @@ async function showPending() {
     const events = await engine.request({ type: 'viewPending' });
     if (events[0]) renderEvent(events[0]);
   } catch (e) {
-    status.textContent = (e as Error).message;
+    status.textContent = errorText(e);
   }
 }
 
@@ -296,13 +605,11 @@ engine.onPush((p) => {
   switch (p.type) {
     case 'ready':
       status.textContent = 'พร้อม';
+      void refreshSlots();
       break;
     case 'log':
-      if (p.year !== lastYear) {
-        write(`พ.ศ. ${p.year}`, 'year');
-        lastYear = p.year;
-      }
-      for (const l of p.lines) write(l);
+      startYear(p.year);
+      for (const l of p.lines) write(l.text, l.kind);
       break;
     case 'progress':
       $('date').textContent = p.solar;
@@ -312,14 +619,17 @@ engine.onPush((p) => {
     case 'clock':
       clock = p.clock;
       renderClock();
-      if (!clock.playing) void refresh().catch(() => {});
+      if (!clock.playing) {
+        void refresh().catch(() => {});
+        if (tab === 'saves') void refreshSlots(); // หยุดแล้วเพิ่ง autosave
+      }
       break;
     case 'pendingEvent':
       renderEvent(p.event);
       break;
     case 'handover':
-      write(`สิ้น${p.deceased} — ${p.heir} สืบทอดตระกูล`, 'year');
-      for (const l of p.lines) write(l, 'handover');
+      write(`สิ้น${p.deceased} — ${p.heir} สืบทอดตระกูล`, 'inherit', 'handover-head');
+      for (const l of p.lines) write(l, 'inherit', 'handover');
       break;
     case 'error':
       status.textContent = p.message;
@@ -327,16 +637,17 @@ engine.onPush((p) => {
   }
 });
 
-const MANUAL_SLOT = 'slot1';
-
-async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: string) {
+async function start(from: 'new' | string, heroName?: string) {
   try {
     const v = from === 'new'
       ? await engine.request({ type: 'newGame', seed: Math.floor(Math.random() * 2 ** 31), heroName })
       : await engine.request({ type: 'load', slot: from });
-    log.replaceChildren();
+    clearLog();
     closeModal();
-    write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ: ${v.name}`);
+    closeInspect();
+    collapsed.clear();
+    startYear(v.year);
+    write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ "${from}": ${v.name}`, 'system');
     renderPlayer(v);
     renderKnown(await engine.request({ type: 'viewKnown' }));
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
@@ -345,11 +656,12 @@ async function start(from: 'new' | 'autosave' | typeof MANUAL_SLOT, heroName?: s
     hasGame = true;
     clock = await engine.request({ type: 'pause' }); // เริ่ม/โหลดแล้วเวลาหยุดรอ ผู้เล่นกดเดินเอง
     renderClock();
+    showTab('log');
     await showPending();
     void requestPersistentStorage();
   } catch (e) {
-    status.textContent = (e as Error).message;
-    if (from === 'new' && !modal.querySelector('.error')) modal.append(el('p', (e as Error).message, 'error'));
+    status.textContent = errorText(e);
+    if (from === 'new' && !modal.querySelector('.error')) modal.append(el('p', errorText(e), 'error'));
   }
 }
 
@@ -361,8 +673,6 @@ $('new').onclick = async () => {
     nameForm('ชื่อตัวละคร', 'บุญมา', 'เริ่ม', (name) => void start('new', name), closeModal),
   );
 };
-$('load').onclick = () => start('autosave');
-$('loadSlot').onclick = () => start(MANUAL_SLOT);
 $('play').onclick = togglePlay;
 $('slower').onclick = () => changeSpeed(-1);
 $('faster').onclick = () => changeSpeed(1);
@@ -375,11 +685,4 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === '+' || e.key === '=') void changeSpeed(1);
   else if (e.key === '-' || e.key === '_') void changeSpeed(-1);
 });
-$('save').onclick = async () => {
-  try {
-    const s = await engine.request({ type: 'save', slot: MANUAL_SLOT });
-    status.textContent = `บันทึกแล้ว (${(s.bytes / 1024).toFixed(1)} KB)`;
-  } catch (e) {
-    status.textContent = `บันทึกไม่สำเร็จ: ${(e as Error).message}`;
-  }
-};
+showTab('saves');
