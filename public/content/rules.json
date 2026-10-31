@@ -59,7 +59,7 @@
   },
   "history": [
     { "tag": "history:fall_of_ayutthaya", "year": 2310, "kind": "war",
-      "shock": { "wealthLoss": [0.5, 0.9], "deathRisk": 0.15 } },
+      "shock": { "wealthLoss": [0.5, 0.9], "deathRisk": 0.15, "endsOffices": true } },
     { "tag": "history:thonburi_succession", "year": 2325, "kind": "succession",
       "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.02, "purgeFactions": ["faction:taksin_loyalist"] } },
     { "tag": "history:famine_after_fall", "year": 2311, "kind": "famine",

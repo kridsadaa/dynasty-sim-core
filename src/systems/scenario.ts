@@ -42,7 +42,8 @@ export function bootstrapScenario(ctx: Ctx, heroName = 'บุญมา'): Chara
   const father = spawnCharacter(ctx, {
     name: 'หมื่นอิน', sex: 'm', birthYear: 2257, estate: 'noble', wealth: 600, father: grandfather, mother: grandmother,
   });
-  const dyn = createDynasty(ctx, 'บ้านริมคลองตะเคียน', father, 'faction:taksin_loyalist');
+  // ยังไม่มีฝักฝ่าย — พระยาตากยังเป็นเด็กในปี 2288; ได้ฝ่ายเมื่อรับราชการในแผ่นดินธนบุรี (balance.career.factionByEra)
+  const dyn = createDynasty(ctx, 'บ้านริมคลองตะเคียน', father, null);
   father.social.title = 'หมื่นอินทรรักษา';
   const hh = createHousehold(ctx, father);
   const mother = spawnCharacter(ctx, {

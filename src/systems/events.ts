@@ -1,4 +1,4 @@
-import { ageOf, must, newId, type Ctx } from '../core/ctx';
+import { ageOf, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type {
   Character, Condition, Effect, EventInstance, EventOption, GameEventDef, Percept,
@@ -348,6 +348,11 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       case 'merit':
         ch.merit += e.delta;
+        break;
+      case 'ordain':
+        ch.ordainedYear = yearOf(ctx, ctx.state.meta.day);
+        ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, ctx.content.balance.ordination.literacy);
+        report.notes.push(`${ch.name}บวชครบพรรษาแล้วลาสิกขา — อ่านออกเขียนได้`);
         break;
       case 'intent': {
         // ความตั้งใจที่ role ทำอยู่ (คนละไม่เกินหนึ่ง) — ไม่มีแล้ว (เพิ่งจบ) ก็ไม่ต้องทำอะไร

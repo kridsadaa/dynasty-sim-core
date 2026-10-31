@@ -242,6 +242,8 @@ export interface Character {
    * name: ราชทินนามที่ได้ (ใช้ซ้ำตอนเลื่อนจากหมื่นเป็นขุนชื่อเดียวกัน)
    */
   office?: { postId: string; name?: string; sinceDay: Day; favor: Signed };
+  /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
+  ordainedYear?: number;
   /**
    * งานบ้านต่อหมวด (ดู systems/chores.ts): joined = เคยตกลงเข้าไปช่วยแล้ว (ครั้งต่อไปไม่ถามซ้ำ ข้ามไปหัดขั้นใหม่),
    * tasks = ขั้นที่หัดได้แล้ว, askAfter = ไม่ยอมช่วย — จะถูกเรียกอีกหลังวันนี้
@@ -571,6 +573,8 @@ export type Effect =
    */
   | { op: 'chore'; role: string; action: 'join' | 'learn' | 'decline'; teacher?: string; factor?: number }
   | { op: 'skill'; role: string; skill: string; delta: number }
+  /** บวชเรียนหนึ่งพรรษาแล้วสึก — จด Character.ordainedYear */
+  | { op: 'ordain'; role: string }
   | { op: 'prestige'; role: string; delta: number };
 
 /**
@@ -787,6 +791,8 @@ export interface HistoricalEvent {
     everyone?: boolean;
     /** ฝักฝ่ายที่โดนริบราชบาดาล */
     purgeFactions?: string[];
+    /** ราชสำนักล่ม — ทุกคนที่มีตำแหน่งราชการหมดตำแหน่ง (เสียกรุง 2310) */
+    endsOffices?: boolean;
   };
 }
 
@@ -958,6 +964,17 @@ export interface Balance {
     peerAge: [number, number];
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
+  /** บวชเรียน (lore: ritual.ordination) — ตัวเลขเป็นของเกม */
+  ordination: {
+    /** ผู้ชายที่ยังไม่แต่งงานบวชในช่วงอายุนี้ (ผู้เล่นถูกถามทุกปีในช่วงนี้จนบวชหรือพ้นช่วง) — lore ว่าราว 21 แต่ต้องบวชก่อนแต่ง และผู้ชายแต่งตั้งแต่ 18 */
+    age: [number, number];
+    /** ต่อปี: โอกาสที่ผู้ใหญ่จะเอ่ยเรื่องบวชกับผู้เล่น */
+    playerChance: Unit;
+    /** ญาติผู้ชายในตระกูล (ไม่ใช่ผู้เล่น) บวชเมื่ออายุ age[0] + 1 */
+    npcChance: Unit;
+    /** บวชแล้วอ่านออกเขียนได้อย่างน้อยเท่านี้ (literacy) */
+    literacy: number;
+  };
   career: {
     /** ลูกขุนนางชายถวายตัวเป็นมหาดเล็กได้ช่วงอายุนี้ */
     entryAge: [number, number];
@@ -977,6 +994,11 @@ export interface Balance {
     uniqueVacancyChance: Unit;
     /** บารมีตระกูลที่ได้ต่อขั้นเมื่อเลื่อน */
     promotePrestige: number;
+    /**
+     * ตระกูลได้ฝักฝ่ายเมื่อผู้เล่นรับราชการในช่วงปีนี้ (รวมปีปลาย) — เช่น รับราชการกรุงธนบุรี → ฝ่ายพระเจ้าตาก
+     * ฝักฝ่ายมีผลตอน shock ที่ purgeFactions ระบุ แล้วหมดไปหลังจากนั้น
+     */
+    factionByEra: Array<{ from: number; to: number; faction: string }>;
   };
   /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
   marriage: {

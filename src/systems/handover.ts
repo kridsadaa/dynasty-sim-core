@@ -6,6 +6,7 @@ import { livingSpouse, pickCaregiverChild } from './factory';
 import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from './legend';
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
+import { applyCareer } from './career';
 
 // ============================================================================
 // Generational Handover — เรียกเมื่อตัวละครผู้เล่นตาย
@@ -601,7 +602,13 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
           out.push(`${m.name} ถูกริบราชบาดาล ถอดจาก${m.social.title}`);
           m.social.title = null;
         }
+        if (m.office && (purged || ev.shock.endsOffices)) {
+          if (!purged) out.push(`${m.name}หมดตำแหน่ง${m.social.title ? ` ${m.social.title}` : ''} — ราชสำนักไม่มีอยู่อีกแล้ว`);
+          applyCareer(ctx, m, 'dismiss');
+        }
       }
+      // ฝักฝ่ายที่ถูกกวาดล้างแล้ว หมดความหมายในแผ่นดินใหม่
+      if (purged) dyn.faction = null;
       // ทรัพย์ที่ไม่ได้ซ่อน (เรือน ที่ดินในกรุง ตำรา) เสียหาย — ทองที่ฝังดินรอด
       for (const it of Object.values(ctx.state.items)) {
         const owner = it.ownerCharacterId ? ctx.state.characters[it.ownerCharacterId] : undefined;

@@ -2095,5 +2095,22 @@
       { "id": "wait", "textKey": "event.hard_to_raise.wait",
         "effects": [ { "op": "stress", "role": "actor", "delta": 0.04 } ] }
     ]
+  },
+  "ritual.ordination": {
+    "id": "ritual.ordination", "textKey": "event.ordination", "contextTags": [],
+    "roles": { "actor": {}, "elder": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "grand", "textKey": "event.ordination.grand", "conditions": [ { "type": "hasRole", "role": "elder" } ],
+        "effects": [ { "op": "ordain", "role": "actor" }, { "op": "wealth", "role": "elder", "delta": -40 },
+          { "op": "merit", "role": "actor", "delta": 3 }, { "op": "merit", "role": "elder", "delta": 3 },
+          { "op": "prestige", "role": "actor", "delta": 2 }, { "op": "bond", "role": "actor", "toward": "elder", "affection": 0.06 } ] },
+      { "id": "quiet", "textKey": "event.ordination.quiet",
+        "effects": [ { "op": "ordain", "role": "actor" }, { "op": "wealth", "role": "actor", "delta": -8 },
+          { "op": "merit", "role": "actor", "delta": 2 }, { "op": "merit", "role": "elder", "delta": 2 },
+          { "op": "bond", "role": "actor", "toward": "elder", "affection": 0.03 } ] },
+      { "id": "later", "textKey": "event.ordination.later",
+        "effects": [ { "op": "bond", "role": "actor", "toward": "elder", "affection": -0.04 }, { "op": "stress", "role": "actor", "delta": 0.03 } ],
+        "resist": [ { "source": "bond", "role": "elder", "axis": "awe", "weight": 1.0, "reasonKey": "awe" } ] }
+    ]
   }
 }

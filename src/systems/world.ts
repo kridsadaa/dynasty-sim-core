@@ -5,7 +5,7 @@ import { tickWounds, type WoundOutcome } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { meetPeople } from './acquaintance';
 import {
-  createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
+  createHousehold, inLawNames, joinHousehold, livingChildren, livingParents, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
 import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
@@ -91,6 +91,9 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       return !!naming;
     })) out.push({ type: 'log', kind: 'family', line });
     for (const line of meetPeople(ctx)) out.push({ type: 'log', kind: 'people', line });
+    // บวชก่อนแต่ง (การบวชยุติการสมรส lore: kinship.marriage_law_three_seals) — ถามก่อนผู้ใหญ่ทาบทามคู่
+    const ordination = ordinationEvent(ctx);
+    if (ordination) out.push({ type: 'event', prepared: ordination });
     const match = arrangedMatchEvent(ctx);
     if (match) out.push({ type: 'event', prepared: match });
     // ราชการ: ถวายตัว รายได้ตามตำแหน่ง เลื่อนยศ/ถูกลงโทษ
@@ -138,6 +141,22 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   }
   if (player && !isAlive(player)) out.push({ type: 'playerDied' });
   return out;
+}
+
+/**
+ * ผู้เล่นชายที่ยังไม่แต่งงานและยังไม่บวช ในช่วงอายุบวช → ผู้ใหญ่เอ่ยเรื่องบวช (lore: ritual.ordination)
+ * ปีสุดท้ายของช่วงถามแน่ — ปฏิเสธได้ แต่พ่อแม่ผิดหวัง
+ */
+function ordinationEvent(ctx: Ctx): PreparedEvent | null {
+  const O = ctx.content.balance.ordination;
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (!isAlive(player) || player.sex !== 'm' || player.ordainedYear !== undefined) return null;
+  if (livingSpouse(ctx, player) || player.betrothal || player.eloped) return null;
+  const age = ageOf(ctx, player);
+  if (age < O.age[0] || age > O.age[1] || (age < O.age[1] && !ctx.rng.chance(O.playerChance))) return null;
+  const parents = livingParents(ctx, player);
+  const elder = parents.find((p) => p.householdId === player.householdId) ?? parents[0];
+  return prepareEvent(ctx, 'ritual.ordination', { actor: player.id, ...(elder ? { elder: elder.id } : {}) });
 }
 
 /**
@@ -245,6 +264,16 @@ export function lifeMilestones(
     if (ch.sex === 'm' && age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
       ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, 40);
       out.push(`${ch.name} ไปเป็นเณรเรียนหนังสือที่วัด`);
+    }
+    // บวชเรียนหนึ่งพรรษา (lore: ritual.ordination) — พ่อแม่ได้บุญ; ผู้เล่นตัดสินใจเองผ่าน ordinationEvent
+    const O = ctx.content.balance.ordination;
+    if (ch.sex === 'm' && !spouse && ch.ordainedYear === undefined && age === O.age[0] + 1
+      && ch.id !== ctx.state.meta.playerCharacterId && ctx.rng.chance(O.npcChance)) {
+      ch.ordainedYear = year;
+      ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, O.literacy);
+      ch.merit += 2;
+      for (const p of livingParents(ctx, ch)) p.merit += 2;
+      out.push(`${ch.name} บวชเรียนหนึ่งพรรษา`);
     }
 
     const neverMarried = (ctx.state.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0;

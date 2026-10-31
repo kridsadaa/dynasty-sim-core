@@ -1,5 +1,5 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
-import { ageOf, isAlive, must, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, OfficePostDef } from '../core/types';
 import { livingParents } from './factory';
 
@@ -110,6 +110,14 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   const player = S.characters[S.meta.playerCharacterId];
   // ตำแหน่งราชการเป็นของตัวบุคคล ไม่ตกทอด — คนที่ไม่ใช่ผู้เล่นแล้ว (รุ่นก่อน) ไม่ต้องเดินระบบ
   if (!isAlive(player)) return { lines, events };
+  // รับราชการในแผ่นดินใด → ตระกูลถูกนับเป็นฝ่ายนั้น (lore: event.thonburi_succession_2325)
+  const year = yearOf(ctx, S.meta.day);
+  const era = player.office && C.factionByEra.find((e) => year >= e.from && year <= e.to);
+  const dyn = player.dynastyId ? S.dynasties[player.dynastyId] : undefined;
+  if (era && dyn && dyn.faction !== era.faction) {
+    dyn.faction = era.faction;
+    lines.push(`ตระกูล${dyn.name}นับเป็น${ctx.tags.label(era.faction as never)} เพราะ${player.name}รับราชการในแผ่นดินนี้`);
+  }
   const parents = livingParents(ctx, player);
   const elder = parents.find((p) => p.householdId === player.householdId) ?? parents[0];
   const bind = { actor: player.id, ...(elder ? { elder: elder.id } : {}) };

@@ -93,7 +93,7 @@ function story(seed: number, verbose: boolean): boolean {
 
   setYear(2284);
   const father = spawnCharacter(ctx, { name: 'หมื่นอิน', sex: 'm', birthYear: 2250, estate: 'noble', wealth: 600 });
-  const dyn = createDynasty(ctx, 'บ้านริมคลองตะเคียน', father, 'faction:taksin_loyalist');
+  const dyn = createDynasty(ctx, 'บ้านริมคลองตะเคียน', father, null);
   father.social.title = 'หมื่นอินทรรักษา';
   const hh = createHousehold(ctx, father);
   const mother = spawnCharacter(ctx, {
