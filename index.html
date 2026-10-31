@@ -81,8 +81,10 @@
       #event .opt.strained .note { color: var(--accent); }
       ul { margin: 0; padding-left: 18px; font-size: 14px; }
       #status { color: var(--muted); font-size: 14px; }
-      .clock { display: inline-flex; flex-wrap: wrap; max-width: 100%; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-      .dates { display: inline-flex; flex-direction: column; line-height: 1.2; min-width: min(13em, 100%); }
+      .clock { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+      .dates { display: inline-flex; flex-direction: column; line-height: 1.2; min-width: 13em; }
+      /* จอแคบ: วันที่ยาวกว่าจอ → ให้นาฬิกาตัดบรรทัด ไม่งั้นหน้ากว้างเกินจอ และหน้าต่าง event โดนตัด */
+      @media (max-width: 480px) { .clock { flex-wrap: wrap; max-width: 100%; } .dates { min-width: 0; } }
       #date { font-variant-numeric: tabular-nums; }
       #lunar { font-size: 0.75em; color: var(--muted); }
       #play { min-width: 5.5em; }
