@@ -279,7 +279,10 @@ export function performHandover(
   // ผู้เล่นตายขณะที่ผู้นำตระกูล (เช่น บิดา) ยังอยู่ → ตำแหน่งผู้นำไม่เปลี่ยนมือ
   const headNode = ctx.state.familyNodes[dyn.headNodeId];
   const headAlive = isAlive(headNode?.characterId ? ctx.state.characters[headNode.characterId] : undefined);
-  if (dyn.headNodeId === dead.familyNodeId || !headAlive) dyn.headNodeId = heirNode.id;
+  if ((dyn.headNodeId === dead.familyNodeId || !headAlive) && dyn.headNodeId !== heirNode.id) {
+    dyn.headNodeId = heirNode.id;
+    (dyn.headHistory ??= []).push({ nodeId: heirNode.id, name: heir.name, fromYear: yearOf(ctx, ctx.state.meta.day) });
+  }
   log.push(...carryRelations(ctx, dead, heir));
   if (dead.social.title) log.push(`บรรดาศักดิ์ "${dead.social.title}" ไม่ตกทอด — ${heir.name} ต้องถวายตัวรับราชการเอง`);
 
@@ -319,6 +322,8 @@ export function performHandover(
 
   if (opts.asPlayer !== false) ctx.state.meta.playerCharacterId = heir.id;
   const prune = pruneState(ctx);
+  const drifted = driftLine(prune);
+  if (drifted) log.push(drifted);
   return {
     deceased: dead.name,
     heir: heir.name,
@@ -326,6 +331,14 @@ export function performHandover(
     log,
     prune,
   };
+}
+
+/** บอกผู้เล่นว่าญาติห่างๆ แยกไปอยู่ที่อื่น (prune: driftKinDistance) — ไม่บอก ผู้เล่นจะเห็นญาติหายไปจากผังเฉยๆ */
+export function driftLine(r: PruneReport): string | null {
+  const n = r.driftedNames.length;
+  if (!n) return null;
+  const names = r.driftedNames.slice(0, 3).join(', ') + (n > 3 ? ` และอีก ${n - 3} คน` : '');
+  return `ขาดการติดต่อกับญาติห่างๆ ${n} คน (${names}) — แยกไปตั้งบ้านเรือนที่อื่น`;
 }
 
 /**

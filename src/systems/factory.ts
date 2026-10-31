@@ -275,6 +275,7 @@ export function createDynasty(ctx: Ctx, name: string, founder: Character, factio
   const dyn: Dynasty = {
     id: newId(ctx, 'dyn'), name, founderNodeId: founder.familyNodeId, headNodeId: founder.familyNodeId,
     prestige: 10, karma: 0, faction, taboos: [], legendIds: [], branchSummaries: [],
+    headHistory: [{ nodeId: founder.familyNodeId, name: founder.name, fromYear: yearOf(ctx, ctx.state.meta.day) }],
   };
   ctx.state.dynasties[dyn.id] = dyn;
   founder.dynastyId = dyn.id;

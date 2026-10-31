@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
-import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, type Ctx } from './core/ctx';
+import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
@@ -28,7 +28,6 @@ const content: ContentDB = buildContentDB({
   balance: load('balance.json'),
 });
 const SEEDS = Number(process.argv[2] ?? 5);
-const YEARS = 110;
 let failed = 0;
 
 function check(label: string, problems: string[]) {
@@ -154,7 +153,9 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   const tracked = new Map<string, Character>();
   trackDemography(ctx, tracked);
   let over = false;
-  for (let d = 0; d < yearsToDays(YEARS) && !over; d++) {
+  // เล่นจนถึงปีจบของเรื่อง (meta.endYear) แบบเดียวกับ worker — ถึงวันนั้นยังเดินรอบประจำปีครบ
+  const endDay = yearStart(ctx, S.meta.endYear!);
+  while (S.meta.day < endDay && !over) {
     // กลางปี: ผู้เล่นที่ว่างอยู่ตั้งใจทำอะไรสักอย่างกับคนที่รู้จัก (สุ่มคน/สิ่งที่ตั้งใจ/วิธี) — ทดสอบระบบ intent
     const player = S.characters[S.meta.playerCharacterId];
     if (dayOfYear(ctx, S.meta.day) === 180 && isAlive(player) && !activeIntent(ctx, player.id) && ctx.rng.chance(0.6)) {
@@ -190,6 +191,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     + ` · ตัวละคร ${Object.keys(S.characters).length} · node ${Object.keys(S.familyNodes).length}`
     + ` · เซฟ ${(JSON.stringify(S).length / 1024).toFixed(0)} KB`);
   invariants(ctx, over);
+  if (!over) check('ไม่ถึงปีจบของเรื่อง', yearOf(ctx, S.meta.day) === S.meta.endYear ? [] : [`หยุดที่ ${yearOf(ctx, S.meta.day)}`]);
   if (failed === before) console.log(over ? '  ✓ invariant ครบ (ข้ามข้อมรดกเพราะเกมจบ)' : '  ✓ invariant ครบ');
 }
 demographyReport();

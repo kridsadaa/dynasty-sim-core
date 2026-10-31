@@ -24,6 +24,7 @@ export type Command =
   | { type: 'viewPending' }
   | { type: 'viewTree' }
   | { type: 'viewCharacter'; nodeId: string }
+  | { type: 'viewEnding' }
   | { type: 'viewKnown' }
   | { type: 'planIntent'; targetId: string; kind: string }
   | { type: 'startIntent'; targetId: string; kind: string; approach: string }
@@ -44,18 +45,32 @@ export interface ReplyData {
   viewPending: EventView[];
   viewTree: TreeView;
   viewCharacter: InspectView;
+  viewEnding: EndingView;
   viewKnown: KnownPersonView[];
   planIntent: IntentPlanView;
   startIntent: { lines: string[] };
   abandonIntent: { lines: string[] };
 }
 
-/** playing = เวลากำลังเดิน; ended = ตระกูลสิ้นสาย เล่นต่อไม่ได้ */
+/** playing = เวลากำลังเดิน; ended = เกมจบ เล่นต่อไม่ได้ (endReason บอกว่าจบเพราะอะไร) */
 export interface ClockState {
   playing: boolean;
   speed: number;
   maxSpeed: number;
   ended: boolean;
+  /** era = ถึงปีจบของเรื่อง · extinct = ตระกูลสิ้นสาย */
+  endReason?: EndReason;
+}
+
+export type EndReason = 'era' | 'extinct';
+
+/** หน้าสรุปตอนจบ */
+export interface EndingView {
+  reason: EndReason;
+  title: string;
+  text: string;
+  facts: Array<[string, string]>;
+  sections: Array<{ title: string; items: string[] }>;
 }
 
 export interface Request<T extends Command['type'] = Command['type']> {

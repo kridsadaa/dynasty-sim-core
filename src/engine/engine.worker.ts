@@ -1,17 +1,20 @@
 import { buildContentDB } from '../content';
 import { formatLunar, formatSolar } from '../core/calendar';
-import { makeCtx, commitRng, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
-import type { ContentDB } from '../core/types';
+import { makeCtx, commitRng, isAlive, lunarOf, must, solarOf, yearOf, yearStart, type Ctx } from '../core/ctx';
+import type { CharacterId, ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
-import { bootstrapScenario } from '../systems/scenario';
+import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
 import { deleteSlot, listSlots, loadState, saveState } from './persistence';
-import type { ClockState, Command, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
+import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
-import { dynastyView, eventView, inspectView, intentPlanView, knownView, playerView, treeView, type TextTable } from './views';
+import {
+  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, playerView, treeView,
+  type TextTable,
+} from './views';
 
 // ============================================================================
 // Simulation Worker — เจ้าของ GameState แต่เพียงผู้เดียว
@@ -91,20 +94,34 @@ const AUTOSAVE_EVERY_MS = 30_000;
 
 let speed = 2;
 let playing = false;
-let ended = false; // ตระกูลสิ้นสาย
+let endReason: EndReason | null = null; // เกมจบแล้ว — ถึงปีจบของเรื่อง หรือตระกูลสิ้นสาย
 let resumeAfterEvent = false;
 let clockLoop: Promise<void> | null = null;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 function clockState(): ClockState {
-  return { playing, speed, maxSpeed: MAX_SPEED, ended };
+  return { playing, speed, maxSpeed: MAX_SPEED, ended: endReason !== null, ...(endReason ? { endReason } : {}) };
 }
 const pushClock = () => push({ type: 'clock', clock: clockState() });
 
-/** เดินทีละวัน n วัน — หยุดก่อนครบถ้ามี event หรือสิ้นสาย */
-function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'gameOver' {
+/** วันที่เรื่องจบ (1 ม.ค. ของปีจบ) — วันนั้นยังเดินรอบประจำปีครบ แล้วจึงหยุด */
+const endDayOf = (c: Ctx) => yearStart(c, c.state.meta.endYear ?? END_YEAR);
+
+/** ผู้เล่นตายแล้วแต่ยังไม่ได้เลือกผู้สืบ (เซฟไว้ระหว่างเลือกก็โหลดกลับมาที่จุดนี้) */
+const awaitingHeir = (c: Ctx) => !isAlive(c.state.characters[c.state.meta.playerCharacterId]);
+
+/** เกมจบหรือยัง — คิดจาก state ล้วน ใช้ตอนโหลดเซฟ */
+function endOf(c: Ctx): EndReason | null {
+  const player = c.state.characters[c.state.meta.playerCharacterId];
+  if (!player || (!isAlive(player) && !heirCandidates(c, player).length)) return 'extinct';
+  return c.state.meta.day >= endDayOf(c) ? 'era' : null;
+}
+
+/** เดินทีละวัน n วัน — หยุดก่อนครบถ้ามี event, ต้องเลือกผู้สืบ, สิ้นสาย หรือถึงปีจบ */
+function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir' | 'gameOver' | 'end' {
   for (let i = 0; i < days; i++) {
-    let stop: 'done' | 'event' | 'gameOver' = 'done';
+    if (c.state.meta.day >= endDayOf(c)) return 'end';
+    let stop: 'done' | 'event' | 'heir' = 'done';
     for (const sig of advanceDay(c)) {
       if (sig.type === 'log') lines.push({ kind: sig.kind, text: sig.line });
       else if (sig.type === 'event') {
@@ -112,11 +129,17 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'gameO
         stop = 'event';
       } else {
         const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
-        if (!heirCandidates(c, dead).length) {
+        const cands = heirCandidates(c, dead);
+        if (!cands.length) {
           lines.push({ kind: 'death', text: `${dead.name} สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
           return 'gameOver';
         }
         if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
+        // มีผู้สืบได้หลายคน → หยุดให้ผู้เล่นเลือก (heirChoiceView); คนเดียวก็ไม่ต้องถาม
+        if (cands.length > 1) {
+          stop = 'heir';
+          continue;
+        }
         const r = performHandover(c, dead.id);
         push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
       }
@@ -124,6 +147,12 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'gameO
     if (stop !== 'done') return stop;
   }
   return 'done';
+}
+
+/** ผู้สืบที่ต้องเลือก (ถ้ามี) มาก่อน event อื่น */
+function pendingViews(c: Ctx) {
+  const heir = heirChoiceView(c);
+  return [...(heir ? [heir] : []), ...[...pending.values()].map((p) => eventView(c, p, text))];
 }
 
 function pushProgress(c: Ctx) {
@@ -144,13 +173,13 @@ async function runClock(c: Ctx): Promise<void> {
       const stop = days ? step(c, days, lines) : 'done';
       if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
       pushProgress(c);
-      if (stop === 'event') {
+      if (stop === 'event' || stop === 'heir') {
         playing = false;
         resumeAfterEvent = true;
         stoppedForEvent = true;
-      } else if (stop === 'gameOver') {
+      } else if (stop === 'gameOver' || stop === 'end') {
         playing = false;
-        ended = true;
+        endReason = stop === 'end' ? 'era' : 'extinct';
       }
       if (playing && Date.now() - lastSave > AUTOSAVE_EVERY_MS) {
         await save('autosave');
@@ -162,18 +191,20 @@ async function runClock(c: Ctx): Promise<void> {
     pushClock();
     try {
       // ตระกูลสิ้นสาย → ไม่เขียนทับ autosave ด้วย state ที่เล่นต่อไม่ได้ (autosave ยังเป็นจุดก่อนตาย)
-      if (!ended && ctx === c) await save('autosave');
+      // ถึงปีจบ → เซฟได้ (โหลดแล้วเปิดหน้าสรุปและผังตระกูลดูได้)
+      if (endReason !== 'extinct' && ctx === c) await save('autosave');
     } finally {
       // ส่ง event หลังเซฟเสร็จ — saveState รอเปิด IndexedDB ก่อนเขียน ถ้า UI เปิดปุ่มตัวเลือกก่อน choose แทรกได้
       // เซฟจะได้ state หลังเลือกแต่ pending ก่อนเลือก → โหลดแล้วเลือก event เดิมซ้ำ
-      if (stoppedForEvent && ctx === c) for (const p of pending.values()) push({ type: 'pendingEvent', event: eventView(c, p, text) });
+      if (stoppedForEvent && ctx === c) for (const event of pendingViews(c)) push({ type: 'pendingEvent', event });
     }
   }
 }
 
 function play(): ClockState {
   const c = need();
-  if (ended) throw new Error('ตระกูลสิ้นสายแล้ว');
+  if (endReason) throw new Error(endReason === 'era' ? 'เรื่องจบแล้ว' : 'ตระกูลสิ้นสายแล้ว');
+  if (awaitingHeir(c)) throw new Error('ต้องเลือกผู้สืบตระกูลก่อน');
   if (pending.size) throw new Error('มีเหตุการณ์รอการตัดสินใจ');
   resumeAfterEvent = false;
   if (!playing) {
@@ -197,7 +228,7 @@ async function handle(cmd: Command): Promise<unknown> {
     case 'newGame': {
       await acquireSessionLock();
       await stopClock();
-      ended = false;
+      endReason = null;
       const heroName = cmd.heroName === undefined ? undefined : cleanName(cmd.heroName);
       if (heroName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
       ctx = makeCtx(emptyState(cmd.seed), must(content, 'content'));
@@ -209,10 +240,10 @@ async function handle(cmd: Command): Promise<unknown> {
     case 'load': {
       await acquireSessionLock();
       await stopClock();
-      ended = false;
       const saved = must(await loadState(cmd.slot), `ไม่พบเซฟ ${cmd.slot}`);
       const c = makeCtx(saved.state, must(content, 'content'));
       ctx = c;
+      endReason = endOf(c);
       pending.clear();
       for (const s of saved.pending) {
         const p = restoreEvent(c, s);
@@ -221,7 +252,12 @@ async function handle(cmd: Command): Promise<unknown> {
       return playerView(c, text);
     }
     case 'viewPending':
-      return [...pending.values()].map((p) => eventView(need(), p, text)) satisfies ReplyData['viewPending'];
+      return (endReason === 'extinct' ? [] : pendingViews(need())) satisfies ReplyData['viewPending'];
+    case 'viewEnding': {
+      const c = need();
+      const dyn = c.state.dynasties[c.state.meta.playerDynastyId];
+      return endingView(c, must(endReason, 'เกมยังไม่จบ'), dyn?.headHistory?.[0]?.fromYear ?? START_YEAR) satisfies ReplyData['viewEnding'];
+    }
     case 'save':
       return save(cmd.slot);
     case 'listSaves':
@@ -240,6 +276,15 @@ async function handle(cmd: Command): Promise<unknown> {
       return clockState();
     case 'choose': {
       const c = need();
+      if (cmd.instanceId === HEIR_CHOICE_ID) {
+        const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+        if (!awaitingHeir(c)) throw new Error('ไม่ได้รอเลือกผู้สืบตระกูล');
+        if (!heirCandidates(c, dead).some((h) => h.ch.id === cmd.optionId)) throw new Error('คนนี้สืบตระกูลไม่ได้');
+        const r = performHandover(c, dead.id, cmd.optionId as CharacterId);
+        push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
+        if (!pending.size && resumeAfterEvent) play();
+        return { lines: [] } satisfies ReplyData['choose'];
+      }
       const p = must(pending.get(cmd.instanceId), 'event นี้ไม่ได้รออยู่');
       const rep = chooseOption(c, p, cmd.optionId, { name: cmd.name });
       pending.delete(cmd.instanceId);
@@ -254,7 +299,7 @@ async function handle(cmd: Command): Promise<unknown> {
       const next = prepareFollowUp(c, p, rep);
       if (next) pending.set(next.instance.id, next);
       // หยุดเพราะ event → ตัดสินใจครบแล้วเดินต่อเอง
-      if (!pending.size && resumeAfterEvent) play();
+      if (!pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
       return { lines } satisfies ReplyData['choose'];
     }
     case 'viewPlayer':

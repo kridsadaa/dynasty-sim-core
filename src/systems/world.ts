@@ -8,7 +8,7 @@ import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
-import { applyHistoricalShocks, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
+import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, officeRank } from './career';
 import { pruneState } from './prune';
 import { tickChores, tickOutings } from './chores';
@@ -124,7 +124,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     }
     // ยุบคนตายทุกปี ไม่รอ handover ครั้งหน้า (ซึ่งอาจห่างหลายสิบปี) — หลังแบ่งมรดกและสร้าง event งานศพแล้ว
     // คนที่ event ยังรอคำตอบอ้างถึง (งานศพ) และผู้เล่นที่เพิ่งตาย (worker ทำ handover ต่อ) ยุบรอบหน้า
-    pruneState(ctx);
+    const drifted = driftLine(pruneState(ctx));
+    if (drifted) out.push({ type: 'log', kind: 'family', line: drifted });
   }
 
   // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่

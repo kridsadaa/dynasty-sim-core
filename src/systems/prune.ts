@@ -19,6 +19,8 @@ import { snapshotToNode } from './handover';
 export interface PruneReport {
   charactersCollapsed: number;
   charactersDrifted: number;
+  /** ชื่อญาติในตระกูลที่แยกไป (ไม่นับคู่ครองคนนอก) — สำหรับ log */
+  driftedNames: string[];
   nodesMerged: number;
   memoriesDropped: number;
   eventsDropped: number;
@@ -27,7 +29,7 @@ export interface PruneReport {
 export function pruneState(ctx: Ctx): PruneReport {
   const B = ctx.content.balance.prune;
   const S = ctx.state;
-  const report: PruneReport = { charactersCollapsed: 0, charactersDrifted: 0, nodesMerged: 0, memoriesDropped: 0, eventsDropped: 0 };
+  const report: PruneReport = { charactersCollapsed: 0, charactersDrifted: 0, driftedNames: [], nodesMerged: 0, memoriesDropped: 0, eventsDropped: 0 };
   const player = must(S.characters[S.meta.playerCharacterId], 'player');
   const dist = kinDistances(ctx, player.familyNodeId);
   const ancestors = ancestorSet(ctx, player.familyNodeId);
@@ -196,6 +198,7 @@ function driftAway(
     const node = S.familyNodes[c.familyNodeId];
     if (node) node.driftedYear = year;
     c.householdId = null;
+    if (c.dynastyId) report.driftedNames.push(c.name);
   }
   collapseCharacters(ctx, leaving, report);
   report.charactersCollapsed -= leaving.length;

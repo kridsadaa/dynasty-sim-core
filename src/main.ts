@@ -1,6 +1,7 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
 import type {
-  CharacterView, ClockState, DynastyView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo, TreeView,
+  CharacterView, ClockState, DynastyView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
+  TreeView,
 } from './engine/protocol';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
@@ -157,7 +158,8 @@ function renderClock() {
   $<HTMLButtonElement>('saveBtn').disabled = !hasGame;
   $('speed').textContent = '●'.repeat(clock.speed) + '○'.repeat(clock.maxSpeed - clock.speed);
   $('speed').title = `ความเร็ว ${clock.speed}/${clock.maxSpeed}`;
-  status.textContent = clock.ended ? 'ตระกูลสิ้นสาย' : modalOpen() ? 'รอการตัดสินใจ' : clock.playing ? '' : 'หยุดเวลา';
+  status.textContent = clock.ended ? (clock.endReason === 'era' ? 'จบเรื่อง' : 'ตระกูลสิ้นสาย')
+    : modalOpen() ? 'รอการตัดสินใจ' : clock.playing ? '' : 'หยุดเวลา';
 }
 
 async function clockCmd(cmd: { type: 'play' } | { type: 'pause' } | { type: 'setSpeed'; speed: number }) {
@@ -591,6 +593,37 @@ function renderEvent(ev: EventView) {
   openModal(...head, ...buttons); // worker หยุดเวลาไว้แล้ว — ต้องตัดสินใจก่อนจึงเดินต่อ
 }
 
+// ---------------- หน้าสรุปตอนจบ: ถึงปีจบของเรื่อง หรือตระกูลสิ้นสาย ----------------
+let endingShown = false;
+
+async function showEnding() {
+  endingShown = true;
+  let v: EndingView;
+  try {
+    v = await engine.request({ type: 'viewEnding' });
+  } catch (e) {
+    status.textContent = errorText(e);
+    return;
+  }
+  const dl = el('dl');
+  for (const [k, val] of v.facts) dl.append(el('dt', k), el('dd', val));
+  const parts: Node[] = [el('h2', v.title), el('p', v.text), dl];
+  for (const s of v.sections) {
+    const ul = el('ul');
+    for (const i of s.items) ul.append(el('li', i));
+    parts.push(el('h3', s.title), ul);
+  }
+  const row = el('div', undefined, 'row');
+  row.append(
+    button('ดูผังตระกูล', () => {
+      closeModal();
+      showTab('tree');
+    }),
+    button('เริ่มใหม่', () => void $('new').click()),
+  );
+  openModal(...parts, row);
+}
+
 /** แสดง event ที่ worker ยังรออยู่ (หลังโหลดเซฟ หรือหลังเลือกตัวเลือกไม่สำเร็จ) */
 async function showPending() {
   try {
@@ -619,6 +652,7 @@ engine.onPush((p) => {
     case 'clock':
       clock = p.clock;
       renderClock();
+      if (clock.ended && !endingShown && !modalOpen()) void showEnding();
       if (!clock.playing) {
         void refresh().catch(() => {});
         if (tab === 'saves') void refreshSlots(); // หยุดแล้วเพิ่ง autosave
@@ -645,6 +679,7 @@ async function start(from: 'new' | string, heroName?: string) {
     clearLog();
     closeModal();
     closeInspect();
+    endingShown = false;
     collapsed.clear();
     startYear(v.year);
     write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ ${v.name}` : `โหลดเซฟ "${from}": ${v.name}`, 'system');
@@ -657,7 +692,8 @@ async function start(from: 'new' | string, heroName?: string) {
     clock = await engine.request({ type: 'pause' }); // เริ่ม/โหลดแล้วเวลาหยุดรอ ผู้เล่นกดเดินเอง
     renderClock();
     showTab('log');
-    await showPending();
+    if (clock.ended) await showEnding();
+    else await showPending();
     void requestPersistentStorage();
   } catch (e) {
     status.textContent = errorText(e);

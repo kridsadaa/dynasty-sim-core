@@ -7,13 +7,14 @@ import type { PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus } from '../systems/career';
-import { PARENTAGE_TH, RELATION_TH } from '../systems/handover';
+import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
 import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { describeTrait } from '../systems/traits';
 import type {
-  CharacterView, DynastyView, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView, OddsFactorView, TreeView,
+  CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
+  OddsFactorView, TreeView,
 } from './protocol';
 
 // แปลง state → view model (plain data) ก่อนส่งข้ามเธรด
@@ -480,5 +481,101 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     lifespan: `${node.birthYear}–${deathYear ?? ''}`,
     status: isAlive(ch) ? 'ยังมีชีวิต' : `ถึงแก่กรรม${cause ? ` (${ctx.tags.label(cause)})` : ''}`,
     facts, sections,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// เลือกผู้สืบตระกูล (แสดงแบบ event) + หน้าสรุปตอนจบ
+// ---------------------------------------------------------------------------
+
+/** instanceId ของ "event" เลือกทายาท — worker แยกออกจาก event จริงด้วยค่านี้ */
+export const HEIR_CHOICE_ID = 'heir-choice';
+const MAX_HEIR_OPTIONS = 8;
+
+/** ผู้สืบเกี่ยวเป็นอะไรกับผู้ตาย (ตามกลุ่มใน heirCandidates) */
+function tieTo(ctx: Ctx, dead: Character, ch: Character): string {
+  const N = ctx.state.familyNodes;
+  const me = N[dead.familyNodeId];
+  const n = N[ch.familyNodeId];
+  const parents = (x: typeof n) => [x?.fatherId, x?.motherId].filter((id): id is FamilyNode['id'] => !!id);
+  const sex = ch.sex === 'm' ? 'ชาย' : 'สาว';
+  if (!me || !n) return 'ญาติ';
+  if (parents(n).includes(me.id)) return `ลูก${sex}`;
+  if (parents(n).some((p) => parents(N[p]).includes(me.id))) return `หลาน${sex}`;
+  if (parents(n).some((p) => parents(me).includes(p))) return `${ch.birthDay < dead.birthDay ? 'พี่' : 'น้อง'}${sex}`;
+  return `หลาน${sex} (ลูกของพี่น้อง)`;
+}
+
+/** ผู้เล่นตายและมีผู้สืบได้มากกว่าหนึ่งคน → ให้เลือก (ตัวเลือกแรก = ตามธรรมเนียม) */
+export function heirChoiceView(ctx: Ctx): EventView | null {
+  const dead = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (!dead || isAlive(dead)) return null;
+  const cands = heirCandidates(ctx, dead).slice(0, MAX_HEIR_OPTIONS);
+  if (cands.length < 2) return null;
+  const heirs = estateHeirs(ctx, dead);
+  const totalW = heirs.reduce((a, h) => a + h.weight, 0);
+  return {
+    instanceId: HEIR_CHOICE_ID,
+    title: 'ผู้สืบตระกูล',
+    text: `${dead.name}ถึงแก่กรรมเมื่ออายุ ${ageOf(ctx, dead)} ปี — ใครจะเป็นผู้นำตระกูลและเป็นตัวละครที่เล่นต่อ ` +
+      'มรดกแบ่งตามกฎหมายเหมือนเดิม ผู้สืบได้ตำแหน่ง ไม่ได้ทรัพย์ทั้งหมด',
+    options: cands.map(({ ch }, i) => {
+      const age = ageOf(ctx, ch);
+      const share = heirs.find((h) => h.ch.id === ch.id);
+      return {
+        id: ch.id,
+        text: `${ch.name} — ${tieTo(ctx, dead, ch)} อายุ ${age} ปี${age < 15 ? ' (ยังเด็ก)' : ''}`,
+        locked: false,
+        injected: false,
+        hint: [i === 0 ? 'ตามธรรมเนียม' : '', share && totalW ? `ได้มรดกราว ${pct(share.weight / totalW)}%` : 'ไม่ได้ส่วนมรดก']
+          .filter(Boolean).join(' · '),
+      };
+    }),
+    triggered: [],
+  };
+}
+
+export function endingView(ctx: Ctx, reason: EndReason, startYear: number): EndingView {
+  const S = ctx.state;
+  const dyn = must(S.dynasties[S.meta.playerDynastyId], 'dynasty');
+  const year = yearOf(ctx, S.meta.day);
+  const nodes = Object.values(S.familyNodes).filter((n) => n.dynastyId === dyn.id);
+  const gens = nodes.map((n) => n.generation);
+  const folded = dyn.branchSummaries.reduce((a, b) => a + b.memberCount, 0);
+  const living = Object.values(S.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c)).length;
+  const facts: EndingView['facts'] = [
+    ['ช่วงเวลา', `พ.ศ. ${startYear}–${year} (${year - startYear} ปี)`],
+    ['จำนวนรุ่น', String(gens.length ? Math.max(...gens) - Math.min(...gens) + 1 : 1)],
+    ['คนในตระกูลตลอดเรื่อง', `${nodes.length + folded} คน${folded ? ` (รวมสายที่ยุบแล้ว ${folded} คน)` : ''}`],
+    ['ยังมีชีวิต', `${living} คน`],
+    ['บารมีตระกูล', String(Math.round(dyn.prestige * 10) / 10)],
+  ];
+  const sections: EndingView['sections'] = [];
+  const heads = dyn.headHistory ?? [];
+  if (heads.length) sections.push({ title: 'ผู้นำตระกูลแต่ละช่วง', items: heads.map((h) => `พ.ศ. ${h.fromYear} ${h.name}`) });
+  const legends = dyn.legendIds.map((id) => S.legends[id]).filter((l) => !!l);
+  if (legends.length) {
+    sections.push({
+      title: 'ตำนานที่ลูกหลานเล่าต่อ — กับเรื่องจริง',
+      items: legends.flatMap((l) => [
+        `เล่ากันว่า: ${renderLegend(ctx, l!, 'current')}`,
+        `เรื่องจริง: ${renderLegend(ctx, l!, 'truth')} (คลาดไป ${pct(l!.divergence)}%${l!.writtenRecord ? ', จดลงสมุดข่อยแล้ว' : ''})`,
+      ]),
+    });
+  }
+  if (dyn.taboos.length) {
+    sections.push({
+      title: 'ข้อห้ามที่ยังถือกันอยู่',
+      items: dyn.taboos.map((t) => `${t.kind === 'ban' ? 'ห้าม' : 'พิธีเกี่ยวกับ'}${ctx.tags.label(t.target)} — ${t.originKnown ? 'ยังรู้ต้นเหตุ' : 'ไม่มีใครจำต้นเหตุได้แล้ว'}`),
+    });
+  }
+  return {
+    reason,
+    title: reason === 'era' ? `จบเรื่อง พ.ศ. ${year}` : `ตระกูล${dyn.name}สิ้นสาย พ.ศ. ${year}`,
+    text: reason === 'era'
+      ? `เรื่องของตระกูล${dyn.name}ดำเนินมาถึงปลายช่วงที่เกมครอบคลุม`
+      : 'ไม่เหลือลูก หลาน หรือพี่น้องที่จะสืบตระกูลต่อ',
+    facts,
+    sections,
   };
 }

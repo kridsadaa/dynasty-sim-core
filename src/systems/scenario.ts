@@ -11,8 +11,16 @@ import { snapshotToNode } from './handover';
  * แม่ออกเรือนอายุ 17 พ่ออายุ 22 (ในช่วง balance.world.marriageAge) ลูกห่างกัน 3 ปี (balance.world.births)
  * TODO: ย้ายไปเป็น scenarios.json เมื่อมีหลายฉาก
  */
+/**
+ * เรื่องจบ 1 ม.ค. 2400 — ปลาย gamePeriod (2275–2400) ใน lore/config.json ซึ่งเป็นช่วงที่ lore ตอนนี้ครอบคลุม
+ * ใช้เป็นค่าตั้งต้นของเซฟเก่าที่ไม่มี meta.endYear ด้วย
+ */
+export const END_YEAR = 2400;
+export const START_YEAR = 2288;
+
 export function bootstrapScenario(ctx: Ctx, heroName = 'บุญมา'): Character {
-  ctx.state.meta.day = yearStart(ctx, 2288);
+  ctx.state.meta.day = yearStart(ctx, START_YEAR);
+  ctx.state.meta.endYear = END_YEAR;
   const taken = new Set(['หมื่นอิน', 'แย้ม', heroName]);
   const elder = (sex: 'm' | 'f', birthYear: number) => {
     const name = pickName(ctx, sex, 'noble', taken);

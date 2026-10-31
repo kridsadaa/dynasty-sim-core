@@ -432,6 +432,8 @@ export interface Dynasty {
   taboos: FamilyTaboo[];
   legendIds: LegendId[];
   branchSummaries: BranchSummary[];
+  /** ผู้นำตระกูลแต่ละคนตามลำดับ — ใช้ในหน้าสรุปตอนจบ (เซฟเก่าไม่มี / มีแค่ช่วงหลัง) */
+  headHistory?: Array<{ nodeId: FamilyNodeId; name: string; fromYear: number }>;
   /** รุ่นของทายาทใน handover ล่าสุดที่เล่าตำนานต่อ/ข้อห้ามเสื่อมแล้ว — handover ซ้ำในรุ่นเดียวกันไม่บิดเบือนซ้ำ (เซฟเก่าไม่มี) */
   agedGeneration?: number;
 }
@@ -1089,6 +1091,8 @@ export interface GameState {
     playerDynastyId: DynastyId;
     /** ชื่อที่ผู้เล่นพิมพ์ตั้งเองในเซฟนี้ — เข้าตัวสุ่มชื่อของ NPC ที่เกิดทีหลังด้วย (optional: เซฟเก่าไม่มี) */
     customNames?: Array<{ name: string; sex: 'm' | 'f' }>;
+    /** เรื่องจบเมื่อถึง 1 ม.ค. ปีนี้ — ฉากเริ่มเป็นคนกำหนด (เซฟเก่าไม่มี → END_YEAR ใน scenario.ts) */
+    endYear?: number;
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;
