@@ -257,7 +257,7 @@ function optionHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'
   for (const e of effects) {
     if (e.op === 'career') {
       const ch = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
-      if (ch) return careerHint(ctx, ch, e.action);
+      if (ch) return careerHint(ctx, ch, e.action, e.dept);
     }
     if (e.op !== 'marriage') continue;
     const actor = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];

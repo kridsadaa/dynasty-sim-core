@@ -1,28 +1,37 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
-import type { Character, CharacterId, OfficePostDef } from '../core/types';
+import type { Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
 import { livingParents } from './factory';
 
 // ============================================================================
-// Career — รับราชการในกรมกองกระเวน (บันไดจากทำเนียบศักดินาจริง)
+// Career — รับราชการ (บันไดจากทำเนียบศักดินาจริง ตำแหน่งนาพลเรือน)
 //
-//  ลูกขุนนางชายอายุ 13–20 ──► พ่อแม่พาไปถวายตัวเป็นมหาดเล็ก (นา 200)
-//    ──► หมื่น{ราชทินนาม} (นา 300) ──► ขุน{ราชทินนามเดิม} (นา 400) ──► หลวงอินทราบดีศรีราชรองเมือง เจ้ากรม (นา 1000)
+//  ลูกขุนนางชายอายุ 13–20 ──► พ่อแม่พาไปถวายตัวเป็นมหาดเล็ก (นา 200) ยังไม่สังกัดกรม
+//    ──► พ้นมหาดเล็ก เลือกกรม (career.assign_department): กองกระเวน, ชาวที่ขวา, ราชบัณฑิตย (ต้องอ่านออกเขียนได้)
+//    ──► ไต่บันไดของกรมนั้น เช่น กองกระเวน: หมื่น{ราชทินนาม} (นา 300) ──► ขุน{ราชทินนามเดิม} (นา 400) ──► เจ้ากรม (นา 1000)
+//  ราชทินนามของกรมอื่นต่างกันแต่ละขั้น — ได้ชื่อใหม่เมื่อเลื่อน (ชื่อในทำเนียบอ่านจากภาพสแกน ยังต้องตรวจ)
 //
 //  favor (ความโปรดปราน): ขึ้นจากงานดี ลงจากความผิด/การถูกฟ้อง และคลายกลับหา 0 ทุกปี
 //    ถึง promoteAt และอยู่ในตำแหน่งครบ minYears → event เลื่อนยศ · ต่ำกว่า punishAt → event ถูกลงโทษ
 //  ไม่มีเบี้ยหวัด: ได้ของกำนัล/ส่วยตามศักดินาทุกปี และ event ของกำนัลที่ต้องเลือกรับหรือไม่รับ
 //  เข้าเวรในวัง → แรงงานหายจากเรือน dutyLabor
 //
-//  lore: social.royal_pages_1680s, social.patrol_department_ladder, social.officers_no_salary_1680s,
+//  lore: social.royal_pages_1680s, social.patrol_department_ladder, social.royal_chamber_department_ladder,
+//        social.royal_scholars_department_ladder, social.officers_no_salary_1680s,
 //        social.court_punishments_1680s, social.court_attendance_rules — ตัวเลขทั้งหมดเป็นค่าของเกม
 // ============================================================================
 
-export function postOf(ctx: Ctx, ch: Character): OfficePostDef | undefined {
-  return ch.office ? ctx.content.offices.posts.find((p) => p.id === ch.office!.postId) : undefined;
+/** กรมที่สังกัด — มหาดเล็กยังไม่มีกรม (ใช้บันไดของกรมแรก ซึ่งขั้น 0 เหมือนกันทุกกรม); เซฟเก่าไม่มี deptId = กรมแรก */
+export function deptOf(ctx: Ctx, ch: Character): DepartmentDef {
+  const all = ctx.content.offices.departments;
+  return all.find((d) => d.id === ch.office?.deptId) ?? all[0]!;
 }
 
-const postAt = (ctx: Ctx, rank: number) => ctx.content.offices.posts.find((p) => p.rank === rank);
+export function postOf(ctx: Ctx, ch: Character): OfficePostDef | undefined {
+  return ch.office ? deptOf(ctx, ch).posts.find((p) => p.id === ch.office!.postId) : undefined;
+}
+
+const postAt = (dept: DepartmentDef, rank: number) => dept.posts.find((p) => p.rank === rank);
 
 export const officeRank = (ctx: Ctx, ch: Character): number | undefined => postOf(ctx, ch)?.rank;
 
@@ -35,19 +44,31 @@ function titleOf(post: OfficePostDef, name: string | undefined): string | null {
   return post.title.replace('{name}', name ?? '');
 }
 
-/** ราชทินนามที่คนอื่นในตระกูลที่ยังมีชีวิตยังไม่ได้ใช้ — สุ่มจากในกรม */
-function pickOfficeName(ctx: Ctx, ch: Character): string {
+/** ราชทินนามที่ใช้ได้ในขั้นนี้ */
+const namePool = (dept: DepartmentDef, post: OfficePostDef) => post.names ?? dept.names;
+
+/** ราชทินนามที่คนอื่นที่ยังมีชีวิตยังไม่ได้ใช้ — สุ่มจาก pool */
+function pickOfficeName(ctx: Ctx, ch: Character, pool: string[]): string | undefined {
+  if (!pool.length) return undefined;
   const taken = new Set(Object.values(ctx.state.characters).filter((c) => isAlive(c) && c !== ch).map((c) => c.office?.name));
-  const free = ctx.content.offices.names.filter((n) => !taken.has(n));
-  return must(ctx.rng.pick(free.length ? free : ctx.content.offices.names), 'office name');
+  const free = pool.filter((n) => !taken.has(n));
+  return ctx.rng.pick(free.length ? free : pool);
 }
 
-function setPost(ctx: Ctx, ch: Character, post: OfficePostDef): void {
-  // ราชทินนามสุ่มไว้ตั้งแต่ถวายตัว — คำใบ้ตอนเลื่อนยศบอกชื่อที่จะได้ล่วงหน้า และหมื่น→ขุนใช้ชื่อเดียวกัน
-  const name = ch.office?.name ?? pickOfficeName(ctx, ch);
-  ch.office = { postId: post.id, ...(name ? { name } : {}), sinceDay: ctx.state.meta.day, favor: 0 };
+function setPost(ctx: Ctx, ch: Character, post: OfficePostDef, dept = deptOf(ctx, ch)): void {
+  // ชื่อเดิมอยู่ในรายชื่อของขั้นใหม่ (หมื่น→ขุนกองกระเวนชื่อเดียวกัน) → ใช้ต่อ, ไม่อยู่ → สุ่มชื่อใหม่ของขั้นนั้น
+  const pool = namePool(dept, post);
+  const name = ch.office?.name && pool.includes(ch.office.name) ? ch.office.name : pickOfficeName(ctx, ch, pool);
+  const deptId = post.rank > 0 ? dept.id : undefined;
+  ch.office = { postId: post.id, ...(deptId ? { deptId } : {}), ...(name ? { name } : {}), sinceDay: ctx.state.meta.day, favor: 0 };
   ch.social.title = titleOf(post, name);
   ch.social.sakdina = post.sakdina;
+}
+
+/** กรมที่ ch เลือกได้ตอนพ้นมหาดเล็ก */
+export function eligibleDepartments(ctx: Ctx, ch: Character): DepartmentDef[] {
+  return ctx.content.offices.departments.filter((d) =>
+    (d.requires ?? []).every((c) => c.type !== 'skill' || (ch.skills[c.skill] ?? 0) >= c.min));
 }
 
 function addPrestige(ctx: Ctx, ch: Character, delta: number): void {
@@ -56,25 +77,37 @@ function addPrestige(ctx: Ctx, ch: Character, delta: number): void {
 }
 
 /** ทำ action ราชการจาก effect ของ event — คืนบรรทัด log */
-export function applyCareer(ctx: Ctx, ch: Character, action: 'enter' | 'promote' | 'demote' | 'dismiss'): string[] {
+export function applyCareer(
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss', deptId?: string,
+): string[] {
   const C = ctx.content.balance.career;
   const post = postOf(ctx, ch);
+  const dept = deptOf(ctx, ch);
   switch (action) {
     case 'enter': {
       if (ch.office) return [];
-      const first = must(postAt(ctx, 0), 'post rank 0');
-      setPost(ctx, ch, first);
+      const first = must(postAt(dept, 0), 'post rank 0');
+      setPost(ctx, ch, first, dept);
       return [`${ch.name}ถวายตัวเป็น${first.label.th} (นา ${first.sakdina})`];
     }
-    case 'promote': {
-      const next = post && postAt(ctx, post.rank + 1);
-      if (!next) return [];
-      setPost(ctx, ch, next);
+    case 'assign': {
+      // พ้นมหาดเล็กไปสังกัดกรมที่เลือก แล้วได้ขั้นแรกของกรมนั้น
+      const to = ctx.content.offices.departments.find((d) => d.id === deptId);
+      const next = to && post?.rank === 0 ? postAt(to, 1) : undefined;
+      if (!to || !next) return [];
+      setPost(ctx, ch, next, to);
       addPrestige(ctx, ch, C.promotePrestige * next.rank);
-      return [`${ch.name}ได้เลื่อนเป็น${ch.social.title ?? next.label.th} ${ctx.content.offices.department.label.th} ถือศักดินา ${next.sakdina}`];
+      return [`${ch.name}ได้เป็น${ch.social.title ?? next.label.th} สังกัด${to.label.th} ถือศักดินา ${next.sakdina}`];
+    }
+    case 'promote': {
+      const next = post && postAt(dept, post.rank + 1);
+      if (!next) return [];
+      setPost(ctx, ch, next, dept);
+      addPrestige(ctx, ch, C.promotePrestige * next.rank);
+      return [`${ch.name}ได้เลื่อนเป็น${ch.social.title ?? next.label.th} ${dept.label.th} ถือศักดินา ${next.sakdina}`];
     }
     case 'demote': {
-      const prev = post && postAt(ctx, post.rank - 1);
+      const prev = post && postAt(dept, post.rank - 1);
       if (!post) return [];
       // ตกจากตำแหน่งไม่ถือเป็นความอัปยศ (lore: social.court_punishments_1680s) — แต่บารมีตระกูลยังลด
       addPrestige(ctx, ch, -C.promotePrestige * post.rank * 0.5);
@@ -139,17 +172,19 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   }
   const years = Math.floor((S.meta.day - player.office.sinceDay) / DAYS_PER_YEAR);
   const favor = player.office.favor;
-  const next = postAt(ctx, post.rank + 1);
+  const next = postAt(deptOf(ctx, player), post.rank + 1);
+  // มหาดเล็กพ้นไปเข้ากรม → เลือกกรมก่อน (เลื่อนขั้นแรกไปพร้อมกัน)
+  const promotion = post.rank === 0 ? 'career.assign_department' : 'career.promotion';
   // มหาดเล็กเป็นชายหนุ่ม แก่สุดไม่ถึง 25 (lore: social.royal_pages_1680s) — ถึงวัยแล้วได้ตำแหน่งในกรม หรือพ้นไป
   if (post.rank === 0 && ageOf(ctx, player) >= C.pageMaxAge) {
-    if (favor > C.punishAt && next) events.push({ event: 'career.promotion', bindings: bind });
+    if (favor > C.punishAt && next) events.push({ event: promotion, bindings: bind });
     else lines.push(...applyCareer(ctx, player, 'dismiss'));
     return { lines, events };
   }
   if (favor <= C.punishAt) {
     events.push({ event: post.rank === 0 ? 'career.punished_page' : 'career.punished', bindings: bind });
   } else if (favor >= C.promoteAt && next && years >= post.minYears && (!next.unique || ctx.rng.chance(C.uniqueVacancyChance))) {
-    events.push({ event: 'career.promotion', bindings: bind });
+    events.push({ event: promotion, bindings: bind });
   }
   player.office.favor = favor * C.favorDecay;
   return { lines, events };
@@ -162,25 +197,34 @@ export function officeStatus(ctx: Ctx, ch: Character): string | null {
   const years = Math.floor((ctx.state.meta.day - ch.office.sinceDay) / DAYS_PER_YEAR);
   const f = ch.office.favor;
   const mood = f >= 0.3 ? 'เป็นที่โปรดปราน' : f <= -0.3 ? 'กำลังถูกเพ่งเล็ง' : 'ทรงตัว';
-  const where = post.rank === 0 ? 'ในวัง' : ctx.content.offices.department.label.th;
+  const where = post.rank === 0 ? 'ในวัง' : deptOf(ctx, ch).label.th;
   return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood}`;
 }
 
 /** ข้อความใต้ตัวเลือก event ราชการ — ราคา/ผลที่ตามมาให้เห็นก่อนเลือก */
-export function careerHint(ctx: Ctx, ch: Character, action: 'enter' | 'promote' | 'demote' | 'dismiss'): string | undefined {
+export function careerHint(
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss', deptId?: string,
+): string | undefined {
   const post = postOf(ctx, ch);
+  const dept = deptOf(ctx, ch);
   const C = ctx.content.balance.career;
   if (action === 'enter') {
-    const first = postAt(ctx, 0);
+    const first = postAt(dept, 0);
     return first ? `ศักดินา ${first.sakdina} · เข้าเวรในวัง ไม่ได้อยู่ช่วยงานบ้านราว ${Math.round(C.dutyLabor * 100)}%` : undefined;
   }
-  if (action === 'promote') {
-    const next = post && postAt(ctx, post.rank + 1);
-    const name = next?.title?.includes('{name}') ? ch.office?.name ?? '…' : undefined;
-    return next ? `เป็น${titleOf(next, name) ?? next.label.th} ศักดินา ${next.sakdina} · บารมีตระกูล +${C.promotePrestige * next.rank}` : undefined;
+  if (action === 'promote' || action === 'assign') {
+    const to = action === 'assign' ? ctx.content.offices.departments.find((d) => d.id === deptId) : dept;
+    const next = to && post && postAt(to, post.rank + 1);
+    if (!to || !next) return undefined;
+    // ชื่อเดิมใช้ต่อได้ → บอกชื่อ; ได้ชื่อใหม่ (สุ่มตอนเลื่อน) → …
+    const keep = ch.office?.name && namePool(to, next).includes(ch.office.name);
+    const name = next.title?.includes('{name}') ? (keep ? ch.office!.name : '…') : undefined;
+    const top = to.posts.reduce((a, p) => (p.rank > a.rank ? p : a));
+    return `เป็น${titleOf(next, name) ?? next.label.th} ศักดินา ${next.sakdina} · บารมีตระกูล +${C.promotePrestige * next.rank}` +
+      (action === 'assign' ? ` · สูงสุดเป็น${top.title?.includes('{name}') ? top.label.th : top.title ?? top.label.th} นา ${top.sakdina}` : '');
   }
   if (action === 'demote') {
-    const prev = post && postAt(ctx, post.rank - 1);
+    const prev = post && postAt(dept, post.rank - 1);
     return prev ? `ลดเป็น${prev.label.th} ศักดินา ${prev.sakdina}` : 'ถูกถอดจากราชการ';
   }
   return 'ถูกถอดจากราชการ';

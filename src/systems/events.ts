@@ -399,7 +399,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       }
       case 'career':
-        report.notes.push(...applyCareer(ctx, ch, e.action));
+        report.notes.push(...applyCareer(ctx, ch, e.action, e.dept));
         break;
       case 'chore':
         report.notes.push(...applyChore(ctx, ch, e.action, p.instance.vars, e.teacher ? who(e.teacher) : undefined, e.factor));

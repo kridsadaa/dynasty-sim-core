@@ -9,7 +9,7 @@ import {
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
 import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
-import { careerYearTick, officeRank } from './career';
+import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, livingWives, minorWifeEvent } from './wives';
@@ -211,6 +211,7 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
     if (t.office) {
       const rank = officeRank(ctx, actor);
       if (rank === undefined || rank < (t.office.minRank ?? 0) || rank > (t.office.maxRank ?? Infinity)) continue;
+      if (t.office.dept && deptOf(ctx, actor).id !== t.office.dept) continue;
     }
     if (t.cooldownDays) {
       const recent = Object.values(ctx.state.eventLog).some(

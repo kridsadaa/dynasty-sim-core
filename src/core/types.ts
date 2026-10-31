@@ -241,7 +241,8 @@ export interface Character {
    * favor: ความโปรดปรานของเจ้ากรม/ในหลวง (-1..1) ขึ้นจากงาน ลงจากความผิดและการถูกฟ้อง ค่อยๆ คลายกลับหา 0
    * name: ราชทินนามที่ได้ (ใช้ซ้ำตอนเลื่อนจากหมื่นเป็นขุนชื่อเดียวกัน)
    */
-  office?: { postId: string; name?: string; sinceDay: Day; favor: Signed };
+  /** deptId: กรมที่สังกัด — ไม่มี = ยังเป็นมหาดเล็ก (หรือเซฟเก่า = กรมแรก) */
+  office?: { postId: string; deptId?: string; name?: string; sinceDay: Day; favor: Signed };
   /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
   ordainedYear?: number;
   /** minor = เมียกลางนอก (เมียน้อย) — ลูกเป็นบุตรภรรยาน้อย; ไม่มี = เมียหลวง/ไม่ใช่เมียใคร */
@@ -567,8 +568,11 @@ export type Effect =
   | { op: 'marry'; role: string; with: string }
   /** ขั้นตอนแต่งงานของ role กับ with (สู่ขอ หมั้น แต่ง หนีตามกัน ค่าน้ำนม) — ดู systems/marriage.ts */
   | { op: 'marriage'; role: string; with: string; step: MarriageStep }
-  /** ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ — ดู systems/career.ts */
-  | { op: 'career'; role: string; action: 'enter' | 'promote' | 'demote' | 'dismiss' }
+  /**
+   * ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, assign = พ้นมหาดเล็กไปสังกัดกรม dept แล้วเลื่อนหนึ่งขั้น,
+   * promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ — ดู systems/career.ts
+   */
+  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss'; dept?: string }
   /** ความโปรดปรานในราชการ */
   | { op: 'favor'; role: string; delta: number }
   /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์) */
@@ -628,7 +632,7 @@ export interface GameEventDef {
   trigger: {
     ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number;
     /** เกิดเฉพาะคนที่รับราชการอยู่ในระดับนี้ (0 = มหาดเล็ก) */
-    office?: { minRank?: number; maxRank?: number };
+    office?: { minRank?: number; maxRank?: number; dept?: string };
   };
   percepts: PerceptTemplate[];
   options: EventOption[];
@@ -736,14 +740,26 @@ export interface OfficePostDef {
   minYears: number;
   /** มีคนเดียวในกรม — เลื่อนได้เมื่อตำแหน่งว่าง (สุ่ม) */
   unique?: boolean;
+  /** ราชทินนามของขั้นนี้ — ไม่มี = ใช้ names ของกรม; ชื่อเดิมอยู่ในรายการของขั้นถัดไป → ใช้ชื่อเดิมต่อ */
+  names?: string[];
   loreRefs?: string[];
 }
 
-export interface OfficesDef {
-  department: { label: { th: string }; loreRefs?: string[] };
+export interface DepartmentDef {
+  id: string;
+  label: { th: string };
+  loreRefs?: string[];
+  /** ต้องมีคุณสมบัตินี้ถึงเลือกกรมนี้ได้ตอนพ้นมหาดเล็ก (เช่น อ่านออกเขียนได้) */
+  requires?: Condition[];
+  /** ขั้น 0 = มหาดเล็ก (เหมือนกันทุกกรม — ยังไม่สังกัดกรม) */
   posts: OfficePostDef[];
-  /** ราชทินนามของหมื่น/ขุนในกรม — คู่เดียวกันทั้งสองระดับ */
+  /** ราชทินนามของหมื่น/ขุนในกรมที่ใช้ชุดเดียวกันทั้งสองระดับ (กรมกองกระเวน) */
   names: string[];
+}
+
+export interface OfficesDef {
+  /** กรมแรกเป็นค่าตั้งต้นของเซฟเก่าที่ยังไม่มี office.deptId */
+  departments: DepartmentDef[];
 }
 
 /** งานบ้านขั้นหนึ่ง — ไล่ตามทักษะและอายุ (lore: kinship.child_chores_by_strength) */

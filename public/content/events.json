@@ -667,7 +667,8 @@
     "trigger": {
       "weight": 1.2,
       "office": {
-        "minRank": 1
+        "minRank": 1,
+        "dept": "patrol"
       },
       "cooldownDays": 300
     },
@@ -2146,6 +2147,18 @@
         "effects": [ { "op": "wealth", "role": "actor", "delta": -15 }, { "op": "bond", "role": "spouse", "toward": "actor", "affection": 0.3 } ] },
       { "id": "refuse", "textKey": "event.divorce.refuse",
         "effects": [ { "op": "bond", "role": "spouse", "toward": "actor", "affection": -0.1 }, { "op": "stress", "role": "actor", "delta": 0.06 } ] }
+    ]
+  },
+  "career.assign_department": {
+    "id": "career.assign_department", "textKey": "event.assign_department", "contextTags": [],
+    "roles": { "actor": {}, "elder": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "patrol", "textKey": "event.assign_department.patrol",
+        "effects": [ { "op": "career", "role": "actor", "action": "assign", "dept": "patrol" } ] },
+      { "id": "chamber", "textKey": "event.assign_department.chamber",
+        "effects": [ { "op": "career", "role": "actor", "action": "assign", "dept": "royal_chamber_right" } ] },
+      { "id": "scholars", "textKey": "event.assign_department.scholars", "conditions": [ { "type": "skill", "skill": "literacy", "min": 30 } ],
+        "effects": [ { "op": "career", "role": "actor", "action": "assign", "dept": "royal_scholars" } ] }
     ]
   }
 }

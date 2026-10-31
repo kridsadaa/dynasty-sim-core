@@ -262,5 +262,10 @@
   "event.divorce": "{spouse}บอก{actor}ว่าอยู่ด้วยกันต่อไปไม่ได้แล้ว ขอหย่าขาดกัน",
   "event.divorce.agree": "ยอมหย่า คืนสินให้นาง แบ่งลูกตามธรรมเนียม",
   "event.divorce.reconcile": "ง้อ ซื้อของมาให้แล้วขอให้อยู่ด้วยกันต่อ (15 ตำลึง)",
-  "event.divorce.refuse": "ไม่ยอมหย่า"
+  "event.divorce.refuse": "ไม่ยอมหย่า",
+  "event.assign_department.title": "พ้นมหาดเล็ก",
+  "event.assign_department": "{actor}รับราชการเป็นมหาดเล็กมานานพอแล้ว ถึงเวลาได้ตำแหน่งในกรม จะไปสังกัดกรมไหน",
+  "event.assign_department.patrol": "กรมกองกระเวนขวา — ตรวจตราในกรุงและนอกกรุง",
+  "event.assign_department.chamber": "กรมชาวที่ขวา — ศักดินาขั้นต้นสูง แต่เป็นเจ้ากรมได้ช้า",
+  "event.assign_department.scholars": "กรมราชบัณฑิตย — ต้องอ่านออกเขียนได้"
 }
