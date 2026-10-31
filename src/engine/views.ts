@@ -7,6 +7,7 @@ import type { PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus } from '../systems/career';
+import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
 import { marriageHint, marriageStatus } from '../systems/marriage';
@@ -146,6 +147,7 @@ function kinTies(ctx: Ctx, me: Character): Map<Character, string> {
   for (const [g, tie] of grand) out.set(g, tie);
   const spouse = livingSpouse(ctx, me);
   if (spouse) out.set(spouse, me.sex === 'm' ? 'ภรรยา' : 'สามี');
+  if (me.sex === 'm') for (const w of livingWives(ctx, me)) if (w.wifeRank === 'minor') out.set(w, 'เมียน้อย');
   for (const kid of livingChildren(ctx, me)) {
     out.set(kid, kid.sex === 'm' ? 'ลูกชาย' : 'ลูกสาว');
     for (const g of livingChildren(ctx, kid)) out.set(g, g.sex === 'm' ? 'หลานชาย' : 'หลานสาว');

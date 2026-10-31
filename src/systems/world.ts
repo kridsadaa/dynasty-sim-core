@@ -12,6 +12,7 @@ import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, p
 import { careerYearTick, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
+import { divorceEvent, livingWives, minorWifeEvent } from './wives';
 import { tickChores, tickOutings } from './chores';
 import { tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
@@ -95,6 +96,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     // บวชก่อนแต่ง (การบวชยุติการสมรส lore: kinship.marriage_law_three_seals) — ถามก่อนผู้ใหญ่ทาบทามคู่
     const ordination = ordinationEvent(ctx);
     if (ordination) out.push({ type: 'event', prepared: ordination });
+    const minorWife = minorWifeEvent(ctx);
+    if (minorWife) out.push({ type: 'event', prepared: minorWife });
+    const split = divorceEvent(ctx);
+    if (split) out.push({ type: 'event', prepared: split });
     // ความลับตำนานแตก: ญาติที่ทันเห็นเรื่องจริงเล่าให้ฟัง — ส่งข้อความตำนานทั้งสองแบบเป็นตัวแปรของ event
     const truth = player && isAlive(player) ? legendTruthEvent(ctx) : null;
     if (truth) {
@@ -308,21 +313,24 @@ export function lifeMilestones(
       }
     }
 
-    // มีบุตร — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ
-    const mother = ch.sex === 'f' ? ch : spouse;
-    if (spouse && mother && ch.marriedDay !== undefined && conceives(ctx, ch, mother, year)) {
-      const father = ch.sex === 'm' ? ch : spouse;
+    // มีบุตร — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ; ผู้ชายที่มีเมียน้อยมีลูกกับเมียแต่ละคน
+    const mothers = ch.sex === 'f' ? (spouse ? [ch] : []) : livingWives(ctx, ch);
+    for (const mother of mothers) {
+      if (ch.marriedDay === undefined || !conceives(ctx, ch, mother, year)) continue;
+      const partner = ch.sex === 'f' ? spouse! : mother;
+      const father = ch.sex === 'm' ? ch : spouse!;
       const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
       // ชื่อผู้เล่นห้ามซ้ำเสมอ — เรื่องทั้งเกมเล่าผ่านคนนี้
       const kid = spawnCharacter(ctx, {
-        name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, spouse), namesInUse(ctx, ch.dynastyId, year)),
+        name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, partner), namesInUse(ctx, ch.dynastyId, year)),
         sex, birthYear: year, estate: ch.social.estate, father, mother,
+        ...(mother.wifeRank === 'minor' ? { parentage: 'minor_wife' as const } : {}),
       });
       // แม่ตายตอนคลอด (lore: health.childbirth_deaths) — ก่อน event ตั้งชื่อ จะได้ไม่ให้แม่ที่ตายแล้วตั้งชื่อ
       const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(Math.min(1, W.childbirthDeathRisk * frailty(ctx, mother)));
       if (motherDied) markDead(ctx, mother, 'situation:childbirth');
       // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log
-      const naming = onBirth?.(kid, ch, spouse) ?? false;
+      const naming = onBirth?.(kid, ch, partner) ?? false;
       out.push(naming ? `${ch.name} มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name} มีบุตร: ${kid.name}`);
       if (motherDied && mother.id !== ctx.state.meta.playerCharacterId) out.push(`${mother.name} ตายตอนคลอด`);
     }
@@ -332,13 +340,14 @@ export function lifeMilestones(
 
 /**
  * ปีนี้มีลูกไหม (lore: health.population_stationary): แต่งมาแล้วอย่างน้อยปีหนึ่ง แม่ยังไม่เกิน maxMotherAge
- * และลูกคนก่อนเกินกำหนดหย่านม (minGapYears) แล้ว
+ * และลูกคนก่อนของแม่คนนี้เกินกำหนดหย่านม (minGapYears) แล้ว — เมียน้อยนับวันแต่งของตัวเอง
  */
 function conceives(ctx: Ctx, ch: Character, mother: Character, year: number): boolean {
   const B = ctx.content.balance.world.births;
-  if (yearsBetween(ctx, must(ch.marriedDay, 'marriedDay')) < 1 || ageOf(ctx, mother) > B.maxMotherAge) return false;
+  const since = mother.marriedDay ?? must(ch.marriedDay, 'marriedDay');
+  if (yearsBetween(ctx, since) < 1 || ageOf(ctx, mother) > B.maxMotherAge) return false;
   const nodes = ctx.state.familyNodes;
-  const last = Math.max(-Infinity, ...(nodes[ch.familyNodeId]?.childIds ?? []).map((id) => nodes[id]?.birthYear ?? -Infinity));
+  const last = Math.max(-Infinity, ...(nodes[mother.familyNodeId]?.childIds ?? []).map((id) => nodes[id]?.birthYear ?? -Infinity));
   return year - last >= B.minGapYears && ctx.rng.chance(B.yearlyChance);
 }
 

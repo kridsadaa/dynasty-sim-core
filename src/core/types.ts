@@ -244,6 +244,8 @@ export interface Character {
   office?: { postId: string; name?: string; sinceDay: Day; favor: Signed };
   /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
   ordainedYear?: number;
+  /** minor = เมียกลางนอก (เมียน้อย) — ลูกเป็นบุตรภรรยาน้อย; ไม่มี = เมียหลวง/ไม่ใช่เมียใคร */
+  wifeRank?: 'minor';
   /**
    * งานบ้านต่อหมวด (ดู systems/chores.ts): joined = เคยตกลงเข้าไปช่วยแล้ว (ครั้งต่อไปไม่ถามซ้ำ ข้ามไปหัดขั้นใหม่),
    * tasks = ขั้นที่หัดได้แล้ว, askAfter = ไม่ยอมช่วย — จะถูกเรียกอีกหลังวันนี้
@@ -584,6 +586,10 @@ export type Effect =
    * record = reveal แล้วจดลงสมุดข่อย, keep = ปล่อยไว้อย่างเดิม
    */
   | { op: 'legend'; role: string; action: 'reveal' | 'record' | 'keep' }
+  /** role (ผู้ชาย) รับ with เป็นเมียน้อย — ดู systems/wives.ts */
+  | { op: 'takeWife'; role: string; with: string }
+  /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
+  | { op: 'divorce'; role: string; with: string }
   | { op: 'prestige'; role: string; delta: number };
 
 /**
@@ -977,6 +983,20 @@ export interface Balance {
     peerAge: [number, number];
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
+  /** เมียน้อยและการหย่า (lore: social.wife_categories, kinship.inheritance_divorce_1680s) — ตัวเลขเป็นของเกม */
+  wives: {
+    /** ผู้เล่นชายอายุช่วงนี้ที่มีเงินอย่างน้อย minWealth อาจมีคนเสนอเมียน้อย (ปีละ chance) */
+    age: [number, number];
+    minWealth: number;
+    chance: Unit;
+    /** อายุของหญิงที่ถูกเสนอ */
+    wifeAge: [number, number];
+    /** เมียที่ affection ต่อผู้เล่น ≤ divorceAt ขอแยกทาง (ปีละ divorceChance) */
+    divorceAt: number;
+    divorceChance: Unit;
+    /** ส่วนของเงินผู้เล่นที่เมียได้ไปตอนหย่า (แทน "คืนสิน" เพราะเกมไม่ได้เก็บสินเดิมของเมีย) */
+    wealthShare: Unit;
+  };
   /** บวชเรียน (lore: ritual.ordination) — ตัวเลขเป็นของเกม */
   ordination: {
     /** ผู้ชายที่ยังไม่แต่งงานบวชในช่วงอายุนี้ (ผู้เล่นถูกถามทุกปีในช่วงนี้จนบวชหรือพ้นช่วง) — lore ว่าราว 21 แต่ต้องบวชก่อนแต่ง และผู้ชายแต่งตั้งแต่ 18 */

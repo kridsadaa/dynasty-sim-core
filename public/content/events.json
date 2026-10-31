@@ -2124,5 +2124,28 @@
       { "id": "keep", "textKey": "event.legend_truth.keep",
         "effects": [ { "op": "legend", "role": "actor", "action": "keep" }, { "op": "stress", "role": "actor", "delta": 0.04 } ] }
     ]
+  },
+  "marriage.minor_wife": {
+    "id": "marriage.minor_wife", "textKey": "event.minor_wife", "contextTags": [],
+    "roles": { "actor": {}, "spouse": {}, "other": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "take", "textKey": "event.minor_wife.take",
+        "effects": [ { "op": "takeWife", "role": "actor", "with": "other" }, { "op": "wealth", "role": "actor", "delta": -20 },
+          { "op": "bond", "role": "spouse", "toward": "actor", "affection": -0.4 }, { "op": "prestige", "role": "actor", "delta": 0.5 } ] },
+      { "id": "decline", "textKey": "event.minor_wife.decline",
+        "effects": [ { "op": "bond", "role": "spouse", "toward": "actor", "affection": 0.04 } ] }
+    ]
+  },
+  "marriage.divorce": {
+    "id": "marriage.divorce", "textKey": "event.divorce", "contextTags": [],
+    "roles": { "actor": {}, "spouse": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "agree", "textKey": "event.divorce.agree",
+        "effects": [ { "op": "divorce", "role": "actor", "with": "spouse" }, { "op": "stress", "role": "actor", "delta": 0.05 } ] },
+      { "id": "reconcile", "textKey": "event.divorce.reconcile",
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -15 }, { "op": "bond", "role": "spouse", "toward": "actor", "affection": 0.3 } ] },
+      { "id": "refuse", "textKey": "event.divorce.refuse",
+        "effects": [ { "op": "bond", "role": "spouse", "toward": "actor", "affection": -0.1 }, { "op": "stress", "role": "actor", "delta": 0.06 } ] }
+    ]
   }
 }

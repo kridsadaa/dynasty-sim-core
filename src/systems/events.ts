@@ -11,6 +11,7 @@ import { applyChore } from './chores';
 import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, type Resistance } from './will';
+import { divorce, takeMinorWife } from './wives';
 
 // ============================================================================
 // Contextual Event Injection
@@ -357,6 +358,16 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'merit':
         ch.merit += e.delta;
         break;
+      case 'takeWife': {
+        const other = who(e.with);
+        if (other) report.notes.push(takeMinorWife(ctx, ch, other));
+        break;
+      }
+      case 'divorce': {
+        const other = who(e.with);
+        if (other) report.notes.push(...divorce(ctx, ch, other));
+        break;
+      }
       case 'ordain':
         ch.ordainedYear = yearOf(ctx, ctx.state.meta.day);
         ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, ctx.content.balance.ordination.literacy);
