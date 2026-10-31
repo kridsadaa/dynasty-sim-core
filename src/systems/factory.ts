@@ -184,13 +184,14 @@ export function pickNameFor(ctx: Ctx, kid: Character): string {
   return pickName(ctx, kid.sex, kid.social.estate, avoid, namesInUse(ctx, kid.dynastyId, yearOf(ctx, ctx.state.meta.day)));
 }
 
-export function marry(ctx: Ctx, a: Character, b: Character): void {
+/** sinceDay: วันแต่ง — ไม่ระบุ = วันนี้ (ฉากเริ่มใส่วันในอดีตให้คู่ที่แต่งกันมาก่อนเริ่มเรื่อง) */
+export function marry(ctx: Ctx, a: Character, b: Character, sinceDay = ctx.state.meta.day): void {
   const na = must(ctx.state.familyNodes[a.familyNodeId], 'a');
   const nb = must(ctx.state.familyNodes[b.familyNodeId], 'b');
   na.spouseIds.push(nb.id);
   nb.spouseIds.push(na.id);
   const id = `${a.id}|${b.id}|spouse`;
-  ctx.state.relations[id] = { id, from: a.id, to: b.id, kind: 'spouse', strength: 0.5, sinceDay: ctx.state.meta.day };
+  ctx.state.relations[id] = { id, from: a.id, to: b.id, kind: 'spouse', strength: 0.5, sinceDay };
 }
 
 /**

@@ -111,13 +111,17 @@ function lifestyleView(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: s
 function kinTies(ctx: Ctx, me: Character): Map<Character, string> {
   const out = new Map<Character, string>();
   const older = (c: Character) => c.birthDay < me.birthDay;
+  const grand = new Map<Character, string>();
   for (const p of livingParents(ctx, me)) {
     out.set(p, p.sex === 'm' ? 'พ่อ' : 'แม่');
     for (const sib of livingChildren(ctx, p)) {
       if (sib === me || out.has(sib)) continue;
       out.set(sib, `${older(sib) ? 'พี่' : 'น้อง'}${sib.sex === 'm' ? 'ชาย' : 'สาว'}`);
     }
+    // ฝ่ายพ่อ: ปู่ ย่า · ฝ่ายแม่: ตา ยาย
+    for (const g of livingParents(ctx, p)) grand.set(g, p.sex === 'm' ? (g.sex === 'm' ? 'ปู่' : 'ย่า') : g.sex === 'm' ? 'ตา' : 'ยาย');
   }
+  for (const [g, tie] of grand) out.set(g, tie);
   const spouse = livingSpouse(ctx, me);
   if (spouse) out.set(spouse, me.sex === 'm' ? 'ภรรยา' : 'สามี');
   for (const kid of livingChildren(ctx, me)) {
