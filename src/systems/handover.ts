@@ -61,19 +61,40 @@ export function snapshotToNode(ctx: Ctx, ch: Character): void {
   };
 }
 
+function livingKids(ctx: Ctx, node: FamilyNode | undefined): Character[] {
+  return (node?.childIds ?? [])
+    .map((id) => ctx.state.familyNodes[id]?.characterId)
+    .map((id) => (id ? ctx.state.characters[id] : undefined))
+    .filter(isAlive);
+}
+
+/** พี่น้องร่วมพ่อหรือร่วมแม่ที่ยังมีชีวิตและอยู่ตระกูลเดียวกัน */
+export function livingSiblings(ctx: Ctx, ch: Character): Character[] {
+  const nodes = ctx.state.familyNodes;
+  const node = nodes[ch.familyNodeId];
+  const sibs = [node?.fatherId, node?.motherId].flatMap((p) => (p ? livingKids(ctx, nodes[p]) : []));
+  return [...new Set(sibs)].filter((s) => s.id !== ch.id && !!s.dynastyId && s.dynastyId === ch.dynastyId);
+}
+
+/** ผู้รับมรดก: ลูก — ไม่มีลูกจึงตกแก่พี่น้อง (ลำดับหลังเป็นของเกม ยังไม่ได้ตรวจกับลักษณมรดก) */
+export function estateHeirs(ctx: Ctx, deceased: Character): Character[] {
+  const kids = livingKids(ctx, ctx.state.familyNodes[deceased.familyNodeId]);
+  return kids.length ? kids : livingSiblings(ctx, deceased);
+}
+
+/**
+ * ผู้สืบต่อเป็นผู้นำตระกูล/ตัวละครผู้เล่น: ลูกและพี่น้อง — ผู้ใหญ่มาก่อนเด็กเสมอ (มีผู้ใหญ่ก็ไม่ให้เด็กขึ้นเป็นรุ่นถัดไป)
+ * ในผู้ใหญ่หรือในเด็กด้วยกัน ลูกมาก่อนพี่น้อง แล้วเรียงตามฐานะแม่ (ลักษณมรดก) และอายุ
+ */
 export function heirCandidates(ctx: Ctx, deceased: Character): Array<{ ch: Character; score: number }> {
   const B = ctx.content.balance.inheritance;
-  const node = must(ctx.state.familyNodes[deceased.familyNodeId], 'node');
-  const kids = node.childIds
-    .map((id) => ctx.state.familyNodes[id])
-    .map((n) => (n?.characterId ? ctx.state.characters[n.characterId] : undefined))
-    .filter(isAlive);
-  return kids
-    .map((ch) => {
-      const n = must(ctx.state.familyNodes[ch.familyNodeId], 'child node');
-      const age = ageOf(ctx, ch);
-      return { ch, score: B.shareByParentage[n.parentage] + (age >= 16 ? 1 : 0) + age * 0.01 };
-    })
+  const kids = livingKids(ctx, ctx.state.familyNodes[deceased.familyNodeId]);
+  const score = (ch: Character, isKid: boolean) => {
+    const n = must(ctx.state.familyNodes[ch.familyNodeId], 'heir node');
+    const age = ageOf(ctx, ch);
+    return (age >= 15 ? 100 : 0) + (isKid ? 10 : 0) + B.shareByParentage[n.parentage] + age * 0.01;
+  };
+  return [...kids.map((ch) => ({ ch, score: score(ch, true) })), ...livingSiblings(ctx, deceased).map((ch) => ({ ch, score: score(ch, false) }))]
     .sort((a, b) => b.score - a.score);
 }
 
@@ -115,7 +136,9 @@ export function performHandover(
   log.push(holdFuneral(ctx, dead));
 
   // [5] estate
-  const estate = distributeEstate(ctx, dead, candidates.map((c) => c.ch), heir);
+  // ทรัพย์ไปตามกฎหมายแก่ลูก (ไม่มีลูกจึงพี่น้อง) แม้ผู้สืบต่อเป็นพี่น้อง — ผู้สืบต่อได้ตำแหน่ง ไม่ใช่ทรัพย์ทั้งหมด
+  const heirs = estateHeirs(ctx, dead);
+  const estate = distributeEstate(ctx, dead, heirs, heirs.includes(heir) ? heir : undefined);
   log.push(...estate.lines);
 
   // [6] social
@@ -175,7 +198,7 @@ export function performHandover(
  * ไม่แตะตำแหน่งผู้นำ ตำนาน หรือข้อห้ามตระกูล; ต้องเรียกก่อน prune ไม่งั้นทรัพย์ค้างอยู่กับตัวละครที่ถูกลบ
  */
 export function settleDeath(ctx: Ctx, dead: Character): { lines: string[]; heirIds: Array<Character['id']> } {
-  const heirs = heirCandidates(ctx, dead).map((c) => c.ch);
+  const heirs = estateHeirs(ctx, dead);
   const lines = [holdFuneral(ctx, dead)];
   const estate = distributeEstate(ctx, dead, heirs, undefined);
   lines.push(...estate.lines);

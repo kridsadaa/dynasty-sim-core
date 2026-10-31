@@ -117,6 +117,8 @@ function kinTies(ctx: Ctx, me: Character): Map<Character, string> {
     for (const sib of livingChildren(ctx, p)) {
       if (sib === me || out.has(sib)) continue;
       out.set(sib, `${older(sib) ? 'พี่' : 'น้อง'}${sib.sex === 'm' ? 'ชาย' : 'สาว'}`);
+      // ลูกของพี่น้อง — สำคัญเมื่อพี่น้องขึ้นสืบต่อแทนพี่/น้องที่ตาย ลูกของผู้ตายกลายเป็นหลาน
+      for (const n of livingChildren(ctx, sib)) out.set(n, n.sex === 'm' ? 'หลานชาย' : 'หลานสาว');
     }
     // ฝ่ายพ่อ: ปู่ ย่า · ฝ่ายแม่: ตา ยาย
     for (const g of livingParents(ctx, p)) grand.set(g, p.sex === 'm' ? (g.sex === 'm' ? 'ปู่' : 'ย่า') : g.sex === 'm' ? 'ตา' : 'ยาย');
