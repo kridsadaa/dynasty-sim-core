@@ -72,7 +72,9 @@ for (const e of entries) {
   if (!Array.isArray(e.citations)) errors.push(`${at}: ไม่มีฟิลด์ citations (ใส่ [] ได้ถ้าเป็น invented)`);
   const citations = Array.isArray(e.citations) ? e.citations : [];
   if (e.status !== 'invented' && citations.length === 0) errors.push(`${at}: ${e.status} ต้องมีแหล่งอ้างอิงอย่างน้อย 1`);
-  if (e.verified !== true) warnings.push(`${at}: ยังไม่ได้ตรวจกับเอกสารจริง (verified: false)`);
+  if (e.verified !== true) warnings.push(`${at}: ยังไม่ได้ตรวจกับเอกสารจริง (verified: false)${e.aiCheck ? ` — AI เทียบแล้ว: ${e.aiCheck.result}${e.aiCheck.fixed ? ' (แก้แล้ว)' : ''}` : ''}`);
+  if (e.aiCheck) oneOf(at, 'aiCheck.result', e.aiCheck.result, ['supported', 'partial', 'contradicted', 'unreachable'] as const);
+  if (e.aiCheck?.result === 'contradicted' && !e.aiCheck.fixed && !e.verified) warnings.push(`${at}: AI พบว่าต้นฉบับขัดกับรายการนี้ — ต้องแก้หรือให้คนตรวจก่อนใช้`);
   if (!hasPeriod) continue; // กฎด้านล่างอิง period ทั้งหมด
   const appliesAs = e.appliesAs ?? 'fact';
   // ข้อเท็จจริงจากยุคอื่นใช้ในฉากของเกมตรงๆ ไม่ได้ — ต้องอนุมานต่อ (projection) หรือย้ายไปเป็น pattern/mechanic
@@ -194,6 +196,9 @@ for (const e of entries) {
 console.log(`lore: ${sources.length} แหล่ง, ${entries.length} รายการ, ${anachronisms.length} กฎ anachronism`);
 console.log(`slice ปัจจุบัน: ${config.currentSlice.label} (พ.ศ. ${config.currentSlice.period.join('–')})`);
 for (const [d, c] of byDomain) console.log(`  ${d.padEnd(9)} ${c.verified}/${c.total} verified`);
+const ai = new Map<string, number>();
+for (const e of entries) if (e.aiCheck) ai.set(e.aiCheck.result, (ai.get(e.aiCheck.result) ?? 0) + 1);
+if (ai.size) console.log(`  AI เทียบต้นฉบับแล้ว ${[...ai.values()].reduce((a, b) => a + b, 0)}/${entries.length}: ${[...ai].map(([k, n]) => `${k} ${n}`).join(', ')}`);
 const byUse = new Map<string, number>();
 for (const e of entries) byUse.set(e.appliesAs ?? 'fact', (byUse.get(e.appliesAs ?? 'fact') ?? 0) + 1);
 console.log(`  ใช้เป็น: ${[...byUse].map(([k, n]) => `${k} ${n}`).join(', ')}`);

@@ -13,17 +13,33 @@
     "summary": "มีหลักฐานว่าปลูกในสยามตั้งแต่ราว 65 ปีก่อน slice จึงใช้ฟักทองใน event ได้ — ระวัง: ฉบับแปลอังกฤษ 1693 เครื่องหมายวรรคตอนหายจนอ่านได้ว่า 'ไม่มี' ให้อ้างต้นฉบับฝรั่งเศส",
     "status": "inferred",
     "citations": [
-      { "sourceId": "src.la_loubere", "locator": "เล่ม 1 ภาค 1 บทที่ 9 'Des Jardins des Siamois' (ราวหน้า 58)", "quote": "de petites citrouilles rouges en dedans, des melons d'eau" }
+      {
+        "sourceId": "src.la_loubere",
+        "locator": "เล่ม 1 ภาค 1 บทที่ 9 'Des Jardins des Siamois' (ราวหน้า 58)",
+        "quote": "de petites citrouilles rouges en dedans, des melons d'eau"
+      }
     ],
     "verified": false,
-    "gameRefs": { "tags": ["food:pumpkin"] }
+    "gameRefs": {
+      "tags": ["food:pumpkin"]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/LoubereSiamAmsterdam1691",
+      "notes": "interpretation: reasonable and correctly flagged as interpretation | summary caveat about the English: confirmed — 1693 English p.20 reads \"At Siam I have seen Chibbols, and no Onions, Garlick, Turneps, Cucumbers, Citruls, Water-melons\", which can be read as 'no ... Citruls', and it drops 'red inside'"
+    }
   },
   {
     "id": "material.cucumber_eaten_raw",
     "domain": "material",
     "title": "แตงกวากินดิบ",
     "period": [2230, 2231],
-    "claim": { "item": "แตงกวา", "use": "กินดิบ", "note": "ชาวสยามเรียกว่าแตงโมชนิดหนึ่ง" },
+    "claim": {
+      "item": "แตงกวา",
+      "use": "กินดิบ",
+      "note": "ชาวสยามเรียกว่าแตงโมชนิดหนึ่ง"
+    },
     "summary": "แตงกวาเป็นผักในสวนสยามสมัยพระนารายณ์",
     "status": "attested",
     "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; พืชผักสวนครัวและวิธีกินเปลี่ยนช้า",
@@ -32,19 +48,41 @@
       { "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. IX 'Of the Gardens of the Siameses'" }
     ],
     "verified": false,
-    "gameRefs": { "tags": ["food:cucumber"] }
+    "gameRefs": {
+      "tags": ["food:cucumber"]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://archive.org/details/LoubereSiamAmsterdam1691 · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-i-of-the-country-of-siam/chap-ix-of-the-gardens-of-the-siameses-and-occasionally-of-their-liquors",
+      "notes": "French quote 'de petits concombres' found (Amsterdam 1691, p.58, ch. IX 'Des Jardins des Siamois, & par occasion de leurs Boissons')."
+    }
   },
   {
     "id": "material.wax_gourd_origin",
     "domain": "material",
     "title": "ฟัก (ฟักเขียว) เป็นพืชเก่าแก่ของเอเชีย",
     "period": [1043, 2310],
-    "claim": { "item": "ฟัก", "thaiNames": ["ฟัก", "แฟง", "มะแฟง (เหนือ)"], "origin": "ไม่ชัด — อินเดียและอินโดจีนมีความหลากหลายมากที่สุด; มีหลักฐานปลูกในจีนตั้งแต่ราว ค.ศ. 500" },
+    "claim": {
+      "item": "ฟัก",
+      "thaiNames": ["ฟัก", "แฟง", "มะแฟง (เหนือ)"],
+      "origin": "ไม่ชัด — อินเดียและอินโดจีนมีความหลากหลายมากที่สุด; มีหลักฐานปลูกในจีนตั้งแต่ราว ค.ศ. 500"
+    },
     "summary": "ใช้ได้ในทุก slice แต่หลักฐานไม่เจาะจงอยุธยา",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.prosea_benincasa", "locator": "หัวข้อ 'Origin and geographic distribution', 'Vernacular names'" }],
+    "citations": [
+      { "sourceId": "src.prosea_benincasa", "locator": "หัวข้อ 'Origin and geographic distribution', 'Vernacular names'" }
+    ],
     "verified": false,
-    "gameRefs": { "tags": ["food:wax_gourd"] }
+    "gameRefs": {
+      "tags": ["food:wax_gourd"]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://prosea.prota4u.org/view.aspx?id=2144",
+      "notes": "PROSEA lists แฟง as a central-Thai name; the entry does not give its region, which is fine."
+    }
   },
   {
     "id": "material.houses_1680s",
@@ -61,9 +99,20 @@
     "summary": "ใช้กับฉาก 'โรงครัว' ของ event มีดบาด (ครัวอยู่ที่ลานบ้าน) และการแบ่งเรือนในรั้วเดียวกันของครัวเรือนขุนนาง",
     "status": "attested",
     "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; เรือนไม้ไผ่ยกสูงเพราะน้ำท่วมเป็นการปรับตัวต่อภูมิประเทศเดิม และเทียบได้กับจิตรกรรมวัดเกาะแก้วสุทธาราม พ.ศ. 2277 (attire.wat_ko_kaeo_reference) ซึ่งอยู่ในช่วงเกม — ใช้ในฉากได้",
-    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[30]" }],
+    "citations": [
+      { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[31]" }
+    ],
     "verified": false,
-    "gameRefs": { "tags": ["place:kitchen", "house:riverside"] }
+    "gameRefs": {
+      "tags": ["place:kitchen", "house:riverside"]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ตำแหน่งถูก 0/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-ii",
+      "notes": "visualDescriptor: consistent with the above",
+      "fixed": true
+    }
   },
   {
     "id": "material.household_objects_1680s",
@@ -133,6 +182,12 @@
       "tags": [
         "gold:buried_jar"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "unreachable",
+      "checked": "ดูหมายเหตุ",
+      "notes": "no citations: status 'invented'; nothing to check"
     }
   },
   {
@@ -156,6 +211,12 @@
       "tags": [
         "manual:goldsmith"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "unreachable",
+      "checked": "ดูหมายเหตุ",
+      "notes": "no citations: status 'invented'; nothing to check"
     }
   },
   {
@@ -187,16 +248,28 @@
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
-        "locator": "Part II ch. IV",
+        "locator": "Part II ch. IV หน้า 35–36",
         "quote": "Their Sauces are plain, a little Water with some Spices, Garlic, Chibols"
       },
       {
         "sourceId": "src.siripong_2567_royal_cuisine",
         "locator": "รายการอาหาร ข้อ 6 แกงเทโพ",
         "quote": "แกงเทโพ เป็นแกงใส่กะทิ โดยใช้น้ำพริกแกงแดง"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. III หน้า 34",
+        "quote": "they are serv'd with Morsels ready cut"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-iv",
+      "notes": "coconut: partial — oil from coconut is supported: \"nor any eating Oil, save that which they extract from the Fruit of Coco\" (p.36). Grating or squeezing is not described (inference). | coconutCurry: not checked (other source) | gameTasks: design list, not checked",
+      "fixed": true
+    }
   },
   {
     "id": "material.crafts_1680s",
@@ -227,7 +300,13 @@
         "quote": "every one applies himself to know how to do a little of all"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-xiii",
+      "notes": "The summary's 'สานเสื่อ เย็บผ้า' is not in this chapter; it is the writer's inference."
+    }
   },
   {
     "id": "material.flower_stringing",
@@ -250,9 +329,20 @@
         "sourceId": "src.thawatchai_2560_phuamia",
         "locator": "หน้า 8 (อ้างพระบรมวงศ์เธอ กรมหลวงราชบุรีดิเรกฤทธิ์ 2513 หน้า 39–40)",
         "quote": "ทัดดอกฉะบาแดงสองหู ร้อยดอกฉะบาแดงใส่ศีรษะใส่คอ"
+      },
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "ลักษณผัวเมีย ฉบับพิมพ์ 2482 เล่ม 2 ส่วน 1 บทนำ สแกน 4",
+        "quote": "ร้อยดอกฉะบาเปนมาไลยไส่ ศีศะ ฅอ"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://so03.tci-thaijo.org/index.php/husoarujournal/article/download/260348/173173 · https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_1",
+      "notes": "garlandStyles: not in source — ไม่มีในบทความหรือตัวบท | lotusFolding: not in source (ข้ออ้างว่าไม่พบ — สอดคล้อง) | lotusGathering: not in source (ข้ออ้างว่าไม่พบ — สอดคล้อง)"
+    }
   },
   {
     "id": "material.floor_polishing",
@@ -264,7 +354,7 @@
     ],
     "claim": {
       "task": "เด็กช่วยขัดพื้นกระดานเรือนไม้ด้วยกะลามะพร้าว",
-      "support": "เรือนขุนนางเป็นเรือนไม้จริง (material.houses_1680s), กะลามะพร้าวเป็นของใช้ในบ้าน (material.household_objects_1680s), ลา ลูแบร์เห็นว่าเรือนสะอาดเรียบร้อย"
+      "support": "เรือนขุนนางเป็นเรือนไม้จริง (material.houses_1680s), กะลามะพร้าวเป็นของใช้ในบ้าน (material.household_objects_1680s), ลา ลูแบร์เห็นว่าเรือนรับรองคณะทูตที่ปลูกแบบพื้นเมือง (พื้นแผงไม้ไผ่ปูเสื่อ) สะอาดเรียบร้อย"
     },
     "summary": "ไม่มีเอกสารบรรยายการขัดพื้นด้วยกะลาในช่วงเกม ใส่เป็นงานบ้านเพราะสอดคล้องกับเรือนไม้และของใช้ที่มีหลักฐาน",
     "status": "invented",
@@ -276,6 +366,13 @@
         "quote": "Neatness appeared every where, but no Magnificence."
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-ii",
+      "notes": "task: invented (as stated); no source | support: partial — the quote is accurate but describes the temporary lodgings built for the French embassy along the river (bamboo hurdle floors covered with rush mats): \"The Floors were cover'd with Rushmats... Neatness appeared every where, but no Magnificence\". It is not a general remark about Siamese or nobles' timber houses, and it says nothing about plank floors.",
+      "fixed": true
+    }
   }
 ]

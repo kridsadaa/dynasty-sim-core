@@ -61,7 +61,13 @@
         "locator": "Part II ch. IX \"Of the Studies of the Siameses\" หน้า 58–59"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-ix",
+      "notes": "gameMapping: design note"
+    }
   },
   {
     "id": "ritual.ordination",
@@ -87,7 +93,13 @@
         "locator": "บทที่ 2 หน้า 47; บทที่ 7 หน้า 143–144"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036",
+      "notes": "Chapter 7 'Years of Austerity' begins on p.143, so the locator is right. The summary's points about divorce and conscription are not from this source and were not checked here."
+    }
   },
   {
     "id": "ritual.topknot_cutting",
@@ -118,7 +130,13 @@
         "locator": "เชิงอรรถบทที่ 6 ข้อ 18 หน้า 281–282"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 2/2; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036 · https://thesiamsociety.org/wp-content/uploads/1952/03/JSS_040_2f_PhyaAnumanRajadhon_CeremonyOfThamKhwanOfMonthOldChild-1.pdf",
+      "notes": "gameMapping: design note, fine"
+    }
   },
   {
     "id": "ritual.yu_fai_placenta",
@@ -187,10 +205,17 @@
     "citations": [
       {
         "sourceId": "src.sharp_hanks_1978_bangchan",
-        "locator": "บทที่ 8 หน้า 164–165; หน้า 88–89, 145"
+        "locator": "บทที่ 8 หน้า 164–165; หน้า 86, 146; เชิงอรรถบทที่ 8 ข้อ 1, 3 หน้า 290–291"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ตำแหน่งถูก 0/1; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036",
+      "notes": "gameMapping: design inference, fine",
+      "fixed": true
+    }
   },
   {
     "id": "ritual.alms_round_1680s",
@@ -222,7 +247,13 @@
         "quote": "It is rare that the People sends them away without giving them"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xvii-of-the-talapoins-and-their-convents",
+      "notes": "The summary is right that rice is not mentioned; they carry an 'Iron Bason, to receive what is given them'."
+    }
   },
   {
     "id": "ritual.holy_days_1680s",
@@ -265,6 +296,11 @@
         "moon:dark14",
         "moon:dark"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xvii-of-the-talapoins-and-their-convents"
     }
   },
   {
@@ -284,7 +320,7 @@
       "dedicationFeast": "ฉลองวัดใหม่เมื่ออัญเชิญพระพุทธรูปใหม่เข้าประดิษฐาน: ละคร (Lacone) แข่งวัว นักมวยปล้ำ และชกมวยด้วยศอกและหมัด",
       "boxing": "พันมือด้วยเชือกสามสี่รอบ (ชาวลาวใช้ห่วงทองแดง)",
       "oxRace": "ลานยาว 500 วา กว้าง 2 วา ปักเสาสี่มุม วิ่งวนรอบเสา มีร้านให้ผู้ตัดสินตรงกลาง",
-      "monks": "พระห้ามดูละครและการละเล่นเหล่านี้"
+      "monks": "พระห้ามดูการแสดงโขน/ระบำ (และอาจรวมละคร) — ลา ลูแบร์ไม่ได้พูดถึงพระกับการแข่งวัวหรือชกมวย"
     },
     "summary": "event งานวัด: ทำบุญปล่อยนกปล่อยปลา ดูละคร ผู้ชายขึ้นชกมวยคาดเชือกได้ (อาจเจ็บหน้า) วัยรุ่นอาจแอบมองคนต่างเพศที่มางาน",
     "status": "attested",
@@ -305,7 +341,14 @@
         "quote": "In Boxing, they guard their Hand with three or four rounds of Cord"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vi · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xvii-of-the-talapoins-and-their-convents",
+      "notes": "monks: partial — the ban is said of the stage plays (Cone and Rabam, possibly all three plays): \"these Shows contain nothing Religious, since the Talapoins are prohibited to be present thereat\". Nothing is said about monks and ox races, wrestling or boxing.",
+      "fixed": true
+    }
   },
   {
     "id": "ritual.floating_lanterns_1680s",
@@ -338,7 +381,13 @@
         "quote": "There are of different Sizes, according to the Devotion of every particular Person"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vi",
+      "notes": "'Religious Shows' is the margin note in ch. VI, so the locator is fine."
+    }
   },
   {
     "id": "ritual.fifth_month_bathing_1680s",
@@ -365,6 +414,11 @@
         "quote": "the Son and the Daughter do equally wash the Father and the Mother, the Grandfather and the Grandmother"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xvii-of-the-talapoins-and-their-convents"
+    }
   }
 ]

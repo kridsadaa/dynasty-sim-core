@@ -79,6 +79,13 @@ export interface LoreEntry {
   citations: Citation[];
   /** มีคนเปิดเอกสารจริงตรวจแล้ว */
   verified: boolean;
+  /**
+   * AI ดึงเอกสารต้นฉบับมาเทียบแล้ว (ไม่ใช่ verified — หลักการข้อ 4 ให้คนตรวจ) — ช่วยคนตรวจรู้ว่าต้องดูตรงไหน
+   * result: supported = ข้อความและข้ออ้างตรงต้นฉบับ, partial = บางส่วนไม่มีในต้นฉบับหรือ locator ผิด,
+   *         contradicted = ต้นฉบับว่าอีกอย่าง, unreachable = หาต้นฉบับออนไลน์ไม่ได้
+   * fixed: แก้รายการตามที่พบแล้ว (result ยังเป็นผลก่อนแก้)
+   */
+  aiCheck?: { date: string; result: 'supported' | 'partial' | 'contradicted' | 'unreachable'; checked: string; notes?: string; fixed?: boolean };
   /** ค่าเริ่มต้น 'fact' — ข้อมูลจากงานภาคสนามต่างยุคต้องเป็น pattern/mechanic */
   appliesAs?: AppliesAs;
   /** อธิบายว่าทำไมจึงอนุมานย้อนไปถึงยุคของเกมได้ — บังคับเมื่ออ้างงานภาคสนามที่ไม่ร่วมยุค */

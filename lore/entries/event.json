@@ -4,12 +4,35 @@
     "domain": "event",
     "title": "เสียกรุงศรีอยุธยาครั้งที่สอง",
     "period": [2310, 2310],
-    "claim": { "year": 2310, "kind": "war", "outcome": "กรุงศรีอยุธยาแตกแก่กองทัพพม่า" },
+    "claim": {
+      "year": 2310,
+      "kind": "war",
+      "outcome": "กรุงศรีอยุธยาแตกแก่กองทัพพม่า"
+    },
     "summary": "กรุงศรีอยุธยาเสียแก่พม่าใน พ.ศ. 2310 เกมใช้เป็น shock ล้างทรัพย์และจุดยึดของตำนานตระกูล",
     "status": "attested",
-    "citations": [{ "sourceId": "src.phongsawadan_phan_chanthanumat", "locator": "TODO: ตอนเสียกรุง" }, { "sourceId": "src.boeles_1968_dutch_eyewitness_1767", "locator": "JSS 56(1) ทั้งบทความ — ยังไม่ได้อ่าน (PDF เป็นภาพสแกน)" }],
+    "citations": [
+      {
+        "sourceId": "src.phongsawadan_phan_chanthanumat",
+        "locator": "ประชุมพงศาวดาร ภาคที่ 64 (2479) บทที่ 40 รัชกาลสมเด็จพระที่นั่งสุริยาศน์อมรินทร์ (ท้ายบท)",
+        "quote": "พะม่าก็เข้ากรุงได้ เข้าเผา พระราชวังและวัดพระศรีสรรเพ็ชญ์"
+      },
+      {
+        "sourceId": "src.boeles_1968_dutch_eyewitness_1767",
+        "locator": "JSS 56(1) 1968 pp. 109–111 (English translation of the Relaas, signed P. van der Voort 26 April 1768)",
+        "quote": "Having mastered the city, they destroyed it entirely to ashes."
+      }
+    ],
     "verified": false,
-    "gameRefs": { "tags": ["history:fall_of_ayutthaya"] }
+    "gameRefs": {
+      "tags": ["history:fall_of_ayutthaya"]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 0/2; เทียบกับ https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_64/บทที่_40 · https://thesiamsociety.org/wp-content/uploads/1968/03/JSS_056_1f_Boeles_EyewitnessAccountInDutchOfDestructionOfAyudhya1767.pdf",
+      "notes": "Phan Chanthanumat Ayutthaya text = ประชุมพงศาวดาร ภาคที่ 64 (2479) on Wikisource; ch.40 ends with the fall and King Ekathat's death. Its narrative stops at 2310 (the Thonburi part is the separate src.phongsawadan_thonburi_chanthanumat, ภาคที่ 65), so describesPeriod [1893, 2325] on that source is to"
+    }
   },
   {
     "id": "event.thonburi_succession_2325",
@@ -23,7 +46,7 @@
       "year": 2325,
       "kind": "succession",
       "outcome": "สิ้นรัชกาลสมเด็จพระเจ้าตากสิน เจ้าพระยาจักรีขึ้นครองราชย์ ตั้งกรุงรัตนโกสินทร์",
-      "factionRisk": "ก่อนเจ้าพระยาจักรีกลับ ข้าราชการแตกเป็นฝ่ายพระยาสรรค์กับฝ่ายพระยาสุริยอภัยและรบกันในกรุง; หลังปราบดาภิเษก ฆ่ากรมขุนอนุรักษ์สงครามกับพรรคพวก ๔๐ เศษ (มีพระยาเพ็ชรพิชัย พระยากลางเมือง พระยามหาอำมาตย์ ฯลฯ) และประหารพระยาสรรค์ พระยามหาเสนา พระยารามัญวงศ์ พระยาวิชิตณรงค์ หลวงพัสดีกลาง; พระเจ้าตากและ \"พวกโจทก์\" ถูกสำเร็จโทษ",
+      "factionRisk": "ก่อนเจ้าพระยาจักรีกลับ ข้าราชการแตกเป็นฝ่ายพระยาสรรค์กับฝ่ายพระยาสุริยอภัยและรบกันในกรุง; พระเจ้าตากและ \"พวกโจทก์\" ถูกสำเร็จโทษ แล้วจึงปราบดาภิเษก; ต่อมาให้ฆ่าพรรคพวกขุนอนุรักษ์สงคราม ๔๐ เศษ (มีพระยาเพ็ชรพิชัย พระยากลางเมือง พระยามหาอำมาตย์ ฯลฯ) ส่วนตัวขุนอนุรักษ์สงครามให้งดไว้พิจารณา และประหารพระยาสรรค์ พระยามหาเสนา พระยารามัญวงศ์ พระยาวิชิตณรงค์ หลวงพัสดีกลาง",
       "retained": "ขุนนางกรุงธนบุรีจำนวนมากได้ตำแหน่งต่อหรือเลื่อนขึ้น (เช่น พระยาธรรมาธิกรณ์ บุญรอด, พระยาพิพัฒนโกษา สน เป็นเจ้าพระยาพระคลัง, พระยาตักโต โหร) — ปูนบำเหน็จตามฐานานุศักดิ์",
       "gameMapping": "rules.json history:thonburi_succession — ควรกวาดล้างเฉพาะตระกูลที่อยู่ฝ่ายพระยาสรรค์/กรมขุนอนุรักษ์สงครามในศึกกลางเมือง ไม่ใช่ทุกตระกูลที่รุ่งในสมัยพระเจ้าตาก"
     },
@@ -63,6 +86,13 @@
         "history:thonburi_succession",
         "faction:taksin_loyalist"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 5/5; ตำแหน่งถูก 5/5; เทียบกับ https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_65/พงศาวดาร · https://vajirayana.org/พระราชพงศาวดารกรุงรัตนโกสินทร์-รัชกาลที่-๑/๔-ตั้งข้าราชการวังหลวง",
+      "notes": "factionRisk \"ฆ่ากรมขุนอนุรักษ์สงครามกับพรรคพวก ๔๐ เศษ\": partial/contradicted — the followers were killed but he himself was held: \"จึงดำรัสให้เอาพรรคพวกไปฆ่าเสีย แต่ขุนอนุรักษ์สงครามนั้นให้งดไว้พิจารณา\"",
+      "fixed": true
     }
   },
   {
@@ -81,7 +111,7 @@
       "kind": "famine",
       "causes": "ทุพภิกขะ โจระ โรคะ — อดอยาก โจร และโรค",
       "deaths": "ไม่มีตัวเลข — บาทหลวงเขียน 1 พ.ย. 2312 ว่าปีนั้นคนตายมากกว่าตอนพม่าตีกรุง",
-      "response": "พระเจ้าตากจ้างสัปเหร่อเผาศพคนอดตาย และแจกข้าวคนกว่าหมื่นคน (2311)",
+      "response": "พระเจ้าตากให้เงินและอาหารแก่สัปเหร่อค้นศพคนอดตายเผาที่ชลบุรี (ต้น 2310) และแจกข้าวแก่ผู้มารับกว่า 10,000 คนที่ธนบุรี (จ.ศ. 1130 = 2311)",
       "children": "บาทหลวงล้างบาปเด็กอดอยาก 400 คนช่วงข้าวแพง (จดหมาย มิ.ย. 2313)"
     },
     "summary": "ความตายหลังเสียกรุงมาจากความอดอยากมากกว่าสงคราม — เกมตอนนี้มีแค่ shock ปี 2310 ปีเดียว",
@@ -103,6 +133,13 @@
       "tags": [
         "history:famine_after_fall"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_65/พงศาวดาร · https://th.wikisource.org/wiki/ประชุมพงศาวดาร_ภาคที่_๓๙",
+      "notes": "Both quotes exact. French text on Wikisource is a wikitext transcription with \"(หน้า N)\" markers; the 1 Nov letter starts on p.75 and the quote is on p.76; the 400-children passage is on p.77 (just before the \"(หน้า ๗๘)\" marker), so \"หน้า 76–78\" is acceptable but 76–77 is exact.",
+      "fixed": true
     }
   },
   {
@@ -116,8 +153,8 @@
     "claim": {
       "year": 2363,
       "kind": "epidemic",
-      "disease": "อหิวาตกโรค — ครั้งแรกที่มาถึงสยาม",
-      "route": "จากเกาะหมาก/สงขลาตามชายฝั่งถึงปากน้ำ แล้วเข้ากรุงเทพฯ",
+      "disease": "อหิวาตกโรค (ไข้ป่วงใหญ่) — พงศาวดารว่าตายมากกว่าที่ใครจำได้ (พิธีอาพาธพินาศเคยทำมาแล้วเมื่อ 2354)",
+      "route": "จากเมืองเกาะหมาก ข้ามมาหัวเมืองฝ่ายตะวันตก ถึงปากน้ำเจ้าพระยา (สมุทรปราการ) แล้วเข้ากรุงเทพฯ",
       "duration": "ราว 15 วัน เดือน 7",
       "deaths": "พงศาวดาร: กรุงเทพฯ และรอบๆ ราว 3 หมื่น หญิงตายมากกว่าชายราว 2 ใน 3; พระคลังบอกครอว์เฟิร์ดว่าตาย 2 ใน 10 ของประชากร",
       "response": [
@@ -147,6 +184,13 @@
       "tags": [
         "history:cholera_2363"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/b29350815_0002 · https://vajirayana.org/พระราชพงษาวดาร-กรุงรัตนโกสินทร-รัชกาลที่-๒/๖๒-เกิดไข้อหิวาตกะโรค",
+      "notes": "disease \"ครั้งแรกที่มาถึงสยาม\": not in source — chapter says only \"ผู้คนตายมากกว่าที่ใคร ๆ จำได้ว่าเคยมีมาแต่ก่อน\", and the same rite had been held for an earlier outbreak in 2354 (\"ตามอย่างที่ได้เคยทำมาเมื่อปีมแมตรีศก จุลศักราช ๑๑๗๓ พ.ศ. ๒๓๕๔\") | route: partial — \"ไข้นั้นเกิดมาแต่เมืองเกาะหมากก่อน แล้วข้ามมาหัวเมืองฝ่ายตวันตก ติดต่อขึ้นมาจนถึงปากน้ำเจ้าพระยา\"; สงขลา is not in the chronicle (may come from Crawfurd, not checked)",
+      "fixed": true
     }
   },
   {
@@ -169,7 +213,7 @@
     "citations": [
       {
         "sourceId": "src.crawfurd_1830",
-        "locator": "vol. 1 p. 242 (บันทึก 21 พ.ค. 1822; 15 พ.ค. หน้า 227)",
+        "locator": "vol. 1 pp. 242–243 (บันทึก 21 พ.ค. 1822); 15 พ.ค. หน้า 227–228",
         "quote": "directed the people to keep at home, and abstain from all work for seven days"
       }
     ],
@@ -178,6 +222,12 @@
       "tags": [
         "history:cholera_2365"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/b29350815_0001",
+      "notes": "Quote exact in archive.org djvu text of vol. 1 (2nd ed.), line-wrapped only. The princess's death is told on p.228, not p.227; the response passage runs onto p.243."
     }
   },
   {
@@ -192,7 +242,7 @@
       "year": 2392,
       "kind": "epidemic",
       "disease": "อหิวาตกโรค",
-      "deaths": "พงศาวดาร: ข้าราชการที่ตัดเบี้ยหวัดตายราว 10 ลด 2; บางบ้านเสีย 3 ใน 10 บางบ้าน 2 ใน 10; บ้านใหญ่ร้อยคนเสียยี่สิบเศษ",
+      "deaths": "พงศาวดาร: บัญชีเบี้ยหวัดข้าราชการตายราว 10 ลด 2 ทุกหมู่ทุกกรม; บ้านใหญ่ร้อยคนเสียยี่สิบเศษ; (ราษฎรลางบ้าน 10 ส่วนเสีย 3 หรือ 2 — ประโยคนี้ต่อจากข่าวเมืองเขมร อาจหมายถึงเขมร)",
       "response": [
         "ทำบุญหลวง ซื้อสัตว์ปล่อยทุกวัน",
         "วงด้ายสายสิญจน์รอบกำแพงวัง",
@@ -219,6 +269,13 @@
       "tags": [
         "history:cholera_2392"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๒๔๗-ทรงบำเพ็ญพระราชกุศลในคราวเกิดไข้ปวง · https://www.gutenberg.org/cache/epub/68647/pg68647.txt",
+      "notes": "deaths \"บางบ้านเสีย 3 ใน 10 / 2 ใน 10\": partial — the sentence comes right after \"เมืองเขมรก็เข้ามาว่าความไข้เป็นออกไปถึงเมืองเขมร และเมืองญวน\" and is followed by \"แต่ที่เมืองญวนนั้นจะมากน้อยเท่าใดไม่ทราบความ\", so it most likely describes Cambodia, not Bangkok | response sacred thread round the palace, native doctors fleeing, corpses left in houses, bodies in river, mass pyres at wats: not in the chronicle; they are in Feltus ch. VI (House's letters): \"The native doctors fled from their patients.\"; \"A cordon of such yarn hung looped from battlement to battlement entirely around the royal palac",
+      "fixed": true
     }
   },
   {
@@ -275,6 +332,12 @@
       "tags": [
         "history:nine_armies"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 5/5; ตำแหน่งถูก 5/5; เทียบกับ https://vajirayana.org/พระราชพงศาวดารกรุงรัตนโกสินทร์-รัชกาลที่-๑/๓๑-น้ำมากข้าวแพง · https://vajirayana.org/พระราชพงศาวดารกรุงรัตนโกสินทร์-รัชกาลที่-๑/๓๒-ศึกพม่าครั้งที่-๑",
+      "notes": "Quick re-confirmation; all 5 quotes exact. \"เก้าทัพ\" indeed absent from ch.32–33 text, as contested says."
     }
   },
   {
@@ -318,6 +381,12 @@
       "tags": [
         "history:tha_din_daeng"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/พระราชพงศาวดารกรุงรัตนโกสินทร์-รัชกาลที่-๑/๔๔-ศึกพม่าครั้งที่-๒",
+      "notes": "retreat to Martaban: not checked in detail (ch.44 mentions the Ava king at \"เมืองเมาะตะมะ\")"
     }
   },
   {
@@ -325,7 +394,7 @@
     "domain": "event",
     "title": "ทัพหลวงไปทวาย–ตีเมืองพม่า",
     "period": [
-      2336,
+      2335,
       2337
     ],
     "region": "กรุงเทพฯ และหัวเมืองรอบ",
@@ -335,7 +404,7 @@
       "outcome": "ไทยยกไปรักษาทวายและคิดตีเมาะตะมะ แต่ทวายกลับไปเข้าพม่า ต้องถอยกลับ",
       "levy": "พงศาวดาร: \"เกณฑ์ทัพครั้งนั้น ๔๐,๐๐๐\" รวมทัพเขมร ทัพลาว และหัวเมืองเหนือ",
       "deaths": "ไม่มีตัวเลข; ที่ทวายเสบียงฝืดเคืองจนเกือบอด",
-      "discipline": "หมื่นสิทธิโสมตำรวจถูกเฆี่ยนและจำเพราะลักพาหญิงทวาย (บทที่ ๖๖)"
+      "discipline": "หมื่นสิทธิโสมตำรวจถูกเฆี่ยนและจำเพราะพาหญิงชาวทวายมา (บทที่ ๖๖ ทัพหลวงไปทวายครั้งปีชวด 2335)"
     },
     "summary": "สงครามรุกนอกแดนในยามสงบระหว่างศึกใหญ่ — ภาระคือการเกณฑ์คนไปไกลบ้านและอดอยากกลางป่า มากกว่าความตายในสนามรบ",
     "status": "inferred",
@@ -356,6 +425,13 @@
       "tags": [
         "history:tavoy_campaign"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/พระราชพงศาวดารกรุงรัตนโกสินทร์-รัชกาลที่-๑/๖๗-ยกทัพหลวงไปตีเมืองพม่า · https://vajirayana.org/พระราชพงศาวดารกรุงรัตนโกสินทร์-รัชกาลที่-๑/๖๘-ทวายเป็นกบฏ",
+      "notes": "discipline (บทที่ ๖๖): partial — the passage is in ch.66 (title: ทัพหลวงยกไปเมืองทวาย), which follows ch.64 \"ลุจุลศักราช ๑๑๕๔ ปีชวด จัตวาศก\" (2335), i.e. the earlier 2335 expedition, outside period [2336, 2337]: \"ได้ตัวหมื่นสิทธิโสมมาลงพระราชอาชญาเฆี่ยนแล้วจำไว้\"",
+      "fixed": true
     }
   },
   {
@@ -400,6 +476,12 @@
       "tags": [
         "history:rama1_succession"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/พระราชพงษาวดาร-กรุงรัตนโกสินทร-รัชกาลที่-๒/๑-สมเด็จพระเจ้าอยู่หัวรัชกาลที่-๑-สวรรคต · https://vajirayana.org/พระราชพงษาวดาร-กรุงรัตนโกสินทร-รัชกาลที่-๒/๓-เหตุการณ์บ้านเมืองในขณะเมื่อเปลี่ยนรัชกาล",
+      "notes": "whoWasPurged Mon nobles: partial — the text names \"สมิงรอดสงครามคน ๑ สมิงศิริบุญ (โดด) บุตรเจ้าพระยามหาโยธาคน ๑\" (สมิง titles) but does not say \"มอญ\""
     }
   },
   {
@@ -444,6 +526,12 @@
       "tags": [
         "history:thalang_war"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/พระราชพงษาวดาร-กรุงรัตนโกสินทร-รัชกาลที่-๒/๑๑-เรื่องศึกพม่า",
+      "notes": "Quick re-confirmation; quotes exact."
     }
   },
   {
@@ -482,6 +570,12 @@
       "tags": [
         "history:rama3_accession"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๑-พระบาทสมเด็จพระนั่งเกล้าฯ-เสวยราชย์ · https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๖-ทรงตั้งข้าราชการ",
+      "notes": "purge: none seen in ch.1/6 — consistent"
     }
   },
   {
@@ -532,6 +626,12 @@
       "tags": [
         "history:anuwong_revolt"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 4/4; ตำแหน่งถูก 4/4; เทียบกับ https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๓๑-กรมพระราชวังบวรสถานมงคลยกทัพออกจากกรุง · https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๕๑-ส่งอนุกับครอบครัวลงมากรุงเทพ-ฯ",
+      "notes": "year 2369: partial — chapter says only \"ในเดือน ๓ ปีจอนั้น\"; the conversion is the drafter's (already noted in contested)"
     }
   },
   {
@@ -580,6 +680,12 @@
       "tags": [
         "history:annam_war_2376"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 4/4; ตำแหน่งถูก 4/4; เทียบกับ https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_67_(2481) · https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๗๘-โปรดเกล้าฯ-ให้เจ้าพระยาบดินทรเดชาและเจ้าพระยาพระคลังไปรบญวน",
+      "notes": "deaths: no Thai figure — consistent with what was read"
     }
   },
   {
@@ -623,6 +729,12 @@
       "tags": [
         "history:chau_doc_2384"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๑๘๓-กองทัพไทยแตกที่เมืองโจฎก · https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๑๘๗-ทรงกริ้วเจ้าพระยายมราชและนายทัพนายกอง",
+      "notes": "year 2384: partial — ch.165 opens \"ลุศักราช ๑๒๐๓[๑] ปีฉลูตรีศก\" (footnote พ.ศ. ๒๓๘๔), but the Chau Doc rout footnote is \"ศุกร์ที่ ๘ เมษายน\" = 8 Apr 1842 (ch.172 footnote \"[๑] พุธที่ ๖ ตุลาคม\" and ch.178 \"[๑] วันที่ ๒๔ มกราคม\" fall between), i.e. พ.ศ. 2385 by Jan-start counting; 2384 is the จ.ศ. 1203 year. Already acknowledged in contested."
     }
   },
   {
@@ -637,7 +749,7 @@
     "claim": {
       "year": 2391,
       "kind": "war",
-      "outcome": "ตั้วเหี่ยจีนยึดเมืองฉะเชิงเทราเดือน ๕ (เชิงอรรถ ๙ เม.ย.); พระยาวิเศษฦๅไชยตายในที่รบ พระยามหาเทพถูกปืนถึงอนิจกรรม; เจ้าพระยาพระคลังและเจ้าพระยาบดินทรเดชาปราบได้ในราวสองสัปดาห์",
+      "outcome": "ตั้วเหี่ยจีนเริ่มก่อการเดือน ๕ ขึ้น ๖ ค่ำ (เชิงอรรถ ๙ เม.ย.) และยึดเมืองฉะเชิงเทราได้วันรุ่งขึ้น (ขึ้น ๗ ค่ำ); พระยาวิเศษฦๅไชยตายในที่รบ พระยามหาเทพถูกปืนถึงอนิจกรรม; เจ้าพระยาพระคลังและเจ้าพระยาบดินทรเดชาปราบได้ในราวสองสัปดาห์",
       "deaths": "พงศาวดาร: จีนตายหลายพัน ศพลอยเต็มลำน้ำ — ชาวบ้านฆ่าคนจีนโดยไม่แยกว่าเป็นตั้วเหี่ยหรือไม่",
       "aftermath": "ตัวนายถูกประหาร ผู้ตามถูกสักแก้มแล้วปล่อย",
       "levy": "ใช้ไพร่พลกองเจ้าพระยาพระคลังและลาวเมืองพนัศนิคม — ไม่มีจำนวน"
@@ -666,6 +778,12 @@
       "tags": [
         "history:tua_hia_chachoengsao"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๒๓๖-เมืองฉะเชิงเทราเกิดจีนตั้วเหี่ย · https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๒๓๗-เจ้าพระยาพระคลังกับเจ้าพระยาบดินทรเดชาปราบจีนตั้วเหี่ยเมืองฉะเชิงเทรา",
+      "notes": "outcome date: partial — footnote 9 Apr goes with the first attack (\"วันอาทิตย์เดือน ๕ ขึ้น ๖ ค่ำ[๓] พวกตั้วเหี่ยเข้าตีโรงหีบ\"), the town fell the next day: \"วันจันทร์เดือน ๕ ขึ้น ๗ ค่ำ จีนตั้วเหี่ยตีเมืองฉะเชิงเทราได้เข้าตั้งอยู่ในกำแพงเมือง\""
     }
   },
   {
@@ -709,6 +827,12 @@
       "tags": [
         "history:rama4_accession"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๒๖๖-เกณฑ์ข้าราชการเข้าประจำซองรักษาพระราชนิเวศน์ · https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๒๖๗-เจ้าพระยาพระคลังให้จมื่นราชามาตย์ไปทูลเชิญสมเด็จพระอนุชาธิราชเสด็จครองราชสมบัติ",
+      "notes": "Quick re-confirmation."
     }
   }
 ]

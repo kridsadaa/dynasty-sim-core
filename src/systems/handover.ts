@@ -205,19 +205,17 @@ export function kinHeirs(ctx: Ctx, dead: Character): EstateHeir[] {
  */
 export function estateHeirs(ctx: Ctx, dead: Character): EstateHeir[] {
   const B = ctx.content.balance.inheritance;
-  const kids = livingKids(ctx, ctx.state.familyNodes[dead.familyNodeId]);
+  // ไม่ได้รักษาไข้ → ไม่ได้ส่วน: ลูกในเกมอยู่แขวงเดียวกับพ่อแม่เสมอ และตัวบทให้กึ่งส่วนเฉพาะญาติต่างเมือง
+  // (lore: social.nursing_cremation_condition — ลักษณมรดก ม.๒๖, ๒๙)
+  const neglected = new Set(dead.neglectedBy ?? []);
+  const kids = livingKids(ctx, ctx.state.familyNodes[dead.familyNodeId]).filter((ch) => !neglected.has(ch.id));
   if (!kids.length) return kinHeirs(ctx, dead);
   const parentageOf = (h: Character) => must(ctx.state.familyNodes[h.familyNodeId], 'node').parentage;
   // สิทธิ์ต่างกันเพราะสถานะแม่ → บอกสถานะ (ทุกคนสถานะเดียวกัน = แบ่งเท่ากัน ไม่ต้องอธิบาย)
   const mixed = new Set(kids.map(parentageOf)).size > 1;
-  // ไม่ได้รักษาไข้ → กึ่งส่วน (lore: social.nursing_cremation_condition — ตัวบทให้กึ่งส่วนเมื่อทำได้อย่างเดียว ไม่ได้เลยเมื่ออยู่ใกล้แต่ไม่มา)
-  const neglected = new Set(dead.neglectedBy ?? []);
-  return kids.map((ch) => {
-    const label = [mixed ? PARENTAGE_TH[parentageOf(ch)] : null, neglected.has(ch.id) ? 'ไม่ได้รักษาไข้' : null].filter(Boolean).join(', ');
-    return {
-      ch, weight: B.shareByParentage[parentageOf(ch)] * (neglected.has(ch.id) ? 0.5 : 1), label: label || null, relation: 'child' as const,
-    };
-  });
+  return kids.map((ch) => ({
+    ch, weight: B.shareByParentage[parentageOf(ch)], label: mixed ? PARENTAGE_TH[parentageOf(ch)] : null, relation: 'child' as const,
+  }));
 }
 
 /**

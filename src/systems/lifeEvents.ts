@@ -39,14 +39,14 @@ export function parentIllnessEvent(ctx: Ctx): PreparedEvent | null {
 }
 
 /**
- * effect nurse: neglected = ไม่ได้รักษาไข้ → เสียสิทธิ์มรดกกึ่งหนึ่งจากพ่อแม่คนนี้ (estateHeirs)
- * ติดราชการ (มีตำแหน่ง) ได้รับยกเว้นตามตัวบท ม.27–28
+ * effect nurse: neglected = ไม่ได้รักษาไข้ → ไม่ได้ส่วนมรดกจากพ่อแม่คนนี้ (estateHeirs; ลักษณมรดก ม.๒๙ ญาติแขวงเดียวกัน)
+ * ติดราชการ (มีตำแหน่ง) ได้รับยกเว้น — ตัวบท ม.๒๗–๒๘, ๓๐ แยกในวัง/หัวเมือง/เมืองไกล เกมรวบเป็นได้เต็มส่วน
  */
 export function markNursing(ctx: Ctx, child: Character, parent: Character, neglected: boolean): string[] {
   if (!neglected) return [];
   if (child.office) return [`${child.name}ติดราชการ ไม่ได้ไปรักษาไข้${parent.name} — ตามกฎหมายยังมีสิทธิ์ในมรดกเต็มส่วน`];
   parent.neglectedBy = [...new Set([...(parent.neglectedBy ?? []), child.id])];
-  return [`${child.name}ไม่ได้รักษาไข้${parent.name} — ถ้า${parent.name}ตาย จะได้มรดกเพียงกึ่งส่วน`];
+  return [`${child.name}ไม่ได้รักษาไข้${parent.name} — ถ้า${parent.name}ตาย จะไม่ได้ส่วนมรดก`];
 }
 
 /** ผู้เล่นวัยชราถือศีลวันพระ */

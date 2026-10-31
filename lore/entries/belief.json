@@ -56,6 +56,11 @@
         "sourceId": "src.la_loubere_en_1693",
         "locator": "Part III ch. XXIII",
         "quote": "The Siameses do not less dread Spirits, than the Chineses"
+      },
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part III ch. XX หน้า 125 (ผีพ่อแม่ที่ตายไป)",
+        "quote": "they cease not to believe themselves frequently tormented with their Apparitions"
       }
     ],
     "verified": false,
@@ -63,6 +68,12 @@
       "tags": [
         "supernatural:guardian_spirit"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xxiii-concerning-the-origine-of-the-talapoins-and-of-their-opinions",
+      "notes": "Worth adding (not a fix): Part III ch. XX p.125 is about the Siamese and says \"they cease not to believe themselves frequently tormented with their Apparitions\" (of dead parents), and they carry food to tombs and give alms for the dead. So there is a contemporary Siamese source for fear of dead pare"
     }
   },
   {
@@ -124,6 +135,12 @@
       "tags": [
         "supernatural:omen"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://so02.tci-thaijo.org/index.php/jas/article/view/269985",
+      "notes": "Abstract only (as the entry says). The article's real title is 'ภาพแทนนิมิตดีและนิมิตร้าย ...', not 'ลางบอกเหตุใน...'; authors ปฐมพงษ์ สุขเล็ก, รัตติกาล เถื่อนชนะ, นราวิชญ์ นรถี, รัตนาวดี ปาแปง."
     }
   },
   {
@@ -162,6 +179,12 @@
       "tags": [
         "supernatural:guardian_spirit"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://thesiamsociety.org/wp-content/uploads/1954/03/JSS_041_2c_PhyaAnumanRajathon_ThePhi.pdf",
+      "notes": "OCR text of JSS PDF; quotes cleaned of OCR noise. Page mapping checked from running heads."
     }
   },
   {
@@ -189,7 +212,13 @@
         "locator": "หน้า 175–176"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://thesiamsociety.org/wp-content/uploads/1954/03/JSS_041_2c_PhyaAnumanRajathon_ThePhi.pdf",
+      "notes": "All three regional facts are on p.176; p.175 has the northern spirit shelf. Locator acceptable."
+    }
   },
   {
     "id": "belief.birth_spirits_krasue",
@@ -234,7 +263,7 @@
         "หญิงตายตอนคลอดหรือตายขณะมีครรภ์",
         "ทารกตายในครรภ์",
         "ตายด้วยไข้ทรพิษหรือโรคระบาด",
-        "ตายกะทันหัน จมน้ำ อุบัติเหตุ ฆ่าตัวตาย",
+        "ตายกะทันหัน จมน้ำ ถูกฟ้าผ่าหรือภัยผิดธรรมดาอื่น (ลา ลูแบร์ไม่ได้พูดถึงฆ่าตัวตาย — เอาออกถ้าไม่มีแหล่งอื่นยืนยัน)",
         "นักโทษประหาร"
       ],
       "laLoubere": "เชื่อว่าความตายแบบนี้ไม่เกิดกับคนบริสุทธิ์; ศพไข้ทรพิษขุดขึ้นเผาหลัง 3 ปีขึ้นไป เพราะเคยเห็นว่าขุดเร็วแล้วโรคกลับมา",
@@ -275,6 +304,13 @@
       "tags": [
         "situation:childbirth"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-iv · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xx-of-the-burials-of-the-chineses-and-siameses",
+      "notes": "later / term / gameMapping: not checked (other sources / design notes)",
+      "fixed": true
     }
   }
 ]

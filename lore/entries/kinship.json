@@ -21,11 +21,18 @@
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
-        "locator": "Part II ch. VII \"Of the Marriage and Divorce\" หน้า 50–51",
+        "locator": "Part II ch. VII \"Of the Marriage and Divorce\" หน้า 51–52",
         "quote": "The new married persons continue there some Months"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 0/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vii",
+      "notes": "gameMapping: design note, not checked",
+      "fixed": true
+    }
   },
   {
     "id": "kinship.betrothal_procedure_1680s",
@@ -85,11 +92,18 @@
     "citations": [
       {
         "sourceId": "src.la_loubere_en_1693",
-        "locator": "Part II ch. VII หน้า 51–52",
+        "locator": "Part II ch. VII หน้า 52–53",
         "quote": "inherit from their Parents by equal Portions"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 0/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vii",
+      "notes": "Claims are fine. Only the page is wrong: the succession passage is on p.52 and the divorce rules are on p.53; nothing here is on p.51.",
+      "fixed": true
+    }
   },
   {
     "id": "kinship.women_labor_1680s",
@@ -126,23 +140,18 @@
     ],
     "claim": {
       "validMarriage": "พ่อแม่/ผู้ปกครองยกให้ และหญิงยินยอม",
-      "desertion": "สามีหายไป 8–11 เดือน (ไปค้าขาย 1 ปี) ภรรยาคืนสินสอด ขันหมาก และทุนของเขาแล้วเลิกได้ (มาตรา 50)",
+      "desertion": "ชายโกรธทิ้งเรือนไป 8–11 เดือนตามระยะทาง (มาตรา 50; มาตรา 49 ผัด 3 เดือน–1 ปี 4 เดือนตามระยะทาง) ภรรยาคืนสินสอด ขันหมาก ทุนของชายแล้วขาดกัน; ผัวไปค้าหัวเมืองพ้น 1 ปีไม่กลับ ขาดกัน (มาตรา 62)",
       "contestedDivorce": "หญิงคืนสินสอดขันหมาก เว้นแต่มีลูกแล้ว",
-      "ordination": "สามีบวช = การสมรสสิ้นสุด สินเดิมและสินสมรสตกเป็นของภรรยาทั้งหมด เว้นแต่แบ่งไว้ก่อน",
+      "ordination": "สามีบวช = การสมรสสิ้นสุด (ม.38) สินเดิมและสินสมรสของชายตกเป็นของภรรยา เว้นแต่แบ่งไว้ก่อนบวช; ถ้าภรรยายังครองตัวและสามีสึกกลับมา ทรัพย์กลับเป็นของชาย (ม.37)",
       "livingWithWifesFamily": "ชายที่ไปอยู่เลี้ยงลูก/หลานสาวเขา ถ้าด่าทอพ่อแม่หญิง หญิงคืนของแล้วไล่ออกได้ (มาตรา 61)",
-      "wifeRanks": [
-        "พระราชทาน",
-        "กลางเมือง",
-        "กลางนอก",
-        "กลางทาษี"
-      ]
+      "wifeRanks": "ลักษณผัวเมีย: กลางเมือง กลางนอก กลางทาษี; ภรรยาพระราชทานปรากฏในลักษณมรดก (ม.๓๔–๓๕)"
     },
     "summary": "มาตรา 61 สนับสนุนว่าผู้ชายไปอยู่บ้านฝ่ายหญิงเป็นเรื่องปกติจนกฎหมายต้องรองรับ; การบวชทำให้ทรัพย์ตกแก่ภรรยา — มีผลกับเส้นทางบวชในเกม — มาตรา 61: AI เทียบกับข้อความบนวิกิซอร์ซแล้ว (ยังต้องให้คนอ่านตรวจก่อนตั้ง verified); มาตรา 50 ยังไม่ได้เทียบ",
     "status": "attested",
     "citations": [
       {
         "sourceId": "src.three_seals_law",
-        "locator": "ลักษณผัวเมีย ฉบับพิมพ์ 2482 เล่ม 2 ส่วน 1 (วิกิซอร์ซ) มาตรา 61 (หมวด 'ผัวเมียวิวาทกันเกินเลยพ่อตาแม่ยาย' จบที่มาตรานี้)",
+        "locator": "ลักษณผัวเมีย ฉบับพิมพ์ 2482 เล่ม 2 ส่วน 1 (วิกิซอร์ซ) มาตรา ๖๑ สแกน 32 (หมวด 'ผัวเมียวิวาทกันเกินเลยพ่อตาแม่ยาย' จบที่มาตรานี้); ๓๗–๓๘, ๔๙–๕๐, ๖๒, ๖๘",
         "quote": "ชายไปเลิ้ยง ลูก หลาน สาวท่าน แลมีสิ่งสีนไปด้วยเปนคำนับ"
       },
       {
@@ -150,7 +159,14 @@
         "locator": "หน้า 4, 8, 10–12 (อ้างมาตรา 50, 61)"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://so03.tci-thaijo.org/index.php/husoarujournal/article/download/260348/173173 · https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_1",
+      "notes": "desertion: partial — ๕๐ ชายโกรธหนีไป \"ถึง ๘ ๙ ๑๐ ๑๑ เดือนตามระยะทาง\" หญิงส่งสินสอดขันหมากทุนคืนจึงขาดกัน; 'ไปค้าขาย 1 ปี' มาจาก ๖๒ \"แม้นไปพ้นกำหนดปีหนึ่งชายมิมา ท่านว่าหญิงชายขาดจากผัวเมียกัน\" (ถ้าส่งข่าว 3 ปี; ไปเมืองนอก 3 ปี; สลัดจับ 7 ปี); ๔๙ ผัด 3 เดือน–1 ปี 4 เดือนตามระยะทาง | wifeRanks: partial — ลักษณผัวเมียมีเมียสามประการ (กลางเมือง กลางนอก กลางทาษี) เท่านั้น; 'พระราชทาน' อยู่ในลักษณมรดก \"บุตรอันเกิดด้วยภิริยาสู่ฃอแลภิริยาพระราชทาน\" และธวัชชัยหน้า 4, 8",
+      "fixed": true
+    }
   },
   {
     "id": "kinship.youngest_daughter_house",
@@ -171,7 +187,11 @@
     "summary": "แบบแผนที่สอดคล้องกับลา ลูแบร์เรื่องอยู่บ้านฝ่ายหญิง",
     "status": "inferred",
     "projection": "งานภาคสนามบางชัน 2491–2500 — ใช้เป็นแบบแผนครัวเรือนชาวนาภาคกลาง; ยิ่งตรงกับลา ลูแบร์ (2230) ยิ่งเชื่อได้ว่าเป็นแบบแผนเก่า",
-    "gameRefs": { "tags": ["house:riverside"] },
+    "gameRefs": {
+      "tags": [
+        "house:riverside"
+      ]
+    },
     "citations": [
       {
         "sourceId": "src.sharp_hanks_1978_bangchan",
@@ -179,7 +199,13 @@
         "quote": "house and hearth customarily go at death to the youngest daughter"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036",
+      "notes": "gameMapping: design note, fine"
+    }
   },
   {
     "id": "kinship.residence_mixed_census",
@@ -207,7 +233,13 @@
         "locator": "เชิงอรรถบทที่ 2 ข้อ 24 หน้า 258"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036",
+      "notes": "gameMapping: design inference, fine"
+    }
   },
   {
     "id": "kinship.household_seniority",
@@ -258,7 +290,13 @@
         "quote": "'milk money' that her husband or his parents pay her mother"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036",
+      "notes": "The entry's quote uses single quotes around milk money; the source uses double quotes. Otherwise exact. p.47 is in chapter 2, 'The Dispensable Ones'. A second instance on p.154 ('With the milk money and her son-in-law's contribution') backs this up."
+    }
   },
   {
     "id": "kinship.marriage_age_1820s",
@@ -314,7 +352,7 @@
       "valid": "พ่อแม่หรือผู้ปกครองยกหญิงให้ และหญิงยินยอม",
       "suitorMust": "ชายที่พึงใจลูกสาวใคร ต้องไปคำนับพ่อแม่หญิงตามประเพณี (มาตรา 79)",
       "secretUnion": "ลักลอบหลับนอนกันเองโดยพ่อแม่ไม่ยกให้ ไม่นับเป็นผัวเมียตามกฎหมาย",
-      "parentsRefuse": "ฝ่ายชายต้องรอจนพ่อแม่หญิงตาย ถ้าหญิงยังรักอยู่จึงแต่งได้ โดยมีญาติผู้ใหญ่สองฝ่ายรับรอง (ตามการอ่านของบทความ)",
+      "parentsRefuse": "พ่อแม่หญิงไม่ยกให้ก็ตามใจพ่อแม่; ถ้าพ่อแม่หญิงตายแล้วชายหญิงยังสมัครอยู่ด้วยกันจนมีลูก ลูกนั้นนับเป็นขันหมาก (มาตรา ๘๔); บทความเสริมว่าต้องมีญาติผู้ใหญ่สองฝ่ายรับรอง (ไม่พบในตัวบท)",
       "afterGiven": "ยกให้แล้วพ่อแม่จะเอาลูกสาวคืนไม่ได้ อำนาจเหนือหญิงย้ายไปที่สามี"
     },
     "summary": "ฐานของระบบแต่งงาน: คนรักกันเองได้ แต่จะเป็นผัวเมียได้ต้องผ่านพ่อแม่ฝ่ายหญิง ขัดผู้ใหญ่ = ไม่มีสถานะ ต้องรอหรือหนี (ดู kinship.elopement_three_seals) — ข้อ 'รอจนพ่อแม่ตาย' มาจากบทความที่อ้างสำนักงานคณะกรรมการกฤษฎีกา 2547 ยังไม่ได้เทียบตัวบท — มาตรา 79: AI เทียบกับข้อความบนวิกิซอร์ซแล้ว (ยังต้องให้คนอ่านตรวจก่อนตั้ง verified); ข้อ \"ต้องรอจนพ่อแม่หญิงตาย\" ยังไม่เจอในตัวบท",
@@ -328,7 +366,7 @@
       {
         "sourceId": "src.three_seals_law",
         "locator": "ลักษณผัวเมีย มาตรา 79 (ยกมาใน src.apichaya_2563_phuamia หน้า 134)",
-        "quote": "ถาชายใดพึงใจดวยบุตรีทานใหคํานับบิดามานดาตามประเพณี"
+        "quote": "ถ้าชายใดพึงใจด้วยบุตรีท่าน ให้คำนับ บิดามานดาตามประเพณี"
       },
       {
         "sourceId": "src.thawatchai_2560_phuamia",
@@ -339,7 +377,13 @@
         "locator": "หน้า 122, 134"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 4/4; เทียบกับ https://so03.tci-thaijo.org/index.php/husoarujournal/article/download/260348/173173 · https://so04.tci-thaijo.org/index.php/jasu/article/download/247858/168275",
+      "notes": "parentsRefuse: partial — มีในบทความ (ธวัชชัย หน้า 4); ในตัวบทพบที่มาตรา ๘๔ (สแกน 47–48): พ่อแม่ไม่ยอมก็ตามใจพ่อแม่ \"ถ้าพ่อแม่หญิงนั้นตาย ถ้าชายหญิงสมักอยู่ด้วยกัน\" มีลูก \"ท่านว่าลูกนั้นเปนขันหมาก\"; 'ญาติผู้ใหญ่สองฝ่ายรับรอง' ไม่พบในตัวบท"
+    }
   },
   {
     "id": "kinship.elopement_three_seals",
@@ -358,9 +402,9 @@
       "articles": {
         "126": "ชายหญิงสมัครรักใคร่เป็นชู้กัน (พ่อแม่ไม่รู้ ชายไม่ได้สู่ขอ) — สรุปความ: ส่งหญิงคืนพ่อแม่ ปรับชาย",
         "127": "ถ้าหญิงตามผู้ชายไป ให้เฆี่ยนหญิงด้วยหวาย — สรุปความ: ส่งคืนพ่อแม่ และปรับชายที่ไม่ได้สู่ขอ",
-        "130": "สรุปความ: หญิงที่พ่อแม่ยกให้ชายอื่นแล้วหนีไปกับชายชู้ — ชายชู้ชดใช้ค่าขันหมากหลายเท่า",
+        "130": "หญิงรักกับชายอยู่ก่อน แต่พ่อแม่ยกให้ชายอื่นแล้วหญิงหนีไปกับชายคนรัก — พ่อแม่หญิงถูกปรับขันหมากทวีคูนและใช้ค่าของคืนผู้สู่ขอ (เพราะไม่ถามลูกสาว) ชายคนรักเสียเบี้ยสมายุมแปลงให้พ่อแม่ และหญิงเป็นเมียชายคนรัก",
         "133": "ชายหญิงลอบรักกันโดยพ่อแม่หญิงไม่รู้ — สรุปความ: หญิงไม่เป็นเมียโดยชอบ",
-        "134": "ชายลักพาลูกสาวหลานสาวท่านไปเป็นชู้เมีย — สรุปความ: ถ้าหญิงกลับมาเอง ให้แต่งตามประเพณี",
+        "134": "ชายลักพาหญิงไปแล้วพากลับมาบ้านเอง — ไม่นับเป็นขโมย ให้ชายทำสมายุมแปลงพ่อแม่ปู่ย่าอาหญิง",
         "135": "ชายพาลูกสาวท่านไปโดยไม่ได้คำนับ ให้ปรับโดยฐานละเมิดพระราชอาชญา — สรุปความ: ค่าปรับแบ่งให้พ่อแม่หญิงสองในสามส่วน"
       }
     },
@@ -375,14 +419,21 @@
       {
         "sourceId": "src.three_seals_law",
         "locator": "ลักษณผัวเมีย มาตรา 139 (ยกมาใน src.apichaya_2563_phuamia หน้า 135–136)",
-        "quote": "ใหคิดเอาคานํ้านมเฃาปอนคาเลิ้ยงรักษาแกมัน"
+        "quote": "ให้คิดเอาค่าน้ำนมเฃ้าป้อนค่าเลิ้ยงรักษาแก่มัน"
       },
       {
         "sourceId": "src.apichaya_2563_phuamia",
         "locator": "หน้า 121 (ตาราง 12 มูลกรณี: หมวด 9 และ 11), 135–136"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 3/3; เทียบกับ https://so04.tci-thaijo.org/index.php/jasu/article/download/247858/168275 · https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_1",
+      "notes": "articles.130: contradicted — ผู้ถูกปรับขันหมากทวีคูนคือพ่อแม่หญิง \"ท่านให้เอาขันหมากนั้นตั้งไหม พ่อแม่หญิงทวีคูน\" เพราะไม่ถามลูกสาว; ชายที่พาหนีเสียแค่เบี้ยสมายุมแปลง แล้ว \"ให้หญิงสิทธิแก่ชายผู้ภา\" | articles.134: partial — ชายพาหญิงกลับมาเอง \"ท่านว่าใช่ขโมย\" ให้ทำสมายุมแปลงพ่อแม่ญาติหญิง; ตัวบทไม่ได้ว่า 'แต่งตามประเพณี' (คำนั้นอยู่ใน ๑๒๙) | summary 'ไม่นับเป็นเมียโดยชอบจนกว่าจะแต่งตามประเพณี': partial — ๑๓๐ ให้หญิงเป็นของชายที่พาหนีถ้ารักกันมาก่อน และ ๑๒๙ ให้แต่งเมื่อชายส่งหญิงคืนแล้วขอขมา",
+      "fixed": true
+    }
   },
   {
     "id": "kinship.betrothal_khanmak_three_seals",
@@ -404,20 +455,26 @@
     "citations": [
       {
         "sourceId": "src.three_seals_law",
-        "locator": "ลักษณผัวเมีย ฉบับพิมพ์ 2482 เล่ม 2 ส่วน 1 (วิกิซอร์ซ) มาตรา 113, 114, 68",
+        "locator": "ลักษณผัวเมีย ฉบับพิมพ์ 2482 เล่ม 2 ส่วน 1 (วิกิซอร์ซ) มาตรา ๑๑๓, ๑๑๔, ๖๘ ตามเลขไทยในตัวบท (เลขอารบิกวิกิซอร์ซ 106, 107, 68) สแกน 57–58, 35–36",
         "quote": "ชายมิได้เอาฃันหมากใหญ่มาแต่งงานตามสันญานัด"
       },
       {
         "sourceId": "src.three_seals_law",
         "locator": "ลักษณผัวเมีย มาตรา 113(104), 114(105), 68 (ยกมาใน src.apichaya_2563_phuamia หน้า 122–124)",
-        "quote": "ชายมิไดเอาฃันหมากใหญมาแตงงานตามสันญานัด ทานวาหญิงนั้นมิไดเปนเมียชายเลย"
+        "quote": "ชายมิได้เอาฃันหมากใหญ่มาแต่งงานตามสันญานัด ท่านว่าหญิงนั้นมิได้เปนเมียชายเลย"
       },
       {
         "sourceId": "src.apichaya_2563_phuamia",
         "locator": "หน้า 122–124"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 3/3; เทียบกับ https://so04.tci-thaijo.org/index.php/jasu/article/download/247858/168275 · https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_1",
+      "notes": "ลักษณผัวเมียบนวิกิซอร์ซมีเลขมาตราสองชุด: เลขไทยในตัวบท (เลขฉบับหลวง = เลขที่บทความวิชาการ/ฉบับราชบัณฑิตใช้; ฉบับรองทรงคลาดไป 9 ตั้งแต่ ๙๐ จึงเป็น 113(104)) และเลขอารบิกที่ผู้พิมพ์/วิกิซอร์ซเรียงไว้ ซึ่งไม่ตรงกันหลังมาตรา ๗๔ เช่น ๗๙=81, ๑๑๓=106, ๑๑๔=107, ๑๓๙=132 — locator ถูกถ้าหมายถึงเลขไทย แต่ควรเข"
+    }
   },
   {
     "id": "kinship.courtship_liberty_1680s",
@@ -458,7 +515,13 @@
     ],
     "verified": false,
     "appliesAs": "pattern",
-    "projection": "ธรรมเนียมครอบครัวเปลี่ยนช้า และตัวบทลักษณผัวเมียที่ชำระ 2348 ยังมีโครงเดียวกัน (สู่ขอผ่านผู้ใหญ่ อำนาจพ่อแม่ หมวดหนีตามกัน หย่าได้) — ใช้เป็นแนวโน้มพฤติกรรม ไม่ยกเป็นรายละเอียดฉาก"
+    "projection": "ธรรมเนียมครอบครัวเปลี่ยนช้า และตัวบทลักษณผัวเมียที่ชำระ 2348 ยังมีโครงเดียวกัน (สู่ขอผ่านผู้ใหญ่ อำนาจพ่อแม่ หมวดหนีตามกัน หย่าได้) — ใช้เป็นแนวโน้มพฤติกรรม ไม่ยกเป็นรายละเอียดฉาก",
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vii",
+      "notes": "Pages 51 and 53 are correct."
+    }
   },
   {
     "id": "kinship.marriage_portion_1680s",
@@ -505,8 +568,8 @@
       "examples": "ขนฟืน เลี้ยงควาย ขนฟ่อนข้าวจากนาไปลานนวด",
       "bySex": "อยากได้ลูกสาวไว้ทำครัว ลูกชายไว้ทำนาและบวช",
       "flexible": "โตแล้วลูกสาวไถนาได้ ลูกชายถอนกล้าได้",
-      "girlCooking": "เด็กหญิงทำกับข้าวก่อนและหลังไปโรงเรียน",
-      "crafts": "หญิงชราสานเสื่อใต้ถุนเรือนขณะหลานเล่นอยู่"
+      "girlCooking": "เด็กหญิงที่ถูกยกให้ไปอยู่บ้านอื่นทำกับข้าวก่อนและหลังไปโรงเรียน (หน้า 48)",
+      "crafts": "หญิงชรานั่งสานเสื่อบนชานเรือน ขณะหลานวิ่งเล่นอยู่ใต้ถุน"
     },
     "summary": "ฐานของระบบงานบ้าน: งานไล่ตามวัยและแรง ความคาดหวังต่างกันตามเพศแต่ไม่ตายตัว — ผู้หญิงปฏิเสธงานครัวยากกว่า",
     "status": "inferred",
@@ -527,7 +590,14 @@
         "quote": "an old woman plaits a mat"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://archive.org/details/oapen-20.500.12657-62036",
+      "notes": "girlCooking: partial — it is on p.48, not p.47, and about one sickly girl given to another family: \"She cooked before and after school and helped generally\" | crafts: partial (p.21) — the old woman plaits the mat on the veranda; it is the grandchildren who play beneath the house, not the woman working under it",
+      "fixed": true
+    }
   },
   {
     "id": "kinship.lotus_boat_meeting",
@@ -545,7 +615,13 @@
     "status": "invented",
     "rationale": "ผู้ออกแบบขอฉากจากละครไทยหลายเรื่อง; เรือเป็นพาหนะหลักของคนกรุงศรีฯ (material.boats_1680s) และลา ลูแบร์บันทึกว่าสาวๆ หาทางออกไปพบหนุ่มเมื่อทำได้ (kinship.courtship_liberty_1680s)",
     "citations": [],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "unreachable",
+      "checked": "ดูหมายเหตุ",
+      "notes": "no citations: status 'invented' with a rationale — nothing to check against a source"
+    }
   },
   {
     "id": "kinship.marry_young_1680s",
@@ -577,7 +653,13 @@
         "quote": "there is found some Siameses. who disdain Marriage all their life"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vii",
+      "notes": "The full stop in 'Siameses. who' is in the 1693 print (it shows in the scan too), so the quote is exact."
+    }
   },
   {
     "id": "kinship.unmarried_older_women",
@@ -588,9 +670,9 @@
       2400
     ],
     "appliesAs": "pattern",
-    "projection": "ตัวบทขุนช้างขุนแผนก่อรูปช่วงอยุธยาตอนปลายถึงต้นกรุงเทพฯ จึงใช้ได้กับช่วงเกมแค่ระดับอนุมาน; คำว่า 'ขึ้นคาน' (ในความหมายหญิงไม่มีผัว) และ 'สาวเทื้อ' ไม่พบในตัวบทนี้และในเอกสารเก่าบนวิกิซอร์ซ — เกมจึงไม่ใช้ในข้อความ; เกมใช้ 'สาวแก่' เป็นป้ายสถานะของผู้หญิงที่พ้นช่วงอายุออกเรือน (balance.world.marriageAge) แล้วยังไม่มีคู่",
+    "projection": "ตัวบทขุนช้างขุนแผนก่อรูปช่วงอยุธยาตอนปลายถึงต้นกรุงเทพฯ จึงใช้ได้กับช่วงเกมแค่ระดับอนุมาน; คำว่า 'ขึ้นคาน' (ในความหมายหญิงไม่มีผัว) และ 'สาวเทื้อ' ไม่พบในตัวบทนี้และในเอกสารเก่าบนวิกิซอร์ซ — เกมจึงไม่ใช้ในข้อความ; เกมใช้ 'สาวแก่' เป็นป้ายสถานะของผู้หญิงที่พ้นช่วงอายุออกเรือน (balance.world.marriageAge) แล้วยังไม่มีคู่; ตัวบทฉบับพิมพ์ถูกแก้มากช่วง ค.ศ. 1850–1918 (src.baker_pasuk_2009_kckp) — คำบางคำอาจเป็นของสมัยรัตนโกสินทร์",
     "claim": {
-      "saoKae": "'สาวแก่' พบ 3 แห่ง ทุกแห่งเป็นคู่คำ 'สาวแก่แม่หม้าย' (ตอนที่ 3, 26, 31) — ใช้แยกประเภทผู้หญิงในฝูงชน",
+      "saoKae": "'สาวแก่' พบ 3 แห่ง: เป็นคู่คำ 'สาวแก่แม่หม้าย' 2 แห่ง (ตอนที่ 3, 26) ใช้แยกประเภทผู้หญิง; อีกแห่ง (ตอนที่ 31 'สาวแก่แออัดนัดกันออกทุ่ง' ในเพลงแอ่วลาว) หมายถึงหญิงสาวและหญิงแก่ ไม่ใช่สาวทึนทึก",
       "thuenthuek": "'สาวทึนทึก' พบแห่งเดียว (ตอนที่ 31) จัดอยู่กับแม่หม้ายและ 'นึกละอาย' เมื่อเห็นขุนแผน",
       "fairGame": "ตอนที่ 3 สมภารสอนเณรแก้วผู้เรียนวิชาเจ้าชู้: เมียคนอื่นห้ามยุ่ง แต่ 'สาวแก่แม่หม้าย' ไม่เป็นไร — สาวแก่และแม่หม้ายได้รับการคุ้มครองทางสังคมน้อยกว่าเมียคนอื่น",
       "khuenKhan": "'ขึ้นคาน' ในตัวบทหมายถึงขึ้นคานหาม (เสลี่ยง) เท่านั้น",
@@ -620,6 +702,13 @@
         "locator": "บทคัดย่อ — อายุและชั้นของตัวบท"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 4/4; เทียบกับ https://so06.tci-thaijo.org/index.php/pub_jss/article/view/158246 · https://vajirayana.org/v2/books/ขุนช้างขุนแผน-ฉบับหอสมุดแห่งชาติ/ตอนที่-๒๔",
+      "notes": "saoKae: CONTRADICTED in part — 'สาวแก่' appears 3 times, but only 2 are the pair 'สาวแก่แม่หม้าย' (ตอนที่ 3 and 26). In ตอนที่ 31 it is \"สาวแก่แออัดนัดกันออกทุ่ง\", in a Lao lament with no แม่หม้าย; there it reads as 'young and old women' | chronicle: not checked (no citation; the entry itself says it was not read in full) | laLoubere: cross-reference to another entry, not checked here | projection (dating): partial — Baker & Pasuk abstract: origin \"around 1600\", early development \"in the Narai era\", court ownership 18th–early 19th c., and in 1850–1918 \"the plot, characterization, and meanings ",
+      "fixed": true
+    }
   }
 ]

@@ -88,18 +88,37 @@
   {
     "id": "vocab.calendar_eras",
     "domain": "vocab",
-    "title": "ศักราช: จุลศักราชเป็นหลัก, พ.ศ. = จ.ศ. + 1181",
+    "title": "ศักราช: เอกสารราชการลงจุลศักราช, พ.ศ. = จ.ศ. + 1181",
     "period": [2230, 2400],
     "claim": {
       "csEpochCE": 638,
       "conversion": "พ.ศ. = จ.ศ. + 1181",
       "slice": "จ.ศ. 1114–1134 = พ.ศ. 2295–2315",
-      "buddhistEra": "ลา ลูแบร์กล่าวถึงศักราชเก่าที่นับจากการนิพพาน (1689 = 2233) ว่าใช้บ้าง"
+      "buddhistEra": "ลา ลูแบร์ (1689) ว่าในการลงศักราช ชาวสยามยังใช้ศักราชเก่าที่นับจากการนิพพาน (1689 = 2233) เป็นปกติ และ 'บางครั้ง' ใช้ศักราชใหม่ที่ตั้งจาก ค.ศ. 638 (จุลศักราช)"
     },
     "summary": "ข้อความในโลกเกม (เอกสาร จดหมาย คำพูด) ควรลงจุลศักราช; UI แสดง พ.ศ. ได้เพื่อความสะดวกผู้เล่น",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. XI 'What the Siameses do know of the Mathematics'", "quote": "The most Modern of the two Siamese Epocha's, is referred to the Year of Grace 638." }],
-    "verified": false
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part II ch. XI 'What the Siameses do know of the Mathematics' หน้า 64–65",
+        "quote": "The most Modern of the two Siamese Epocha's, is referred to the Year of Grace 638."
+      },
+      {
+        "sourceId": "src.prachum_1_luang_prasoet",
+        "locator": "หน้า ๑๑๕ (คำนำ)",
+        "quote": "ศุภมัสดุ ๑๐๔๒ ศก วอกนักษัตร"
+      }
+    ],
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "contradicted",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-xi",
+      "notes": "conversion: not in source (modern convention). La Loubere's own figures (1689 = 2233; CS 1689 = 1051) give a 1182 difference, i.e. the Siamese count then ran one year ahead of today's CE+543. | buddhistEra: contradicted — La Loubere says the old (Nirvana) epoch was still the usual one for dates, and the 638 epoch was used only sometimes: \"if the Siameses do still make use thereof in their Dates\"; \"they cease not to date sometimes with respect to that modern Epocha\" (p.65). The entry has it the other way round. | slice: not in source (computed)",
+      "fixed": true
+    },
+    "contested": "ลา ลูแบร์ (1689) ว่าชาวสยามลงศักราชพุทธเป็นปกติ ใช้จุลศักราชเพียงบางครั้ง และตัวเลขของเขา (1689 = พ.ศ. 2233) ต่างจาก ค.ศ. + 543 หนึ่งปี — แต่คำนำพงศาวดารฉบับหลวงประเสริฐ (2223) และกฎหมายตราสามดวง (2348) ลงจุลศักราช เกมจึงให้เอกสารราชการลง จ.ศ.; ข้อความชาวบ้านใช้ปีนักษัตรหรือ พ.ศ. ได้"
   },
   {
     "id": "vocab.lunar_months_1680s",
@@ -110,13 +129,28 @@
       "monthNames": "เรียกตามลำดับ (เดือนหนึ่ง เดือนสอง …)",
       "yearStart": "เดือนดับเดือนพฤศจิกายนหรือธันวาคม",
       "leap": "ปี 12 เดือนสองปี ตามด้วยปี 13 เดือนหนึ่งปี",
-      "seasons": { "winter": "เดือน 1–2", "littleSummer": "เดือน 3–5", "greatSummer": "อีก 7 เดือน" }
+      "seasons": {
+        "winter": "เดือน 1–2",
+        "littleSummer": "เดือน 3–5",
+        "greatSummer": "อีก 7 เดือน"
+      }
     },
     "summary": "ฐานของปฏิทินจันทรคติในเกม (core/calendar.ts) ที่แทนปี 360 วันแล้ว",
     "status": "attested",
     "projection": "ลา ลูแบร์บันทึกสมัยพระนารายณ์ (2230–2231) ห่าง slice ราว 65 ปี; ปฏิทินจันทรคติไทยใช้ต่อเนื่องจนเปลี่ยนเป็นสุริยคติ พ.ศ. 2432",
-    "citations": [{ "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. VIII 'Of the Husbandry and the Difference of the Seasons'", "quote": "They have two years together consisting of twelve months, and a third of thirteen." }],
-    "verified": false
+    "citations": [
+      {
+        "sourceId": "src.la_loubere_en_1693",
+        "locator": "Part I ch. VIII 'Of the Husbandry and the Difference of the Seasons'",
+        "quote": "They have two years together consisting of twelve months, and a third of thirteen."
+      }
+    ],
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-i-of-the-country-of-siam/chap-viii-of-the-husbandry-and-the-difference-of-the-seasons"
+    }
   },
   {
     "id": "vocab.lunar_calendar_mechanics",
@@ -127,13 +161,22 @@
       "months": ["เดือนอ้าย (ราวธันวาคม)", "เดือนยี่", "เดือน 3", "…", "เดือน 12"],
       "days": "ขึ้น 1–15 ค่ำ แล้วแรม 1–14 ค่ำ (เดือนคี่, 29 วัน) หรือแรม 1–15 ค่ำ (เดือนคู่, 30 วัน)",
       "adhikamasa": "ปีอธิกมาสมีเดือน 8 สองหน รวม 384 วัน",
-      "adhikavara": "ปีอธิกวารเพิ่มแรม 15 ค่ำ ในเดือน 7 รวม 355 วัน",
-      "wanPhra": "ขึ้นและแรม 8 ค่ำ และ 15 ค่ำ (หรือ 14 ค่ำในเดือนขาด)"
+      "adhikavara": "ปีอธิกวารเพิ่มแรม 15 ค่ำ ในเดือน 7 รวม 355 วัน (ปีปกติ 354 วัน)",
+      "wanPhra": "ขึ้นและแรม 8 ค่ำ; ขึ้น 15 ค่ำ และวันสิ้นเดือน (แรม 15 ค่ำ หรือแรม 14 ค่ำในเดือนขาด) — ส่วนหลังอนุมานจากการนับวัน หน้าที่อ้างไม่ได้เขียนไว้"
     },
     "summary": "ใช้ทำระบบปฏิทินในเกมได้ แต่ต้องรู้ว่าเป็นระบบที่บันทึกสมัยรัตนโกสินทร์",
     "status": "inferred",
-    "citations": [{ "sourceId": "src.wiki_th_lunar_calendar", "locator": "หัวข้อเดือน วัน อธิกมาส อธิกวาร" }],
-    "verified": false
+    "citations": [
+      { "sourceId": "src.wiki_th_lunar_calendar", "locator": "หัวข้อเดือน วัน อธิกมาส อธิกวาร" }
+    ],
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://th.wikipedia.org/wiki/ปฏิทินจันทรคติไทย",
+      "notes": "adhikavara: partial — the page says \"อธิกวาร เพิ่มวันแรม 15 ค่ำ เดือน 7 (วันที่ 30 เชษฐะ) รวมเป็น 354 วัน\". 354 is the page's own normal-year figure, so it is almost certainly a Wikipedia typo; the entry's 355 is arithmetically right but is not what the cited text says | wanPhra: partial — the page names only \"วันขึ้น 8 ค่ำ หรือแรม 8 ค่ำ ซึ่งเป็นวันพระ\"; the 15/14 ค่ำ rule is not on the page (it follows from the day-count rule)",
+      "fixed": true
+    }
   },
   {
     "id": "vocab.chronicle_date_format",
@@ -141,14 +184,31 @@
     "title": "รูปแบบการลงวันที่ในพงศาวดาร",
     "period": [2223, 2223],
     "claim": {
-      "pattern": "วัน (ในสัปดาห์) + ขึ้น/แรม N ค่ำ + เดือน N + ปีนักษัตร + ศักราช",
-      "example": "วันพุธ ขึ้น 12 ค่ำ เดือน 5 ปีวอก (= 10 เม.ย. ค.ศ. 1680)"
+      "pattern": "ศักราช (จุลศักราช) + ศก + ปีนักษัตร + วัน (เลขวันในสัปดาห์) + ขึ้น/แรม N ค่ำ + เดือน N — เช่น 'ศุภมัสดุ ๑๐๔๒ ศก วอกนักษัตร ณวัน ๔ ฯ ๑๒ ค่ำ ๕'",
+      "example": "ศุภมัสดุ ๑๐๔๒ ศก วอกนักษัตร ณวัน ๔ ฯ ๑๒ ค่ำ ๕ (= วันพุธ ขึ้น 12 ค่ำ เดือน 5 ปีวอก จ.ศ. 1042 = 10 เม.ย. ค.ศ. 1680)"
     },
-    "summary": "ใช้เป็นรูปแบบวันที่ในจดหมาย/บันทึกในเกม — ต้องเปิดคำนำพงศาวดารฉบับหลวงประเสริฐยืนยันถ้อยคำจริง",
-    "status": "inferred",
+    "summary": "ใช้เป็นรูปแบบวันที่ในจดหมาย/บันทึกในเกม — ตรวจกับคำนำฉบับหลวงประเสริฐบนวิกิซอร์ซแล้ว (พ.ศ. ในวงเล็บเป็นของบรรณาธิการ 2457)",
+    "status": "attested",
     "projection": "คำนำพงศาวดารฉบับหลวงประเสริฐ (2223) — รูปแบบเดียวกัน (ศักราช + ปีนักษัตร + เดือน + ขึ้น/แรม + วัน) ปรากฏในตัวบทกฎหมายตราสามดวงที่ชำระ 2348 เช่นอารัมภบทลักษณมรดก จึงใช้ได้ตลอดช่วงเกม",
-    "citations": [{ "sourceId": "src.wiki_luang_prasoet", "locator": "หมายเหตุเรื่องคำนำ (preface)" }],
-    "verified": false
+    "citations": [
+      {
+        "sourceId": "src.prachum_1_luang_prasoet",
+        "locator": "หน้า ๑๑๕ (คำนำพระราชพงษาวดารกรุงเก่า ฉบับหลวงประเสริฐ)",
+        "quote": "ศุภมัสดุ ๑๐๔๒ ศก วอกนักษัตร"
+      },
+      {
+        "sourceId": "src.wiki_luang_prasoet",
+        "locator": "หมายเหตุเรื่องคำนำ (preface)"
+      }
+    ],
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://en.wikipedia.org/wiki/Luang_Prasoet_Chronicle",
+      "notes": "pattern: partial — matches the English Wikipedia paraphrase, but the Thai original (ประชุมพงษาวดาร ภาคที่ 1, 2457, หน้า ๑๑๕ on th.wikisource) runs the other way and uses จุลศักราช: \"ศุภมัสดุ ๑๐๔๒ ศก วอกนักษัตร (พ.ศ. ๒๒๒๓) ณวัน ๔ ฯ ๑๒ ค่ำ ๕\". The (พ.ศ.) is a 1914 editor's addition; the weekday is written as a number (๔ = พุธ)",
+      "fixed": true
+    }
   },
   {
     "id": "vocab.six_hour_clock_codified_later",
@@ -202,14 +262,14 @@
       "relay": "ฟอลคอนเป็นล่ามโดยแปลฝรั่งเศสเป็นโปรตุเกสก่อน แล้วกราบบังคมทูลเป็นไทย; บาทหลวงตาชาร์ดเขียนจดหมายถึงฟอลคอนเป็นภาษาโปรตุเกส",
       "earliest": "การเจรจาช่วงแรกผ่านล่ามชาวจีนและมลายู ต่อมาจึงมีชาวโปรตุเกสและลูกครึ่งโปรตุเกสที่พูดไทยได้",
       "interpreters": "ลา ลูแบร์ใช้ 'ล่ามที่เป็นคริสเตียน'",
-      "spread": "บาทหลวงสอนภาษาโปรตุเกสและละตินแก่คนที่เข้าโบสถ์ทั้งไทยและต่างชาติ แต่ไม่พบพจนานุกรมไทย–โปรตุเกสในยุคนั้น"
+      "spread": "บาทหลวงฝรั่งเศสสอนภาษาละตินและฝรั่งเศสแก่คนไทยที่เข้าโบสถ์ (ตามบทคัดย่อ) — ส่วนเรื่องพจนานุกรมไทย–โปรตุเกสยังไม่ได้ตรวจ"
     },
     "summary": "ชาวยุโรปและล่ามคาทอลิกในเกมพูด/เขียนภาษาโปรตุเกส ลงวันที่แบบโปรตุเกสตามปฏิทินสากล (core/calendar.ts formatPortuguese)",
     "status": "inferred",
     "citations": [
       {
         "sourceId": "src.jiraporn_portuguese_french_narai",
-        "locator": "TODO หน้า — ตอนการใช้ภาษาโปรตุเกสในราชสำนัก (อ้างประชุมพงศาวดาร ภาค 35–36 เล่ม 24 หน้า 17–18 และจดหมายเหตุเซเบเรต หน้า 29)"
+        "locator": "หน้า 68–82 (ปีที่ 5 ฉบับที่ 2, 2562) — TODO หน้าที่แน่นอน; การอ้างประชุมพงศาวดาร ภาค 35–36 อยู่ราวหน้า 77"
       },
       {
         "sourceId": "src.la_loubere_en_1693",
@@ -217,7 +277,14 @@
         "quote": "the Christian Interpreters, which I made use of"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/2; เทียบกับ https://so02.tci-thaijo.org/index.php/DRURDI/article/view/252166 · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam",
+      "notes": "court: partial (English abstract only) — Portuguese used \"both written and oral\"; the abstract does not say 'all Western nations' or 'to the end of the reign', and says French grew in importance \"continuously throughout King Narai's reign\" | nobles: partial (abstract) — \"The contact was mainly among foreigners and the Thai nobles, aristocrats and royal court officers\"; \"some Thai people at that time were able to communicate by using both the Thai and the Portuguese languages\" | relay: not verified — the Thai body text cannot be extracted (see notes); the names Constance Phalkon and Guy Tarchar",
+      "fixed": true
+    }
   },
   {
     "id": "vocab.portuguese_terms_1680s",

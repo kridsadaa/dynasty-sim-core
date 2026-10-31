@@ -95,14 +95,26 @@
     "appliesAs": "mechanic",
     "claim": {
       "state": "เด็กป่วยบ่อย เรียกว่า 'เลี้ยงยาก'",
-      "remedies": ["เชิญคนที่ 'เลี้ยงเด็กง่าย' (มักเป็นสามีภรรยา) มาผูกขวัญด้วยด้ายและกำไลเงินของแม่ม่าย", "ยกเด็กชายให้พระแบบทอดผ้าป่าเพื่อหลอกผีที่จะมาเอาตัว", "ตั้งชื่อน่าเกลียดให้ผีไม่สนใจ"],
+      "remedies": [
+        "เชิญคนที่ 'เลี้ยงเด็กง่าย' (มักเป็นสามีภรรยา) มาผูกขวัญด้วยด้ายและกำไลเงินของแม่ม่าย",
+        "ยกเด็กชายให้พระแบบทอดผ้าป่าเพื่อหลอกผีที่จะมาเอาตัว",
+        "ตั้งชื่อน่าเกลียดให้ผีไม่สนใจ"
+      ],
       "belief": "สามวันแรกหลังเกิด เด็กเป็นลูกผี ผีอาจมาเอาคืน"
     },
     "summary": "สถานะ 'เด็กอ่อนแอ' และทางเลือกของพ่อแม่ — การตั้งชื่อน่าเกลียดต่อเข้ากับตัวสุ่มชื่อได้",
     "status": "inferred",
     "projection": "ผู้เขียนเล่าจากประสบการณ์ราว พ.ศ. 2453 ในกรุงเทพฯ — ใช้เป็นแบบแผนของครัวเรือนภาคกลาง",
-    "citations": [{ "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 131–134 และเชิงอรรถหน้า 134" }],
-    "verified": false
+    "citations": [
+      { "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 131–134 และเชิงอรรถหน้า 134" }
+    ],
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://thesiamsociety.org/knowledge-hub/uploads/research/259/664438a57ec1e.pdf",
+      "notes": "OCR text; page mapping checked from running heads (PDF page + 118)."
+    }
   },
   {
     "id": "psyche.mother_departure_thread",
@@ -153,13 +165,26 @@
     "title": "ผู้ใหญ่ขู่เด็กด้วยผี",
     "period": [2275, 2400],
     "appliesAs": "pattern",
-    "claim": { "example": "คนแก่บอกเด็กว่าผีห่า (ผีโรคระบาด) มากับเรือตอนกลางคืน ให้รีบเข้านอน", "evidence": "เรื่องเล่าวัยเด็กของผู้เขียนเอง กรุงเทพฯ ราว 2430s–2440s" },
+    "claim": {
+      "example": "คนแก่บอกเด็กว่าผีห่า (ผีโรคระบาด) มากับเรือตอนกลางคืน ให้รีบเข้านอน",
+      "evidence": "เรื่องเล่าวัยเด็กของผู้เขียนเอง กรุงเทพฯ ราว 2430s–2440s"
+    },
     "summary": "ช่องทางที่ปมความกลัวถูกสร้างโดยตั้งใจ — ผู้ใหญ่ที่มี superstition แรงอาจ 'สอน' ความกลัวให้เด็ก",
     "status": "inferred",
     "projection": "หลักฐานชิ้นเดียว (เรื่องเล่าส่วนตัว) — ใช้เป็นแบบแผนแบบระวัง",
-    "gameRefs": { "tags": ["supernatural:phi"] },
-    "citations": [{ "sourceId": "src.anuman_1954_phi", "locator": "หน้า 171" }],
-    "verified": false
+    "gameRefs": {
+      "tags": ["supernatural:phi"]
+    },
+    "citations": [
+      { "sourceId": "src.anuman_1954_phi", "locator": "หน้า 171" }
+    ],
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://thesiamsociety.org/wp-content/uploads/1954/03/JSS_041_2c_PhyaAnumanRajathon_ThePhi.pdf",
+      "notes": "phi ha is glossed as \"the phi of epidemic disease, particularly cholera\" (p.171)."
+    }
   },
   {
     "id": "psyche.indulgent_hierarchical_upbringing",

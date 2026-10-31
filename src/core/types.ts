@@ -253,7 +253,7 @@ export interface Character {
   topknotCutYear?: number;
   /** ปีที่ป่วยหนักล่าสุด (event family.parent_illness) — ไม่ถามซ้ำในปีเดียวกัน */
   illYear?: number;
-  /** ลูกที่ไม่ได้รักษาไข้คนนี้ — ได้มรดกจากคนนี้กึ่งส่วน (lore: social.nursing_cremation_condition) */
+  /** ลูกที่ไม่ได้รักษาไข้คนนี้ — ไม่ได้ส่วนมรดกจากคนนี้ (lore: social.nursing_cremation_condition) */
   neglectedBy?: CharacterId[];
   /**
    * งานบ้านต่อหมวด (ดู systems/chores.ts): joined = เคยตกลงเข้าไปช่วยแล้ว (ครั้งต่อไปไม่ถามซ้ำ ข้ามไปหัดขั้นใหม่),

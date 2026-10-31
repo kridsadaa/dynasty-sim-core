@@ -46,6 +46,12 @@
       "tags": [
         "situation:smallpox"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-iv",
+      "notes": "crawfurd / season / families / children / inoculation / gap / gameMapping: not checked (other sources)"
     }
   },
   {
@@ -95,7 +101,13 @@
         "locator": "หัวข้อ A life table perspective (อ้าง Varavarn 2000 และ Rungpitarangsi 1974)"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-iv · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-iv-concerning-the-offices-of-judicatory",
+      "notes": "pallegoix / missionaryInfant / rates / gameMapping: not checked (other sources)"
+    }
   },
   {
     "id": "health.childbirth_deaths",
@@ -124,7 +136,7 @@
       },
       {
         "sourceId": "src.la_loubere_en_1693",
-        "locator": "Part II ch. X (What the Siameses do know in Medicine and Chymistry)"
+        "locator": "Part II ch. X หน้า 63 (What the Siameses do know in Medicine and Chymistry)"
       },
       {
         "sourceId": "src.bangkok_calendar",
@@ -142,6 +154,12 @@
       "tags": [
         "situation:childbirth"
       ]
+    },
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-x · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xx-of-the-burials-of-the-chineses-and-siameses",
+      "notes": "cases / doctorView / rate / gameMapping: not checked (other sources)"
     }
   },
   {
@@ -200,7 +218,13 @@
         "quote": "the average mortality is less, and the chance of life greater"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-iv · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-xv",
+      "notes": "pallegoix / clinic / registers / law / bowring / gameMapping: not checked (other sources)"
+    }
   },
   {
     "id": "health.population_stationary",
@@ -253,6 +277,12 @@
         "quote": "probably are the only portion of the population that is doing so"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-i-of-the-country-of-siam/chap-iii-concerning-the-history-and-origine-of-the-siameses · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vii",
+      "notes": "nursing / birthOrder / stagnant / birthsPerWoman / gameMapping: not checked (other sources). Note: La Loubere says the country is thinly peopled (\"very little inhabited\"); he does not say the population is not growing."
+    }
   }
 ]

@@ -143,10 +143,17 @@
     "citations": [
       {
         "sourceId": "src.three_seals_law",
-        "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 165–166 มาตรา ๔๔"
+        "locator": "พระไอยการลักษณมรดก ฉบับพิมพ์ 2482 เล่ม 2 สแกน 165–166 ย่อหน้าก่อนมาตรา ๔๔ และมาตรา ๔๔",
+        "quote": "ท่านว่าอย่าให้เลย เหตุมันโลภจะใคร่ได้ของท่าน ไม่คำนับเปนฉันญาติ"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ตำแหน่งถูก 0/1; เทียบกับ https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_4",
+      "notes": "funeralCostDeduction: not in source (ข้ออ้างว่าไม่พบ — สอดคล้องกับที่อ่าน ม.๑–๔๘)"
+    }
   },
   {
     "id": "social.wife_categories",
@@ -180,7 +187,13 @@
         "quote": "หญิงอันบิดามานดากุมมือให้เปนเมียชาย ได้ชื่อว่าเปนเมียกลางเมือง"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_1",
+      "notes": "gameMapping: n/a"
+    }
   },
   {
     "id": "social.slave_types",
@@ -491,7 +504,7 @@
       "premise": "ที่ดินมีมาก คนมีน้อย ระบบมีไว้ขึ้นทะเบียนไพร่ใต้มูลนาย",
       "phraiTypes": {
         "luang": "ไพร่หลวง ขึ้นกับกษัตริย์ผ่านขุนนาง",
-        "som": "ไพร่สม ขึ้นกับเจ้านาย/ขุนนาง"
+        "som": "ไพร่สม ขึ้นกับเจ้านาย (บทวิจารณ์ว่า 'responsible to the princes')"
       },
       "competition": "กษัตริย์กับเจ้านายแย่งไพร่กัน",
       "akinArgument": "การไหลของไพร่จากกษัตริย์ไปเจ้านายมีส่วนทำให้เสียกรุง 2310",
@@ -500,7 +513,11 @@
     "summary": "เปลี่ยนแกนของ prestige จาก \"ทรัพย์\" เป็น \"คน\"",
     "status": "inferred",
     "projection": "ข้อเสนอของอคินอิงโครงสร้างที่สืบมาจากอยุธยา และผู้วิจารณ์ระบุว่าครอบคลุมช่วงก่อน 2310 ด้วย — ใช้เป็นกลไกออกแบบ ไม่ใช่รายละเอียดฉาก",
-    "gameRefs": { "tags": ["land:paddy_north"] },
+    "gameRefs": {
+      "tags": [
+        "land:paddy_north"
+      ]
+    },
     "citations": [
       {
         "sourceId": "src.vella_1971_review_akin",
@@ -508,7 +525,13 @@
         "quote": "the supreme value of men over land. Land was abundant, men were scarce."
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 1/1; เทียบกับ https://thesiamsociety.org/wp-content/uploads/1971/03/JSS_059_1o_Reviews.pdf",
+      "notes": "phraiTypes: partial (p.233) — \"phrai responsible to the king (through the nobles, or central government officials) and phrai responsible to the princes\"; the review does not use the words ไพร่หลวง/ไพร่สม and puts the second class under princes, not nobles | gameMapping: design inference, fine"
+    }
   },
   {
     "id": "social.patron_switching",
@@ -717,25 +740,25 @@
     ],
     "appliesAs": "mechanic",
     "claim": {
-      "hierarchy": "ที่ทางในลำดับชั้นขึ้นกับบุญเทียบกับบาป (Hanks — จากบทคัดย่อเท่านั้น)",
+      "hierarchy": "ที่ทางในลำดับชั้นขึ้นกับบุญเทียบกับบาป (Hanks — ยังไม่ได้อ่านตัวบทความ)",
       "powerSources": [
         "ประสบการณ์",
         "ความรู้",
         "เครื่องราง"
       ],
-      "effectiveness": "ประสิทธิผลมาจากบุญเท่านั้น (Hanks — จากบทคัดย่อเท่านั้น ยังไม่มีแหล่งอื่นยืนยัน)",
+      "effectiveness": "ประสิทธิผลมาจากบุญเท่านั้น (Hanks — จากคำบรรยายรายการในคลังเอกสาร Hanks ของศูนย์มานุษยวิทยาสิรินธร ไม่ใช่ตัวบทความ ยังไม่มีแหล่งอื่นยืนยัน)",
       "protectionSources": "คนหาที่พึ่งจากหลายทาง: เครื่องราง คาถา วิชา และนาย — มองจากข้างล่าง ระบบศักดินาคือการหาที่พึ่งให้พ้นภัยจากผู้มีอำนาจ (Baker & Pasuk จากขุนช้างขุนแผน)",
-      "kingshipMerit": "ตั้งแต่สมัยพระนารายณ์และแพร่หลายในพุทธศตวรรษที่ 23 กษัตริย์ถูกยกเป็นพระโพธิสัตว์ที่สั่งสมบุญหลายชาติ — บุญเป็นฐานอำนาจกษัตริย์ (Baker 2019)",
+      "kingshipMerit": "ปรากฏแล้วในสมัยพระนารายณ์ (ปลายคริสต์ศตวรรษที่ 17) และแพร่หลายในคริสต์ศตวรรษที่ 18 — กษัตริย์ถูกยกเป็นพระโพธิสัตว์ที่สั่งสมบุญหลายชาติ (Baker 2019)",
       "noMonopoly": "อำนาจจากการบำเพ็ญเพียรและคาถาใครก็สร้างได้ กษัตริย์ผูกขาดไม่ได้ — ปลายอยุธยามีกบฏที่นำโดยพระหรือคนที่เคยบวช (Baker 2019)",
       "gameMapping": "แยกค่า merit (มีใน Character) ออกจากอำนาจ/เครื่องราง; สูตร meritEffectiveness (บุญคูณบารมีที่ได้ 0.5–1.5 เท่า) เป็นกลไกที่ออกแบบเอง ไม่ใช่ข้อมูลจากเอกสาร"
     },
-    "summary": "ใช้แยกระบบบุญกับระบบอำนาจ — ข้อที่ว่าบุญกำหนดว่าอำนาจจะได้ผล (ซึ่งสูตรในเกมอิงอยู่) มีที่มาแค่บทคัดย่อของ Hanks 1962; ส่วนที่บุญเป็นฐานความชอบธรรมของผู้มีอำนาจ และที่พึ่งมาได้หลายทาง มีงานอ่านฟรีรองรับแล้ว (Baker 2019, Baker & Pasuk 2013)",
+    "summary": "ใช้แยกระบบบุญกับระบบอำนาจ — ข้อที่ว่าบุญกำหนดว่าอำนาจจะได้ผล (ซึ่งสูตรในเกมอิงอยู่) มีที่มาแค่คำบรรยายรายการเอกสารของ Hanks 1962 (ยังไม่ได้อ่านตัวบทความ); ส่วนที่บุญเป็นฐานความชอบธรรมของผู้มีอำนาจ และที่พึ่งมาได้หลายทาง มีงานอ่านฟรีรองรับแล้ว (Baker 2019, Baker & Pasuk 2013)",
     "status": "inferred",
     "projection": "Hanks สรุปจากงานภาคสนามบางชัน/กรุงเทพฯ ทศวรรษ 2490 เป็นแบบแผนทั่วไปของสังคมไทย; Baker & Pasuk อ่านจากขุนช้างขุนแผน (เรื่องตั้งในสมัยอยุธยา แพร่หลายพุทธศตวรรษที่ 23) และ Baker 2019 สรุปงานวิชาการถึงปลายอยุธยา — สองชิ้นหลังใกล้ยุคเกมกว่า แต่ไม่ได้พูดถึงประสิทธิผลของอำนาจโดยตรง",
     "citations": [
       {
         "sourceId": "src.hanks_1962_merit",
-        "locator": "บทคัดย่อ (eHRAF) — ยังไม่ได้อ่านตัวบทความ หน้า 1247–1261",
+        "locator": "คำบรรยายรายการ Lucien and Jane Hanks archive ศูนย์มานุษยวิทยาสิรินธร (https://db.sac.or.th/anthroarchives/en/item_det.php?i_id=8819) — ยังไม่ได้อ่านตัวบทความ หน้า 1247–1261",
         "quote": "effectiveness, by contrast, derives only from merit"
       },
       {
@@ -749,7 +772,14 @@
         "quote": "kings could not impose a monopoly on this kind of power"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 2/3; เทียบกับ https://db.sac.or.th/anthroarchives/en/item_det.php?i_id=8819 · https://englishkyoto-seas.org/wp-content/uploads/SEAS_0202_Baker-and-Pasuk.pdf",
+      "notes": "kingshipMerit: partial (Baker 2019) — \"Kings were identified as bodhisattas ... present in the Narai reign in the later 17th century, and flourished in the 18th\"; '18th' is the 18th century CE (≈ พ.ศ. 2244–2343), not พุทธศตวรรษที่ 23 | gameMapping: design note; the formula is marked as invented, fine",
+      "fixed": true
+    }
   },
   {
     "id": "social.polite_surface",
@@ -902,9 +932,20 @@
       {
         "sourceId": "src.three_seals_law",
         "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 152 มาตรา ๑๔ (ท้าย)"
+      },
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 145–146 มาตรา ๒",
+        "quote": "อย่าให้ทำมรดกพัทยาเลย ให้คงไว้แก่ญาติพี่น้องผู้มรณภาพนั้นเถิด"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_4",
+      "notes": "childless: partial — ๑๖–๑๗ ให้ส่วนพี่น้อง/ญาติแต่ไม่ได้ระบุเงื่อนไข 'ไม่มีบุตร'; มาตรา ๒ (นา ๔๐๐ ขึ้นไป) ถ้าไม่มีบิดามารดาลูกหลาน \"ให้คงไว้แก่ญาติพี่น้องผู้มรณภาพนั้นเถิด\" | gameMapping: n/a (ไม่ใช่ข้ออ้างจากเอกสาร)"
+    }
   },
   {
     "id": "social.inheritance_kin_shares",
@@ -951,18 +992,29 @@
       ],
       "format": "[ไม่ได้รับราชการ, ได้รับราชการ]",
       "condition": "ต้องได้รักษาไข้และปลงศพ — ดู social.nursing_cremation_condition",
-      "gameBalanceKey": "inheritance.kinShares (เพิ่มหลาน 2 / เหลน 1 จากตารางบุตรใน social.inheritance_by_mother_status)"
+      "gameBalanceKey": "inheritance.kinShares (เพิ่มหลาน 2 / เหลน 1 จากตารางบุตรใน social.inheritance_by_mother_status)",
+      "grandparentsSideKin": [
+        0.5,
+        1
+      ]
     },
     "summary": "ตารางน้ำหนักญาติที่ใช้แทนลูกเมื่อไม่มีบุตร หรือใช้แบ่งภาคของญาติ; พี่น้องร่วมพ่อได้มากกว่าร่วมแม่ — ใช้กับตัวเลือกทายาทสายพี่น้องได้",
     "status": "attested",
-    "contested": "ตัวเลขปู่ย่าตายาย (ส่วนกึ่ง) อ่านจากประโยคไม่ใช่ตาราง และ \"ญาติฝ่าย…\" มีคำหายในข้อความ",
+    "contested": "ปู่ย่าตายายได้ 'ส่วนกึ่ง' (1½) ไม่แยกรับราชการ; ญาติฝ่ายปู่ย่า/ตายาย (สังขาญาติ) ได้ 'กึ่งส่วน' (½) รับราชการได้ 1 — 'ส่วนกึ่ง' = 1½ ไม่ใช่ ½",
     "citations": [
       {
         "sourceId": "src.three_seals_law",
         "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 152–153 มาตรา ๑๖–๑๗"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_4",
+      "notes": "grandparents [1.5,1.5]: partial — \"ปู่หญ้าตายายผู้มรณะงานเดิยวกัน ได้ทรัพยมรดกส่วนกึ่ง\" (1½ ไม่แยกรับราชการ) ถูก; แต่ประโยคถัดไปให้สังขาญาติฝ่ายปู่ย่า/ตายายที่รักษาไข้ปลงศพ \"กึ่งส่วน ถ้าได้รับราชการ ได้ทรัพยมรดกส่วนหนึ่ง\" = [0.5,1] ซึ่ง entry ไม่ได้ใส่ | gameBalanceKey: n/a",
+      "fixed": true
+    }
   },
   {
     "id": "social.nursing_cremation_condition",
@@ -975,8 +1027,8 @@
     "claim": {
       "both": "ได้เต็มส่วน",
       "onlyOne": "มาไม่ทันรักษาไข้แต่ช่วยปลงศพ หรือรักษาไข้แต่ไม่ช่วยปลงศพ → กึ่งส่วน (ญาติที่อยู่ต่างเมือง มาตรา ๒๖)",
-      "neither": "ไม่ได้ส่วน (มาตรา ๒๙: อยู่บ้านเดียวกันหรือแขวงเดียวกันแต่ไม่รักษาไข้ ไม่ได้เลย)",
-      "exemptOnDuty": "ติดราชการในวังหรือหัวเมือง ได้ส่วนเต็ม เก็บไว้ที่พระคลังจนกลับ (มาตรา ๒๗–๒๘, ๓๐)",
+      "neither": "ไม่ได้ส่วน; และญาติที่อยู่บ้านเดียวกันหรือแขวงเดียวกัน ถ้าทำได้แค่อย่างเดียว (รักษาไข้หรือปลงศพ) ก็ไม่ได้ส่วนเลย (มาตรา ๒๙) — กึ่งส่วนใช้เฉพาะญาติที่อยู่ต่างเมือง (มาตรา ๒๖)",
+      "exemptOnDuty": "ติดราชการในวัง ได้ส่วนเต็ม; ไปราชการหัวเมือง ส่วนเก็บไว้ที่พระคลังจนกลับ (มาตรา ๒๘, ๓๐); ไปราชการเมืองไกล มอบไว้กับญาติที่สนิทกว่า (มาตรา ๒๗)",
       "tookEarly": "เก็บทรัพย์ไปก่อนปลงศพ → เสียสิทธิ์ (ต่อจาก social.cremation_before_division)",
       "disowned": "ลูกหลานที่ถูกขับเพราะดื้อ ไม่ได้ส่วน (มาตรา ๒๓–๒๔)",
       "leftParents": "ลูกที่ทิ้งพ่อแม่ไปอยู่ต่างเมือง กลับมาขอทรัพย์ในเรือนไม่ได้ — ตกแก่ผู้อยู่ปรนนิบัติ (มาตรา ๒๕)"
@@ -989,7 +1041,14 @@
         "locator": "พระไอยการลักษณมรดก เล่ม 2 สแกน 155–158 มาตรา ๒๓–๓๐"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ตำแหน่งถูก 1/1; เทียบกับ https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_2/ส่วน_4",
+      "notes": "neither: partial — ๒๙ ญาติที่อยู่บ้านเดียวกัน/แขวงเดียวกัน ทำแค่อย่างเดียวก็ไม่ได้: \"แลได้แต่ปลงศภมิได้รักษาไข้ก็ดี ท่านว่าอย่าให้มันได้ส่วนแบ่งปันเลย\"",
+      "fixed": true
+    }
   },
   {
     "id": "social.eldest_child_share",
@@ -1124,7 +1183,13 @@
         "quote": "Very few Families do long maintain themselves therein"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-iii-of-the-officers-of-the-kingdom-of-siam-in-general",
+      "notes": "Optional wording: 'ตระลาการรับของไม่ถูกลงโทษ ถ้าไม่ถูกพิสูจน์ว่าตัดสินไม่เป็นธรรม'."
+    }
   },
   {
     "id": "social.court_punishments_1680s",
@@ -1166,7 +1231,12 @@
         "quote": "a Father shares sometimes in the punishment of the Son"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 3/3; ตำแหน่งถูก 3/3; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xiv-of-the-customs-of-the-court-of-siam-and-of-the-policy-of-its-kings"
+    }
   },
   {
     "id": "social.court_attendance_rules",
@@ -1182,8 +1252,8 @@
     "claim": {
       "absence": "ขาดเฝ้าหอพระหรือหน้าพระบัญชร ปรับไหมตามบรรดาศักดิ์ (ม.84)",
       "notGoing": "ได้รับใช้ราชการแล้วสามวันยังไม่ไป ให้ตามตัวมาแล้วใช้คนอื่นไปแทน (ม.96)",
-      "lateReport": "รายงานช้า/ขาด — ปรับ ถอดจากราชการ และจำตรุไว้เดือนหนึ่ง (ม.97)",
-      "talking": "เจรจาระหว่างเฝ้า โทษเพิ่มขึ้นทีละครั้ง ครั้งที่สามห้ามเข้าเฝ้า (ม.57)",
+      "lateReport": "ผู้รั้งเมือง/ไปทัพที่กลับเข้ามาเองก่อนมีหนังสือเรียก (แม้บอกข่าวมาแล้ว) — มัดหน้าศาลาลูกขุน 3 วัน ปรับ ถอดจากราชการ ใส่ตรุเดือนหนึ่ง; ไม่บอกข่าวแล้วมาเอง โทษถึงตาย (ม.97)",
+      "talking": "เจรจาระหว่างเฝ้า โทษเพิ่มทีละครั้งและหนักขึ้นเมื่อศักดินาต่ำลง: นา 3000+ ครั้งที่สามห้ามเฝ้า; นา 1200–2400 ครั้งที่สองห้ามเฝ้า; นา 400–1000 ครั้งที่สองตี 30 ที ปรับ ห้ามเฝ้า (ม.57)",
       "watches": "ข้าพระบาทต้องรู้ราชการมณเฑียรบาลในแต่ละยาม (ม.118)"
     },
     "summary": "ตัวบทของโทษความบกพร่องในราชการ — ใช้กำหนดผลของ event มาสาย/ขาดเวร/ทำงานพลาด; AI อ่านจากวิกิซอร์ซผ่านเครื่องมือ (ยกตรงได้บางส่วน) ยังต้องให้คนตรวจ",
@@ -1200,7 +1270,14 @@
         "quote": "แลถอดจากราชการ ใส่ตรุะไว้เดือนหนึ่ง"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "partial",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://th.wikisource.org/wiki/ประมวลกฎหมายรัชกาลที่_1_จุลศักราช_1166/เล่ม_1/ส่วน_4",
+      "notes": "lateReport: contradicted — ม.97 ลงโทษเจ้าเมือง/แม่ทัพที่กลับเข้ามาเองก่อนถูกเรียก ไม่ใช่รายงานช้า: \"แลมาก่อนหนังสือ ให้มัดไว้หน้าศาลาลูกขุนสามวัน\" แล้วปรับ ถอด ใส่ตรุเดือนหนึ่ง; ไม่บอกหนังสือแล้วมาเองโทษฟันคอริบเรือน | talking: partial — ม.57 ไล่ระดับตามศักดินา: นา ๓๐๐๐–๑๐๐๐๐ \"ถ้าเจรจาถึงสามครั้ง ให้ห้ามผู้นั้นอย่าให้เฝ้าพระบาทพระเจ้าอยู่หัว\"; นา ๑๒๐๐–๒๔๐๐ ห้ามเฝ้าตั้งแต่ครั้งที่สอง; นาต่ำกว่านั้นถูกตี/ทวน | watches: partial — ม.118 \"ผู้เปนข้าพระบาทให้รู้จักในราชการมณเฑียรบาลในปถมยาม\" แต่ใจความคือห้ามพระราชกุมารเสด็จไปผิดยาม ผู้ตามเสด็จไม่ห้ามมีโทษถึงตาย",
+      "fixed": true
+    }
   },
   {
     "id": "social.royal_pages_1680s",
@@ -1242,7 +1319,13 @@
         "quote": "มหาดเลกเลว นา ๒๐๐"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-iii-of-the-officers-of-the-kingdom-of-siam-in-general · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-iii-of-the-manners-of-the-siameses-according-to-their-several-conditions/chap-xii-of-the-officers-which-nearest-approach-the-king-of-siams-person",
+      "notes": "sakdina: not checked (Three Seals Law, other batch)"
+    }
   },
   {
     "id": "social.patrol_department_ladder",
@@ -1288,9 +1371,20 @@
         "sourceId": "src.three_seals_ri_2550",
         "locator": "ตำแหน่งนาพลเรือน คำอ่าน หน้า 264",
         "quote": "หลวงอินทราบดีศรีราชรองเมืองเจ้ากรมกองกระเวนขวา นา ๑๐๐๐"
+      },
+      {
+        "sourceId": "src.three_seals_law",
+        "locator": "พระไอยการตำแหน่งนาพลเรือน หมวด 9 ฉบับพิมพ์ 2482 เล่ม 1 สแกน 200–201 (หน้าพิมพ์ ๑๘๖–๑๘๗) — อ่านจากภาพ ยังไม่มีคำถอดบนวิกิซอร์ซ",
+        "quote": "หลวงอินทราบดีศรีราชรองเมืองเจ้ากรมกองกระเวนขวา นา ๑๐๐๐"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ดูหมายเหตุ",
+      "notes": "duty: not in source (entry บอกเองว่าอนุมาน)"
+    }
   },
   {
     "id": "social.garden_treasury_department_ladder",
@@ -1391,7 +1485,7 @@
       "left": {
         "overseer": "พระพิพิทไอสูรย จางวางชาวที่ซ้าย นา 1000",
         "marginLabel": "กรมชาวที่ใหญ่",
-        "head": "หลวงเทพสมบัติ เจ้ากรม นา 800",
+        "head": "หลวงเทพสมบัด เจ้ากรม นา 800 (สะกดตามฉบับ 2482)",
         "palat": "ขุนพิพิทรักษา ปลัดกรม นา 600",
         "khun": {
           "names": [
@@ -1432,7 +1526,13 @@
         "quote": "พระพิพิทไอสูรยจางวางชาวที่ซ้าย นา ๑๐๐๐"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://commons.wikimedia.org/wiki/File:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(1).djvu (page 238) · https://commons.wikimedia.org/wiki/File:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(1).djvu (page 239)",
+      "notes": "left.muen names: partial — 7 ชื่อตรงกับ entry; 'สนิทผู้บาล' ในภาพดูเหมือน 'สนิดผู้บาล' ควรให้คนตรวจ"
+    }
   },
   {
     "id": "social.royal_scholars_department_ladder",
@@ -1486,6 +1586,12 @@
         "quote": "ขุนหมื่นในกรมราชบัณฑิตย นา ๓๐๐ หมื่นธรรมนรา สมุบาญชีย นา ๓๐๐"
       }
     ],
-    "verified": false
+    "verified": false,
+    "aiCheck": {
+      "date": "2026-10-31",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 2/2; ตำแหน่งถูก 2/2; เทียบกับ https://commons.wikimedia.org/wiki/File:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(1).djvu (page 239) · https://commons.wikimedia.org/wiki/File:Pramuan_Kot_Mai_Ratcha_Kan_Thi_Nueng_2482_(1).djvu (page 240)",
+      "notes": "อ่านจากภาพสแกนคอมมอนส์ page239/page240"
+    }
   }
 ]

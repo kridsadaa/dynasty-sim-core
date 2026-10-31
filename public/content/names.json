@@ -106,8 +106,7 @@
       "sex": "m",
       "estates": null,
       "loreRefs": [
-        "naming.names_legal_cases",
-        "naming.names_minor_nobility_2272"
+        "naming.names_legal_cases"
       ]
     },
     {
@@ -425,7 +424,8 @@
       "sex": "m",
       "estates": null,
       "loreRefs": [
-        "naming.names_krung_kao_2386"
+        "naming.names_krung_kao_2386",
+        "naming.names_minor_nobility_2272"
       ]
     },
     {
@@ -682,7 +682,7 @@
     },
     {
       "name": "เสม",
-      "sex": "m",
+      "sex": "f",
       "estates": [
         "noble"
       ],
@@ -721,6 +721,16 @@
       ]
     },
     {
+      "name": "ทองอยู่",
+      "sex": "f",
+      "estates": [
+        "noble"
+      ],
+      "loreRefs": [
+        "naming.names_minor_nobility_2272"
+      ]
+    },
+    {
       "name": "ชูโต",
       "sex": "m",
       "estates": [
@@ -732,7 +742,7 @@
     },
     {
       "name": "แวน",
-      "sex": "m",
+      "sex": "f",
       "estates": [
         "noble"
       ],
@@ -812,16 +822,6 @@
     },
     {
       "name": "สั้น",
-      "sex": "f",
-      "estates": [
-        "noble"
-      ],
-      "loreRefs": [
-        "naming.names_minor_nobility_2272"
-      ]
-    },
-    {
-      "name": "แตง",
       "sex": "f",
       "estates": [
         "noble"
