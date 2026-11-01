@@ -881,6 +881,8 @@ $('findMe').onclick = () => {
 
 // ---------------- หน้าดูตัวละคร ----------------
 let inspecting: string | null = null;
+type InspectTab = 'info' | 'mind' | 'lore';
+let inspectTab: InspectTab = 'info';
 
 async function inspect(nodeId: string, reveal = true) {
   inspecting = nodeId;
@@ -900,11 +902,18 @@ function closeInspect() {
   for (const b of document.querySelectorAll<HTMLElement>('#tree .person.selected')) b.classList.remove('selected');
 }
 
+const MIND_TITLES = new Set(['ร่างกาย', 'ร่องรอยบนร่างกาย', 'ปมในใจ (รวมปมแฝง)', 'ปมที่คนยังจำได้', 'นิสัย', 'ความทรงจำที่ฝังใจ']);
+const LORE_TITLES = new Set(['ทักษะ', 'กฎในเรือน', 'ตำนานที่เล่าถึงคนนี้']);
+
 function renderInspect(v: InspectView, reveal: boolean) {
   const box = $('inspect');
-  // เปิดคนใหม่ → เริ่มอ่านจากบนสุด (refresh คนเดิมระหว่างเวลาเดินไม่เลื่อน)
-  if (box.dataset.node !== v.nodeId) box.scrollTop = 0;
+  const prevBody = box.querySelector<HTMLElement>('.inspect-body');
+  const isNewPerson = box.dataset.node !== v.nodeId;
+  const savedScroll = isNewPerson ? 0 : (prevBody?.scrollTop ?? 0);
+  if (isNewPerson) inspectTab = 'info';
   box.dataset.node = v.nodeId;
+
+  const head = el('div', undefined, 'inspect-head');
   const top = el('div', undefined, 'top');
   top.append(el('h2', `${v.sex === 'm' ? '♂' : '♀'} ${v.name}`));
   if (v.characterId) {
@@ -912,20 +921,66 @@ function renderInspect(v: InspectView, reveal: boolean) {
     top.append(button('⋯ ทำอะไรกับคนนี้', () => void openActions(id)));
   }
   top.append(button('ปิด', closeInspect));
-  const dl = el('dl');
-  for (const [k, val] of v.facts) {
-    const dd = el('dd');
-    const people = v.links?.[k];
-    if (people) people.forEach((p, i) => dd.append(...(i ? [document.createTextNode(k === 'บิดามารดา' ? ' · ' : ', ')] : []), button(p.name, () => void inspect(p.nodeId), 'who')));
-    else dd.textContent = val;
-    dl.append(el('dt', k), dd);
+  head.append(top, el('div', `${v.lifespan} · ${v.status}`, 'muted'), ...statusPills(v.statuses));
+
+  const infoSections = v.sections.filter((s) => !MIND_TITLES.has(s.title) && !LORE_TITLES.has(s.title));
+  const mindSections = v.sections.filter((s) => MIND_TITLES.has(s.title));
+  const loreSections = v.sections.filter((s) => LORE_TITLES.has(s.title));
+
+  if (inspectTab === 'mind' && !mindSections.length) inspectTab = 'info';
+  if (inspectTab === 'lore' && !loreSections.length) inspectTab = 'info';
+
+  const tabBar = el('div', undefined, 'inspect-tabs');
+  const tabs: Array<{ id: InspectTab; label: string; show: boolean }> = [
+    { id: 'info', label: 'ข้อมูลและครอบครัว', show: true },
+    { id: 'mind', label: 'กายและใจ', show: mindSections.length > 0 },
+    { id: 'lore', label: 'ฝีมือและเรื่องเล่า', show: loreSections.length > 0 },
+  ];
+  for (const t of tabs) {
+    if (!t.show) continue;
+    const b = button(t.label, () => {
+      inspectTab = t.id;
+      renderInspect(v, false);
+    });
+    b.setAttribute('aria-selected', String(inspectTab === t.id));
+    tabBar.append(b);
   }
-  box.replaceChildren(top, ...artFigure('portrait', v.portraitTags), el('div', `${v.lifespan} · ${v.status}`, 'muted'), ...statusPills(v.statuses), dl);
-  for (const s of v.sections) {
-    const ul = el('ul');
-    for (const i of s.items) ul.append(el('li', i));
-    box.append(el('h3', s.title), ul);
+
+  const body = el('div', undefined, 'inspect-body');
+  const appendSections = (list: InspectView['sections']) => {
+    for (const s of list) {
+      const ul = el('ul');
+      for (const i of s.items) ul.append(el('li', i));
+      body.append(el('h3', s.title), ul);
+    }
+  };
+
+  if (inspectTab === 'info') {
+    const dl = el('dl');
+    for (const [k, val] of v.facts) {
+      const dd = el('dd');
+      const people = v.links?.[k];
+      if (people) people.forEach((p, i) => dd.append(...(i ? [document.createTextNode(k === 'บิดามารดา' ? ' · ' : ', ')] : []), button(p.name, () => void inspect(p.nodeId), 'who')));
+      else dd.textContent = val;
+      dl.append(el('dt', k), dd);
+    }
+    const figs = artFigure('portrait', v.portraitTags);
+    if (figs.length) {
+      const overview = el('div', undefined, 'inspect-overview');
+      overview.append(...figs, dl);
+      body.append(overview);
+    } else {
+      body.append(dl);
+    }
+    appendSections(infoSections);
+  } else if (inspectTab === 'mind') {
+    appendSections(mindSections);
+  } else {
+    appendSections(loreSections);
   }
+
+  box.replaceChildren(head, ...(tabBar.childNodes.length > 1 ? [tabBar] : []), body);
+  body.scrollTop = savedScroll;
   // refresh ระหว่างเวลาเดินแค่อัปเดตเนื้อหา — ไม่เปิดหน้าต่างที่ผู้เล่นปิดไปแล้วขึ้นมาใหม่
   if (reveal || !$('sheet').hidden) $('sheet').hidden = false;
 }
