@@ -12,6 +12,7 @@ import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../syste
 import { choreSkills } from '../systems/chores';
 import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
+import { eventArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
 import type {
   CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
@@ -220,7 +221,11 @@ export function dynastyView(ctx: Ctx): DynastyView {
     name: dyn.name,
     prestige: Math.round(dyn.prestige * 10) / 10,
     taboos: dyn.taboos.map((t) => `${t.kind === 'ban' ? 'ห้าม' : 'พิธีเกี่ยวกับ'}${ctx.tags.label(t.target)} (${Math.round(t.strength * 100)}%)`),
-    legends: dyn.legendIds.map((id) => ctx.state.legends[id]).filter((l) => !!l).map((l) => renderLegend(ctx, l!, 'current')),
+    legends: dyn.legendIds.map((id) => ctx.state.legends[id]).filter((l) => !!l).map((l) => ({
+      text: renderLegend(ctx, l!, 'current'),
+      // ภาพตำนานวาดตามฉบับที่เล่ากัน (สนามรบ ไม่ใช่โรงครัว) — art/README.md ข้อ 2
+      artTags: ['legend:any', ...ctx.tags.expand(Object.values(l!.current.slots)), ...l!.current.supernatural],
+    })),
     livingMembers: Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c)).length,
     familyNodes: Object.keys(ctx.state.familyNodes).length,
   };
@@ -298,6 +303,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       hint: optionHint(ctx, p, o.effects) ?? (p.def.id.startsWith('career.') ? effectHint(ctx, p, o.effects) : undefined),
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
+    artTags: eventArtTags(p.def.id, ctx.tags.expand(p.instance.resolvedTags)),
   };
 }
 

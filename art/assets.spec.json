@@ -1,0 +1,232 @@
+{
+  "notes": "รายการภาพที่เกมใช้ (art/README.md ข้อ 7.5) — v1 ไม่มี portrait (ROADMAP: ย้ายไป v2) มีแค่ภาพฉาก (reality) กับภาพตำนาน (chronicle); subject เป็นชั้น SUBJECT ของ prompt ส่วน STYLE มาจาก art/style.json; tag: event:<id> = ภาพของ event นั้น, group:<หมวด> = ภาพสำรองของ event ทั้งหมวด, tag อื่นตาม public/content/tags.json; source = ภาพชั่วคราวจาก art/approved ใช้จนกว่าจะมีภาพที่ art/generated/<id>.*",
+  "baseline": [
+    {
+      "id": "baseline.stilt_house",
+      "replaces": "art/approved/reality-stilt-house.jpg",
+      "why": "สร้างด้วย style block v0.2 แต่ style.json ตรึง reality ที่ v0.3 — สร้างใหม่ด้วย v0.3 ให้ชุด regression เป็นสไตล์เดียวกัน",
+      "subject": "Wide view of a small Siamese commoner house: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of floods, reached by a hanging bamboo ladder; a bamboo fence around the yard; river behind, rainy-season sky. No people in the foreground.",
+      "loreRefs": ["material.houses_1680s"]
+    },
+    {
+      "id": "baseline.meal_tray",
+      "replaces": "art/approved/reality-meal-tray.jpg",
+      "why": "สร้างด้วย style block v0.2 — รอบ 01 ได้ปลาทั้งตัว (lore: อาหารหั่นเป็นชิ้นมาแล้ว)",
+      "subject": "Top-down still life on a reed mat: a round footless lacquered wooden tray holding a mound of rice, dried salted fish already cut into small pieces, a small bowl of fermented shrimp paste with garlic, spring onions and fresh herbs, coconut-shell and earthenware bowls, a bamboo water tube; no whole fish, no spoons, forks or chopsticks.",
+      "loreRefs": ["material.food_1680s", "material.household_objects_1680s"]
+    }
+  ],
+  "images": [
+    {
+      "id": "scene.compound",
+      "style": "reality",
+      "tags": ["group:family", "event:family.legend_truth", "place:domestic"],
+      "alt": "เรือนไม้ของขุนนางผู้น้อยกับเรือนเล็กในรั้วไผ่",
+      "subject": "Wide view of a minor Siamese official's household compound: a single-storey house of real timber planks raised on wooden posts, with two smaller woven-bamboo houses for wives and household slaves inside the same bamboo fence; a packed-earth yard with a jar of water by the ladder, an elderly woman seated on the veranda, a child playing below; canal behind, morning light.",
+      "loreRefs": ["material.houses_1680s", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.village",
+      "style": "reality",
+      "tags": ["group:intent", "event:intent.befriend.done", "event:intent.befriend.failed", "event:intent.befriend.mischief", "event:intent.called_home"],
+      "alt": "เรือนไผ่ยกสูงของชาวบ้านริมน้ำ",
+      "subject": "Wide view of a small Siamese commoner house: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of floods, reached by a hanging bamboo ladder; a bamboo fence around the yard; river behind, rainy-season sky. No people in the foreground.",
+      "loreRefs": ["material.houses_1680s"],
+      "source": "art/approved/reality-stilt-house.jpg"
+    },
+    {
+      "id": "scene.kitchen_yard",
+      "style": "reality",
+      "tags": ["place:kitchen", "situation:kitchen_work", "group:chore", "group:childhood", "event:childhood.kitchen_cut", "event:chore.learn", "event:chore.learn_chop"],
+      "alt": "ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว",
+      "subject": "Medium-wide view of an outdoor kitchen in a house yard seen from the side: a small wood fire on the ground with an earthenware pot, a grating board and split coconuts, garlic and shallots on a flat basket, dried fish hanging from a pole, bamboo water tubes; a woman squatting by the fire with her back half turned, a child in a lower cloth watching; stilt house behind.",
+      "loreRefs": ["material.houses_1680s", "material.kitchen_tasks", "material.food_1680s"]
+    },
+    {
+      "id": "scene.meal",
+      "style": "reality",
+      "tags": ["situation:feast"],
+      "alt": "สำรับข้าวกับปลาแห้งบนถาดไม่มีขา",
+      "subject": "Top-down still life on a reed mat: a round footless lacquered wooden tray holding a mound of rice, dried salted fish already cut into small pieces, a small bowl of fermented shrimp paste with garlic, spring onions and fresh herbs, coconut-shell and earthenware bowls, a bamboo water tube; no whole fish, no spoons, forks or chopsticks.",
+      "loreRefs": ["material.food_1680s", "material.household_objects_1680s"],
+      "source": "art/approved/reality-meal-tray.jpg"
+    },
+    {
+      "id": "scene.court_feast",
+      "style": "reality",
+      "tags": ["event:adult.court_feast"],
+      "alt": "แขกนั่งล้อมถาดอาหารบนเสื่อในงานเลี้ยงของขุนนาง",
+      "subject": "Medium-wide view inside a timber house during a household feast: adult men seated cross-legged on reed mats in small groups around round footless trays of rice and dishes, lacquered betel boxes beside them, eating with their right hands, a servant kneeling to bring a water jar; lamplight in the evening.",
+      "loreRefs": ["material.household_objects_1680s", "material.food_1680s"]
+    },
+    {
+      "id": "scene.newborn",
+      "style": "reality",
+      "tags": ["event:family.newborn", "event:family.grandchild_naming", "situation:childbirth"],
+      "alt": "แม่ลูกอ่อนนอนอยู่ไฟ ทารกนอนบนเสื่อข้างตัว",
+      "subject": "Interior of a house at dusk: a young mother wrapped in a lower cloth and a shawl lying on a reed mat beside a low glowing fire, a swaddled newborn on a cloth beside her, an older woman fanning the fire with a woven fan; seen from the side at a respectful distance.",
+      "loreRefs": ["ritual.yu_fai_placenta"]
+    },
+    {
+      "id": "scene.sickbed",
+      "style": "reality",
+      "tags": ["event:family.parent_illness", "event:family.hard_to_raise", "situation:illness"],
+      "alt": "ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย",
+      "subject": "Interior of a house in dim daylight: an old man lying ill on a reed mat under a thin cotton cloth, a grown son kneeling beside him holding an earthenware bowl of herbal medicine, a bundle of dried roots and leaves on a tray; quiet, worried mood.",
+      "loreRefs": ["material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.funeral_home",
+      "style": "reality",
+      "tags": ["event:family.death", "event:family.death_bad"],
+      "alt": "ศพห่อผ้าขาวในเรือน ญาตินั่งล้อม พระสวด",
+      "subject": "Interior of a house: a body wrapped entirely in white cloth lying on a mat, only the outline visible, relatives seated on the floor around it with heads bowed, three monks in yellow patched robes seated in a row holding palm-leaf fans in front of their faces while chanting, candles burning; sombre evening light. No visible face or wound on the body.",
+      "loreRefs": ["ritual.funeral_cremation", "attire.monks_1680s"]
+    },
+    {
+      "id": "scene.betrothal",
+      "style": "reality",
+      "tags": ["group:marriage", "event:family.arranged_match", "event:intent.court.accepted_formal", "event:marriage.refused", "event:marriage.milk_claim"],
+      "alt": "ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง",
+      "subject": "Interior of a timber house: two groups of middle-aged adults seated on reed mats facing each other, between them three bowls of betel nut and betel leaves on footed trays, the elders talking seriously; a young woman half-hidden behind a doorway listening.",
+      "loreRefs": ["kinship.betrothal_khanmak_three_seals", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.wedding",
+      "style": "reality",
+      "tags": ["event:marriage.wedding", "event:marriage.minor_wife"],
+      "alt": "ขบวนขันหมากเดินไปเรือนเจ้าสาว",
+      "subject": "Wide view of a small procession walking along a path beside a canal toward a stilt house: men and women carrying bowls of betel nut, bananas and sugar cane on footed trays, a young man in a clean lower cloth among them, a drum and a reed pipe; relatives waiting at the top of the ladder; bright morning.",
+      "loreRefs": ["kinship.betrothal_khanmak_three_seals", "material.houses_1680s"]
+    },
+    {
+      "id": "scene.courtship",
+      "style": "reality",
+      "tags": ["event:intent.court.trial", "event:intent.court.gossip", "event:intent.court.accepted", "event:intent.court.rejected", "event:marriage.divorce"],
+      "alt": "หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ",
+      "subject": "A wooden landing on a canal in late afternoon: a young woman wearing a lower cloth and a breast-cloth wrapped around her chest covering both breasts, ends thrown back over both shoulders, holding an earthenware water jar on her hip, and a young man standing a few steps away speaking to her; other villagers bathing far off in the water.",
+      "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s"]
+    },
+    {
+      "id": "scene.lotus_pond",
+      "style": "reality",
+      "tags": ["group:outing", "event:outing.lotus_f", "event:outing.lotus_m", "event:outing.lotus_fall_f", "event:outing.lotus_fall_m"],
+      "alt": "เรือลำเล็กกลางบึงบัว",
+      "subject": "Wide view of a lotus pond in the morning: two teenagers in a small narrow wooden dugout boat among lotus leaves and pink blossoms, one paddling, one reaching out to pick a flower, the boat tilting slightly; seen from a distance.",
+      "loreRefs": ["kinship.lotus_boat_meeting"]
+    },
+    {
+      "id": "scene.palace_pages",
+      "style": "reality",
+      "tags": ["group:career", "place:court", "event:career.page_duty", "event:career.page_mistake", "event:career.page_found_out", "event:career.punished_page", "event:career.present_page", "event:career.assign_department"],
+      "alt": "มหาดเล็กหนุ่มนั่งเรียงรอรับใช้ในลานพระราชวัง",
+      "subject": "A paved palace courtyard beside a pavilion with tiered roofs: a row of young royal pages under twenty-five in white muslin over-shirts and silk lower cloths kneeling and sitting in order, one holding a lacquered betel box, an older official in a tall white conical hat with gold bands watching them. No king or royal figure visible.",
+      "loreRefs": ["social.royal_pages_1680s", "attire.officials_1680s"]
+    },
+    {
+      "id": "scene.audience_hall",
+      "style": "reality",
+      "tags": ["event:career.audience_late", "event:career.promotion", "event:career.punished", "event:career.gift_offered", "event:career.rival_accuses", "event:career.reported", "event:career.recall"],
+      "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
+      "subject": "Interior of a palace audience hall seen from behind the officials: rows of Siamese officials in open-front white muslin over-shirts and tall white conical hats with gold bands prostrating on the floor in strict order, betel boxes beside them, tall red columns; the throne area is off-frame. No king or royal figure visible.",
+      "loreRefs": ["attire.officials_1680s", "social.court_attendance_rules"]
+    },
+    {
+      "id": "scene.night_patrol",
+      "style": "reality",
+      "tags": ["event:career.patrol_thief", "situation:combat"],
+      "alt": "กองตระเวนถือคบไฟจับขโมยควายริมคลอง",
+      "subject": "Night by a canal bank: three patrol men, bare-chested, in lower cloths, carrying burning torches and wooden staves, surrounding a man crouching beside a water buffalo; firelight on the water, stilt houses dark in the background.",
+      "loreRefs": ["social.patrol_department_ladder", "attire.commoner_men_1680s"]
+    },
+    {
+      "id": "scene.temple_holy_day",
+      "style": "reality",
+      "tags": ["group:festival", "group:ritual", "event:festival.holy_day", "event:ritual.elder_precepts"],
+      "alt": "ชาวบ้านนำของไปถวายพระที่วัดในวันพระ",
+      "subject": "A temple compound on a holy day: villagers in clean lower cloths carrying fruit, cloth and rice in baskets toward a monastery hall, older people in white sitting on mats listening to a monk preaching from a raised seat while holding a palm-leaf fan, candles lit; whitewashed brick hall with a tiled roof, bodhi tree.",
+      "loreRefs": ["ritual.holy_days_1680s", "ritual.alms_round_1680s", "attire.monks_1680s"]
+    },
+    {
+      "id": "scene.temple_fair",
+      "style": "reality",
+      "tags": ["event:festival.temple_fair"],
+      "alt": "งานวัด คนมาในผ้าใหม่ มีชกมวยพันเชือก",
+      "subject": "A crowded temple festival: people in new bright lower cloths walking around the temple grounds, in the middle a ring of spectators watching two boxers whose hands are wrapped with cord, a man releasing small birds from a bamboo cage, stalls with food in coconut shells.",
+      "loreRefs": ["ritual.temple_festival_1680s", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.lanterns",
+      "style": "reality",
+      "tags": ["event:festival.lanterns"],
+      "alt": "ลำน้ำเต็มไปด้วยโคมกระดาษลอยตามน้ำยามค่ำ",
+      "subject": "Night on a wide river as the floodwater begins to fall: the water covered with many small painted paper lanterns of different sizes floating with the current, their flames reflected, people on the bank and in small boats setting more lanterns on the water.",
+      "loreRefs": ["ritual.floating_lanterns_1680s"]
+    },
+    {
+      "id": "scene.bathing_elders",
+      "style": "reality",
+      "tags": ["event:festival.bathing"],
+      "alt": "ลูกหลานรดน้ำพ่อแม่ในวันเพ็ญเดือนห้า",
+      "subject": "Bright hot-season day in a house yard: an elderly couple seated on a low bench while their grown sons and daughters pour scented water from small bowls over their hands and shoulders, grandchildren in lower cloths waiting with more bowls, flowers floating in the water jar.",
+      "loreRefs": ["ritual.fifth_month_bathing_1680s"]
+    },
+    {
+      "id": "scene.ordination",
+      "style": "reality",
+      "tags": ["event:ritual.ordination"],
+      "alt": "แห่นาคไปวัดพร้อมร่มและดนตรี",
+      "subject": "A procession toward a temple: a young man of about twenty-one with a shaved head, dressed in white, walking under a tall ceremonial umbrella held by a relative, family members carrying folded yellow robes and an alms bowl, a drummer and a reed-pipe player in front.",
+      "loreRefs": ["ritual.ordination", "attire.monks_1680s"]
+    },
+    {
+      "id": "scene.topknot",
+      "style": "reality",
+      "tags": ["event:ritual.topknot"],
+      "alt": "เด็กนั่งให้ผู้ใหญ่ตัดจุก",
+      "subject": "Interior of a house: a child of about eleven, bare-chested and wearing a lower cloth, seated on a mat with head bowed, the small topknot on the crown about to be cut by an elderly man with a pair of shears, a monk seated nearby holding a palm-leaf fan, relatives watching with bowls of water and flowers.",
+      "loreRefs": ["ritual.topknot_cutting", "attire.monks_1680s"]
+    },
+    {
+      "id": "legend.battle",
+      "style": "chronicle",
+      "tags": ["legend:any", "place:battlefield", "situation:combat", "situation:war"],
+      "alt": "ภาพจิตรกรรม: นักรบฟันข้าศึก",
+      "subject": "A lone warrior with a sword cutting down several enemy soldiers in a battle scene, celestial beings watching from above with hands joined, zig-zag divisions separating the scenes.",
+      "loreRefs": ["attire.wat_ko_kaeo_reference"],
+      "source": "art/approved/chronicle-legend-warrior.jpg"
+    },
+    {
+      "id": "legend.duel",
+      "style": "chronicle",
+      "tags": ["place:duel_ground"],
+      "alt": "ภาพจิตรกรรม: สองคนประลองดาบต่อหน้าผู้คน",
+      "subject": "Two men dueling with swords and shields on an open ground, a crowd of onlookers seated in rows around them, one fighter leaping in a heroic pose, decorative trees and rocks.",
+      "loreRefs": ["attire.wat_ko_kaeo_reference"]
+    },
+    {
+      "id": "legend.court",
+      "style": "chronicle",
+      "tags": ["place:court"],
+      "alt": "ภาพจิตรกรรม: ขุนนางหมอบรับความชอบในวัง",
+      "subject": "A palace scene: an official in a tall pointed hat prostrating to receive a reward of cloth and a sword on a tray, other officials kneeling in rows, a pavilion with tiered roofs; the ruler is not shown, only an empty raised seat behind a curtain.",
+      "loreRefs": ["attire.wat_ko_kaeo_reference", "attire.officials_1680s"]
+    },
+    {
+      "id": "legend.spirit",
+      "style": "chronicle",
+      "tags": ["supernatural:guardian_spirit", "supernatural:phi"],
+      "alt": "ภาพจิตรกรรม: ผีบรรพบุรุษคุ้มครองลูกหลาน",
+      "subject": "An ancestral spirit drawn as a pale floating figure above a house, shielding a sleeping family below from dark demonic figures at the edge of the scene.",
+      "loreRefs": ["attire.wat_ko_kaeo_reference", "belief.spirits_1680s"]
+    },
+    {
+      "id": "legend.omen",
+      "style": "chronicle",
+      "tags": ["supernatural:omen"],
+      "alt": "ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า",
+      "subject": "A strange omen in the sky: a comet and a ring around the sun above a town wall, small figures below pointing upward in alarm.",
+      "loreRefs": ["attire.wat_ko_kaeo_reference", "belief.chronicle_omens"]
+    }
+  ]
+}

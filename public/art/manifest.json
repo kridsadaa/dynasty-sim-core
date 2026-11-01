@@ -1,0 +1,45 @@
+{
+  "styleVersion": "0.1",
+  "images": [
+    {
+      "id": "scene.village",
+      "file": "art/scene.village.webp",
+      "style": "reality",
+      "tags": [
+        "group:intent",
+        "event:intent.befriend.done",
+        "event:intent.befriend.failed",
+        "event:intent.befriend.mischief",
+        "event:intent.called_home"
+      ],
+      "alt": "เรือนไผ่ยกสูงของชาวบ้านริมน้ำ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.meal",
+      "file": "art/scene.meal.webp",
+      "style": "reality",
+      "tags": [
+        "situation:feast"
+      ],
+      "alt": "สำรับข้าวกับปลาแห้งบนถาดไม่มีขา",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "legend.battle",
+      "file": "art/legend.battle.webp",
+      "style": "chronicle",
+      "tags": [
+        "legend:any",
+        "place:battlefield",
+        "situation:combat",
+        "situation:war"
+      ],
+      "alt": "ภาพจิตรกรรม: นักรบฟันข้าศึก",
+      "width": 1024,
+      "height": 572
+    }
+  ]
+}

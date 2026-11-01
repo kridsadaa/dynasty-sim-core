@@ -110,6 +110,8 @@ export interface EventView {
     hint?: string;
   }>;
   triggered: string[]; // ปมที่ถูกกระตุ้น (สำหรับ UI แสดง "ใจสั่น...")
+  /** tag สำหรับเลือกภาพฉากจากคลังภาพ (src/art/select.ts) — ไม่มี = ไม่แสดงภาพ */
+  artTags?: string[];
 }
 
 export interface CharacterView {
@@ -193,7 +195,8 @@ export interface DynastyView {
   name: string;
   prestige: number;
   taboos: string[];
-  legends: string[]; // เฉพาะฉบับ "ที่เล่ากัน" — ความจริงต้องค้นพบผ่าน gameplay
+  /** เฉพาะฉบับ "ที่เล่ากัน" — ความจริงต้องค้นพบผ่าน gameplay; artTags เลือกภาพตำนาน (chronicle) */
+  legends: Array<{ text: string; artTags: string[] }>;
   livingMembers: number;
   familyNodes: number;
 }

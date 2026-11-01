@@ -18,3 +18,6 @@ art/rounds/*.webp
 # เอกสารอ้างอิงที่ผู้ใช้โหลดมาให้ตรวจ lore (มีลิขสิทธิ์ ไม่เข้า git)
 lore/*.pdf
 lore/_refs/
+
+# ภาพต้นฉบับที่สร้างแล้ว (ใหญ่) — เกมใช้ฉบับย่อใน public/art/ จาก npm run art:ingest
+art/generated/

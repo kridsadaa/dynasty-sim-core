@@ -3,10 +3,24 @@ import type {
   CharacterView, ClockState, DynastyView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
   TreeView,
 } from './engine/protocol';
+import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
 
 const engine = new EngineClient();
+
+// คลังภาพ (public/art/manifest.json จาก npm run art:ingest) — โหลดไม่ได้ก็เล่นได้ตามปกติ แค่ไม่มีภาพ
+let artManifest: ArtManifest | null = null;
+void fetch('art/manifest.json').then((r) => (r.ok ? r.json() : null)).then((m: ArtManifest | null) => (artManifest = m)).catch(() => {});
+function artFigure(style: ArtStyle, tags: readonly string[] | undefined): HTMLElement[] {
+  const a = tags ? pickArt(artManifest, style, tags) : null;
+  if (!a) return [];
+  const img = el('img') as HTMLImageElement;
+  Object.assign(img, { src: a.file, alt: a.alt, width: a.width, height: a.height, decoding: 'async' });
+  const fig = el('figure', undefined, `art ${style}`);
+  fig.append(img);
+  return [fig];
+}
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const el = (tag: string, text?: string, cls?: string) => {
   const e = document.createElement(tag);
@@ -319,12 +333,19 @@ function renderDynasty(v: DynastyView) {
   const box = $('dynasty');
   box.replaceChildren(el('h2', v.name));
   box.append(el('div', `บารมี ${v.prestige} · สมาชิกที่ยังมีชีวิต ${v.livingMembers} · ผังตระกูล ${v.familyNodes} คน`));
-  for (const [title, items] of [['ข้อห้ามประจำตระกูล', v.taboos], ['ตำนานที่เล่าขาน', v.legends]] as const) {
-    if (!items.length) continue;
-    box.append(el('h2', title));
+  if (v.taboos.length) {
     const ul = el('ul');
-    for (const i of items) ul.append(el('li', i));
-    box.append(ul);
+    for (const t of v.taboos) ul.append(el('li', t));
+    box.append(el('h2', 'ข้อห้ามประจำตระกูล'), ul);
+  }
+  if (v.legends.length) {
+    const ul = el('ul');
+    for (const l of v.legends) {
+      const li = el('li');
+      li.append(...artFigure('chronicle', l.artTags), l.text);
+      ul.append(li);
+    }
+    box.append(el('h2', 'ตำนานที่เล่าขาน'), ul);
   }
 }
 
@@ -577,7 +598,7 @@ async function choose(ev: EventView, o: EventView['options'][number], name?: str
 }
 
 function renderEvent(ev: EventView) {
-  const head = [el('h2', ev.title), el('p', ev.text)];
+  const head = [el('h2', ev.title), ...artFigure('reality', ev.artTags), el('p', ev.text)];
   if (ev.triggered.length) head.push(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
   const buttons = ev.options.map((o) => {
     const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}${o.note && !o.locked ? ' strained' : ''}`) as HTMLButtonElement;
