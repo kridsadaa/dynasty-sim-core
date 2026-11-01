@@ -76,7 +76,7 @@ Portrait cropped from the upper shoulders up in three-quarter view: a young Siam
 - ทรงผมเป็นบ็อบเกล้าสูง ทั้งที่กติกาห้ามไว้
 - ข้างภาพเป็นกระดาษขาวว่าง ซึ่งจะโผล่ออกมาเมื่อตัดเข้ากรอบ
 
-ตอนนี้ `portrait.f.adult.noble` ยืมภาพหญิงสาวขุนนางไปใช้ก่อน เลยยังต้องสร้างภาพนี้ใหม่อีก 1 ภาพ ให้วาง prompt ด้านล่างต่อจาก style block ของชุดที่ 2:
+ภาพ `portrait.f.adult.noble` สร้างใหม่ด้วย prompt ด้านล่างแล้ว (ครบทั้ง 9 ช่อง):
 
 ```text
 Image (`portrait.f.adult.noble`):
