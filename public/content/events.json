@@ -2241,5 +2241,200 @@
         "effects": [ { "op": "merit", "role": "actor", "delta": 1 }, { "op": "stress", "role": "actor", "delta": -0.02 } ] },
       { "id": "busy", "textKey": "event.elder_precepts.busy", "effects": [] }
     ]
+  },
+  "temple.elder": {
+    "id": "temple.elder",
+    "textKey": "event.temple_elder",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "caregiver": {},
+      "elder": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        6,
+        15
+      ],
+      "requires": [
+        {
+          "type": "seen",
+          "event": "festival.holy_day",
+          "option": "temple",
+          "min": 2
+        },
+        {
+          "type": "seen",
+          "event": "temple.elder",
+          "max": 0
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "polite",
+        "textKey": "event.temple_elder.polite",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "elder",
+            "kind": "acquaintance",
+            "atLeast": 0.4
+          },
+          {
+            "op": "bond",
+            "role": "actor",
+            "toward": "caregiver",
+            "affection": 0.03
+          }
+        ]
+      },
+      {
+        "id": "shy",
+        "textKey": "event.temple_elder.shy",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "elder",
+            "kind": "acquaintance",
+            "atLeast": 0.15
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      },
+      {
+        "id": "talk",
+        "textKey": "event.temple_elder.talk",
+        "risk": {
+          "base": 0.5,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "agreeableness",
+              "weight": -0.3,
+              "reasonKey": "agreeable"
+            }
+          ],
+          "hintKey": "risk.elder_rude",
+          "successKey": "outcome.elder_talk.ok",
+          "fail": {
+            "textKey": "outcome.elder_talk.bad",
+            "effects": [
+              {
+                "op": "relation",
+                "role": "actor",
+                "toward": "elder",
+                "kind": "acquaintance",
+                "atLeast": 0.1
+              },
+              {
+                "op": "bond",
+                "role": "actor",
+                "toward": "caregiver",
+                "awe": 0.05
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.03
+              }
+            ]
+          }
+        },
+        "effects": [{"op":"relation","role":"actor","toward":"elder","kind":"acquaintance","atLeast":0.5},{"op":"prestige","role":"actor","delta":0.3}]
+      }
+    ]
+  },
+  "temple.elder_visit": {
+    "id": "temple.elder_visit",
+    "textKey": "event.temple_elder_visit",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "elder": {
+        "relationToActor": "elder_acquaintance"
+      }
+    },
+    "trigger": {
+      "weight": 0.7,
+      "ageRange": [
+        8,
+        45
+      ],
+      "requires": [
+        {
+          "type": "seen",
+          "event": "temple.elder",
+          "withRole": "elder",
+          "min": 1
+        },
+        {
+          "type": "seen",
+          "event": "temple.elder_visit",
+          "withRole": "elder",
+          "max": 0
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "host",
+        "textKey": "event.temple_elder_visit.host",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "elder",
+            "kind": "acquaintance",
+            "delta": 0.15
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 0.3
+          }
+        ]
+      },
+      {
+        "id": "confide",
+        "textKey": "event.temple_elder_visit.confide",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "elder",
+            "kind": "acquaintance",
+            "delta": 0.1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.05
+          }
+        ]
+      },
+      {
+        "id": "busy",
+        "textKey": "event.temple_elder_visit.busy",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "elder",
+            "kind": "acquaintance",
+            "delta": -0.05
+          }
+        ]
+      }
+    ]
   }
 }

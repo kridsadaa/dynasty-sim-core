@@ -256,6 +256,11 @@ export interface Character {
    * ครั้งต่อไปทำเองไม่ถามจนถึง until — ข้ามช่วงวัย (stage) หรือคนที่เกี่ยวข้องเปลี่ยน (with) ก็ถามใหม่
    */
   habits?: Record<string, { optionId: string; streak: number; stage: string; with: string; until?: Day }>;
+  /**
+   * ประวัติการเลือกที่ไม่ถูกล้าง (eventLog ถูกตัดทิ้งเมื่อเก่า) — นับต่อ "event", "event.option",
+   * "event@คน" และ "event.option@คน" (คนใน role อื่นนอกจาก actor) ดู Condition 'seen'
+   */
+  seen?: Record<string, number>;
   /** ปีที่โกนจุก (lore: ritual.topknot_cutting) */
   topknotCutYear?: number;
   /** ปีที่ป่วยหนักล่าสุด (event family.parent_illness) — ไม่ถามซ้ำในปีเดียวกัน */
@@ -525,7 +530,8 @@ export interface Relation {
 
 export interface RoleFilter {
   ageRange?: [number, number];
-  relationToActor?: RelationKind | 'parent';
+  /** elder_acquaintance = คนนอกอายุ 50 ขึ้นไปที่ actor รู้จักพอสมควร (เช่น ผู้ใหญ่ที่เคยไหว้ที่วัด) */
+  relationToActor?: RelationKind | 'parent' | 'elder_acquaintance';
 }
 
 export interface PerceptTemplate {
@@ -554,7 +560,12 @@ export type Condition =
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
   | { type: 'office'; minRank?: number; maxRank?: number }
   /** ทักษะอย่างน้อย min (เช่น อ่านออกเขียนได้ literacy) */
-  | { type: 'skill'; skill: string; min: number };
+  | { type: 'skill'; skill: string; min: number }
+  /**
+   * เคยเลือกใน event นี้มาแล้วกี่ครั้ง (Character.seen) — option: นับเฉพาะตัวเลือกนั้น, withRole: นับเฉพาะครั้งที่คนใน role
+   * นั้นเป็นคนเดียวกับครั้งนี้ — max 0 = ยังไม่เคย (event ครั้งเดียว / ครั้งเดียวต่อคน)
+   */
+  | { type: 'seen'; event: EventDefId; option?: string; withRole?: string; min?: number; max?: number };
 
 export type Effect =
   | {
@@ -668,6 +679,8 @@ export interface GameEventDef {
     ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number;
     /** เกิดเฉพาะคนที่รับราชการอยู่ในระดับนี้ (0 = มหาดเล็ก) */
     office?: { minRank?: number; maxRank?: number; dept?: string };
+    /** เงื่อนไขที่ต้องผ่านก่อนเกิด (ตรวจกับ actor หลังได้คนครบทุก role) — ใช้ทำสายเรื่องและ event ครั้งเดียว */
+    requires?: Condition[];
   };
   percepts: PerceptTemplate[];
   options: EventOption[];
@@ -1041,6 +1054,8 @@ export interface Balance {
     /** เลือกแบบเดิมติดกันกี่ครั้งจึงเป็นนิสัย แล้วทำเองไปกี่ปีก่อนถามใหม่ */
     habitStreak: number;
     habitYears: number;
+    /** วันพระที่ผ่านเงื่อนไขสายเรื่องวัดแล้ว มีโอกาสเท่านี้ที่จะเป็นวันที่พาไปไหว้ผู้ใหญ่ */
+    elderGreetChance: Unit;
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   /** เมียน้อยและการหย่า (lore: social.wife_categories, kinship.inheritance_divorce_1680s) — ตัวเลขเป็นของเกม */

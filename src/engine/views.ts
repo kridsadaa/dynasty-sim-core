@@ -305,6 +305,13 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
       if (e.awe && e.awe > 0) parts.push(`เกรง${to}ขึ้น`);
     }
     if (e.op === 'wound' && e.role === 'actor') parts.push(e.severity[1] >= 0.3 ? 'เจ็บหนัก' : 'เจ็บตัว');
+    if (e.op === 'relation' && e.role === 'actor') {
+      const to = vars[e.toward] ?? e.toward;
+      const up = Math.max(e.atLeast ?? 0, e.delta ?? 0);
+      if ((e.delta ?? 0) < 0) parts.push(`ห่างเหิน${to}`);
+      else if (up >= 0.3 || (e.delta ?? 0) >= 0.1) parts.push(`สนิทกับ${to}ขึ้น`);
+      else if (up > 0) parts.push(`รู้จัก${to}`);
+    }
     if (e.op === 'stress' && e.role === 'actor' && e.delta) parts.push(e.delta > 0 ? 'หนักใจขึ้น' : 'สบายใจขึ้น');
     if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
     if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');

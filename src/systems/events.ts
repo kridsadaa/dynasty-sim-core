@@ -177,7 +177,26 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
     }
     case 'skill':
       return (ch.skills[c.skill] ?? 0) >= c.min;
+    case 'seen': {
+      const other = c.withRole ? bindings[c.withRole] : undefined;
+      if (c.withRole && !other) return false;
+      const n = ch.seen?.[`${c.event}${c.option ? `.${c.option}` : ''}${other ? `@${other}` : ''}`] ?? 0;
+      return n >= (c.min ?? 0) && n <= (c.max ?? Infinity);
+    }
   }
+}
+
+/** trigger.requires ของ event นี้ผ่านไหม เมื่อได้คนครบทุก role แล้ว */
+export function requirementsMet(ctx: Ctx, def: GameEventDef, actor: Character, bindings: Record<string, Character['id']>): boolean {
+  return (def.trigger.requires ?? []).every((c) => checkCondition(ctx, actor, c, bindings));
+}
+
+/** จดว่าเลือกอะไรกับใคร (Character.seen) — ไม่ลบทิ้งเหมือน eventLog จึงใช้ทำ event ครั้งเดียวได้ */
+function recordSeen(p: PreparedEvent, optionId: string): void {
+  const seen = (p.actor.seen ??= {});
+  const base = [p.def.id, `${p.def.id}.${optionId}`];
+  const others = Object.entries(p.instance.bindings).filter(([r]) => r !== 'actor').map(([, id]) => id);
+  for (const k of [...base, ...base.flatMap((b) => others.map((id) => `${b}@${id}`))]) seen[k] = (seen[k] ?? 0) + 1;
 }
 
 function matchTraits(ctx: Ctx, actor: Character, tags: TagId[], scope: TraitHit['scope'], optionId?: string): TraitHit[] {
@@ -289,6 +308,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
   if (typedName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
   p.instance.optionId = optionId;
   recordHabit(ctx, p.actor, p, optionId);
+  recordSeen(p, optionId);
   const report: EventReport = { optionId, wounds: [], trauma: [], notes: [] };
   const strain = p.resist.get(optionId);
   if (strain) {

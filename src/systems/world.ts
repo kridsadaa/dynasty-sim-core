@@ -2,8 +2,8 @@ import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef, TagId } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
-import { chooseOption, prepareEvent, prepareFollowUp, type EventReport, type PreparedEvent } from './events';
-import { meetPeople } from './acquaintance';
+import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type EventReport, type PreparedEvent } from './events';
+import { familiarity, knownLocals, meetPeople } from './acquaintance';
 import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingParents, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
@@ -252,7 +252,7 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
       }
       bindings[role] = who.id;
     }
-    if (ok) bound.push({ def, bindings });
+    if (ok && requirementsMet(ctx, def, actor, bindings)) bound.push({ def, bindings });
   }
   const pick = ctx.rng.weighted(bound, (b) => b.def.trigger.weight);
   return pick ? prepareEvent(ctx, pick.def.id, pick.bindings) : null;
@@ -262,6 +262,10 @@ function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Chara
   // ย้ายไปอยู่ใกล้บ้านคนที่หมายปอง → เรื่องในเรือนกับพ่อแม่/คนเลี้ยงไม่เกิด
   if ((rel === 'caregiver' || rel === 'parent') && awayLabor(ctx, actor) >= 1) return undefined;
   if (rel === 'caregiver') return actor.caregiverIds.map((id) => ctx.state.characters[id]).find(isAlive);
+  if (rel === 'elder_acquaintance') {
+    const elders = knownLocals(ctx, actor).filter((c) => ageOf(ctx, c) >= 50 && familiarity(ctx, actor.id, c.id) >= 0.3);
+    return ctx.rng.pick(elders);
+  }
   if (rel === 'parent') {
     const node = ctx.state.familyNodes[actor.familyNodeId];
     return [node?.fatherId, node?.motherId]

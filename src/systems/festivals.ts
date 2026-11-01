@@ -1,9 +1,9 @@
 import { yearsToDays } from '../core/calendar';
 import { ageOf, isAlive, lunarOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId } from '../core/types';
-import { singlePeer } from './acquaintance';
+import { setRelation, singlePeer, spawnLocal } from './acquaintance';
 import type { ChoreEventRequest } from './chores';
-import type { PreparedEvent } from './events';
+import { requirementsMet, type PreparedEvent } from './events';
 import { livingParents, livingSpouse } from './factory';
 
 // ============================================================================
@@ -40,6 +40,8 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
   }
   // วันพระราวปีละ 25 วัน (เพ็ญและดับ 12–13 เดือน)
   if ((full || l.lastDay) && ctx.rng.chance(F.holyDaysPerYear / 25)) {
+    const greet = templeElder(ctx, ch);
+    if (greet) return greet;
     return req('festival.holy_day', {}, { moon: full ? 'moon:full' : l.phaseDay === 14 ? 'moon:dark14' : 'moon:dark' });
   }
   const fairDays = (F.fairMonths[1] - F.fairMonths[0] + 1) * 29.5;
@@ -48,6 +50,25 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
     return req('festival.temple_fair', peer ? { stranger: peer.id } : {});
   }
   return [];
+}
+
+/**
+ * สายเรื่องวัด: เด็กที่ตามผู้ใหญ่ไปวัดมาหลายวันพระ วันหนึ่งคนเลี้ยงพาไปไหว้ผู้ใหญ่ที่ศาลา (ครั้งเดียว —
+ * เงื่อนไขอยู่ใน trigger.requires ของ temple.elder) แล้วผู้ใหญ่คนนั้นเป็นคนรู้จัก ต่อไปอาจแวะมาถามข่าว (temple.elder_visit)
+ * lore: ritual.temple_elder_greeting (ของแต่ง อิง vocab.pronouns_1680s)
+ */
+function templeElder(ctx: Ctx, ch: Character): ChoreEventRequest[] | null {
+  const def = ctx.content.events['temple.elder'];
+  const age = ageOf(ctx, ch);
+  if (!def || (def.trigger.ageRange && (age < def.trigger.ageRange[0] || age > def.trigger.ageRange[1]))) return null;
+  const caregiver = ch.caregiverIds.map((id) => ctx.state.characters[id]).find((c) => isAlive(c) && c.householdId === ch.householdId);
+  if (!caregiver || !requirementsMet(ctx, def, ch, { actor: ch.id, caregiver: caregiver.id })) return null;
+  if (!ctx.rng.chance(ctx.content.balance.festivals.elderGreetChance)) return null;
+  const elder = spawnLocal(ctx, ch, {
+    sex: ctx.rng.chance(0.5) ? 'm' : 'f', age: Math.round(ctx.rng.range(55, 75)), distance: 'near',
+  });
+  setRelation(ctx, ch.id, elder.id, 'acquaintance', 0.05);
+  return [{ event: 'temple.elder', bindings: { actor: ch.id, caregiver: caregiver.id, elder: elder.id }, vars: {} }];
 }
 
 function canCourt(ctx: Ctx, ch: Character): boolean {

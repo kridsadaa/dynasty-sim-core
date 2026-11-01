@@ -73,7 +73,8 @@
     "bathingChance": 0.5,
     "peerAge": [13, 25],
     "habitStreak": 2,
-    "habitYears": 3
+    "habitYears": 3,
+    "elderGreetChance": 0.5
   },
   "wives": { "age": [25, 50], "minWealth": 60, "chance": 0.08, "wifeAge": [16, 24], "divorceAt": 0, "divorceChance": 0.3, "wealthShare": 0.2 },
   "life": { "topknotAges": [11, 13], "adultAge": 16, "illnessAge": 60, "illnessChance": 0.15, "elderAge": 55, "preceptsChance": 0.12,

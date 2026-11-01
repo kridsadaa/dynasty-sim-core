@@ -6,7 +6,7 @@ import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
 import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB } from './core/types';
-import { chooseOption, prepareEvent, prepareFollowUp, type PreparedEvent } from './systems/events';
+import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
 import { knownLocals, spawnLocal } from './systems/acquaintance';
@@ -429,6 +429,35 @@ demographyReport();
   if (!(mom.stress > calm)) kin.push('ผัวตายแล้วไม่หนักใจขึ้น');
   check('ญาติขยับเองรายปี', kin);
   if (failed === before) console.log('  ✓ เลือกแบบเดิมสองครั้งแล้วทำเอง ครบปีหรือเปลี่ยนคนถามใหม่ · ญาติได้บุญ หายหนักใจ และเศร้าเมื่อคนใกล้ชิดตาย');
+}
+
+// [5e] สายเรื่องวัด: ไปวัดสองวันพระ → ไหว้ผู้ใหญ่ (ครั้งเดียว) → ผู้ใหญ่แวะมาถามข่าว (ครั้งเดียวต่อคน)
+{
+  const before = failed;
+  console.log('สายเรื่องวัด:');
+  const ctx = makeCtx(emptyState(31), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(2);
+  const mom = S.characters[S.familyNodes[S.familyNodes[hero.familyNodeId]!.motherId!]!.characterId!]!;
+  const greet = content.events['temple.elder']!;
+  const visit = content.events['temple.elder_visit']!;
+  const elder = spawnLocal(ctx, hero, { sex: 'f', age: 65, distance: 'near' });
+  const gb = { actor: hero.id, caregiver: mom.id, elder: elder.id };
+  const problems: string[] = [];
+  if (requirementsMet(ctx, greet, hero, gb)) problems.push('ยังไม่เคยไปวัดก็ไหว้ผู้ใหญ่แล้ว');
+  for (let i = 0; i < 2; i++) chooseOption(ctx, prepareEvent(ctx, 'festival.holy_day', { actor: hero.id }, { moon: 'moon:full' }), 'temple');
+  if (!requirementsMet(ctx, greet, hero, gb)) problems.push('ไปวัดสองครั้งแล้วยังไม่ถึงคิวไหว้ผู้ใหญ่');
+  chooseOption(ctx, prepareEvent(ctx, 'temple.elder', gb), 'polite');
+  if (requirementsMet(ctx, greet, hero, gb)) problems.push('ไหว้ผู้ใหญ่ซ้ำได้อีก');
+  const vb = { actor: hero.id, elder: elder.id };
+  if (!requirementsMet(ctx, visit, hero, vb)) problems.push('ไหว้แล้วผู้ใหญ่ไม่มีทางแวะมา');
+  chooseOption(ctx, prepareEvent(ctx, 'temple.elder_visit', vb), 'host');
+  if (requirementsMet(ctx, visit, hero, vb)) problems.push('ผู้ใหญ่คนเดิมแวะมาซ้ำได้');
+  const other = spawnLocal(ctx, hero, { sex: 'm', age: 70, distance: 'near' });
+  if (requirementsMet(ctx, visit, hero, { actor: hero.id, elder: other.id })) problems.push('ผู้ใหญ่ที่ไม่เคยไหว้ที่วัดก็แวะมาในฐานะคนที่เคยไหว้');
+  check('เงื่อนไขสายเรื่อง', problems);
+  if (failed === before) console.log('  ✓ ไปวัดสองครั้ง → ไหว้ผู้ใหญ่ครั้งเดียว → ผู้ใหญ่คนนั้นแวะมาครั้งเดียว');
 }
 
 // [6] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
