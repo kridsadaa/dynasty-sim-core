@@ -66,3 +66,19 @@ Medium portrait: a dignified Siamese female household head in her thirties with 
 Image 4 (`portrait.f.youth.commoner`):
 Portrait cropped from the upper shoulders up in three-quarter view: a young Siamese village woman of about eighteen with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears, shaved close below and combed up off the forehead; soft daylight against a woven bamboo wall. (16:9 aspect ratio)
 ```
+
+---
+
+## ผลรอบแรก (1 พ.ย. 2569) และภาพที่ยังขาด
+
+ได้ภาพที่ใช้ได้ 3 ภาพ: หญิงสาวขุนนาง หญิงเจ้าเรือน และหญิงไพร่สาว
+ภาพที่ไม่ผ่านมี 3 ภาพ เก็บไว้ที่ `art/generated/unused/`
+- ทรงผมเป็นบ็อบเกล้าสูง ทั้งที่กติกาห้ามไว้
+- ข้างภาพเป็นกระดาษขาวว่าง ซึ่งจะโผล่ออกมาเมื่อตัดเข้ากรอบ
+
+ตอนนี้ `portrait.f.adult.noble` ยืมภาพหญิงสาวขุนนางไปใช้ก่อน เลยยังต้องสร้างภาพนี้ใหม่อีก 1 ภาพ ให้วาง prompt ด้านล่างต่อจาก style block ของชุดที่ 2:
+
+```text
+Image (`portrait.f.adult.noble`):
+Medium portrait, full-bleed painting filling the whole 16:9 frame edge to edge with no white paper margins: a well-to-do Siamese noble wife of about thirty-five, visibly older than an eighteen-year-old, with warm olive-brown skin, gentle oval face, high cheekbones, faint lines at the eyes, calm dark eyes, and teeth blackened from chewing betel; her black hair is cut very short like a man's, cropped level with the top of the ears, the sides and back shaved close, the top brushed straight up off the forehead, nothing hanging down; wearing a black wrap skirt and a white muslin breast-cloth wrapped horizontally around her chest with both ends thrown back over both shoulders, pear-shaped gold earrings and gold rings on her last three fingers, seated on a reed mat beside a lacquered betel box in a timber house. Avoid: bob haircut, hair bun, hair covering the ears, hair longer than the earlobe, white borders, one-shoulder diagonal sash. (16:9 aspect ratio)
+```
