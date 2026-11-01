@@ -58,6 +58,17 @@
       "height": 572
     },
     {
+      "id": "scene.chore_craft",
+      "file": "art/scene.chore_craft.webp",
+      "style": "reality",
+      "tags": [
+        "chore:craft"
+      ],
+      "alt": "หญิงชรานั่งสานเสื่อบนชานเรือน เด็กหญิงนั่งหัดเย็บปักผ้าอยู่ข้างๆ",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "scene.chore_flowers",
       "file": "art/scene.chore_flowers.webp",
       "style": "reality",
@@ -314,6 +325,63 @@
         "event:ritual.topknot"
       ],
       "alt": "เด็กนั่งให้ผู้ใหญ่ตัดจุก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.muay_sparring",
+      "file": "art/scene.muay_sparring.webp",
+      "style": "reality",
+      "tags": [
+        "event:skill.muay_sparring"
+      ],
+      "alt": "ชายหนุ่มสองคนพันเชือกที่มือซ้อมมวยกันที่ลานใต้ต้นไม้ มีเพื่อนบ้านยืนดู",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.night_assassin",
+      "file": "art/scene.night_assassin.webp",
+      "style": "reality",
+      "tags": [
+        "event:scheme.assassin"
+      ],
+      "alt": "ชายคลุมผ้าสีเข้มนั่งยองใต้ถุนเรือนยามค่ำ ถือมีดมองขึ้นไปที่แสงตะเกียงชั้นบน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.wife_jealousy",
+      "file": "art/scene.wife_jealousy.webp",
+      "style": "reality",
+      "tags": [
+        "event:marriage.wife_jealousy",
+        "event:marriage.wife_jealousy_slave"
+      ],
+      "alt": "เมียหลวงนั่งนิ่งเย็นชา เมียน้อยหมอบยกพานหมากถวายอยู่อีกฟากของห้อง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.elder_visit",
+      "file": "art/scene.elder_visit.webp",
+      "style": "reality",
+      "tags": [
+        "event:temple.elder",
+        "event:temple.elder_visit"
+      ],
+      "alt": "สามีภรรยากราบพระเถระชราที่นั่งถือตาลปัตร มีพานดอกไม้เทียนวางตรงหน้า",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.heavy_heart",
+      "file": "art/scene.heavy_heart.webp",
+      "style": "reality",
+      "tags": [
+        "event:adult.heavy_heart"
+      ],
+      "alt": "ชายวัยกลางคนนั่งเงียบคนเดียวบนชานเรือนยามพลบค่ำ มองไปทางลำคลอง",
       "width": 1024,
       "height": 572
     },

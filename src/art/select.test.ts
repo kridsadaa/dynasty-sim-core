@@ -105,5 +105,6 @@ test('งานบ้านแต่ละหมวดได้ภาพขอ�
     for (const d of ['housework', 'craft', 'flowers', 'merit']) assert.equal(chore(event, d), `scene.chore_${d}`);
   }
   assert.equal(pickArt(all, 'reality', eventArtTags('marriage.wedding_f', []))?.id, 'scene.wedding');
-  assert.equal(pickArt(all, 'reality', eventArtTags('temple.elder', []))?.id, 'scene.temple_holy_day');
+  assert.equal(pickArt(all, 'reality', eventArtTags('temple.elder', []))?.id, 'scene.elder_visit');
+  assert.equal(pickArt(all, 'reality', eventArtTags('temple.other', []))?.id, 'scene.temple_holy_day');
 });

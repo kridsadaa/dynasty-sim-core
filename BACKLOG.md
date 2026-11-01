@@ -46,7 +46,7 @@
 
 ## ภาพประกอบ
 
-- [ ] `reality-stilt-house.jpg` และ `reality-meal-tray.jpg` สร้างด้วย style block v0.2 แต่ `art/style.json` ตรึงไว้ที่ v0.3 → baseline สำหรับ regression ปนกัน — prompt สร้างใหม่อยู่ใน `art/prompts.md` หัวข้อ Baseline (รอสร้างใน Gemini); สองภาพนี้ยังเป็นภาพชั่วคราวของ `scene.village` และ `scene.meal`
+- [x] ภาพ `scene.village` / `scene.meal` สร้างใหม่ด้วย style v0.3 แล้ว (2026-11-01) — `art/approved/reality-stilt-house.jpg` และ `reality-meal-tray.jpg` ยังใช้เป็น baseline regression ได้ แต่ควรเทียบกับภาพใหม่ใน `art/generated/`; ภาพ `chore_craft` (หญิงชราเปลือยอกระยะกลาง) และ `wife_jealousy` (ผ้าห่มยังเป็นแบบพันเฉียง) ควรสร้างซ้ำคัดใหม่
 
 ## ทดสอบ / โครงสร้าง
 

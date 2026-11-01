@@ -31,8 +31,7 @@
       "tags": ["group:intent", "event:intent.befriend.done", "event:intent.befriend.failed", "event:intent.befriend.mischief", "event:intent.called_home"],
       "alt": "เรือนไผ่ยกสูงของชาวบ้านริมน้ำ",
       "subject": "Wide view of a small Siamese commoner house by a canal: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of seasonal floods, reached by a hanging bamboo ladder tied with ropes; open muddy bank sloping down to the water with banana trees and coconut palms, a small dugout boat tied to a post; river behind, rainy-season sky. No enclosed perimeter fence, no people in the foreground.",
-      "loreRefs": ["material.houses_1680s"],
-      "source": "art/approved/reality-stilt-house.jpg"
+      "loreRefs": ["material.houses_1680s"]
     },
     {
       "id": "scene.kitchen_yard",
@@ -80,8 +79,7 @@
       "tags": ["situation:feast"],
       "alt": "สำรับข้าวกับปลาแห้งบนถาดไม่มีขา",
       "subject": "Top-down still life on a reed mat: a round footless lacquered wooden tray holding a mound of rice, dried salted fish already cut into small pieces, a small bowl of fermented shrimp paste with garlic, spring onions and fresh herbs, coconut-shell and earthenware bowls, a bamboo water tube; no whole fish, no spoons, forks or chopsticks.",
-      "loreRefs": ["material.food_1680s", "material.household_objects_1680s"],
-      "source": "art/approved/reality-meal-tray.jpg"
+      "loreRefs": ["material.food_1680s", "material.household_objects_1680s"]
     },
     {
       "id": "scene.court_feast",
@@ -218,6 +216,46 @@
       "alt": "เด็กนั่งให้ผู้ใหญ่ตัดจุก",
       "subject": "Interior of a house: a child of about eleven, bare-chested and wearing a lower cloth, seated on a mat with head bowed, the small topknot on the crown about to be cut by an elderly man with a pair of shears, a monk seated nearby holding a palm-leaf fan, relatives watching with bowls of water and flowers.",
       "loreRefs": ["ritual.topknot_cutting", "attire.monks_1680s"]
+    },
+    {
+      "id": "scene.muay_sparring",
+      "style": "reality",
+      "tags": ["event:skill.muay_sparring"],
+      "alt": "ชายหนุ่มสองคนพันเชือกที่มือซ้อมมวยกันที่ลานใต้ต้นไม้ มีเพื่อนบ้านยืนดู",
+      "subject": "Late afternoon in a shaded house yard under a large tree: two bare-chested young Siamese men in knee-length lower cloths tucked at the back, their hands wrapped with rope cord, sparring with raised fists and a knee strike, bare feet in packed dirt; a few neighbours and boys watching from the edge, an older man with arms folded judging, a stilt house behind.",
+      "loreRefs": ["ritual.temple_festival_1680s", "attire.commoner_men_1680s"]
+    },
+    {
+      "id": "scene.night_assassin",
+      "style": "reality",
+      "tags": ["event:scheme.assassin"],
+      "alt": "ชายคลุมผ้าสีเข้มนั่งยองใต้ถุนเรือนยามค่ำ ถือมีดมองขึ้นไปที่แสงตะเกียงชั้นบน",
+      "subject": "Night inside the dark ground level under a raised timber house: a cloaked man in a dark lower cloth crouching between the tall posts, a short knife held low, looking up toward the lit floor planks above where a faint lamp glows through the gaps; moonlight on a canal in the far background, no faces clearly lit, tense mood. No blood, no victim shown.",
+      "loreRefs": ["material.houses_1680s"]
+    },
+    {
+      "id": "scene.wife_jealousy",
+      "style": "reality",
+      "tags": ["event:marriage.wife_jealousy", "event:marriage.wife_jealousy_slave"],
+      "alt": "เมียหลวงนั่งนิ่งเย็นชา เมียน้อยหมอบยกพานหมากถวายอยู่อีกฟากของห้อง",
+      "subject": "Interior of a timber house in the evening: a wife of the household in her thirties sitting upright on a reed mat beside a lacquered betel box, turned slightly away with a cold expression and lowered eyes, while a younger woman, the minor wife, kneels respectfully at the far side of the room with her head bowed, offering a small tray of betel; both wear a black wrap skirt and a white breast-cloth wrapped around the chest covering both breasts with both ends thrown back over both shoulders; the tension is only in posture and gaze, a single oil lamp between them.",
+      "loreRefs": ["attire.women_1680s", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.elder_visit",
+      "style": "reality",
+      "tags": ["event:temple.elder", "event:temple.elder_visit"],
+      "alt": "สามีภรรยากราบพระเถระชราที่นั่งถือตาลปัตร มีพานดอกไม้เทียนวางตรงหน้า",
+      "subject": "Interior of a modest monastery residence in the morning: an elderly Siamese Buddhist monk in his sixties with a shaved head and shaved eyebrows, in a patched ochre robe leaving the right shoulder bare, seated on a raised mat holding a palm-leaf fan; in front of him a layman and his wife kneeling low with palms pressed together, a tray of flowers, candles and betel offerings between them; timber walls, light falling through a small window.",
+      "loreRefs": ["attire.monks_1680s", "ritual.alms_round_1680s"]
+    },
+    {
+      "id": "scene.heavy_heart",
+      "style": "reality",
+      "tags": ["event:adult.heavy_heart"],
+      "alt": "ชายวัยกลางคนนั่งเงียบคนเดียวบนชานเรือนยามพลบค่ำ มองไปทางลำคลอง",
+      "subject": "Dusk on the veranda of a timber house: a Siamese man in his thirties seated alone, bare-chested, in a knee-length lower cloth, one forearm resting on his knee and his head slightly bowed, looking out toward a canal and fading sky; an untouched lacquered betel box beside him, a small oil lamp not yet lit, the rest of the household quiet and out of sight; still, melancholy mood.",
+      "loreRefs": ["attire.commoner_men_1680s", "material.household_objects_1680s"]
     },
     {
       "id": "legend.battle",
