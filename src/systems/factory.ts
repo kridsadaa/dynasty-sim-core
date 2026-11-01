@@ -263,12 +263,12 @@ export function wed(ctx: Ctx, ch: Character, spouse: Character): string {
   if (parentsHome && ctx.rng.chance(W.patrilocalChance)) {
     joinHousehold(ctx, spouse, parentsHome);
     ch.moveOutDay = day + stay;
-    return `${ch.name}แต่งงานกับ${spouse.name} พาภรรยามาอยู่เรือนพ่อแม่`;
+    return `${ch.name}แต่งงานกับ${spouse.name} พาเมียมาอยู่เรือนพ่อแม่`;
   }
   // ไปอยู่กับครอบครัวภรรยา — ครอบครัวฝ่ายหญิงไม่ได้จำลอง จึงนับเป็นเรือนใหม่ของคู่นี้
   const home = createHousehold(ctx, ch);
   joinHousehold(ctx, spouse, home);
-  return `${ch.name}แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวภรรยา`;
+  return `${ch.name}แต่งงานกับ${spouse.name} ไปอยู่กับครอบครัวเมีย`;
 }
 
 export function createDynasty(ctx: Ctx, name: string, founder: Character, faction: string | null): Dynasty {

@@ -147,7 +147,7 @@ function kinTies(ctx: Ctx, me: Character): Map<Character, string> {
   }
   for (const [g, tie] of grand) out.set(g, tie);
   const spouse = livingSpouse(ctx, me);
-  if (spouse) out.set(spouse, me.sex === 'm' ? 'ภรรยา' : 'สามี');
+  if (spouse) out.set(spouse, me.sex === 'm' ? 'เมีย' : 'ผัว');
   if (me.sex === 'm') for (const w of livingWives(ctx, me)) if (w.wifeRank === 'minor') out.set(w, 'เมียน้อย');
   for (const kid of livingChildren(ctx, me)) {
     out.set(kid, kid.sex === 'm' ? 'ลูกชาย' : 'ลูกสาว');
