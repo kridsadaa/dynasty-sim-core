@@ -54,6 +54,14 @@ npm run demo       # Monte Carlo + เรื่องเล่า 4 รุ่น
 
 Deploy: push เข้า main แล้ว `.github/workflows/pages.yml` build และขึ้น GitHub Pages ให้เอง (build ใต้ `/dynasty-sim-core/` ด้วย `BASE_PATH`) · ยังใช้ Vercel ได้ด้วย `vercel.json` — ห้ามสร้างโฟลเดอร์ `api/` เพราะเกมต้องเป็น static ล้วน
 
+## สนับสนุนผู้พัฒนา ☕
+
+หากชื่นชอบเกมและอยากสนับสนุนค่าน้ำชา/ค่ากาแฟ หรือช่วยสมทบทุนค่าไฟและค่าประมวลผล สามารถสแกนสนับสนุนผ่านพร้อมเพย์ (PromptPay) ได้ที่นี่ครับ:
+
+<p align="center">
+  <img src=".github/donate-qr.jpeg" alt="PromptPay QR Code" width="220" />
+</p>
+
 ## สัญญาอนุญาต
 
 - **โค้ด:** [MIT](LICENSE) นำไปใช้ แก้ไข หรือใช้เชิงการค้าได้ ขอแค่คงข้อความลิขสิทธิ์ไว้

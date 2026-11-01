@@ -1,0 +1,5 @@
+# Supported funding model platforms:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# ลิงก์ตรงเปิดภาพ QR Code สำหรับสแกนสนับสนุน (PromptPay)
+custom: ['https://raw.githubusercontent.com/kridsadaa/dynasty-sim-core/main/.github/donate-qr.jpeg']
