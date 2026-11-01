@@ -387,6 +387,17 @@
       "height": 572
     },
     {
+      "id": "scene.court_boat",
+      "file": "art/scene.court_boat.webp",
+      "style": "reality",
+      "tags": [
+        "event:intent.court.boat"
+      ],
+      "alt": "หนุ่มสาวสองคนในเรือขุดลำเล็กพายเลียบคลองยามเย็น ห่างตาผู้ใหญ่",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "legend.battle",
       "file": "art/legend.battle.webp",
       "style": "chronicle",
@@ -442,6 +453,51 @@
         "supernatural:omen"
       ],
       "alt": "ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "history.fall_of_ayutthaya",
+      "file": "art/history.fall_of_ayutthaya.webp",
+      "style": "chronicle",
+      "tags": [
+        "history:fall_of_ayutthaya"
+      ],
+      "alt": "ภาพจิตรกรรม: กรุงถูกไฟไหม้ ข้าศึกบุกเข้าประตูเมือง ผู้คนหนีลงเรือ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "history.famine",
+      "file": "art/history.famine.webp",
+      "style": "chronicle",
+      "tags": [
+        "history:famine_after_fall",
+        "historykind:famine"
+      ],
+      "alt": "ภาพจิตรกรรม: ชาวบ้านผอมโซเข้าแถวรับข้าวที่หน้าวัด",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "history.plague",
+      "file": "art/history.plague.webp",
+      "style": "chronicle",
+      "tags": [
+        "historykind:plague"
+      ],
+      "alt": "ภาพจิตรกรรม: คนป่วยนอนบนเสื่อริมท่า พระสวด ศพห่อผ้าขาวถูกหามไปวัด",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "history.war",
+      "file": "art/history.war.webp",
+      "style": "chronicle",
+      "tags": [
+        "historykind:war"
+      ],
+      "alt": "ภาพจิตรกรรม: กองทัพเคลื่อนพลตามช้างศึก ธงและกลองนำหน้า",
       "width": 1024,
       "height": 572
     },
