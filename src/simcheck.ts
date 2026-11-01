@@ -14,6 +14,7 @@ import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
+import { careerYearTick, officeRank } from './systems/career';
 import { habitOption } from './systems/festivals';
 import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
@@ -592,6 +593,36 @@ demographyReport();
 
   check('ไปค้างเรือนเมีย เกี้ยวเมียน้อย ช่วยคนตกน้ำ', problems);
   if (failed === before) console.log('  ✓ ครั้งแรกมีฉาก · ครั้งต่อไปขึ้นเฉพาะน้อยใจ/ท้องแก่ (ท้องละครั้ง) · ทุกตัวเลือกมีบทตอบ · ช่วยคนตกน้ำไม่มีใครตาย');
+}
+
+// [5h] ผู้ใหญ่ที่ยังไม่มีตำแหน่งฝากตัวเข้ากรมโดยตรง (ผู้สืบที่เลยวัยมหาดเล็ก) — ชายชั้นขุนนางเท่านั้น ได้ขั้นแรกของกรม
+{
+  const before = failed;
+  console.log('ฝากตัวเข้ากรม:');
+  const ctx = makeCtx(emptyState(43), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(25); // ผู้เล่นอายุ 32
+  delete hero.office;
+  const problems: string[] = [];
+  const asked = (who: Character) => {
+    for (let i = 0; i < 60; i++) if (careerYearTick(ctx).events.some((e) => e.event === 'career.petition' && e.bindings.actor === who.id)) return true;
+    return false;
+  };
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  if (!asked(hero)) problems.push('ชายขุนนางผู้ใหญ่ไม่มีตำแหน่งไม่เคยได้โอกาสฝากตัวใน 60 ปี');
+  const p = prepareEvent(ctx, 'career.petition', { actor: hero.id });
+  chooseOption(ctx, p, 'patrol');
+  if (!hero.office || officeRank(ctx, hero) !== 1) problems.push(`ฝากตัวแล้วได้ขั้น ${hero.office ? officeRank(ctx, hero) : 'ไม่มี'} ไม่ใช่ขั้นแรกของกรม`);
+  delete hero.office;
+  hero.sex = 'f';
+  if (asked(hero)) problems.push('ผู้หญิงได้โอกาสฝากตัวเข้ากรม');
+  hero.sex = 'm';
+  hero.social.estate = 'phrai_luang';
+  if (asked(hero)) problems.push('ไพร่ได้โอกาสฝากตัวเข้ากรม');
+  check('ฝากตัวเข้ากรม', problems);
+  if (failed === before) console.log('  ✓ ชายขุนนางผู้ใหญ่ฝากตัวเข้ากรมได้ ได้ขั้นแรก · ผู้หญิงและไพร่ไม่ได้');
 }
 
 // [6] การจัดการเรือน วิชาความชำนาญ และมรดกตระกูล

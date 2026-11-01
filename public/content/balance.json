@@ -68,12 +68,12 @@
     "templeFairsPerYear": 1,
     "fairMonths": [1, 6],
     "lanternMonth": 12,
-    "lanternChance": 0.6,
+    "lanternChance": 0.45,
     "bathingMonth": 5,
     "bathingChance": 0.5,
     "peerAge": [13, 25],
     "habitStreak": 2,
-    "habitYears": 6,
+    "habitYears": 10,
     "elderGreetChance": 0.5
   },
   "servants": {
@@ -97,7 +97,7 @@
     "meritPerYear": 1, "elderMeritFactor": 2, "stressRecovery": 0.3, "stressRest": 0.15, "griefStress": 0.15 },
   "ordination": { "age": [18, 21], "playerChance": 0.5, "npcChance": 0.6, "literacy": 40 },
   "career": {
-    "entryAge": [13, 20],
+    "entryAge": [13, 20], "lateEntryAge": [21, 55], "lateEntryChance": 0.15,
     "pageMaxAge": 25,
     "entryChance": 0.5,
     "dutyLabor": 0.3,

@@ -82,7 +82,7 @@ function addPrestige(ctx: Ctx, ch: Character, delta: number): void {
 
 /** ทำ action ราชการจาก effect ของ event — คืนบรรทัด log */
 export function applyCareer(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline', deptId?: string,
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline', deptId?: string,
 ): string[] {
   const C = ctx.content.balance.career;
   const post = postOf(ctx, ch);
@@ -118,6 +118,15 @@ export function applyCareer(
       setPost(ctx, ch, next, to);
       addPrestige(ctx, ch, C.promotePrestige * next.rank);
       return [`${ch.name}ได้เป็น${ch.social.title ?? next.label.th} สังกัด${to.label.th} ถือศักดินา ${next.sakdina}`];
+    }
+    case 'enter_dept': {
+      // ผู้ใหญ่ที่เลยวัยมหาดเล็กแล้วฝากตัวเข้ากรมโดยตรง — ได้ขั้นแรกของกรม (ไม่ผ่านมหาดเล็ก)
+      const to = ctx.content.offices.departments.find((d) => d.id === deptId);
+      const first = to && postAt(to, 1);
+      if (ch.office || !to || !first) return [];
+      setPost(ctx, ch, first, to);
+      if (legacyLevel(ctx, ch, 'court') >= 1) adjustFavor(ch, 0.1);
+      return [`${ch.name}ได้เข้ารับราชการเป็น${ch.social.title ?? first.label.th} สังกัด${to.label.th} ถือศักดินา ${first.sakdina}`];
     }
     case 'promote': {
       const next = post && postAt(dept, post.rank + 1);
@@ -190,6 +199,10 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     if (player.sex === 'm' && player.social.estate === 'noble' && elder && age >= C.entryAge[0] && age <= C.entryAge[1]
       && ctx.rng.chance(chance)) {
       events.push({ event: 'career.present_page', bindings: bind });
+    } else if (player.sex === 'm' && player.social.estate === 'noble' && age > C.entryAge[1] && age >= C.lateEntryAge[0] && age <= C.lateEntryAge[1]
+      && ctx.rng.chance(C.lateEntryChance + (courtLvl >= 1 ? 0.1 : 0))) {
+      // ผู้สืบที่เป็นผู้ใหญ่แล้วไม่มีทางถวายตัวเป็นมหาดเล็ก — ฝากตัวเข้ากรมโดยตรง (ตัวเลขเป็นของเกม; ขั้นตอนอนุมานจาก social.royal_pages_1680s)
+      events.push({ event: 'career.petition', bindings: { actor: player.id } });
     }
     return { lines, events };
   }
@@ -247,7 +260,7 @@ export function officeStatus(ctx: Ctx, ch: Character): string | null {
 
 /** ข้อความใต้ตัวเลือก event ราชการ — ราคา/ผลที่ตามมาให้เห็นก่อนเลือก */
 export function careerHint(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss', deptId?: string,
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss', deptId?: string,
 ): string | undefined {
   const post = postOf(ctx, ch);
   const dept = deptOf(ctx, ch);
@@ -266,6 +279,10 @@ export function careerHint(
     const top = to.posts.reduce((a, p) => (p.rank > a.rank ? p : a));
     return `เป็น${titleOf(next, name) ?? next.label.th} ศักดินา ${next.sakdina} · บารมีตระกูล +${C.promotePrestige * next.rank}` +
       (action === 'assign' ? ` · สูงสุดเป็น${top.title?.includes('{name}') ? top.label.th : top.title ?? top.label.th} นา ${top.sakdina}` : '');
+  }
+  if (action === 'enter_dept') {
+    const first = ctx.content.offices.departments.find((d) => d.id === deptId)?.posts.find((p) => p.rank === 1);
+    return first ? `เป็น${titleOf(first, first.title?.includes('{name}') ? '…' : undefined) ?? first.label.th} ศักดินา ${first.sakdina} · เข้าเวรรับราชการ ไม่ได้อยู่ช่วยงานบ้านราว ${Math.round(C.dutyLabor * 100)}%` : undefined;
   }
   if (action === 'demote') {
     const prev = post && postAt(dept, post.rank - 1);

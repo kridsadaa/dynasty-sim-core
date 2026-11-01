@@ -635,7 +635,7 @@ export type Effect =
    * ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, assign = พ้นมหาดเล็กไปสังกัดกรม dept แล้วเลื่อนหนึ่งขั้น,
    * promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ — ดู systems/career.ts
    */
-  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline'; dept?: string }
+  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline'; dept?: string }
   /** ความโปรดปรานในราชการ */
   | { op: 'favor'; role: string; delta: number }
   /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์) */
@@ -1181,6 +1181,8 @@ export interface Balance {
   career: {
     /** ลูกขุนนางชายถวายตัวเป็นมหาดเล็กได้ช่วงอายุนี้ */
     entryAge: [number, number];
+    /** ผู้ใหญ่ที่ยังไม่มีตำแหน่งฝากตัวเข้ากรมโดยตรงได้ในช่วงอายุนี้ ปีละ lateEntryChance */
+    lateEntryAge: [number, number]; lateEntryChance: Unit;
     /** มหาดเล็กแก่สุดไม่ถึง 25 — ถึงอายุนี้ได้ตำแหน่งในกรมหรือพ้นจากราชการ */
     pageMaxAge: number;
     /** ต่อปี: โอกาสที่พ่อแม่จะพาไปถวายตัว */

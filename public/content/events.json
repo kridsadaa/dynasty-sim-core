@@ -3204,7 +3204,7 @@
       "requires": [
         {
           "type": "stress",
-          "min": 0.45
+          "min": 0.25
         }
       ]
     },
@@ -4881,6 +4881,68 @@
             "delta": 0.1
           }
         ]
+      }
+    ]
+  },
+  "career.petition": {
+    "id": "career.petition",
+    "textKey": "event.petition",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "patrol",
+        "textKey": "event.petition.patrol",
+        "effects": [
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "enter_dept",
+            "dept": "patrol"
+          }
+        ]
+      },
+      {
+        "id": "chamber",
+        "textKey": "event.petition.chamber",
+        "effects": [
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "enter_dept",
+            "dept": "royal_chamber_right"
+          }
+        ]
+      },
+      {
+        "id": "scholars",
+        "textKey": "event.petition.scholars",
+        "conditions": [
+          {
+            "type": "skill",
+            "skill": "literacy",
+            "min": 30
+          }
+        ],
+        "effects": [
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "enter_dept",
+            "dept": "royal_scholars"
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "textKey": "event.petition.stay",
+        "effects": []
       }
     ]
   }
