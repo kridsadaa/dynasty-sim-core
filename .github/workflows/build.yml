@@ -1,0 +1,23 @@
+# ตรวจทุก push/PR: lore:check + lore:compile + tsc + test (persistence + sim:check) + vite build
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # names.json คอมไพล์จาก lore — ถ้าแก้ lore แล้วลืมคอมมิตผลคอมไพล์ จะเห็นตรงนี้
+      - name: compiled content is committed
+        run: git diff --exit-code -- public/content

@@ -282,6 +282,7 @@ async function handle(cmd: Command): Promise<unknown> {
         if (!heirCandidates(c, dead).some((h) => h.ch.id === cmd.optionId)) throw new Error('คนนี้สืบตระกูลไม่ได้');
         const r = performHandover(c, dead.id, cmd.optionId as CharacterId);
         push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
+        await save('autosave');
         if (!pending.size && resumeAfterEvent) play();
         return { lines: [] } satisfies ReplyData['choose'];
       }
@@ -298,6 +299,9 @@ async function handle(cmd: Command): Promise<unknown> {
       // ตัวเลือกพาไป event ถัดไปทันที (ช่วยงานครัว → มีดบาด) — UI ถาม viewPending ต่อ
       const next = prepareFollowUp(c, p, rep);
       if (next) pending.set(next.instance.id, next);
+      // เซฟทันทีหลังเลือก — ปิดแท็บก่อนเดินเวลาแล้วโหลด จะไม่เจอ event เดิมซ้ำ
+      // (DB เปิดค้างไว้แล้วจาก autosave ตอนหยุดเพื่อ event จึงไม่มี choose อื่นแทรกระหว่างเซฟ)
+      await save('autosave');
       // หยุดเพราะ event → ตัดสินใจครบแล้วเดินต่อเอง
       if (!pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
       return { lines } satisfies ReplyData['choose'];
