@@ -15,7 +15,7 @@ import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, jealousyEvent, livingWives, minorWifeEvent } from './wives';
 import { householdMonthTick, servantsYearTick } from './servants';
 import { skillsMonthTick, skillsYearTick } from './skills';
-import { elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
+import { drowningEvent, elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
@@ -125,7 +125,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const minorWife = minorWifeEvent(ctx);
     if (minorWife) out.push({ type: 'event', prepared: minorWife });
     // วัยผู้ใหญ่และวัยชรา: โกนจุกลูก พ่อแม่ป่วยหนัก ถือศีลวันพระ
-    for (const life of [topknotEvent(ctx), parentIllnessEvent(ctx), elderPreceptsEvent(ctx)]) {
+    for (const life of [topknotEvent(ctx), parentIllnessEvent(ctx), elderPreceptsEvent(ctx), drowningEvent(ctx)]) {
       if (life) out.push({ type: 'event', prepared: life });
     }
     const jealous = jealousyEvent(ctx);

@@ -8,7 +8,7 @@ import { purse, spend } from './marriage';
 import { minorWifeProposal } from './matchmaking';
 import { houseCapacity, houseMembersCount } from './servants';
 import { livingWives, minorWifeProblem, takeMinorWife } from './wives';
-import { adjustBond } from './will';
+import { adjustBond, bond } from './will';
 
 // ============================================================================
 // เมนูตัวละคร (⋯) — สิ่งที่ผู้เล่นทำกับคนหนึ่งได้ตอนนี้ และเหตุผลถ้ายังทำไม่ได้
@@ -91,7 +91,8 @@ export function interactionsFor(ctx: Ctx, me: Character, target: Character): Int
   return out;
 }
 
-export type InteractionResult = { plan: string } | { event: PreparedEvent } | { lines: string[] };
+/** event: ฉากที่ตามมาหลังทำสิ่งนั้น — lines ที่มีมาด้วยลงบันทึกก่อนแสดง event */
+export type InteractionResult = { plan: string } | { event: PreparedEvent; lines?: string[] } | { lines: string[] };
 
 export function performInteraction(ctx: Ctx, me: Character, target: Character, id: InteractionId): InteractionResult {
   const B = ctx.content.balance.interactions;
@@ -118,8 +119,10 @@ export function performInteraction(ctx: Ctx, me: Character, target: Character, i
       return { lines: [`${me.name}ส่งของกำนัลไปให้${target.name} ${Math.round(paid)} ตำลึง`] };
     }
     case 'visit': {
-      adjustBond(ctx, target, me, 'affection', B.visitAffection);
       const wife = me.sex === 'm' ? target : me;
+      // ดูสถานะของนางก่อนเยี่ยม — เยี่ยมแล้วความรักขยับ ฉากจะไม่ตรงกับที่เห็นตอนเดินเข้าเรือน
+      const scene = me.sex === 'm' ? visitScene(ctx, me, wife) : null;
+      adjustBond(ctx, target, me, 'affection', B.visitAffection);
       wife.favoredUntil = day + 365;
       const lines = [me.sex === 'm' ? `${me.name}ไปค้างเรือน${target.name}หลายคืน` : `${me.name}ดูแลเอาใจ${target.name}`];
       if (me.sex === 'm') {
@@ -130,9 +133,31 @@ export function performInteraction(ctx: Ctx, me: Character, target: Character, i
         }
       }
       mark();
+      if (scene) {
+        if (scene === 'marriage.visit_pregnant') me.lastActs![`visit_pregnant@${wife.id}`] = day;
+        return { event: prepareEvent(ctx, scene, { actor: me.id, spouse: wife.id }), lines };
+      }
       return { lines };
     }
   }
+}
+
+/** ท้องหนึ่งนับว่าเป็นช่วงเดียวกันถ้าห่างจากครั้งก่อนไม่เกินเท่านี้ — ท้องใหม่ถึงขึ้นฉากท้องแก่อีกครั้ง */
+const PREGNANCY_DAYS = 280;
+
+/**
+ * ฉากตอนไปค้างเรือนเมีย: ครั้งแรก → ฉากแรก; หลังจากนั้นขึ้นเฉพาะเมื่อนางอยู่ในสถานะที่มีเรื่อง
+ * (น้อยใจ — ความรักต่ำกว่า balance.interactions.visitColdAt, หรือท้องแก่ ซึ่งขึ้นหนเดียวต่อท้อง) ปกติไม่มีฉาก
+ * ฉากและบทพูดเป็นของแต่งเพื่อเกม (WRITING.md ข้อ 6)
+ */
+function visitScene(ctx: Ctx, me: Character, wife: Character): 'marriage.visit_first' | 'marriage.visit_pregnant' | 'marriage.visit_cold' | null {
+  if (me.lastActs?.[lastKey('visit', wife)] === undefined) return 'marriage.visit_first';
+  if (bond(ctx, wife, me, 'affection') < ctx.content.balance.interactions.visitColdAt) return 'marriage.visit_cold';
+  if (wife.pregnancy) {
+    const last = me.lastActs?.[`visit_pregnant@${wife.id}`];
+    if (last === undefined || ctx.state.meta.day - last > PREGNANCY_DAYS) return 'marriage.visit_pregnant';
+  }
+  return null;
 }
 
 /**

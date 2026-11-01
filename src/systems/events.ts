@@ -328,6 +328,8 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
     const failed = ctx.rng.chance(riskChance(ctx, p.actor, opt.risk, who));
     report.outcome = { failed, textKey: failed ? opt.risk.fail.textKey : opt.risk.successKey };
     if (failed) effects = opt.risk.fail.effects;
+  } else if (opt.replyKey) {
+    report.outcome = { failed: false, textKey: opt.replyKey };
   }
 
   for (const e of [...effects, ...p.extraEffects]) {

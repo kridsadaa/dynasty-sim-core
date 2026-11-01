@@ -288,7 +288,7 @@ export function tickIntents(ctx: Ctx): { lines: string[]; events: PreparedEvent[
         .filter((e) => e.bindings.actor === actor.id && S.meta.day - e.day < MID_EVENT_REPEAT_DAYS)
         .map((e) => e.defId));
       const fits = def.midEvents.filter((m) =>
-        (!m.approaches || m.approaches.includes(ap.id)) && (!m.needsElder || hasElder)
+        (!m.approaches || m.approaches.includes(ap.id)) && (!m.needsElder || hasElder) && (!m.married || !!livingSpouse(ctx, actor))
         && labor >= (m.minLabor ?? 0) && age <= (m.maxAge ?? Infinity) && !seen.has(m.event));
       const pick = ctx.rng.pick(fits);
       if (pick) events.push(prepareEvent(ctx, pick.event, bindings(ctx, actor, target)));

@@ -89,11 +89,11 @@
   "interactions": {
     "giftCost": 3, "giftDays": 180, "giftGratitude": 0.15,
     "visitDays": 60, "visitAffection": 0.05, "visitJealousy": 0.03, "favoredBirthFactor": 1.8,
-    "minorWifeFamiliarity": 0.4, "slaveConcubineHurt": 0.5, "jealousyChance": 0.3, "jealousySlaveFactor": 2
+    "minorWifeFamiliarity": 0.4, "slaveConcubineHurt": 0.5, "jealousyChance": 0.3, "jealousySlaveFactor": 2, "visitColdAt": 0.35
   },
   "matchmaking": { "candidates": 4, "searchDays": 180, "sameEstateShare": 0.7, "maxWives": 3 },
   "wives": { "age": [25, 50], "minWealth": 60, "chance": 0.08, "wifeAge": [16, 24], "divorceAt": 0, "divorceChance": 0.3, "wealthShare": 0.2 },
-  "life": { "topknotAges": [11, 13], "adultAge": 16, "illnessAge": 60, "illnessChance": 0.15, "elderAge": 55, "preceptsChance": 0.12,
+  "life": { "topknotAges": [11, 13], "adultAge": 16, "illnessAge": 60, "illnessChance": 0.15, "elderAge": 55, "preceptsChance": 0.12, "drownChance": 0.05, "drownAge": 12,
     "meritPerYear": 1, "elderMeritFactor": 2, "stressRecovery": 0.3, "stressRest": 0.15, "griefStress": 0.15 },
   "ordination": { "age": [18, 21], "playerChance": 0.5, "npcChance": 0.6, "literacy": 40 },
   "career": {

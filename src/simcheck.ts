@@ -9,17 +9,17 @@ import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
-import { knownLocals, spawnLocal } from './systems/acquaintance';
+import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
 import { habitOption } from './systems/festivals';
-import { findSlaveConcubines, takeSlaveConcubine } from './systems/interactions';
+import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
 import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlave, houseCapacity, householdMonth } from './systems/servants';
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
-import { jealousyEvent, livingWives, minorWifeProblem } from './systems/wives';
+import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay } from './systems/world';
 import { riskChance } from './systems/will';
 
@@ -516,6 +516,82 @@ demographyReport();
 
   check('เมียบ่าว ปลูกเรือนแยก และโหมงาน', problems);
   if (failed === before) console.log('  ✓ เลือกเมียบ่าวจากรายชื่อได้ · ปลูกเรือนแยกขึ้นครั้งเดียวต่อคน · โหมงานตอนใจหนักมีโอกาสพลาดเสียสุขภาพและงาน');
+}
+
+// [5g] ไปค้างเรือนเมีย: ครั้งแรกมีฉาก ครั้งต่อไปขึ้นเฉพาะเมื่อนางน้อยใจหรือท้องแก่; เกี้ยวเมียน้อย; ช่วยคนตกน้ำ
+{
+  const before = failed;
+  console.log('ไปค้างเรือนเมีย เกี้ยวเมียน้อย ช่วยคนตกน้ำ:');
+  const ctx = makeCtx(emptyState(41), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(20);
+  hero.social.wealth = 200;
+  const mk = (name: string) => spawnCharacter(ctx, { name, sex: 'f', birthYear: yearOf(ctx, S.meta.day) - 22, estate: 'noble', dynastyId: null, householdId: hero.householdId });
+  const principal = mk('เมียหลวง');
+  marry(ctx, hero, principal);
+  const minor = mk('เมียน้อย');
+  takeMinorWife(ctx, hero, minor);
+  const problems: string[] = [];
+  const setAff = (w: Character, v: number) => setRelation(ctx, w.id, hero.id, 'affection', v);
+  const sceneOf = (r: ReturnType<typeof performInteraction>) => ('event' in r ? r.event.def.id : null);
+  const again = (w: Character) => {
+    S.meta.day += 61;
+    return performInteraction(ctx, hero, w, 'visit');
+  };
+
+  // ครั้งแรกของแต่ละนาง → ฉากแรก (ทั้งเมียหลวงและเมียน้อย)
+  if (sceneOf(performInteraction(ctx, hero, principal, 'visit')) !== 'marriage.visit_first') problems.push('ไปเรือนเมียหลวงครั้งแรกไม่มีฉาก');
+  if (sceneOf(performInteraction(ctx, hero, minor, 'visit')) !== 'marriage.visit_first') problems.push('ไปเรือนเมียน้อยครั้งแรกไม่มีฉาก');
+  // ครั้งต่อไป ปกติไม่มีฉาก
+  setAff(principal, 0.6);
+  if (sceneOf(again(principal))) problems.push('ไปค้างครั้งที่สองตอนนางสบายดีแต่มีฉาก');
+  // น้อยใจ → ฉากน้อยใจ (ตรวจสถานะก่อนเยี่ยม)
+  setAff(principal, 0.1);
+  if (sceneOf(again(principal)) !== 'marriage.visit_cold') problems.push('นางน้อยใจแต่ไม่มีฉากน้อยใจ');
+  // ท้องแก่ → ฉากท้อง ครั้งเดียวต่อท้อง
+  setAff(principal, 0.6);
+  principal.pregnancy = { memberId: principal.id, partnerId: hero.id, dueDay: S.meta.day + 30 };
+  if (sceneOf(again(principal)) !== 'marriage.visit_pregnant') problems.push('นางท้องแก่แต่ไม่มีฉากท้อง');
+  setAff(principal, 0.6);
+  if (sceneOf(again(principal))) problems.push('ท้องเดียวกันขึ้นฉากท้องซ้ำ');
+  delete principal.pregnancy;
+
+  // ทุกตัวเลือกของฉากใหม่ทำงานได้ และมีบรรทัดผลของบทพูด
+  for (const id of ['marriage.visit_first', 'marriage.visit_pregnant', 'marriage.visit_cold']) {
+    for (const o of content.events[id]!.options) {
+      const p = prepareEvent(ctx, id, { actor: hero.id, spouse: minor.id });
+      p.locked.clear();
+      const r = chooseOption(ctx, p, o.id);
+      if (!r.outcome?.textKey) problems.push(`${id}.${o.id}: ไม่มีบทตอบ`);
+    }
+  }
+
+  // เกี้ยวเมียน้อย: event ขึ้นเฉพาะตอนมีเมียอยู่แล้ว
+  const court = content.intents['court']!.midEvents.find((m) => m.event === 'intent.court.minor');
+  if (!court?.married) problems.push('intent.court.minor ไม่ได้ตั้ง married');
+  const target = spawnLocal(ctx, hero, { sex: 'f', age: 19, distance: 'near', single: true });
+  for (const o of content.events['intent.court.minor']!.options) {
+    const p = prepareEvent(ctx, 'intent.court.minor', { actor: hero.id, target: target.id });
+    p.locked.clear();
+    chooseOption(ctx, p, o.id);
+  }
+
+  // ช่วยคนตกน้ำ: ทุกตัวเลือกจบแบบไม่มีใครตาย
+  const before2 = Object.values(S.characters).filter((c) => !isAlive(c)).length;
+  for (const o of content.events['life.drowning']!.options) {
+    for (let i = 0; i < 20; i++) {
+      const kid = spawnLocal(ctx, hero, { sex: 'm', age: 7, distance: 'near', single: true });
+      const p = prepareEvent(ctx, 'life.drowning', { actor: hero.id, victim: kid.id });
+      p.locked.clear();
+      const r = chooseOption(ctx, p, o.id);
+      if (!r.outcome?.textKey) problems.push(`life.drowning.${o.id}: ไม่มีบรรทัดผล`);
+    }
+  }
+  if (Object.values(S.characters).filter((c) => !isAlive(c)).length !== before2) problems.push('ฉากตกน้ำทำให้มีคนตาย');
+
+  check('ไปค้างเรือนเมีย เกี้ยวเมียน้อย ช่วยคนตกน้ำ', problems);
+  if (failed === before) console.log('  ✓ ครั้งแรกมีฉาก · ครั้งต่อไปขึ้นเฉพาะน้อยใจ/ท้องแก่ (ท้องละครั้ง) · ทุกตัวเลือกมีบทตอบ · ช่วยคนตกน้ำไม่มีใครตาย');
 }
 
 // [6] การจัดการเรือน วิชาความชำนาญ และมรดกตระกูล

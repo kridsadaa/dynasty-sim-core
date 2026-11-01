@@ -42,6 +42,7 @@
         { "event": "intent.court.gossip" },
         { "event": "intent.court.boat", "approaches": ["visit", "serve"] },
         { "event": "intent.court.meet", "approaches": ["visit", "serve"] },
+        { "event": "intent.court.minor", "married": true },
         { "event": "intent.called_home", "needsElder": true, "minLabor": 0.4 }
       ]
     }

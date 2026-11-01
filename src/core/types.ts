@@ -706,6 +706,8 @@ export interface EventOption {
   risk?: OptionRisk;
   /** 'name' = ผู้เล่นพิมพ์ชื่อเอง — UI ถามชื่อก่อนส่งตัวเลือกนี้ */
   input?: 'name';
+  /** บทตอบ/ฉากต่อของตัวเลือกที่ไม่เสี่ยง (ใช้แทน risk.successKey) — แสดงเป็นบรรทัดผลเหมือน outcome */
+  replyKey?: string;
   effects: Effect[];
   /** ตัวเลือกที่ระบบ inject เข้ามา (ไม่ได้อยู่ใน def) */
   injectedBy?: string;
@@ -819,7 +821,7 @@ export interface IntentDef {
   success: EventDefId;
   failure: EventDefId;
   /** event แทรกระหว่างทาง (สุ่มเดือนละ balance.intent.midEventChance) */
-  midEvents: Array<{ event: EventDefId; approaches?: string[]; needsElder?: boolean; minLabor?: number; maxAge?: number }>;
+  midEvents: Array<{ event: EventDefId; approaches?: string[]; needsElder?: boolean; minLabor?: number; maxAge?: number; /** เกิดเฉพาะตอนผู้เกี้ยวมีเมียอยู่แล้ว */ married?: boolean }>;
 }
 
 /** ตำแหน่งในกรม — บันไดจากทำเนียบศักดินา (lore: social.patrol_department_ladder, social.royal_pages_1680s) */
@@ -1113,6 +1115,8 @@ export interface Balance {
     minorWifeFamiliarity: Unit; slaveConcubineHurt: number;
     /** ต่อปี: โอกาสที่เมียหลวงกีดกันเมียน้อย (คูณเพิ่มถ้าเมียน้อยเป็นทาส) */
     jealousyChance: Unit; jealousySlaveFactor: number;
+    /** ไปค้างเรือนเมียที่ความรักต่อผู้เล่นต่ำกว่านี้ (0..1) → ขึ้น event เมียน้อยใจ */
+    visitColdAt: Unit;
   };
   /** ปุ่มหาคู่ (systems/matchmaking.ts) — ค่าของเกม */
   /** บ่าวไพร่ในเรือน (systems/servants.ts) — ค่าของเกม */
@@ -1152,6 +1156,8 @@ export interface Balance {
     /** ผู้เล่นอายุถึงนี้อาจไปถือศีล ปีละ preceptsChance */
     elderAge: number;
     preceptsChance: Unit;
+    /** ต่อปี: ผู้เล่นอายุถึง drownAge เจอคนตกน้ำใกล้ตัว */
+    drownChance: Unit; drownAge: number;
     /** ญาติในฉาก (ไม่ใช่ผู้เล่น) ได้บุญปีละ piety × meritPerYear — ตั้งแต่ elderAge คูณ elderMeritFactor */
     meritPerYear: number;
     elderMeritFactor: number;

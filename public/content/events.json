@@ -4315,5 +4315,573 @@
         ]
       }
     ]
+  },
+  "marriage.visit_first": {
+    "id": "marriage.visit_first",
+    "textKey": "event.visit_first",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "spouse": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "ask",
+        "textKey": "event.visit_first.ask",
+        "replyKey": "reply.visit_first.ask",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.06
+          }
+        ]
+      },
+      {
+        "id": "hold",
+        "textKey": "event.visit_first.hold",
+        "replyKey": "reply.visit_first.hold",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.08
+          }
+        ]
+      },
+      {
+        "id": "gift",
+        "textKey": "event.visit_first.gift",
+        "replyKey": "reply.visit_first.gift",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -2
+          },
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.07
+          }
+        ]
+      },
+      {
+        "id": "rest",
+        "textKey": "event.visit_first.rest",
+        "replyKey": "reply.visit_first.rest",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.02
+          }
+        ]
+      }
+    ]
+  },
+  "marriage.visit_pregnant": {
+    "id": "marriage.visit_pregnant",
+    "textKey": "event.visit_pregnant",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "spouse": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "hand",
+        "textKey": "event.visit_pregnant.hand",
+        "replyKey": "reply.visit_pregnant.hand",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.07
+          }
+        ]
+      },
+      {
+        "id": "rub",
+        "textKey": "event.visit_pregnant.rub",
+        "replyKey": "reply.visit_pregnant.rub",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.08
+          },
+          {
+            "op": "stress",
+            "role": "spouse",
+            "delta": -0.05
+          }
+        ]
+      },
+      {
+        "id": "prepare",
+        "textKey": "event.visit_pregnant.prepare",
+        "replyKey": "reply.visit_pregnant.prepare",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -3
+          },
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.06
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "quiet",
+        "textKey": "event.visit_pregnant.quiet",
+        "replyKey": "reply.visit_pregnant.quiet",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.03
+          }
+        ]
+      }
+    ]
+  },
+  "marriage.visit_cold": {
+    "id": "marriage.visit_cold",
+    "textKey": "event.visit_cold",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "spouse": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "sorry",
+        "textKey": "event.visit_cold.sorry",
+        "risk": {
+          "base": 0.45,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "pride",
+              "role": "spouse",
+              "weight": 0.4,
+              "reasonKey": "proud"
+            }
+          ],
+          "hintKey": "risk.cold_wife",
+          "successKey": "reply.visit_cold.sorry",
+          "fail": {
+            "textKey": "reply.visit_cold.sorry_fail",
+            "effects": [
+              {
+                "op": "bond",
+                "role": "spouse",
+                "toward": "actor",
+                "affection": -0.03
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.07
+          }
+        ]
+      },
+      {
+        "id": "gift",
+        "textKey": "event.visit_cold.gift",
+        "risk": {
+          "base": 0.35,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "pride",
+              "role": "spouse",
+              "weight": 0.3,
+              "reasonKey": "proud"
+            }
+          ],
+          "hintKey": "risk.cold_wife",
+          "successKey": "reply.visit_cold.gift",
+          "fail": {
+            "textKey": "reply.visit_cold.gift_fail",
+            "effects": [
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -3
+              },
+              {
+                "op": "bond",
+                "role": "spouse",
+                "toward": "actor",
+                "affection": -0.02
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -3
+          },
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.08
+          }
+        ]
+      },
+      {
+        "id": "listen",
+        "textKey": "event.visit_cold.listen",
+        "replyKey": "reply.visit_cold.listen",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.06
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "leave",
+        "textKey": "event.visit_cold.leave",
+        "replyKey": "reply.visit_cold.leave",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": -0.1
+          },
+          {
+            "op": "stress",
+            "role": "spouse",
+            "delta": 0.08
+          }
+        ]
+      }
+    ]
+  },
+  "intent.court.minor": {
+    "id": "intent.court.minor",
+    "textKey": "event.court_minor",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "target": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "honest",
+        "textKey": "event.court_minor.honest",
+        "risk": {
+          "base": 0.5,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "pride",
+              "role": "target",
+              "weight": -0.5,
+              "reasonKey": "proud"
+            }
+          ],
+          "hintKey": "risk.court_minor",
+          "successKey": "outcome.court_minor.ok",
+          "fail": {
+            "textKey": "outcome.court_minor.flat",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "odds": -0.06
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.08,
+            "odds": 0.08
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.1
+          }
+        ]
+      },
+      {
+        "id": "promise",
+        "textKey": "event.court_minor.promise",
+        "replyKey": "outcome.court_minor.promise",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -10
+          },
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.1,
+            "odds": 0.14
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.12
+          }
+        ]
+      },
+      {
+        "id": "hide",
+        "textKey": "event.court_minor.hide",
+        "risk": {
+          "base": 0.55,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "agreeableness",
+              "role": "target",
+              "weight": 0.3,
+              "reasonKey": "agreeable"
+            }
+          ],
+          "hintKey": "risk.court_minor_hide",
+          "successKey": "outcome.court_minor.hide_ok",
+          "fail": {
+            "textKey": "outcome.court_minor.caught",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "odds": -0.14
+              },
+              {
+                "op": "relation",
+                "role": "target",
+                "toward": "actor",
+                "kind": "grudge",
+                "delta": 0.1
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.08,
+            "odds": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.08
+          }
+        ]
+      }
+    ]
+  },
+  "life.drowning": {
+    "id": "life.drowning",
+    "textKey": "event.drowning",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "victim": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "dive",
+        "textKey": "event.drowning.dive",
+        "risk": {
+          "base": 0.4,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "role": "actor",
+              "weight": -0.25,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.drowning_dive",
+          "successKey": "outcome.drowning.dive_ok",
+          "fail": {
+            "textKey": "outcome.drowning.dive_fail",
+            "effects": [
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.12
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": 1
+              },
+              {
+                "op": "relation",
+                "role": "victim",
+                "toward": "actor",
+                "kind": "gratitude",
+                "delta": 0.2
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 2
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 0.3
+          },
+          {
+            "op": "relation",
+            "role": "victim",
+            "toward": "actor",
+            "kind": "gratitude",
+            "delta": 0.4
+          }
+        ]
+      },
+      {
+        "id": "pole",
+        "textKey": "event.drowning.pole",
+        "risk": {
+          "base": 0.25,
+          "factors": [],
+          "hintKey": "risk.drowning_pole",
+          "successKey": "outcome.drowning.pole_ok",
+          "fail": {
+            "textKey": "outcome.drowning.pole_fail",
+            "effects": [
+              {
+                "op": "relation",
+                "role": "victim",
+                "toward": "actor",
+                "kind": "gratitude",
+                "delta": 0.1
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "relation",
+            "role": "victim",
+            "toward": "actor",
+            "kind": "gratitude",
+            "delta": 0.25
+          }
+        ]
+      },
+      {
+        "id": "shout",
+        "textKey": "event.drowning.shout",
+        "replyKey": "reply.drowning.shout",
+        "effects": [
+          {
+            "op": "relation",
+            "role": "victim",
+            "toward": "actor",
+            "kind": "gratitude",
+            "delta": 0.05
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          }
+        ]
+      },
+      {
+        "id": "freeze",
+        "textKey": "event.drowning.freeze",
+        "replyKey": "reply.drowning.freeze",
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.1
+          }
+        ]
+      }
+    ]
   }
 }

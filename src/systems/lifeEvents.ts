@@ -2,6 +2,7 @@ import { ageOf, isAlive, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character } from '../core/types';
 import { prepareEvent, type PreparedEvent } from './events';
+import { spawnLocal } from './acquaintance';
 import { livingChildren, livingParents } from './factory';
 
 // ============================================================================
@@ -37,6 +38,19 @@ export function parentIllnessEvent(ctx: Ctx): PreparedEvent | null {
   if (!parent || !ctx.rng.chance(B.illnessChance)) return null;
   parent.illYear = year;
   return prepareEvent(ctx, 'family.parent_illness', { actor: player.id, elder: parent.id });
+}
+
+/**
+ * ผู้เล่นเดินผ่านท่าน้ำแล้วมีเด็กในละแวกตกน้ำ — ปีละครั้งตามโอกาส (balance.life.drownChance)
+ * เด็กเป็นคนในละแวก (คนนอกตระกูล) ไม่มีใครตาย: ช่วยไม่ทันก็แค่ผู้เล่นเสียแรงและเสียใจ — เป็นฉากเล็กๆ ไม่ใช่โศกนาฏกรรม
+ * ฉากตกน้ำเป็นของแต่งเพื่อเกม (WRITING.md ข้อ 6)
+ */
+export function drowningEvent(ctx: Ctx): PreparedEvent | null {
+  const B = ctx.content.balance.life;
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (!isAlive(player) || ageOf(ctx, player) < B.drownAge || !ctx.rng.chance(B.drownChance)) return null;
+  const child = spawnLocal(ctx, player, { sex: ctx.rng.chance(0.5) ? 'm' : 'f', age: 4 + Math.floor(ctx.rng.range(0, 9)), distance: 'near', single: true });
+  return prepareEvent(ctx, 'life.drowning', { actor: player.id, victim: child.id });
 }
 
 /**

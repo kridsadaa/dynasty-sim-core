@@ -375,7 +375,7 @@ async function handle(cmd: Command): Promise<unknown> {
       if ('plan' in r) return { lines: [], plan: r.plan };
       if ('event' in r) {
         pending.set(r.event.instance.id, r.event);
-        return { lines: [], events: pendingViews(c) };
+        return { lines: r.lines ?? [], events: pendingViews(c) };
       }
       return { lines: r.lines };
     }

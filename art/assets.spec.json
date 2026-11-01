@@ -266,6 +266,46 @@
       "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s"]
     },
     {
+      "id": "scene.bedside_first",
+      "style": "reality",
+      "tags": ["event:marriage.visit_first"],
+      "alt": "ชายหญิงนั่งเคียงกันบนแท่นนอนในห้องเล็ก ชายจับมือหญิง ตะเกียงดวงเดียว",
+      "subject": "Interior of a small timber bedchamber at night, lit by a single small oil lamp standing on the floor: a Siamese man in his thirties and a young woman in her twenties sit side by side on the edge of a low raised wooden sleeping platform covered with a thin cotton mattress and a woven mat, a rolled triangular pillow and a mosquito net tied up above; he gently holds her hand in both of his, she looks shyly down at their hands and then up toward his face; she wears a dark wrap skirt and a single white muslin breast-cloth wrapped horizontally around her chest covering both breasts with both ends clearly thrown back over BOTH shoulders; he is bare-chested in a knee-length lower cloth; modest and tender, both fully clothed, seen from the side at a respectful distance.",
+      "loreRefs": ["material.houses_1680s", "attire.women_1680s", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.bedside_pregnant",
+      "style": "reality",
+      "tags": ["event:marriage.visit_pregnant"],
+      "alt": "หญิงท้องแก่พิงหมอนบนแท่นนอน ชายนั่งจับมือนางอยู่ข้างๆ",
+      "subject": "Interior of a small timber bedchamber at night, lit by a single small oil lamp on the floor: a visibly pregnant Siamese woman in her twenties sits propped against a rolled pillow on a low raised wooden sleeping platform with a thin cotton mattress and woven mat, her rounded belly under a dark wrap skirt, wearing a white muslin breast-cloth wrapped horizontally around her chest covering both breasts with both ends thrown back over BOTH shoulders; a Siamese man in his thirties, bare-chested in a lower cloth, sits beside her holding her hand in one hand with his other hand resting gently on the mat near her belly, both looking into each other's eyes with tired warm smiles; mosquito net tied up above; modest, fully clothed, seen from the side.",
+      "loreRefs": ["material.houses_1680s", "attire.women_1680s", "ritual.yu_fai_placenta"]
+    },
+    {
+      "id": "scene.bedside_cold",
+      "style": "reality",
+      "tags": ["event:marriage.visit_cold"],
+      "alt": "หญิงนั่งกอดเข่าหันข้างอยู่ปลายแท่นนอน ชายถือของฝากนั่งมองนางอย่างลังเล",
+      "subject": "Interior of a small timber bedchamber at night, lit by a single small oil lamp on the floor: a young Siamese woman in her twenties sits at the far end of a low raised wooden sleeping platform, turned half away with her arms wrapped around her drawn-up knees and her eyes lowered, wearing a dark wrap skirt and a white muslin breast-cloth wrapped horizontally around her chest covering both breasts with both ends thrown back over BOTH shoulders; a Siamese man in his thirties, bare-chested in a lower cloth, sits near the other end holding a small cloth-wrapped gift in both hands, looking at her with a hesitant, apologetic expression; an untouched lacquered tray of rice and a bowl on the floor beside the platform; silent, tense mood, both fully clothed.",
+      "loreRefs": ["material.houses_1680s", "attire.women_1680s", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.court_minor",
+      "style": "reality",
+      "tags": ["event:intent.court.minor"],
+      "alt": "ชายยืนที่โคนบันไดยื่นพานหมากขึ้นไป หญิงยืนกอดอกบนชาน พ่อแม่นั่งฟังอยู่ในประตู",
+      "subject": "Dusk at the foot of a small bamboo stilt house: a Siamese man in his thirties, bare-chested in a knee-length lower cloth, stands at the bottom of the hanging bamboo ladder holding up a small footed tray of betel leaves and areca nuts; at the top of the ladder on the veranda a young woman in a dark wrap skirt and a white breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders looks down at him with arms folded, guarded and thoughtful; her father and mother sit in the doorway behind her, the mother holding a palm-leaf fan, listening quietly; banana trees, a canal glimpsed behind, warm evening light.",
+      "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s", "material.houses_1680s"]
+    },
+    {
+      "id": "scene.river_rescue",
+      "style": "reality",
+      "tags": ["event:life.drowning"],
+      "alt": "ชายยืนในน้ำถึงเอวอุ้มเด็กไว้จุกขึ้นฝั่ง ชาวบ้านวิ่งมา",
+      "subject": "A muddy canal landing just after rain: a bare-chested Siamese man in a knee-length lower cloth, waist-deep in brown water, lifting a coughing child of about seven with a shaved head, a small topknot and a small wet lower cloth toward the muddy bank, a bamboo pole floating nearby and a small dugout boat tipped against a post; in the background two or three villagers running down the bank, one reaching out a hand; wet, urgent but not violent, overcast light.",
+      "loreRefs": ["material.houses_1680s", "material.boats_1680s"]
+    },
+    {
       "id": "legend.battle",
       "style": "chronicle",
       "tags": ["legend:any", "place:battlefield", "situation:combat", "situation:war"],
