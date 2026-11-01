@@ -95,3 +95,15 @@ test('ทุกภาพใน assets.spec.json มี tag ที่มีอย
     }
   }
 });
+
+test('งานบ้านแต่ละหมวดได้ภาพของหมวดนั้น ไม่ตกไปที่ลานครัว (ใช้ป้ายจาก assets.spec.json)', () => {
+  const spec = JSON.parse(readFileSync('art/assets.spec.json', 'utf8')) as { images: Array<{ id: string; style: ArtImage['style']; tags: string[] }> };
+  const all: ArtManifest = { styleVersion: 'spec', images: spec.images.map((i) => img(i.id, i.style, i.tags)) };
+  const chore = (event: string, domain: string) => pickArt(all, 'reality', eventArtTags(event, [`chore:${domain}`, 'chore:any']))?.id;
+  for (const event of ['chore.ask', 'chore.learn']) {
+    assert.equal(chore(event, 'kitchen'), 'scene.kitchen_yard');
+    for (const d of ['housework', 'craft', 'flowers', 'merit']) assert.equal(chore(event, d), `scene.chore_${d}`);
+  }
+  assert.equal(pickArt(all, 'reality', eventArtTags('marriage.wedding_f', []))?.id, 'scene.wedding');
+  assert.equal(pickArt(all, 'reality', eventArtTags('temple.elder', []))?.id, 'scene.temple_holy_day');
+});

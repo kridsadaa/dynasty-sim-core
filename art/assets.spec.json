@@ -37,10 +37,42 @@
     {
       "id": "scene.kitchen_yard",
       "style": "reality",
-      "tags": ["place:kitchen", "situation:kitchen_work", "group:chore", "group:childhood", "event:childhood.kitchen_cut", "event:chore.learn", "event:chore.learn_chop"],
+      "tags": ["place:kitchen", "situation:kitchen_work", "group:chore", "group:childhood", "chore:kitchen", "event:childhood.kitchen_cut", "event:chore.learn_chop"],
       "alt": "ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว",
       "subject": "Medium-wide view of an outdoor kitchen in a house yard seen from the side: a small wood fire on the ground with an earthenware pot, a grating board and split coconuts, garlic and shallots on a flat basket, dried fish hanging from a pole, bamboo water tubes; a woman squatting by the fire with her back half turned, a child in a lower cloth watching; stilt house behind.",
       "loreRefs": ["material.houses_1680s", "material.kitchen_tasks", "material.food_1680s"]
+    },
+    {
+      "id": "scene.chore_housework",
+      "style": "reality",
+      "tags": ["chore:housework"],
+      "alt": "เด็กช่วยงานบ้าน กวาดชาน ขัดพื้นกระดาน และหาบน้ำขึ้นเรือน",
+      "subject": "Medium-wide view of a timber house platform and yard in the morning: a girl of about eight kneeling on the plank floor of the open veranda, rubbing the boards with half a coconut shell, a woven palm-rib broom and a bamboo water bucket beside her; below in the yard a boy of about ten carrying two bamboo water tubes on a shoulder pole toward the house and a small bundle of firewood stacked by a post; an older woman watching from the doorway.",
+      "loreRefs": ["material.floor_polishing", "material.houses_1680s", "material.household_objects_1680s", "kinship.child_chores_by_strength"]
+    },
+    {
+      "id": "scene.chore_craft",
+      "style": "reality",
+      "tags": ["chore:craft"],
+      "alt": "หญิงชรานั่งสานเสื่อบนชานเรือน เด็กหญิงนั่งหัดเย็บปักผ้าอยู่ข้างๆ",
+      "subject": "Medium view of a shaded veranda of a house: an old woman seated on the floor plaiting a reed mat, strips of dried reed fanned out around her and a half-finished mat across her lap; beside her a girl of about ten, head bent, sewing a small piece of cotton cloth with a needle and thread, a flat basket of thread and cloth between them; afternoon light, a younger child playing in the shade under the house below.",
+      "loreRefs": ["material.crafts_1680s", "kinship.child_chores_by_strength", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.chore_flowers",
+      "style": "reality",
+      "tags": ["chore:flowers"],
+      "alt": "เด็กหญิงนั่งร้อยดอกไม้เป็นพวงกับผู้ใหญ่ มีดอกบัวกองอยู่บนกระด้ง",
+      "subject": "Medium view of women and a girl seated on a reed mat on a veranda, threading small white and yellow flowers onto long strings to make simple hanging strands, a flat round winnowing basket heaped with loose blossoms and a few pink lotus buds with folded-back petals, a bowl of water to keep the flowers fresh, a canal with a small boat visible beyond the house posts. Simple strands of flowers only. Avoid: elaborate modern garlands, ribbons, tassels.",
+      "loreRefs": ["material.flower_stringing", "material.boats_1680s", "material.household_objects_1680s"]
+    },
+    {
+      "id": "scene.chore_merit",
+      "style": "reality",
+      "tags": ["chore:merit"],
+      "alt": "พระยืนเงียบที่หน้าประตูเรือนยามเช้า ผู้หญิงกับเด็กใส่ข้าวลงบาตร",
+      "subject": "Early morning in front of a house gate: a Buddhist monk in an ochre robe standing silently with his alms bowl held at his waist, eyes lowered; a woman and a child of about eight kneeling on a mat at the gate, the child lifting a spoonful of cooked rice from a covered bowl into the monk's bowl, a tray with bananas and small leaf-wrapped food beside them; misty light, bamboo fence, other houses in the background.",
+      "loreRefs": ["ritual.alms_round_1680s", "attire.monks_1680s", "material.household_objects_1680s"]
     },
     {
       "id": "scene.meal",
@@ -86,7 +118,7 @@
     {
       "id": "scene.betrothal",
       "style": "reality",
-      "tags": ["group:marriage", "event:family.arranged_match", "event:intent.court.accepted_formal", "event:marriage.refused", "event:marriage.milk_claim"],
+      "tags": ["group:marriage", "event:family.arranged_match", "event:intent.court.accepted_formal", "event:marriage.refused", "event:marriage.refused_f", "event:marriage.milk_claim", "event:marriage.milk_claim_f"],
       "alt": "ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง",
       "subject": "Interior of a timber house: two groups of middle-aged adults seated on reed mats facing each other, between them three bowls of betel nut and betel leaves on footed trays, the elders talking seriously; a young woman half-hidden behind a doorway listening.",
       "loreRefs": ["kinship.betrothal_khanmak_three_seals", "material.household_objects_1680s"]
@@ -94,7 +126,7 @@
     {
       "id": "scene.wedding",
       "style": "reality",
-      "tags": ["event:marriage.wedding", "event:marriage.minor_wife"],
+      "tags": ["event:marriage.wedding", "event:marriage.wedding_f", "event:marriage.minor_wife"],
       "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
       "subject": "Interior of a Siamese timber bridal house: a young bride and groom seated side by side on a reed mat with palms pressed together in respectful greeting, wearing white sacred cotton thread rings (mongkhonแฝด) linked between their heads; the bride wears a black wrap skirt and a white muslin chest wrap horizontally across her chest with both ends thrown back over both shoulders, the groom wears a fine patterned lower cloth; an elderly couple in front of them pouring lustral water from a white conch shell over the couple's joined hands over a brass bowl of flowers, footed trays of betel nut and offerings nearby, relatives watching warmly. Avoid: one-shoulder diagonal sash, modern bridal costume.",
       "loreRefs": ["kinship.betrothal_khanmak_three_seals", "attire.women_1680s", "material.houses_1680s"]
@@ -142,7 +174,7 @@
     {
       "id": "scene.temple_holy_day",
       "style": "reality",
-      "tags": ["group:festival", "group:ritual", "event:festival.holy_day", "event:ritual.elder_precepts"],
+      "tags": ["group:festival", "group:ritual", "event:festival.holy_day", "event:ritual.elder_precepts", "group:temple"],
       "alt": "ชาวบ้านนำของไปถวายพระที่วัดในวันพระ",
       "subject": "A temple compound on a holy day: villagers in clean lower cloths carrying fruit, cloth and rice in baskets toward a monastery hall, older people in white sitting on mats listening to a monk preaching from a raised seat while holding a palm-leaf fan, candles lit; whitewashed brick hall with a tiled roof, bodhi tree.",
       "loreRefs": ["ritual.holy_days_1680s", "ritual.alms_round_1680s", "attire.monks_1680s"]

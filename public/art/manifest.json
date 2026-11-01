@@ -38,8 +38,8 @@
         "situation:kitchen_work",
         "group:chore",
         "group:childhood",
+        "chore:kitchen",
         "event:childhood.kitchen_cut",
-        "event:chore.learn",
         "event:chore.learn_chop"
       ],
       "alt": "ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว",
@@ -115,7 +115,9 @@
         "event:family.arranged_match",
         "event:intent.court.accepted_formal",
         "event:marriage.refused",
-        "event:marriage.milk_claim"
+        "event:marriage.refused_f",
+        "event:marriage.milk_claim",
+        "event:marriage.milk_claim_f"
       ],
       "alt": "ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง",
       "width": 1024,
@@ -127,6 +129,7 @@
       "style": "reality",
       "tags": [
         "event:marriage.wedding",
+        "event:marriage.wedding_f",
         "event:marriage.minor_wife"
       ],
       "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
@@ -218,7 +221,8 @@
         "group:festival",
         "group:ritual",
         "event:festival.holy_day",
-        "event:ritual.elder_precepts"
+        "event:ritual.elder_precepts",
+        "group:temple"
       ],
       "alt": "ชาวบ้านนำของไปถวายพระที่วัดในวันพระ",
       "width": 1024,
