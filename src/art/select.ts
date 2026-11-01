@@ -41,10 +41,22 @@ export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: r
     // ภาพตัวละครต้องตรงเพศและช่วงวัยเสมอ (ภาพที่ใช้ได้หลายวัยใส่ age:* หลายค่าได้)
     if (wantSex && img.tags.some((t) => t.startsWith('sex:')) && !img.tags.includes(wantSex)) continue;
     if (wantAge && img.tags.some((t) => t.startsWith('age:')) && !img.tags.includes(wantAge)) continue;
+    if (style === 'portrait' && !portraitFits(img, want)) continue;
     const score = img.tags.reduce((s, t) => s + (want.has(t) ? weightOf(t) : 0), 0);
     if (score > bestScore) [best, bestScore] = [img, score];
   }
   return best;
+}
+
+/**
+ * ภาพตัวละครต้องตรงชนชั้น (ไพร่ไม่ได้ภาพนางขุนนาง) และภาพที่ติดบทบาทใช้ได้เฉพาะคนที่มีบทบาทนั้น
+ * (ขุนนางไม่มีตำแหน่งไม่ได้ภาพมหาดเล็ก) — ไม่มีภาพที่ตรงก็ไม่แสดง ดีกว่าแสดงภาพผิดคน
+ */
+function portraitFits(img: ArtImage, want: ReadonlySet<string>): boolean {
+  const estates = img.tags.filter((t) => t.startsWith('estate:'));
+  if (estates.length && !estates.some((t) => want.has(t))) return false;
+  const roles = img.tags.filter((t) => t.startsWith('role:'));
+  return !roles.length || roles.some((t) => want.has(t));
 }
 
 /** tag ภาพของ event: id ของ event, หมวด (ส่วนหน้าของ id) และ tag ฉากที่ event ใช้ (รวมบรรพบุรุษของ tag) */
@@ -63,5 +75,7 @@ export interface PortraitSpec {
 /** tag ภาพตัวละคร: เพศ + ช่วงวัย + ชนชั้น + บทบาท (มหาดเล็ก/ขุนนางแต่ละกรม/พระ/เมียเอก/เมียน้อย/เจ้าเรือน) */
 export function portraitArtTags(p: PortraitSpec): string[] {
   const ageTag = p.age < 13 && !p.topknotCut ? 'age:child' : p.age < 25 ? 'age:youth' : p.age < 50 ? 'age:adult' : 'age:elder';
-  return [`sex:${p.sex}`, ageTag, `estate:${p.estate}`, ...(p.roles ?? []).map((r) => `role:${r}`)];
+  // ยังไม่มีภาพเจ้านาย — ใช้ภาพขุนนางซึ่งแต่งกายใกล้ที่สุด
+  const estate = p.estate === 'royal' ? 'noble' : p.estate;
+  return [`sex:${p.sex}`, ageTag, `estate:${estate}`, ...(p.roles ?? []).map((r) => `role:${r}`)];
 }

@@ -129,7 +129,7 @@
         "event:marriage.wedding",
         "event:marriage.minor_wife"
       ],
-      "alt": "ขบวนขันหมากเดินไปเรือนเจ้าสาว",
+      "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
       "width": 1024,
       "height": 572
     },
@@ -164,6 +164,53 @@
       "height": 572
     },
     {
+      "id": "scene.palace_pages",
+      "file": "art/scene.palace_pages.webp",
+      "style": "reality",
+      "tags": [
+        "group:career",
+        "place:court",
+        "event:career.page_duty",
+        "event:career.page_mistake",
+        "event:career.page_found_out",
+        "event:career.punished_page",
+        "event:career.present_page",
+        "event:career.assign_department"
+      ],
+      "alt": "มหาดเล็กหนุ่มนั่งเรียงรอรับใช้ในลานพระราชวัง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.audience_hall",
+      "file": "art/scene.audience_hall.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.audience_late",
+        "event:career.promotion",
+        "event:career.punished",
+        "event:career.gift_offered",
+        "event:career.rival_accuses",
+        "event:career.reported",
+        "event:career.recall"
+      ],
+      "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.night_patrol",
+      "file": "art/scene.night_patrol.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.patrol_thief",
+        "situation:combat"
+      ],
+      "alt": "กองตระเวนถือคบไฟจับขโมยควายริมคลอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "scene.temple_holy_day",
       "file": "art/scene.temple_holy_day.webp",
       "style": "reality",
@@ -174,6 +221,61 @@
         "event:ritual.elder_precepts"
       ],
       "alt": "ชาวบ้านนำของไปถวายพระที่วัดในวันพระ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.temple_fair",
+      "file": "art/scene.temple_fair.webp",
+      "style": "reality",
+      "tags": [
+        "event:festival.temple_fair"
+      ],
+      "alt": "งานวัด คนมาในผ้าใหม่ มีชกมวยพันเชือก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.lanterns",
+      "file": "art/scene.lanterns.webp",
+      "style": "reality",
+      "tags": [
+        "event:festival.lanterns"
+      ],
+      "alt": "ลำน้ำเต็มไปด้วยโคมกระดาษลอยตามน้ำยามค่ำ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.bathing_elders",
+      "file": "art/scene.bathing_elders.webp",
+      "style": "reality",
+      "tags": [
+        "event:festival.bathing"
+      ],
+      "alt": "ลูกหลานรดน้ำพ่อแม่ในวันเพ็ญเดือนห้า",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.ordination",
+      "file": "art/scene.ordination.webp",
+      "style": "reality",
+      "tags": [
+        "event:ritual.ordination"
+      ],
+      "alt": "แห่นาคไปวัดพร้อมร่มและดนตรี",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.topknot",
+      "file": "art/scene.topknot.webp",
+      "style": "reality",
+      "tags": [
+        "event:ritual.topknot"
+      ],
+      "alt": "เด็กนั่งให้ผู้ใหญ่ตัดจุก",
       "width": 1024,
       "height": 572
     },
@@ -237,6 +339,36 @@
       "height": 572
     },
     {
+      "id": "portrait.m.child.commoner",
+      "file": "art/portrait.m.child.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:child",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "เด็กชายชาวบ้านหัวโกนไว้จุก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.child.noble",
+      "file": "art/portrait.m.child.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:child",
+        "estate:noble",
+        "estate:merchant",
+        "estate:royal"
+      ],
+      "alt": "เด็กชายลูกขุนนางหัวโกนไว้จุก สวมกำไลทอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "portrait.m.youth.commoner",
       "file": "art/portrait.m.youth.commoner.webp",
       "style": "portrait",
@@ -252,6 +384,50 @@
       "height": 572
     },
     {
+      "id": "portrait.m.youth.noble",
+      "file": "art/portrait.m.youth.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "estate:noble",
+        "estate:merchant"
+      ],
+      "alt": "ชายหนุ่มลูกขุนนางในเรือนไม้",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.youth.page",
+      "file": "art/portrait.m.youth.page.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "age:adult",
+        "estate:noble",
+        "role:page"
+      ],
+      "alt": "มหาดเล็กหนุ่มสวมเสื้อมัสลินขาวผ่าหน้า หมอบรับใช้ในวัง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.youth.monk",
+      "file": "art/portrait.m.youth.monk.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "age:adult",
+        "estate:monk",
+        "role:monk"
+      ],
+      "alt": "พระภิกษุหนุ่มครองจีวรเหลือง",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "portrait.m.adult.commoner",
       "file": "art/portrait.m.adult.commoner.webp",
       "style": "portrait",
@@ -263,6 +439,20 @@
         "estate:that"
       ],
       "alt": "ชายผู้ใหญ่ชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.noble",
+      "file": "art/portrait.m.adult.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant"
+      ],
+      "alt": "ชายผู้ใหญ่เจ้าเรือนผู้มีฐานะ นั่งข้างเชี่ยนหมาก",
       "width": 1024,
       "height": 572
     },
@@ -312,6 +502,111 @@
       "height": 572
     },
     {
+      "id": "portrait.m.elder.commoner",
+      "file": "art/portrait.m.elder.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "ชายชราชาวบ้านผมหงอก เปลือยท่อนบน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.elder.noble",
+      "file": "art/portrait.m.elder.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "estate:merchant"
+      ],
+      "alt": "ชายชราเจ้าเรือนผู้มีฐานะ ผมหงอก นั่งข้างเชี่ยนหมาก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.elder.official",
+      "file": "art/portrait.m.elder.official.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "role:official_palace",
+        "role:official_scholar"
+      ],
+      "alt": "ขุนนางอาวุโสวัยชราสวมเสื้อมัสลินและลอมพอก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.elder.monk",
+      "file": "art/portrait.m.elder.monk.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:monk",
+        "role:monk"
+      ],
+      "alt": "พระเถระชราครองจีวรเหลือง ถือตาลปัตร",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.child.commoner",
+      "file": "art/portrait.f.child.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:child",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "เด็กหญิงชาวบ้านหัวโกนไว้จุก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.child.noble",
+      "file": "art/portrait.f.child.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:child",
+        "estate:noble",
+        "estate:merchant",
+        "estate:royal"
+      ],
+      "alt": "เด็กหญิงลูกขุนนางหัวโกนไว้จุก สวมกำไลและต่างหูทอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.youth.commoner",
+      "file": "art/portrait.f.youth.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "หญิงสาวชาวบ้านตัดผมสั้นระดับใบหู",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "portrait.f.youth.noble",
       "file": "art/portrait.f.youth.noble.webp",
       "style": "portrait",
@@ -326,6 +621,21 @@
       "height": 572
     },
     {
+      "id": "portrait.f.adult.commoner",
+      "file": "art/portrait.f.adult.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:adult",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "หญิงผู้ใหญ่ชาวบ้านตัดผมสั้น ฟันดำจากหมาก",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "portrait.f.adult.noble",
       "file": "art/portrait.f.adult.noble.webp",
       "style": "portrait",
@@ -333,10 +643,26 @@
         "sex:f",
         "age:adult",
         "estate:noble",
-        "estate:merchant",
-        "role:principal_wife"
+        "estate:merchant"
       ],
       "alt": "ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.adult.minor_wife",
+      "file": "art/portrait.f.adult.minor_wife.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "age:adult",
+        "estate:noble",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "role:minor_wife"
+      ],
+      "alt": "เมียกลางนอกห่มผ้าพาดสองไหล่ นั่งพับเพียบสำรวม",
       "width": 1024,
       "height": 572
     },
@@ -378,11 +704,42 @@
         "sex:f",
         "age:elder",
         "estate:noble",
-        "estate:merchant",
-        "role:principal_wife",
-        "role:household_head"
+        "estate:merchant"
       ],
       "alt": "แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.pregnant.commoner",
+      "file": "art/portrait.f.pregnant.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "age:adult",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that",
+        "role:pregnant"
+      ],
+      "alt": "หญิงชาวบ้านกำลังตั้งครรภ์",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.pregnant.noble",
+      "file": "art/portrait.f.pregnant.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant",
+        "role:pregnant"
+      ],
+      "alt": "หญิงตระกูลขุนนางกำลังตั้งครรภ์ ห่มผ้าขาวพาดสองไหล่",
       "width": 1024,
       "height": 572
     }

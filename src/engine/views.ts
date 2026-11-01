@@ -69,6 +69,9 @@ function characterRoles(ctx: Ctx, ch: Character, node?: FamilyNode): string[] {
     if (dept === 'royal_chamber_right') roles.push('official_palace');
     else if (dept === 'royal_scholars') roles.push('official_scholar');
     else roles.push('official_patrol');
+  } else if (ch.social.title && !ch.formerOffice) {
+    // มีบรรดาศักดิ์แต่ไม่มีตำแหน่งในระบบราชการของเกม (พ่อในฉากเริ่ม) — บรรดาศักดิ์ผูกกับตำแหน่ง จึงแต่งกายแบบขุนนาง
+    roles.push('official');
   }
   const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
   const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;

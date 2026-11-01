@@ -14,6 +14,8 @@ const manifest: ArtManifest = {
     img('portrait.m.adult.noble', 'portrait', ['sex:m', 'age:adult', 'estate:noble']),
     img('portrait.m.adult.official_patrol', 'portrait', ['sex:m', 'age:adult', 'estate:noble', 'role:official', 'role:official_patrol']),
     img('portrait.f.adult.noble', 'portrait', ['sex:f', 'age:adult', 'estate:noble', 'role:principal_wife']),
+    img('portrait.m.youth.page', 'portrait', ['sex:m', 'age:youth', 'age:adult', 'estate:noble', 'role:page']),
+    img('portrait.f.adult.commoner', 'portrait', ['sex:f', 'age:adult', 'estate:phrai_som']),
   ],
 };
 
@@ -41,6 +43,36 @@ test('ภาพตัวละครเลือกตรงเพศ ช่ว�
   assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble' }))?.id, 'portrait.m.adult.noble');
   assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'f', age: 30, estate: 'noble', roles: ['principal_wife'] }))?.id, 'portrait.f.adult.noble');
   assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'f', age: 8, estate: 'noble' })), null);
+});
+
+test('ภาพที่ติดบทบาทใช้เฉพาะคนที่มีบทบาทนั้น และชนชั้นต้องตรง', () => {
+  // ขุนนางไม่มีตำแหน่งไม่ได้ภาพมหาดเล็ก แม้ภาพมหาดเล็กจะติดอายุผู้ใหญ่ไว้ด้วย
+  assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble' }))?.id, 'portrait.m.adult.noble');
+  // เมียของไพร่ไม่ได้ภาพนางขุนนาง แม้จะเป็นเมียเอกเหมือนกัน
+  assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'f', age: 30, estate: 'phrai_som', roles: ['principal_wife'] }))?.id, 'portrait.f.adult.commoner');
+  // ไม่มีภาพที่ตรงชนชั้น → ไม่แสดง (ชาวต่างชาติ) / เจ้านายใช้ภาพขุนนาง
+  assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'foreigner' })), null);
+  assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'royal' }))?.id, 'portrait.m.adult.noble');
+});
+
+test('คลังภาพจริง: ทุกเพศ วัย ชนชั้น บทบาท ได้ภาพที่ตรงตัว หรือไม่ได้ภาพเลย', () => {
+  const real = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as ArtManifest;
+  const rolesBySex: Record<'m' | 'f', string[][]> = {
+    m: [[], ['page'], ['official', 'official_patrol'], ['official', 'official_palace'], ['official', 'official_scholar'], ['monk']],
+    f: [[], ['principal_wife'], ['household_head', 'principal_wife'], ['minor_wife'], ['pregnant', 'principal_wife']],
+  };
+  const estates = ['noble', 'royal', 'merchant', 'phrai_luang', 'phrai_som', 'that', 'monk', 'foreigner'];
+  for (const sex of ['m', 'f'] as const) for (const estate of estates) for (const age of [8, 18, 35, 65]) for (const roles of rolesBySex[sex]) {
+    const wanted = portraitArtTags({ sex, age, estate, roles, topknotCut: age > 13 });
+    const got = pickArt(real, 'portrait', wanted);
+    if (!got) continue;
+    const want = new Set(wanted);
+    const kind = (p: string) => got.tags.filter((t) => t.startsWith(p));
+    const label = `${sex} ${estate} ${age} ${roles.join('+') || '-'} → ${got.id}`;
+    for (const p of ['sex:', 'age:', 'estate:']) assert.ok(!kind(p).length || kind(p).some((t) => want.has(t)), label);
+    assert.ok(!kind('role:').length || kind('role:').some((t) => want.has(t)), label);
+  }
+  assert.equal(pickArt(real, 'portrait', portraitArtTags({ sex: 'f', age: 30, estate: 'noble' }))?.id, 'portrait.f.adult.noble', 'หญิงขุนนางยังไม่มีผัวก็มีภาพ');
 });
 
 const PORTRAIT_TAGS = new Set([

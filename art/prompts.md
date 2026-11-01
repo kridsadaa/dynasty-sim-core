@@ -145,16 +145,16 @@ Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th c
 Interior of a timber house: two groups of middle-aged adults seated on reed mats facing each other, between them three bowls of betel nut and betel leaves on footed trays, the elders talking seriously; a young woman half-hidden behind a doorway listening.
 ```
 
-### scene.wedding — ขบวนขันหมากเดินไปเรือนเจ้าสาว
+### scene.wedding — พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่
 
 ✅ มีภาพแล้ว · tag: `event:marriage.wedding` `event:marriage.minor_wife`
 
-lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `material.houses_1680s` (attested, verified)
+lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `attire.women_1680s` (attested), `material.houses_1680s` (attested, verified)
 
 ```
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Wide view of a small procession walking along a path beside a canal toward a stilt house: men and women carrying bowls of betel nut, bananas and sugar cane on footed trays, a young man in a clean lower cloth among them, a drum and a reed pipe; relatives waiting at the top of the ladder; bright morning.
+Interior of a Siamese timber bridal house: a young bride and groom seated side by side on a reed mat with palms pressed together in respectful greeting, wearing white sacred cotton thread rings (mongkhonแฝด) linked between their heads; the bride wears a black wrap skirt and a white muslin chest wrap horizontally across her chest with both ends thrown back over both shoulders, the groom wears a fine patterned lower cloth; an elderly couple in front of them pouring lustral water from a white conch shell over the couple's joined hands over a brass bowl of flowers, footed trays of betel nut and offerings nearby, relatives watching warmly. Avoid: one-shoulder diagonal sash, modern bridal costume.
 ```
 
 ### scene.courtship — หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ
@@ -183,7 +183,7 @@ Wide view of a lotus pond in the morning: two teenagers in a small narrow wooden
 
 ### scene.palace_pages — มหาดเล็กหนุ่มนั่งเรียงรอรับใช้ในลานพระราชวัง
 
-⬜ ยังไม่มีภาพ · tag: `group:career` `place:court` `event:career.page_duty` `event:career.page_mistake` `event:career.page_found_out` `event:career.punished_page` `event:career.present_page` `event:career.assign_department`
+✅ มีภาพแล้ว · tag: `group:career` `place:court` `event:career.page_duty` `event:career.page_mistake` `event:career.page_found_out` `event:career.punished_page` `event:career.present_page` `event:career.assign_department`
 
 lore: `social.royal_pages_1680s` (inferred, verified), `attire.officials_1680s` (attested)
 
@@ -195,7 +195,7 @@ A paved palace courtyard beside a pavilion with tiered roofs: a row of young roy
 
 ### scene.audience_hall — ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง
 
-⬜ ยังไม่มีภาพ · tag: `event:career.audience_late` `event:career.promotion` `event:career.punished` `event:career.gift_offered` `event:career.rival_accuses` `event:career.reported` `event:career.recall`
+✅ มีภาพแล้ว · tag: `event:career.audience_late` `event:career.promotion` `event:career.punished` `event:career.gift_offered` `event:career.rival_accuses` `event:career.reported` `event:career.recall`
 
 lore: `attire.officials_1680s` (attested), `social.court_attendance_rules` (attested, verified)
 
@@ -207,7 +207,7 @@ Interior of a palace audience hall seen from behind the officials: rows of Siame
 
 ### scene.night_patrol — กองตระเวนถือคบไฟจับขโมยควายริมคลอง
 
-⬜ ยังไม่มีภาพ · tag: `event:career.patrol_thief` `situation:combat`
+✅ มีภาพแล้ว · tag: `event:career.patrol_thief` `situation:combat`
 
 lore: `social.patrol_department_ladder` (attested, verified), `attire.commoner_men_1680s` (attested)
 
@@ -231,7 +231,7 @@ A temple compound on a holy day: villagers in clean lower cloths carrying fruit,
 
 ### scene.temple_fair — งานวัด คนมาในผ้าใหม่ มีชกมวยพันเชือก
 
-⬜ ยังไม่มีภาพ · tag: `event:festival.temple_fair`
+✅ มีภาพแล้ว · tag: `event:festival.temple_fair`
 
 lore: `ritual.temple_festival_1680s` (attested, verified), `material.household_objects_1680s` (attested)
 
@@ -243,7 +243,7 @@ A crowded temple festival: people in new bright lower cloths walking around the 
 
 ### scene.lanterns — ลำน้ำเต็มไปด้วยโคมกระดาษลอยตามน้ำยามค่ำ
 
-⬜ ยังไม่มีภาพ · tag: `event:festival.lanterns`
+✅ มีภาพแล้ว · tag: `event:festival.lanterns`
 
 lore: `ritual.floating_lanterns_1680s` (attested, verified)
 
@@ -255,7 +255,7 @@ Night on a wide river as the floodwater begins to fall: the water covered with m
 
 ### scene.bathing_elders — ลูกหลานรดน้ำพ่อแม่ในวันเพ็ญเดือนห้า
 
-⬜ ยังไม่มีภาพ · tag: `event:festival.bathing`
+✅ มีภาพแล้ว · tag: `event:festival.bathing`
 
 lore: `ritual.fifth_month_bathing_1680s` (attested, verified)
 
@@ -267,7 +267,7 @@ Bright hot-season day in a house yard: an elderly couple seated on a low bench w
 
 ### scene.ordination — แห่นาคไปวัดพร้อมร่มและดนตรี
 
-⬜ ยังไม่มีภาพ · tag: `event:ritual.ordination`
+✅ มีภาพแล้ว · tag: `event:ritual.ordination`
 
 lore: `ritual.ordination` (inferred, verified), `attire.monks_1680s` (attested)
 
@@ -279,7 +279,7 @@ A procession toward a temple: a young man of about twenty-one with a shaved head
 
 ### scene.topknot — เด็กนั่งให้ผู้ใหญ่ตัดจุก
 
-⬜ ยังไม่มีภาพ · tag: `event:ritual.topknot`
+✅ มีภาพแล้ว · tag: `event:ritual.topknot`
 
 lore: `ritual.topknot_cutting` (inferred, verified), `attire.monks_1680s` (attested)
 
@@ -355,7 +355,7 @@ A strange omen in the sky: a comet and a ring around the sun above a town wall, 
 
 ### portrait.m.child.commoner — เด็กชายชาวบ้านหัวโกนไว้จุก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:m` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `ritual.month_old_tham_khwan` (inferred), `ritual.topknot_cutting` (inferred, verified), `attire.commoner_men_1680s` (attested)
 
@@ -367,7 +367,7 @@ Medium portrait from the waist up: a young Siamese commoner boy of about eight y
 
 ### portrait.m.child.noble — เด็กชายลูกขุนนางหัวโกนไว้จุก สวมกำไลทอง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:child` `estate:noble` `estate:merchant` `estate:royal`
+✅ มีภาพแล้ว · tag: `sex:m` `age:child` `estate:noble` `estate:merchant` `estate:royal`
 
 lore: `attire.children_1680s` (attested), `ritual.topknot_cutting` (inferred, verified), `attire.indian_chintz_royal` (inferred)
 
@@ -391,19 +391,19 @@ Medium portrait from the waist up: a Siamese commoner young man of about eightee
 
 ### portrait.m.youth.noble — ชายหนุ่มลูกขุนนางในเรือนไม้
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `estate:noble` `estate:merchant`
 
 lore: `attire.hair_1680s` (attested), `attire.indian_chintz_royal` (inferred)
 
 ```
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Medium portrait from the waist up: a well-born Siamese young man of about十八 (eighteen) years old with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned Indian chintz lower cloth with a betel pouch at the waist, seated on a reed mat inside a timber house.
+Medium portrait from the waist up: a well-born Siamese young man of about eighteen years old with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned Indian chintz lower cloth with a betel pouch at the waist, seated on a reed mat inside a timber house.
 ```
 
 ### portrait.m.youth.page — มหาดเล็กหนุ่มสวมเสื้อมัสลินขาวผ่าหน้า หมอบรับใช้ในวัง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `age:adult` `estate:noble` `role:page`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `age:adult` `estate:noble` `role:page`
 
 lore: `social.royal_pages_1680s` (inferred, verified), `attire.officials_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -415,7 +415,7 @@ Medium portrait: a young Siamese royal page of about nineteen with warm olive-br
 
 ### portrait.m.youth.monk — พระภิกษุหนุ่มครองจีวรเหลือง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `age:adult` `estate:monk` `role:monk`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `age:adult` `estate:monk` `role:monk`
 
 lore: `attire.monks_1680s` (attested), `ritual.ordination` (inferred, verified)
 
@@ -439,7 +439,7 @@ Medium portrait from the waist up: a Siamese commoner man in his thirties with a
 
 ### portrait.m.adult.noble — ชายผู้ใหญ่เจ้าเรือนผู้มีฐานะ นั่งข้างเชี่ยนหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:adult` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `estate:merchant`
 
 lore: `attire.hair_1680s` (attested), `attire.indian_chintz_royal` (inferred), `material.household_objects_1680s` (attested)
 
@@ -487,7 +487,7 @@ Medium portrait: a Siamese royal-scholar official in his thirties with warm oliv
 
 ### portrait.m.elder.commoner — ชายชราชาวบ้านผมหงอก เปลือยท่อนบน
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -499,7 +499,7 @@ Medium portrait from the waist up: an elderly Siamese commoner man in his sixtie
 
 ### portrait.m.elder.noble — ชายชราเจ้าเรือนผู้มีฐานะ ผมหงอก นั่งข้างเชี่ยนหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `estate:merchant`
 
 lore: `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -511,7 +511,7 @@ Medium portrait: an elderly well-to-do Siamese household patriarch in his sixtie
 
 ### portrait.m.elder.official — ขุนนางอาวุโสวัยชราสวมเสื้อมัสลินและลอมพอก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_patrol` `role:official_palace` `role:official_scholar`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_patrol` `role:official_palace` `role:official_scholar`
 
 lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -523,7 +523,7 @@ Medium portrait: an elderly senior Siamese official in his sixties with a deeply
 
 ### portrait.m.elder.monk — พระเถระชราครองจีวรเหลือง ถือตาลปัตร
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:monk` `role:monk`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:monk` `role:monk`
 
 lore: `attire.monks_1680s` (attested)
 
@@ -535,7 +535,7 @@ Medium portrait: an elderly Siamese Buddhist monk in his sixties with a serene d
 
 ### portrait.f.child.commoner — เด็กหญิงชาวบ้านหัวโกนไว้จุก
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `ritual.month_old_tham_khwan` (inferred), `ritual.topknot_cutting` (inferred, verified), `attire.children_1680s` (attested)
 
@@ -547,7 +547,7 @@ Medium portrait from the waist up: a young Siamese commoner girl of about eight 
 
 ### portrait.f.child.noble — เด็กหญิงลูกขุนนางหัวโกนไว้จุก สวมกำไลและต่างหูทอง
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:child` `estate:noble` `estate:merchant` `estate:royal`
+✅ มีภาพแล้ว · tag: `sex:f` `age:child` `estate:noble` `estate:merchant` `estate:royal`
 
 lore: `attire.children_1680s` (attested), `ritual.topknot_cutting` (inferred, verified), `attire.women_1680s` (attested)
 
@@ -559,7 +559,7 @@ Medium portrait from the waist up: a young well-born Siamese girl of about eight
 
 ### portrait.f.youth.commoner — หญิงสาวชาวบ้านตัดผมสั้นระดับใบหู
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -583,7 +583,7 @@ Medium portrait: a young well-to-do Siamese woman of about eighteen with warm ol
 
 ### portrait.f.adult.commoner — หญิงผู้ใหญ่ชาวบ้านตัดผมสั้น ฟันดำจากหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -595,7 +595,7 @@ Portrait cropped from the upper shoulders up in three-quarter view: an adult Sia
 
 ### portrait.f.adult.noble — ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant` `role:principal_wife`
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -607,7 +607,7 @@ Medium portrait: a well-to-do Siamese noble wife in her thirties with warm olive
 
 ### portrait.f.adult.minor_wife — เมียกลางนอกห่มผ้าพาดสองไหล่ นั่งพับเพียบสำรวม
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:phrai_luang` `estate:phrai_som` `role:minor_wife`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:phrai_luang` `estate:phrai_som` `role:minor_wife`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -631,7 +631,7 @@ Medium portrait: a dignified Siamese female household head in her thirties with 
 
 ### portrait.f.elder.commoner — หญิงชราชาวบ้านผมหงอก ฟันดำ
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-elder-woman-portrait.jpg` · tag: `sex:f` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.hair_1680s` (attested), `attire.women_1680s` (attested)
 
@@ -643,7 +643,7 @@ Portrait from the shoulders up: an elderly Siamese village woman in her sixties 
 
 ### portrait.f.elder.noble — แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-elder-woman-portrait.jpg` · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant` `role:principal_wife` `role:household_head`
+✅ มีภาพแล้ว · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -655,7 +655,7 @@ Medium portrait: an elderly well-to-do Siamese matriarch in her sixties with a l
 
 ### portrait.f.pregnant.commoner — หญิงชาวบ้านกำลังตั้งครรภ์
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that` `role:pregnant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that` `role:pregnant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
 
@@ -667,7 +667,7 @@ Medium portrait in three-quarter profile: a visibly pregnant Siamese village wom
 
 ### portrait.f.pregnant.noble — หญิงตระกูลขุนนางกำลังตั้งครรภ์ ห่มผ้าขาวพาดสองไหล่
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:merchant` `role:pregnant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:merchant` `role:pregnant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
 

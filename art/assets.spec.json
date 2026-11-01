@@ -95,9 +95,9 @@
       "id": "scene.wedding",
       "style": "reality",
       "tags": ["event:marriage.wedding", "event:marriage.minor_wife"],
-      "alt": "ขบวนขันหมากเดินไปเรือนเจ้าสาว",
-      "subject": "Wide view of a small procession walking along a path beside a canal toward a stilt house: men and women carrying bowls of betel nut, bananas and sugar cane on footed trays, a young man in a clean lower cloth among them, a drum and a reed pipe; relatives waiting at the top of the ladder; bright morning.",
-      "loreRefs": ["kinship.betrothal_khanmak_three_seals", "material.houses_1680s"]
+      "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
+      "subject": "Interior of a Siamese timber bridal house: a young bride and groom seated side by side on a reed mat with palms pressed together in respectful greeting, wearing white sacred cotton thread rings (mongkhonแฝด) linked between their heads; the bride wears a black wrap skirt and a white muslin chest wrap horizontally across her chest with both ends thrown back over both shoulders, the groom wears a fine patterned lower cloth; an elderly couple in front of them pouring lustral water from a white conch shell over the couple's joined hands over a brass bowl of flowers, footed trays of betel nut and offerings nearby, relatives watching warmly. Avoid: one-shoulder diagonal sash, modern bridal costume.",
+      "loreRefs": ["kinship.betrothal_khanmak_three_seals", "attire.women_1680s", "material.houses_1680s"]
     },
     {
       "id": "scene.courtship",
@@ -258,7 +258,7 @@
       "style": "portrait",
       "tags": ["sex:m", "age:youth", "estate:noble", "estate:merchant"],
       "alt": "ชายหนุ่มลูกขุนนางในเรือนไม้",
-      "subject": "Medium portrait from the waist up: a well-born Siamese young man of about十八 (eighteen) years old with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned Indian chintz lower cloth with a betel pouch at the waist, seated on a reed mat inside a timber house.",
+      "subject": "Medium portrait from the waist up: a well-born Siamese young man of about eighteen years old with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned Indian chintz lower cloth with a betel pouch at the waist, seated on a reed mat inside a timber house.",
       "loreRefs": ["attire.hair_1680s", "attire.indian_chintz_royal"]
     },
     {
@@ -397,7 +397,7 @@
     {
       "id": "portrait.f.adult.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:adult", "estate:noble", "estate:merchant", "role:principal_wife"],
+      "tags": ["sex:f", "age:adult", "estate:noble", "estate:merchant"],
       "alt": "ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก",
       "subject": "Medium portrait: a well-to-do Siamese noble wife in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and teeth blackened from chewing betel; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt and a single white muslin breast-cloth wrapped around her chest covering both breasts with its two loose ends draped back over both shoulders, pear-shaped gold earrings and gold rings on her last three fingers, a lacquered betel box beside her. Avoid: one-shoulder diagonal sash.",
       "loreRefs": ["attire.women_1680s", "attire.hair_1680s"],
@@ -432,7 +432,7 @@
     {
       "id": "portrait.f.elder.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:elder", "estate:noble", "estate:merchant", "role:principal_wife", "role:household_head"],
+      "tags": ["sex:f", "age:elder", "estate:noble", "estate:merchant"],
       "alt": "แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่",
       "subject": "Medium portrait: an elderly well-to-do Siamese matriarch in her sixties with a lined dignified oval face, warm olive-brown skin, high cheekbones, calm dark eyes, grey hair cropped level with the top of the ears and lifted off the forehead, teeth blackened from chewing betel; wearing a black wrap skirt, a white muslin breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders, and gold pear-shaped earrings, seated on a reed mat inside a timber house. Avoid: one-shoulder diagonal sash.",
       "loreRefs": ["attire.women_1680s", "attire.hair_1680s"],
