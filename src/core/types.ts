@@ -280,7 +280,17 @@ export interface Character {
    * tasks = ขั้นที่หัดได้แล้ว, askAfter = ไม่ยอมช่วย — จะถูกเรียกอีกหลังวันนี้
    */
   chores?: Record<string, { joined: boolean; tasks: string[]; askAfter?: Day }>;
+  /** สายวิชาที่กำลังฝึกยามว่าง (ดู systems/skills.ts) */
+  focus?: SkillTrackId;
+  /** แต้มความชำนาญสะสมต่อสายวิชา (0..100 ครบ 100 ปลดล็อกขั้นถัดไปได้) */
+  skillXp?: Partial<Record<SkillTrackId, number>>;
+  /** ขั้นวิชาที่ปลดล็อกแล้ว (เช่น 'martial_1', 'diplomacy_2') */
+  perks?: string[];
 }
+
+export type SkillTrackId = 'martial' | 'diplomacy' | 'stewardship' | 'learning';
+export type LegacyTrackId = 'court' | 'warrior' | 'wealth' | 'kin' | 'wisdom';
+export type SlaveTask = 'farm' | 'house' | 'guard';
 
 /** ระยะจากเรือนของผู้เล่น — กำหนดว่าความตั้งใจต่อคนนี้กินแรงงานที่บ้านแค่ไหน */
 export type Distance = 'near' | 'town' | 'far';
@@ -391,6 +401,14 @@ export interface Household {
   retainers?: { that: number; phrai: number; loyalty: Unit };
   /** หัวเรือน/แม่เรือนเลือกว่าจะเลี้ยงดูทาสอย่างไร — ไม่มี = ตามสมควร */
   care?: SlaveCare;
+  /** ระดับขนาดเรือน (1..4) กำหนดความจุคนในเรือน */
+  tier?: number;
+  /** จำนวนแปลงที่นาและสวนของเรือน */
+  land?: number;
+  /** งานหลักที่มอบหมายให้ทาสทำ (ทำนาสวน / รับใช้ในเรือน / เฝ้ายามคุ้มเรือน) */
+  slaveTask?: SlaveTask;
+  /** วันที่ปล่อยทาสครั้งล่าสุด — จำกัดการเก็บบุญจากการปล่อยทาสและกันการซื้อทาสคืนอัตโนมัติทันที */
+  lastFreedDay?: number;
 }
 
 export type SlaveCare = 'stingy' | 'normal' | 'generous';
@@ -475,6 +493,8 @@ export interface Dynasty {
   headHistory?: Array<{ nodeId: FamilyNodeId; name: string; fromYear: number }>;
   /** รุ่นของทายาทใน handover ล่าสุดที่เล่าตำนานต่อ/ข้อห้ามเสื่อมแล้ว — handover ซ้ำในรุ่นเดียวกันไม่บิดเบือนซ้ำ (เซฟเก่าไม่มี) */
   agedGeneration?: number;
+  /** มรดกตระกูลที่ปลดล็อกแล้ว (สายละ 0..4 ขั้น สืบทอดถาวรทุกรุ่น) */
+  legacies?: Partial<Record<LegacyTrackId, number>>;
 }
 
 // ============================================================================

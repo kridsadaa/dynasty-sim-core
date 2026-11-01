@@ -899,6 +899,79 @@
     "percepts": [],
     "options": [
       {
+        "id": "lead",
+        "textKey": "event.patrol_thief.lead",
+        "risk": {
+          "base": 0.65,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.55,
+              "reasonKey": "combat"
+            },
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "weight": -0.15,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.bandit_fight",
+          "successKey": "outcome.patrol_lead.ok",
+          "fail": {
+            "textKey": "outcome.patrol_lead.bad",
+            "effects": [
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "cut",
+                "severity": [
+                  0.5,
+                  0.8
+                ]
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.12
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.1
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.35
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 1.5
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 6
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 5
+          }
+        ]
+      },
+      {
         "id": "lawful",
         "textKey": "event.patrol_thief.lawful",
         "effects": [
@@ -2123,6 +2196,12 @@
           "base": 0.55,
           "factors": [
             {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.45,
+              "reasonKey": "combat"
+            },
+            {
               "source": "personality",
               "trait": "boldness",
               "weight": -0.2,
@@ -2150,6 +2229,12 @@
                 "op": "stress",
                 "role": "actor",
                 "delta": 0.03
+              },
+              {
+                "op": "skill",
+                "role": "actor",
+                "skill": "combat",
+                "delta": 2
               }
             ]
           }
@@ -2191,6 +2276,17 @@
             "op": "prestige",
             "role": "actor",
             "delta": 1
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 3
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 4
           }
         ]
       },
@@ -3138,6 +3234,43 @@
       {
         "id": "work",
         "textKey": "event.heavy_heart.work",
+        "risk": {
+          "base": 0.35,
+          "factors": [
+            {
+              "source": "stress",
+              "weight": 0.4,
+              "reasonKey": "grief"
+            }
+          ],
+          "hintKey": "risk.overwork",
+          "successKey": "outcome.overwork.ok",
+          "fail": {
+            "textKey": "outcome.overwork.bad",
+            "effects": [
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.1
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.08
+              },
+              {
+                "op": "prestige",
+                "role": "actor",
+                "delta": -0.5
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -2
+              }
+            ]
+          }
+        },
         "effects": [
           {
             "op": "stress",
@@ -3571,6 +3704,22 @@
       {
         "id": "separate",
         "textKey": "event.wife_jealousy.separate",
+        "conditions": [
+          {
+            "type": "seen",
+            "event": "marriage.wife_jealousy",
+            "option": "separate",
+            "withRole": "other",
+            "max": 0
+          },
+          {
+            "type": "seen",
+            "event": "marriage.wife_jealousy_slave",
+            "option": "separate",
+            "withRole": "other",
+            "max": 0
+          }
+        ],
         "effects": [
           {
             "op": "wealth",
@@ -3992,6 +4141,22 @@
       {
         "id": "separate",
         "textKey": "event.wife_jealousy.separate",
+        "conditions": [
+          {
+            "type": "seen",
+            "event": "marriage.wife_jealousy",
+            "option": "separate",
+            "withRole": "other",
+            "max": 0
+          },
+          {
+            "type": "seen",
+            "event": "marriage.wife_jealousy_slave",
+            "option": "separate",
+            "withRole": "other",
+            "max": 0
+          }
+        ],
         "effects": [
           {
             "op": "wealth",
@@ -4040,6 +4205,112 @@
             "toward": "other",
             "kind": "grudge",
             "delta": 0.1
+          }
+        ]
+      }
+    ]
+  },
+  "skill.muay_sparring": {
+    "id": "skill.muay_sparring",
+    "textKey": "event.muay_sparring",
+    "contextTags": ["situation:combat"],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "ageRange": [14, 50],
+      "weight": 1.1,
+      "cooldownDays": 360,
+      "requires": [
+        {
+          "type": "sex",
+          "is": "m"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "spar",
+        "textKey": "event.muay_sparring.spar",
+        "risk": {
+          "base": 0.35,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.3,
+              "reasonKey": "combat"
+            }
+          ],
+          "hintKey": "risk.spar_bruise",
+          "successKey": "outcome.spar.ok",
+          "fail": {
+            "textKey": "outcome.spar.bruise",
+            "effects": [
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:arm"
+                },
+                "kind": "blunt",
+                "severity": [0.1, 0.25]
+              },
+              {
+                "op": "skill",
+                "role": "actor",
+                "skill": "combat",
+                "delta": 2
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 4
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.05
+          }
+        ]
+      },
+      {
+        "id": "sword",
+        "textKey": "event.muay_sparring.sword",
+        "effects": [
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 3
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      },
+      {
+        "id": "watch",
+        "textKey": "event.muay_sparring.watch",
+        "effects": [
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.04
           }
         ]
       }

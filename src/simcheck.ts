@@ -15,6 +15,11 @@ import { activeIntent, planIntent, startIntent, targetProblem } from './systems/
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
 import { habitOption } from './systems/festivals';
+import { findSlaveConcubines, takeSlaveConcubine } from './systems/interactions';
+import { dropMatches } from './systems/matchmaking';
+import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlave, houseCapacity, householdMonth } from './systems/servants';
+import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
+import { jealousyEvent, livingWives, minorWifeProblem } from './systems/wives';
 import { advanceDay } from './systems/world';
 import { riskChance } from './systems/will';
 
@@ -460,7 +465,143 @@ demographyReport();
   if (failed === before) console.log('  ✓ ไปวัดสองครั้ง → ไหว้ผู้ใหญ่ครั้งเดียว → ผู้ใหญ่คนนั้นแวะมาครั้งเดียว');
 }
 
-// [6] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
+// [5f] รายชื่อบ่าวในเรือนเป็นเมียน้อย, ปลูกเรือนแยกครั้งเดียวต่อคน และโหมงานตอนใจหนักมีโอกาสล้มป่วย
+{
+  const before = failed;
+  console.log('เมียบ่าว ปลูกเรือนแยก และโหมงาน:');
+  const ctx = makeCtx(emptyState(37), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(20);
+  const hh = S.households[hero.householdId!]!;
+  hh.headId = hero.id;
+  hh.retainers = { that: 3, phrai: 2, loyalty: 0.6 };
+  const wife = spawnCharacter(ctx, { name: 'เมียหลวง', sex: 'f', birthYear: yearOf(ctx, S.meta.day) - 20, estate: 'noble', dynastyId: null, householdId: hero.householdId });
+  marry(ctx, hero, wife);
+  const problems: string[] = [];
+
+  const cands = findSlaveConcubines(ctx, hero);
+  if (cands.length !== 3) problems.push(`มีทาส 3 คน แต่ได้รายชื่อ ${cands.length} คน`);
+  const picked = cands[1]!;
+  takeSlaveConcubine(ctx, hero, picked);
+  dropMatches(ctx, hero, cands.map((c) => c.id), picked.id);
+  if (hh.retainers.that !== 2) problems.push(`รับเมียบ่าวแล้วทาสเหลือ ${hh.retainers.that} คน`);
+  if (!livingWives(ctx, hero).some((w) => w.id === picked.id && w.wifeRank === 'minor')) problems.push('คนที่เลือกไม่ได้เป็นเมียน้อย');
+  if (S.characters[cands[0]!.id] || S.characters[cands[2]!.id]) problems.push('บ่าวที่ไม่ได้เลือกยังค้างอยู่ใน state');
+
+  hero.social.wealth = 50;
+  const j1 = prepareEvent(ctx, 'marriage.wife_jealousy_slave', { actor: hero.id, spouse: wife.id, other: picked.id });
+  if (!j1.options.some((o) => o.id === 'separate')) problems.push('ยังไม่เคยปลูกเรือนแยกแต่ไม่มีตัวเลือก');
+  chooseOption(ctx, j1, 'separate');
+  const j2 = prepareEvent(ctx, 'marriage.wife_jealousy_slave', { actor: hero.id, spouse: wife.id, other: picked.id });
+  if (j2.options.some((o) => o.id === 'separate')) problems.push('ปลูกเรือนแยกให้เมียน้อยคนนี้ไปแล้วแต่ยังกดซ้ำได้');
+  const j3 = prepareEvent(ctx, 'marriage.wife_jealousy', { actor: hero.id, spouse: wife.id, other: picked.id });
+  if (j3.options.some((o) => o.id === 'separate')) problems.push('พ้นทาสแล้วยังกดปลูกเรือนแยกซ้ำได้อีก');
+  for (let i = 0; i < 20; i++) {
+    if (jealousyEvent(ctx)) problems.push('เมียน้อยคนเดิมเกิดเรื่องเมียหลวงกีดกันซ้ำอีก');
+  }
+
+  hero.stress = 0.6;
+  const hhEv = prepareEvent(ctx, 'adult.heavy_heart', { actor: hero.id });
+  const workOpt = hhEv.options.find((o) => o.id === 'work');
+  if (!workOpt?.risk) problems.push('ตัวเลือกโหมงานตอนใจหนักไม่มีความเสี่ยง');
+  let workFailed = false;
+  for (let i = 0; i < 30; i++) {
+    hero.stress = 0.6;
+    const p = prepareEvent(ctx, 'adult.heavy_heart', { actor: hero.id });
+    const r = chooseOption(ctx, p, 'work');
+    if (r.outcome?.failed && hero.stress > 0.6) workFailed = true;
+  }
+  if (!workFailed) problems.push('โหมงานตอนใจหนักไม่เคยเกิดผลเสียเลย');
+
+  check('เมียบ่าว ปลูกเรือนแยก และโหมงาน', problems);
+  if (failed === before) console.log('  ✓ เลือกเมียบ่าวจากรายชื่อได้ · ปลูกเรือนแยกขึ้นครั้งเดียวต่อคน · โหมงานตอนใจหนักมีโอกาสพลาดเสียสุขภาพและงาน');
+}
+
+// [6] การจัดการเรือน วิชาความชำนาญ และมรดกตระกูล
+{
+  const before = failed;
+  console.log('จัดการเรือน วิชาความชำนาญ และมรดกตระกูล:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(9010), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(20); // อายุ 26 ปี
+  const hh = S.households[hero.householdId!]!;
+  hh.headId = hero.id;
+  hero.social.wealth = 200;
+
+  const cap0 = houseCapacity(ctx, hh);
+  expandHousehold(ctx, hero);
+  const cap1 = houseCapacity(ctx, hh);
+  if (cap1 <= cap0) problems.push(`ขยายเรือนแล้วความจุไม่เพิ่ม (${cap0} -> ${cap1})`);
+
+  const m0 = householdMonth(ctx, hh);
+  buyHouseholdLand(ctx, hero);
+  const m1 = householdMonth(ctx, hh);
+  if (m1.landYield <= m0.landYield) problems.push('ซื้อที่นาแล้วรายได้จากที่นาไม่เพิ่ม');
+
+  const slaves0 = hh.retainers?.that ?? 0;
+  buyHouseholdSlave(ctx, hero);
+  if ((hh.retainers?.that ?? 0) !== slaves0 + 1) problems.push('ไถ่ทาสเพิ่มแล้วจำนวนทาสไม่เพิ่ม');
+  freeHouseholdSlave(ctx, hero);
+  if ((hh.retainers?.that ?? 0) !== slaves0) problems.push('ปล่อยทาสเป็นไทแล้วจำนวนทาสไม่ลด');
+
+  // ฝึกวิชาและปลดล็อกขั้นวิชา
+  setSkillFocus(ctx, hero, 'martial');
+  if (hero.focus !== 'martial') problems.push('ตั้งใจฝึกวิชาต่อสู้ไม่สำเร็จ');
+  for (let i = 0; i < 26; i++) skillsMonthTick(ctx);
+  if ((hero.skills['combat'] ?? 0) <= 0) problems.push('ฝึกวิชาต่อสู้รายเดือนแล้วค่าวิชาไม่เพิ่ม');
+  if ((hero.skillXp?.martial ?? 0) < 100) problems.push(`ฝึกวิชา 26 เดือนแต่ความก้าวหน้ายังไม่เต็ม (${hero.skillXp?.martial})`);
+  unlockNextPerk(hero, 'martial');
+  if (!hasPerk(hero, 'martial_1')) problems.push('ปลดล็อกวิชาขั้นแรกของสายต่อสู้ไม่สำเร็จ');
+
+  // ซ้อมมวยซ้อมดาบ & นำลูกหมู่ปราบโจรเอง
+  const sparEv = prepareEvent(ctx, 'skill.muay_sparring', { actor: hero.id });
+  if (sparEv.options.length < 3) problems.push('กิจกรรมซ้อมมวยซ้อมดาบมีตัวเลือกไม่ครบ');
+  chooseOption(ctx, sparEv, 'sword');
+
+  const patrolEv = prepareEvent(ctx, 'career.patrol_thief', { actor: hero.id });
+  const leadOpt = patrolEv.options.find((o) => o.id === 'lead');
+  if (!leadOpt?.risk) problems.push('ไม่มีตัวเลือกถือดาบนำลูกหมู่ปราบโจรด้วยตัวเอง');
+
+  // มรดกตระกูล
+  const dyn = S.dynasties[hero.dynastyId!]!;
+  dyn.headNodeId = hero.familyNodeId;
+  dyn.prestige = 50;
+  unlockDynastyLegacy(ctx, hero, 'warrior');
+  if (legacyLevel(ctx, hero, 'warrior') !== 1) problems.push('จารึกมรดกตระกูลสายนักรบไม่สำเร็จ');
+
+  // ผลของมรดก/วิชาที่ประกาศไว้ต้องมีผลจริง
+  const sh0 = mortalityShield(ctx, hero, 3);
+  dyn.legacies = { ...dyn.legacies, kin: 2, wisdom: 4, warrior: 4 };
+  if (!(mortalityShield(ctx, hero, 3) < sh0)) problems.push('มรดกสายญาติไม่ลดความเสี่ยงตายของเด็ก');
+  const merit0 = hero.merit;
+  const pres0 = dyn.prestige;
+  hero.stress = 0.5;
+  skillsYearTick(ctx);
+  if (!(hero.merit > merit0 && dyn.prestige > pres0)) problems.push('มรดกสายปราชญ์/นักรบไม่ให้บุญหรือบารมีรายปี');
+  for (const sk of SKILL_TRACKS) {
+    for (const pk of sk.perks) {
+      if (!/\d/.test(pk.desc)) problems.push(`วิชา ${pk.id} ไม่มีตัวเลขผล`);
+    }
+  }
+  // ปล่อยทาสถี่ไม่ได้ และไม่ซื้อคืนอัตโนมัติทันที
+  hh.retainers!.that = 3;
+  let freedTwice = true;
+  try { freeHouseholdSlave(ctx, hero); } catch { freedTwice = false; }
+  if (freedTwice) problems.push('ปล่อยทาสซ้ำในปีเดียวกันได้');
+  // ฝึกวิชาเสียค่าครู
+  const purse0 = hero.social.wealth;
+  setSkillFocus(ctx, hero, 'diplomacy');
+  skillsMonthTick(ctx);
+  if (!(hero.social.wealth < purse0)) problems.push('ฝึกวิชาแล้วไม่เสียค่าครู');
+
+  check('จัดการเรือน วิชา และมรดกตระกูล', problems);
+  if (failed === before) console.log('  ✓ ขยายเรือน/ซื้อที่นา/ไถ่-ปล่อยทาส · ฝึกวิชาและปลดล็อกขั้นวิชา · ซ้อมมวยและนำทีมปราบโจร · จารึกมรดกตระกูล');
+}
+
+// [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
 {
   const before = failed;
   console.log('ปฏิทินจันทรคติ:');

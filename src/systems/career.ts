@@ -3,6 +3,7 @@ import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
 import { livingParents } from './factory';
 import { opinion } from './opinion';
+import { hasPerk, legacyLevel } from './skills';
 
 // ============================================================================
 // Career — รับราชการ (บันไดจากทำเนียบศักดินาจริง ตำแหน่งนาพลเรือน)
@@ -74,7 +75,9 @@ export function eligibleDepartments(ctx: Ctx, ch: Character): DepartmentDef[] {
 
 function addPrestige(ctx: Ctx, ch: Character, delta: number): void {
   const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
-  if (dyn) dyn.prestige = Math.max(0, dyn.prestige + delta);
+  if (!dyn) return;
+  const mult = delta > 0 && (legacyLevel(ctx, ch, 'court') >= 2 || legacyLevel(ctx, ch, 'warrior') >= 3) ? 1.25 : 1;
+  dyn.prestige = Math.max(0, dyn.prestige + delta * mult);
 }
 
 /** ทำ action ราชการจาก effect ของ event — คืนบรรทัด log */
@@ -104,6 +107,7 @@ export function applyCareer(
       if (ch.office) return [];
       const first = must(postAt(dept, 0), 'post rank 0');
       setPost(ctx, ch, first, dept);
+      if (legacyLevel(ctx, ch, 'court') >= 1) adjustFavor(ch, 0.1);
       return [`${ch.name}ถวายตัวเป็น${first.label.th} (นา ${first.sakdina})`];
     }
     case 'assign': {
@@ -142,7 +146,9 @@ export function applyCareer(
 }
 
 export function adjustFavor(ch: Character, delta: number): void {
-  if (ch.office) ch.office.favor = Math.max(-1, Math.min(1, ch.office.favor + delta));
+  if (!ch.office) return;
+  const mult = delta > 0 ? (1 + (hasPerk(ch, 'diplomacy_4') ? 0.2 : 0) + (hasPerk(ch, 'martial_3') ? 0.15 : 0)) : 1;
+  ch.office.favor = Math.max(-1, Math.min(1, ch.office.favor + delta * mult));
 }
 
 export interface CareerEventRequest {
@@ -179,20 +185,28 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   }
   if (!player.office) {
     const age = ageOf(ctx, player);
+    const courtLvl = legacyLevel(ctx, player, 'court');
+    const chance = C.entryChance + (courtLvl >= 1 ? 0.25 : 0);
     if (player.sex === 'm' && player.social.estate === 'noble' && elder && age >= C.entryAge[0] && age <= C.entryAge[1]
-      && ctx.rng.chance(C.entryChance)) {
+      && ctx.rng.chance(chance)) {
       events.push({ event: 'career.present_page', bindings: bind });
     }
     return { lines, events };
   }
 
   const post = must(postOf(ctx, player), player.office.postId);
-  const income = Math.round(post.sakdina * C.incomePerSakdina);
+  const courtLvl = legacyLevel(ctx, player, 'court');
+  const incomeMult = (courtLvl >= 4 ? 1.25 : 1) * (hasPerk(player, 'stewardship_4') ? 1.15 : 1);
+  const income = Math.round(post.sakdina * C.incomePerSakdina * incomeMult);
   if (income > 0) {
     player.social.wealth += income;
     lines.push(`ได้ของกำนัลและผลประโยชน์ตามตำแหน่ง ${income} ตำลึง`);
   }
+  if (courtLvl >= 2) {
+    player.office.favor = Math.min(1, player.office.favor + 0.03);
+  }
   const years = Math.floor((S.meta.day - player.office.sinceDay) / DAYS_PER_YEAR);
+  const minYears = Math.max(1, post.minYears - (courtLvl >= 3 ? 1 : 0));
   // ฝากตัวกับขุนนางผู้ใหญ่ไว้ (adult.court_feast → pledge): ผู้ใหญ่ยังอยู่และยังเอ็นดู → ช่วยพูดให้ทุกปี
   //  (lore: social.protection_patronage — ฝากตัวกับผู้มีอำนาจแลกการคุ้มครอง; ตัวเลขเป็นของเกม)
   const patron = Object.values(S.relations).find((r) => r.from === player.id && r.kind === 'patron' && r.strength >= 0.6
@@ -213,7 +227,7 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   }
   if (favor <= C.punishAt) {
     events.push({ event: post.rank === 0 ? 'career.punished_page' : 'career.punished', bindings: bind });
-  } else if (favor >= C.promoteAt && next && years >= post.minYears && (!next.unique || ctx.rng.chance(C.uniqueVacancyChance))) {
+  } else if (favor >= C.promoteAt && next && years >= minYears && (!next.unique || ctx.rng.chance(C.uniqueVacancyChance))) {
     events.push({ event: promotion, bindings: bind });
   }
   player.office.favor = player.office.favor * C.favorDecay;

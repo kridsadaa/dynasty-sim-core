@@ -4,8 +4,9 @@ import { makeCtx, commitRng, isAlive, lunarOf, must, solarOf, yearOf, yearStart,
 import type { CharacterId, ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { dropMatches, findMatches, minorWifeProposal } from '../systems/matchmaking';
-import { canManage } from '../systems/servants';
-import { performInteraction, takeSlaveConcubine, type InteractionId } from '../systems/interactions';
+import { buyHouseholdLand, buyHouseholdSlave, canManage, expandHousehold, freeHouseholdSlave } from '../systems/servants';
+import { setSkillFocus, unlockDynastyLegacy, unlockNextPerk } from '../systems/skills';
+import { findSlaveConcubines, performInteraction, takeSlaveConcubine, type InteractionId } from '../systems/interactions';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
@@ -378,9 +379,22 @@ async function handle(cmd: Command): Promise<unknown> {
       }
       return { lines: r.lines };
     }
+    case 'findSlaveConcubines': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      dropMatches(c, me, matchIds);
+      const people = findSlaveConcubines(c, me);
+      matchIds = people.map((p) => p.id);
+      return matchView(c, 'slave_wife', people);
+    }
     case 'takeSlaveConcubine': {
       const c = need();
-      return { lines: takeSlaveConcubine(c, must(c.state.characters[c.state.meta.playerCharacterId], 'player')) };
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const target = cmd.targetId ? must(c.state.characters[cmd.targetId as CharacterId], 'คนนี้') : undefined;
+      const lines = takeSlaveConcubine(c, me, target);
+      dropMatches(c, me, matchIds, target?.id);
+      matchIds = [];
+      return { lines };
     }
     case 'setCare': {
       const c = need();
@@ -389,6 +403,56 @@ async function handle(cmd: Command): Promise<unknown> {
       if (!hh) throw new Error('ไม่ได้เป็นหัวเรือนหรือแม่เรือน');
       hh.care = cmd.care;
       return playerView(c, text);
+    }
+    case 'setSlaveTask': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const hh = canManage(c, me);
+      if (!hh) throw new Error('ไม่ได้เป็นหัวเรือนหรือแม่เรือน');
+      hh.slaveTask = cmd.task;
+      return playerView(c, text);
+    }
+    case 'expandHouse': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = expandHousehold(c, me);
+      return { line, player: playerView(c, text) } satisfies ReplyData['expandHouse'];
+    }
+    case 'buyLand': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = buyHouseholdLand(c, me);
+      return { line, player: playerView(c, text) } satisfies ReplyData['buyLand'];
+    }
+    case 'buySlave': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = buyHouseholdSlave(c, me);
+      return { line, player: playerView(c, text) } satisfies ReplyData['buySlave'];
+    }
+    case 'freeSlave': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = freeHouseholdSlave(c, me);
+      return { line, player: playerView(c, text) } satisfies ReplyData['freeSlave'];
+    }
+    case 'setFocus': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = setSkillFocus(c, me, cmd.focus);
+      return { line, player: playerView(c, text) } satisfies ReplyData['setFocus'];
+    }
+    case 'unlockPerk': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = unlockNextPerk(me, cmd.trackId);
+      return { line, player: playerView(c, text) } satisfies ReplyData['unlockPerk'];
+    }
+    case 'unlockLegacy': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const line = unlockDynastyLegacy(c, me, cmd.trackId);
+      return { line, dynasty: dynastyView(c), player: playerView(c, text) } satisfies ReplyData['unlockLegacy'];
     }
     case 'abandonIntent': {
       const c = need();

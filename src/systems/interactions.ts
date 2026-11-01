@@ -2,10 +2,11 @@ import { ageOf, isAlive, type Ctx } from '../core/ctx';
 import type { Character, CharacterId } from '../core/types';
 import { familiarity, isSingle, setRelation, spawnLocal } from './acquaintance';
 import { prepareEvent, type PreparedEvent } from './events';
-import { livingSpouse } from './factory';
+import { inLawNames, livingSpouse } from './factory';
 import { activeIntent, targetProblem } from './intent';
 import { purse, spend } from './marriage';
 import { minorWifeProposal } from './matchmaking';
+import { houseCapacity, houseMembersCount } from './servants';
 import { livingWives, minorWifeProblem, takeMinorWife } from './wives';
 import { adjustBond } from './will';
 
@@ -143,17 +144,41 @@ export function slaveConcubineProblem(ctx: Ctx, me: Character): string | null {
   if (me.sex !== 'm' || !hh || hh.headId !== me.id) return 'ต้องเป็นหัวเรือน';
   if (!hh.retainers?.that) return 'ในเรือนไม่มีทาส';
   if (livingWives(ctx, me).length >= ctx.content.balance.matchmaking.maxWives) return 'มีเมียมากพอแล้ว';
+  if (houseMembersCount(ctx, hh) >= houseCapacity(ctx, hh)) return 'คนเต็มเรือนแล้ว (ต้องขยายเรือนก่อน)';
   const age = ageOf(ctx, me);
   return age < ctx.content.balance.wives.age[0] ? 'ไม่อยู่ในวัยที่จะรับเมียเพิ่ม' : null;
 }
 
-export function takeSlaveConcubine(ctx: Ctx, me: Character): string[] {
+/** รายชื่อทาสหญิงในเรือนที่พอจะยกเป็นเมียบ่าว (เมียน้อย) ได้ — จำนวนตามทาสในเรือน (ไม่เกิน candidates) */
+export function findSlaveConcubines(ctx: Ctx, me: Character): Character[] {
   const no = slaveConcubineProblem(ctx, me);
   if (no) throw new Error(no);
   const hh = ctx.state.households[me.householdId!]!;
   const B = ctx.content.balance;
   const that = ctx.content.trades.find((t) => t.estate === 'that');
-  const woman = spawnLocal(ctx, me, {
+  const count = Math.min(hh.retainers!.that, B.matchmaking.candidates);
+  const avoid = inLawNames(ctx, me);
+  const people: Character[] = [];
+  for (let i = 0; i < count; i++) {
+    const ch = spawnLocal(ctx, me, {
+      sex: 'f', distance: 'near', single: true, ...(that ? { trade: that } : {}),
+      age: B.wives.wifeAge[0] + Math.floor(ctx.rng.range(0, B.wives.wifeAge[1] - B.wives.wifeAge[0] + 1)),
+      avoid: new Set([...avoid, ...people.map((p) => p.name)]),
+    });
+    ch.social.estate = 'that';
+    people.push(ch);
+  }
+  return people;
+}
+
+export function takeSlaveConcubine(ctx: Ctx, me: Character, chosen?: Character): string[] {
+  const no = slaveConcubineProblem(ctx, me);
+  if (no) throw new Error(no);
+  if (chosen && (!isAlive(chosen) || !chosen.local || chosen.local.wed)) throw new Error(`รับ${chosen.name}เป็นเมียไม่ได้`);
+  const hh = ctx.state.households[me.householdId!]!;
+  const B = ctx.content.balance;
+  const that = ctx.content.trades.find((t) => t.estate === 'that');
+  const woman = chosen ?? spawnLocal(ctx, me, {
     sex: 'f', distance: 'near', single: true, ...(that ? { trade: that } : {}),
     age: B.wives.wifeAge[0] + Math.floor(ctx.rng.range(0, B.wives.wifeAge[1] - B.wives.wifeAge[0] + 1)),
   });

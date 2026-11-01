@@ -39,12 +39,20 @@
       [hidden] { display: none !important; }
 
       /* แท็บ */
-      .tabs { display: flex; gap: 4px; margin-bottom: -1px; }
+      .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: -1px; }
       .tabs button { border-radius: 6px 6px 0 0; border-bottom-color: transparent; background: transparent; }
       .tabs button[aria-selected="true"] { background: var(--panel); border-color: var(--line); border-bottom-color: var(--panel); font-weight: 600; }
       .tab { border-top-left-radius: 0; }
       .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
       .chips label { cursor: pointer; white-space: nowrap; }
+
+      /* ป้ายสถานะตัวละคร (ป่วย ท้อง แผลลึก ใจหนัก) */
+      .statuses { display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 4px 0; }
+      .pill { display: inline-block; font-size: 12px; line-height: 1.3; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); }
+      .pill.bad { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+      .pill.warn { border-color: var(--muted); color: var(--fg); }
+      .pill.good { border-color: var(--good); color: var(--good); font-weight: 600; }
+      .pill.info { border-color: var(--line); color: var(--muted); }
 
       /* ผังตระกูล */
       #tree { max-height: 65vh; overflow: auto; font-size: 14px; }
@@ -137,8 +145,10 @@
       .intent progress { width: 100%; height: 8px; accent-color: var(--accent); }
       .intent .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
       .intent button, #known .acts button { padding: 2px 10px; font-size: 13px; }
-      #known details > summary { cursor: pointer; font-size: 14px; color: var(--muted); margin-bottom: 4px; }
-      #known .person { padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; }
+      #known { max-height: 65vh; overflow-y: auto; }
+      #known details { margin-top: 8px; }
+      #known details > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+      #known .person { padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
       #known .person.focus { border-left: 3px solid var(--accent); padding-left: 8px; }
       #known .tie { color: var(--accent); }
       #known .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
@@ -151,6 +161,16 @@
       #event dt { color: var(--muted); }
       #event dd { margin: 0; }
       #event h3 { font-size: 14px; color: var(--muted); margin: 12px 0 4px; }
+      .track-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 10px; }
+      .track-card { border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: var(--card); }
+      .track-card.active { border-color: var(--accent); }
+      .track-card progress { width: 100%; height: 8px; accent-color: var(--accent); margin: 6px 0; }
+      .perk-list { list-style: none; padding: 0; margin: 8px 0 0; font-size: 13px; }
+      .perk-item { padding: 6px 0; border-top: 1px solid var(--line); color: var(--muted); }
+      .perk-item.unlocked { color: var(--fg); }
+      .perk-item.unlocked strong { color: var(--good); }
+      .perk-item.next strong { color: var(--accent); }
+      .house-box { border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: var(--card); }
     </style>
   </head>
   <body>
@@ -170,12 +190,24 @@
       <div>
         <nav class="tabs" role="tablist">
           <button role="tab" data-tab="log">บันทึก</button>
+          <button role="tab" data-tab="known" id="tabBtnKnown">คนที่รู้จัก</button>
+          <button role="tab" data-tab="house" id="tabBtnHouse">เรือน</button>
+          <button role="tab" data-tab="skills" id="tabBtnSkills">วิชา</button>
           <button role="tab" data-tab="tree">ผังตระกูล</button>
           <button role="tab" data-tab="saves">เซฟ/โหลด</button>
         </nav>
         <section class="tab" id="tab-log">
           <div class="chips" id="filters"></div>
           <div id="log"></div>
+        </section>
+        <section class="tab" id="tab-known" hidden>
+          <div id="known"><h2>คนที่รู้จัก</h2></div>
+        </section>
+        <section class="tab" id="tab-house" hidden>
+          <div id="house"><h2>เรือนของเรา</h2></div>
+        </section>
+        <section class="tab" id="tab-skills" hidden>
+          <div id="skills"><h2>วิชาและความชำนาญ</h2></div>
         </section>
         <section class="tab" id="tab-tree" hidden>
           <div class="chips"><span id="treeInfo"></span><button id="findMe">ไปที่ตัวละครผู้เล่น</button></div>
@@ -192,7 +224,6 @@
       <div id="sheet" hidden><section id="inspect"></section></div>
       <aside>
         <section id="player"><h2>ตัวละคร</h2></section>
-        <section id="known" style="margin-top:16px"><h2>คนที่รู้จัก</h2></section>
         <section id="dynasty" style="margin-top:16px"><h2>ตระกูล</h2></section>
       </aside>
     </main>

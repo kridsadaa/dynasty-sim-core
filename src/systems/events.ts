@@ -387,7 +387,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       }
       case 'skill':
-        ch.skills[e.skill] = Math.max(0, (ch.skills[e.skill] ?? 0) + e.delta);
+        ch.skills[e.skill] = Math.min(100, Math.max(0, (ch.skills[e.skill] ?? 0) + e.delta));
         break;
       case 'merit':
         ch.merit += e.delta;

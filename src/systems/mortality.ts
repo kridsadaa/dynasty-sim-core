@@ -4,6 +4,7 @@ import { addScar } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { livingChildren } from './factory';
 import { isGraced, markDead } from './handover';
+import { mortalityShield } from './skills';
 
 // ============================================================================
 // ความตายรายปี — ทอยทุก 1 ม.ค. ด้วยอายุตลอดปีที่เพิ่งผ่านไป (เด็กที่เกิดวันนี้ยังไม่ทอย)
@@ -46,7 +47,7 @@ export function mortalityYearTick(ctx: Ctx): string[] {
     const age = ageOf(ctx, ch, day - 1);
     if (age < 0) continue;
     const isPlayer = ch.id === S.meta.playerCharacterId;
-    const frail = frailty(ctx, ch);
+    const frail = frailty(ctx, ch) * mortalityShield(ctx, ch, age);
     // ปีไข้ทรพิษ: เด็กที่ยังไม่เคยเป็นติดได้ — รอดแล้วไม่เป็นซ้ำ บางคนมีรอยบนหน้าไปตลอดชีวิต
     if (smallpox && age < 15 && !ch.hadSmallpox && ctx.rng.chance(M.smallpoxAttack)) {
       if (!isGraced(ctx, ch) && ctx.rng.chance(Math.min(1, M.smallpoxFatality * frail))) {

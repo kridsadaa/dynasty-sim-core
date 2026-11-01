@@ -9,6 +9,7 @@ import { inLawNames, livingParents, livingSpouse, spouseAgeFor } from './factory
 import { livingWives, minorWifeProblem } from './wives';
 import { officeLabor } from './career';
 import { serviceLabor } from './marriage';
+import { hasPerk } from './skills';
 import { adjustBond } from './will';
 
 // ============================================================================
@@ -110,6 +111,8 @@ function odds(ctx: Ctx, def: IntentDef, ap: IntentApproachDef, actor: Character,
     const bold = (actor.personality.boldness - 0.5) * 0.2;
     push(bold >= 0 ? 'bold' : 'shy', bold);
   }
+  if (hasPerk(actor, 'diplomacy_1')) push('speech', 0.12);
+  else if ((actor.skills['speech'] ?? 0) >= 15) push('speech', Math.min(0.1, (actor.skills['speech'] ?? 0) * 0.002));
   if (def.target === 'befriend') {
     const story = scarModifiers(ctx, actor, new Set())
       .filter((m) => m.stat === 'social:story_hook' && m.op === 'add')

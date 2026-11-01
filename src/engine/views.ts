@@ -16,7 +16,11 @@ import { eventArtTags, portraitArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
 import { riskChance } from '../systems/will';
 import { opinion, opinionLabel } from '../systems/opinion';
-import { canManage, CARE_TH, householdMonth, loyaltyText, servantsText } from '../systems/servants';
+import {
+  canManage, CARE_TH, expandHouseCost, HOUSE_TIERS, houseCapacity, householdMonth, houseMembersCount,
+  houseTierOf, landCap, landCost, landOf, loyaltyText, servantsText, slaveCapacity, SLAVE_TASK_TH,
+} from '../systems/servants';
+import { hasPerk, LEGACY_TRACKS, legacyCost, legacyLevel, SKILL_TRACKS } from '../systems/skills';
 import { interactionsFor, slaveConcubineProblem } from '../systems/interactions';
 import type {
   InteractionView,
@@ -24,7 +28,7 @@ import type {
   MatchView,
   ChoiceResult,
   CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
-  OddsFactorView, TreeView,
+  OddsFactorView, SkillsView, StatusBadge, TreeView,
 } from './protocol';
 
 // แปลง state → view model (plain data) ก่อนส่งข้ามเธรด
@@ -63,6 +67,80 @@ function scarLines(ctx: Ctx, ch: Character, text: TextTable): string[] {
 function woundLines(ctx: Ctx, ch: Character, text: TextTable): string[] {
   const partLabel = partLabelOf(ctx, ch.anatomyId);
   return ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${partLabel(w!.partDefId)}: ${t(text, 'wound.stage', w!.stage)}`);
+}
+
+/** ป้ายสถานะของตัวละครที่ยังมีชีวิต — แสดงทั้งในแผงตัวละคร รายชื่อคนรู้จัก และหน้าดูรายละเอียด */
+function statusBadges(ctx: Ctx, ch: Character, text: TextTable): StatusBadge[] {
+  if (!isAlive(ch)) return [];
+  const S = ctx.state;
+  const out: StatusBadge[] = [];
+  const partLabel = partLabelOf(ctx, ch.anatomyId);
+  const year = yearOf(ctx, S.meta.day);
+
+  if (ch.illYear === year) out.push({ label: 'ป่วยหนัก', tone: 'bad' });
+  for (const wid of ch.woundIds) {
+    const w = S.wounds[wid];
+    if (!w) continue;
+    const part = partLabel(w.partDefId);
+    const stage = t(text, 'wound.stage', w.stage);
+    if (w.stage === 'infected' || w.stage === 'festering') {
+      out.push({ label: `แผล${stage}ที่${part}`, tone: 'bad' });
+    } else if (w.severity >= 0.45) {
+      out.push({ label: `แผลลึกที่${part} (${stage})`, tone: 'bad' });
+    } else {
+      out.push({ label: `แผลที่${part} (${stage})`, tone: 'warn' });
+    }
+  }
+  for (const pid of ch.bodyPartIds) {
+    const p = S.bodyParts[pid];
+    if (p?.status === 'missing') out.push({ label: `สูญเสีย${partLabel(p.partDefId)}`, tone: 'warn' });
+  }
+  if (ch.pregnancy) {
+    const months = Math.max(1, Math.round((ch.pregnancy.dueDay - S.meta.day) / 30));
+    out.push({ label: `ตั้งครรภ์ (${months} เดือนคลอด)`, tone: 'good' });
+  }
+  if (ch.stress >= 0.7) out.push({ label: 'ใจหนักมาก', tone: 'bad' });
+  else if (ch.stress >= 0.45) out.push({ label: 'ใจหนัก', tone: 'warn' });
+  if (ageOf(ctx, ch) < 12 && ch.hardToRaise) out.push({ label: 'เด็กเลี้ยงยาก', tone: 'warn' });
+  else if ((ch.constitution ?? 0) <= -0.8) out.push({ label: 'ขี้โรค', tone: 'warn' });
+  if (ch.office) out.push({ label: ch.social.title ? `ราชการ (${ch.social.title})` : 'รับราชการ', tone: 'info' });
+  if (ch.service) out.push({ label: 'ช่วยงานบ้านพ่อตา', tone: 'info' });
+  if (ch.focus) {
+    const tr = SKILL_TRACKS.find((t) => t.id === ch.focus);
+    if (tr) out.push({ label: `ฝึก${tr.name}`, tone: 'info' });
+  }
+  if (ch.favoredUntil !== undefined && S.meta.day <= ch.favoredUntil) out.push({ label: 'เป็นที่รักใคร่', tone: 'good' });
+  return out;
+}
+
+function skillsView(ctx: Ctx, ch: Character): SkillsView {
+  const age = ageOf(ctx, ch);
+  const canFocus = age >= 12 && ch.social.estate !== 'monk';
+  return {
+    canFocus,
+    currentFocus: ch.focus ?? null,
+    tracks: SKILL_TRACKS.map((tr) => {
+      const xp = Math.round(ch.skillXp?.[tr.id] ?? 0);
+      const unlockedCount = tr.perks.filter((p) => hasPerk(ch, p.id)).length;
+      const canUnlock = unlockedCount < tr.perks.length && xp >= 100;
+      return {
+        id: tr.id,
+        name: tr.name,
+        focusLabel: tr.focusLabel,
+        focusDesc: tr.focusDesc,
+        focused: ch.focus === tr.id,
+        xp,
+        canUnlock,
+        perks: tr.perks.map((p) => ({
+          id: p.id,
+          tier: p.tier,
+          name: p.name,
+          desc: p.desc,
+          unlocked: hasPerk(ch, p.id),
+        })),
+      };
+    }),
+  };
 }
 
 function characterRoles(ctx: Ctx, ch: Character, node?: FamilyNode): string[] {
@@ -109,6 +187,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     title: ch.social.title,
     wealth: Math.round(ch.social.wealth),
     purse: Math.round(purse(ctx, ch)),
+    statuses: statusBadges(ctx, ch, text),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: scarLines(ctx, ch, text),
     wounds: woundLines(ctx, ch, text),
@@ -118,6 +197,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     marriage: marriageStatus(ctx, ch),
     office: officeStatus(ctx, ch),
     household: householdView(ctx, ch),
+    skills: skillsView(ctx, ch),
     craftSkills: choreSkills(ctx, ch),
     portraitTags: portraitArtTags({
       sex: ch.sex, age, topknotCut: ch.topknotCutYear !== undefined,
@@ -192,7 +272,7 @@ function kinTies(ctx: Ctx, me: Character): Map<Character, string> {
   for (const [g, tie] of grand) out.set(g, tie);
   const spouse = livingSpouse(ctx, me);
   if (spouse) out.set(spouse, me.sex === 'm' ? 'เมีย' : 'ผัว');
-  if (me.sex === 'm') for (const w of livingWives(ctx, me)) if (w.wifeRank === 'minor') out.set(w, 'เมียน้อย');
+  if (me.sex === 'm') for (const w of livingWives(ctx, me)) if (w.wifeRank === 'minor') out.set(w, w.social.estate === 'that' ? 'เมียบ่าว (เมียน้อย)' : 'เมียน้อย');
   for (const kid of livingChildren(ctx, me)) {
     out.set(kid, kid.sex === 'm' ? 'ลูกชาย' : 'ลูกสาว');
     const inLaw = livingSpouse(ctx, kid);
@@ -209,11 +289,15 @@ function closeness(f: number): string {
 export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
   const me = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
   const current = activeIntent(ctx, me.id);
-  const kin: KnownPersonView[] = [...kinTies(ctx, me)].map(([c, tie]) => ({
-    id: c.id, nodeId: c.familyNodeId, name: c.name, age: ageOf(ctx, c), tie, kin: true,
-    detail: c.householdId && c.householdId === me.householdId ? 'อยู่เรือนเดียวกัน' : 'อยู่คนละเรือน',
-    actions: [], focus: false,
-  }));
+  const kin: KnownPersonView[] = [...kinTies(ctx, me)].map(([c, tie]) => {
+    const inHousehold = Boolean(c.householdId && c.householdId === me.householdId);
+    return {
+      id: c.id, nodeId: c.familyNodeId, name: c.name, age: ageOf(ctx, c), tie, kin: true, inHousehold,
+      statuses: statusBadges(ctx, c, text),
+      detail: inHousehold ? 'อยู่เรือนเดียวกัน' : 'อยู่คนละเรือน',
+      actions: [], focus: false,
+    };
+  });
   const locals: KnownPersonView[] = knownLocals(ctx, me)
     .sort((a, b) => familiarity(ctx, me.id, b.id) - familiarity(ctx, me.id, a.id))
     .map((c) => {
@@ -223,7 +307,8 @@ export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
         id: c.id, nodeId: c.familyNodeId, name: c.name, age,
         tie: me.betrothal?.toId === c.id ? 'คู่หมั้น' : me.eloped?.withId === c.id ? 'อยู่ด้วยกัน (ยังไม่ได้แต่ง)'
           : relationStrength(ctx, me.id, c.id, 'friend') >= 0.5 ? 'เพื่อนสนิท' : 'คนรู้จัก',
-        kin: false,
+        kin: false, inHousehold: false,
+        statuses: statusBadges(ctx, c, text),
         detail: [localOrigin(ctx, c), DISTANCE_TH[c.local!.distance], status, closeness(familiarity(ctx, me.id, c.id))].filter(Boolean).join(' · '),
         actions: Object.values(ctx.content.intents)
           // สิ่งที่กำลังทำกับคนนี้อยู่แล้วไม่ต้องมีปุ่มซ้ำ (เลิก/ดูความคืบหน้าที่แผงตัวละคร)
@@ -263,6 +348,9 @@ export function intentPlanView(ctx: Ctx, text: TextTable, targetId: string, kind
 
 export function dynastyView(ctx: Ctx): DynastyView {
   const dyn = must(ctx.state.dynasties[ctx.state.meta.playerDynastyId], 'dynasty');
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  const isHead = Boolean(player && dyn.headNodeId === player.familyNodeId);
+  const cost = legacyCost(dyn);
   return {
     name: dyn.name,
     prestige: Math.round(dyn.prestige * 10) / 10,
@@ -274,6 +362,24 @@ export function dynastyView(ctx: Ctx): DynastyView {
     })),
     livingMembers: Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c)).length,
     familyNodes: Object.keys(ctx.state.familyNodes).length,
+    isHead,
+    nextLegacyCost: cost,
+    legacies: LEGACY_TRACKS.map((tr) => {
+      const level = legacyLevel(ctx, player, tr.id);
+      return {
+        id: tr.id,
+        name: tr.name,
+        desc: tr.desc,
+        level,
+        canUnlock: isHead && level < tr.steps.length && dyn.prestige >= cost,
+        steps: tr.steps.map((s, idx) => ({
+          tier: idx + 1,
+          name: s.name,
+          desc: s.desc,
+          unlocked: idx < level,
+        })),
+      };
+    }),
   };
 }
 
@@ -618,6 +724,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
       status: node.driftedYear !== undefined
         ? `แยกไปอยู่ที่อื่นตั้งแต่ พ.ศ. ${node.driftedYear} — ขาดการติดต่อกับตระกูล`
         : `เหลือแต่ชื่อในผังตระกูล${cause ? ` · ${ctx.tags.label(cause)}` : ''}`,
+      statuses: [],
       facts, sections, links,
       portraitTags: portraitArtTags({
         sex: node.sex, age: prunedAge, topknotCut: prunedAge >= 13,
@@ -688,6 +795,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     nodeId: node.id, name: node.name, sex: node.sex,
     lifespan: `${node.birthYear}–${deathYear ?? ''}`,
     status: isAlive(ch) ? 'ยังมีชีวิต' : `ถึงแก่กรรม${cause ? ` (${ctx.tags.label(cause)})` : ''}`,
+    statuses: statusBadges(ctx, ch, text),
     facts, sections, links,
     ...(isAlive(ch) && ch.id !== S.meta.playerCharacterId ? { characterId: ch.id } : {}),
     portraitTags: portraitArtTags({
@@ -871,24 +979,31 @@ export function choiceResult(
   };
 }
 
-/** รายชื่อจากปุ่มหาคู่ — ใครบ้านไหน อยู่ไกลแค่ไหน นิสัยที่คนพูดถึง */
+/** รายชื่อจากปุ่มหาคู่หรือรายชื่อบ่าวในเรือน — ใครบ้านไหน อยู่ไกลแค่ไหน นิสัยที่คนพูดถึง */
 export function matchView(ctx: Ctx, mode: MatchView['mode'], people: Character[]): MatchView {
   return {
     mode,
     people: people.map((c) => {
       const p = c.personality;
-      const said = p.agreeableness >= 0.65 ? 'ว่ากันว่าใจดี' : p.agreeableness <= 0.35 ? 'ว่ากันว่าปากจัด'
-        : p.piety >= 0.7 ? 'ว่ากันว่าเข้าวัดเป็นนิจ' : p.boldness >= 0.65 ? 'ว่ากันว่าใจกล้า' : p.pride >= 0.7 ? 'ว่ากันว่าถือตัว' : '';
+      const said = mode === 'slave_wife'
+        ? (p.agreeableness >= 0.65 ? 'ว่านอนสอนง่าย' : p.agreeableness <= 0.35 ? 'ปากจัด'
+          : p.piety >= 0.7 ? 'ใฝ่บุญ' : p.boldness >= 0.65 ? 'ใจกล้า' : p.pride >= 0.7 ? 'ถือตัว'
+          : p.resilience >= 0.65 ? 'สู้งาน' : p.imagination >= 0.65 ? 'ช่างคิด' : p.neuroticism >= 0.65 ? 'ขี้ตกใจ' : 'เรียบร้อย')
+        : (p.agreeableness >= 0.65 ? 'ว่ากันว่าใจดี' : p.agreeableness <= 0.35 ? 'ว่ากันว่าปากจัด'
+          : p.piety >= 0.7 ? 'ว่ากันว่าเข้าวัดเป็นนิจ' : p.boldness >= 0.65 ? 'ว่ากันว่าใจกล้า' : p.pride >= 0.7 ? 'ว่ากันว่าถือตัว' : '');
+      const detail = mode === 'slave_wife'
+        ? ['ทาสในเรือน', said].filter(Boolean).join(' · ')
+        : [localOrigin(ctx, c), estateLabel(ctx, c.social.estate), DISTANCE_TH[c.local!.distance], said].filter(Boolean).join(' · ');
       return {
         id: c.id, nodeId: c.familyNodeId, name: c.name, age: ageOf(ctx, c),
-        detail: [localOrigin(ctx, c), estateLabel(ctx, c.social.estate), DISTANCE_TH[c.local!.distance], said].filter(Boolean).join(' · '),
+        detail,
         portraitTags: portraitArtTags({ sex: c.sex, age: ageOf(ctx, c), topknotCut: true, estate: c.social.estate, roles: [] }),
       };
     }),
   };
 }
 
-/** แผงเรือนของผู้เล่น — เงินเข้าออกต่อเดือนให้เห็นว่าคนในเรือนและทาสมีผลกับเงินอย่างไร */
+/** แผงเรือนของผู้เล่น — เงินเข้าออกต่อเดือน ขยายเรือน ซื้อที่นา และสั่งงานทาสในเรือน */
 function householdView(ctx: Ctx, ch: Character): HouseholdView | undefined {
   const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
   if (!hh) return undefined;
@@ -898,24 +1013,68 @@ function householdView(ctx: Ctx, ch: Character): HouseholdView | undefined {
   const m = householdMonth(ctx, hh);
   // เก็บและจ่ายทุกเดือน แต่ยอดต่อเดือนเล็กจนอ่านยาก — แสดงเป็นยอดต่อปี
   const money = (perMonth: number) => { const y = perMonth * 12; return (y >= 10 ? Math.round(y) : Math.round(y * 10) / 10).toString(); };
-  const members = hh.memberIds.filter((id) => isAlive(S.characters[id])).length;
-  const lines = [`คนในเรือน ${members} คน — ค่ากินอยู่ปีละ ${money(m.upkeep)} ตำลึง`];
+  const members = houseMembersCount(ctx, hh);
+  const cap = houseCapacity(ctx, hh);
+  const tierDef = houseTierOf(hh);
+  const crowded = members > cap;
+  const landPlots = landOf(ctx, hh);
+  const lines = [
+    `คนในเรือน ${members}/${cap} คน${crowded ? ' (เรือนคับแคบ คนในเรือนอึดอัดใจ)' : ''} — ค่ากินอยู่ปีละ ${money(m.upkeep)} ตำลึง`,
+  ];
+  if (landPlots > 0) {
+    lines.push(`ที่นาและสวน ${landPlots} แปลง — ผลผลิตปีละ ${money(m.landYield)} ตำลึง`);
+  }
   if (r?.that) {
-    lines.push(`ทาส ${r.that} คน (${loyaltyText(r.loyalty)}) — ค่าเลี้ยงดูปีละ ${money(m.slaveCost)} · ทำนาทำสวนได้ปีละ ${money(m.slaveYield)} ตำลึง`);
+    const taskName = SLAVE_TASK_TH[hh.slaveTask ?? 'farm'].label;
+    lines.push(`ทาส ${r.that} คน (${loyaltyText(r.loyalty)} · หน้าที่: ${taskName}) — ค่าเลี้ยงดูปีละ ${money(m.slaveCost)} · ทำเงินได้ปีละ ${money(m.slaveYield)} ตำลึง`);
   }
   if (r?.phrai) lines.push(`ไพร่ในสังกัด ${r.phrai} คน — ของกำนัลปีละ ${money(m.phraiGifts)} ตำลึง`);
-  const net = m.slaveYield + m.phraiGifts - m.upkeep - m.slaveCost;
-  lines.push(`รวมเรือนนี้ ${net >= 0 ? 'ได้' : 'เสีย'}ปีละ ${money(Math.abs(net))} ตำลึง หักและรับทุกเดือน (ไม่นับรายได้ตามตำแหน่ง)`);
+  const net = m.slaveYield + m.phraiGifts + m.landYield - m.upkeep - m.slaveCost;
+  lines.push(`รวมเรือนนี้ ${net >= 0 ? 'ได้' : 'เสีย'}ปีละ ${money(Math.abs(net))} ตำลึง หักและรับทุกเดือน (ไม่นับเบี้ยหวัดราชการ)`);
   const C = ctx.content.balance.servants.care;
   const note = (id: keyof typeof C) => id === 'stingy' ? 'ประหยัด แต่ทาสทำงานไม่เต็มมือ ป่วยตายและหนีง่าย ชาวบ้านติฉิน'
     : id === 'generous' ? 'จ่ายมาก ทาสรักนาย ทำงานดี อยู่ยาว ได้บุญ' : 'เลี้ยงดูพอสมควร';
+
+  const manage = Boolean(canManage(ctx, ch));
+  const totalPurse = purse(ctx, ch);
+  const expCost = expandHouseCost(ctx, hh);
+  const nextTier = HOUSE_TIERS.find((t) => t.tier === tierDef.tier + 1);
+  const lCost = landCost(ctx, hh);
+  const slaveBuyCost = 8;
+
   return {
     title: head && head.id !== ch.id ? `เรือนของ${head.name}` : 'เรือนของเรา',
+    tierName: tierDef.name,
+    tierDesc: tierDef.desc,
+    members,
+    capacity: cap,
+    crowded,
+    landPlots,
     lines,
+    canManage: manage,
+    expand: nextTier && expCost !== null ? {
+      nextName: nextTier.name,
+      nextCapacity: nextTier.capacity,
+      cost: expCost,
+      canAfford: manage && totalPurse >= expCost,
+    } : undefined,
+    buyLand: landPlots < landCap(hh) ? {
+      cost: lCost,
+      canAfford: manage && totalPurse >= lCost,
+    } : undefined,
+    slaveActions: manage ? {
+      canBuy: totalPurse >= slaveBuyCost && (r?.that ?? 0) < slaveCapacity(ctx, hh),
+      buyCost: slaveBuyCost,
+      canFree: (r?.that ?? 0) > 0 && (hh.lastFreedDay === undefined || S.meta.day - hh.lastFreedDay >= 360),
+    } : undefined,
     slaveConcubine: !slaveConcubineProblem(ctx, ch),
-    care: r?.that && canManage(ctx, ch) ? {
+    care: r?.that && manage ? {
       current: hh.care ?? 'normal',
       options: (['stingy', 'normal', 'generous'] as const).map((id) => ({ id, label: CARE_TH[id], note: `ค่าเลี้ยงดูทาสคนละ ${C[id].cost} ตำลึงต่อปี · ${note(id)}` })),
+    } : undefined,
+    slaveTask: r?.that && manage ? {
+      current: hh.slaveTask ?? 'farm',
+      options: (['farm', 'house', 'guard'] as const).map((id) => ({ id, label: SLAVE_TASK_TH[id].label, note: SLAVE_TASK_TH[id].note })),
     } : undefined,
   };
 }

@@ -14,6 +14,7 @@ import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, jealousyEvent, livingWives, minorWifeEvent } from './wives';
 import { householdMonthTick, servantsYearTick } from './servants';
+import { skillsMonthTick, skillsYearTick } from './skills';
 import { elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
@@ -87,8 +88,11 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     return !!naming;
   };
   for (const line of deliverBirths(ctx, onBirth)) out.push({ type: 'log', kind: 'family', line });
-  // ค่ากินอยู่และงานของทาส — เดือนละครั้ง (ทุก 30 วัน)
-  if (S.meta.day % 30 === 0) for (const hh of Object.values(S.households)) householdMonthTick(ctx, hh.id);
+  // ค่ากินอยู่ งานของทาส และการฝึกวิชาประจำเดือน — เดือนละครั้ง (ทุก 30 วัน)
+  if (S.meta.day % 30 === 0) {
+    for (const hh of Object.values(S.households)) householdMonthTick(ctx, hh.id);
+    for (const line of skillsMonthTick(ctx)) out.push({ type: 'log', kind: 'daily', line });
+  }
 
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
   if (dayOfYear(ctx, S.meta.day) === 0) {
@@ -96,6 +100,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     // ตายในปีที่ผ่านมา (เด็ก ไข้ทรพิษ ป่วย ชรา) — ก่อนการเกิด/แต่งงาน/พบคนใหม่ของปีนี้ ไม่ให้ event ผูกกับคนที่จะตาย
     for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', kind: 'death', line });
     kinYearTick(ctx);
+    for (const line of skillsYearTick(ctx)) out.push({ type: 'log', kind: 'household', line });
     const frail = hardToRaiseEvent(ctx);
     if (frail) out.push({ type: 'event', prepared: frail });
     for (const hh of Object.values(S.households)) {
@@ -406,7 +411,7 @@ export function deliverBirths(
     const kid = spawnCharacter(ctx, {
       name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, partner), namesInUse(ctx, ch.dynastyId, year)),
       sex, birthYear: year, estate: ch.social.estate, father, mother,
-      ...(mother.wifeRank === 'minor' ? { parentage: 'minor_wife' as const } : {}),
+      ...(mother.wifeRank === 'minor' ? { parentage: (mother.social.estate === 'that' ? 'slave_wife' : 'minor_wife') as 'slave_wife' | 'minor_wife' } : {}),
     });
     kid.birthDay = day;
     // ทาสหญิงที่มีบุตรกับนาย พ้นจากความเป็นทาส (lore: social.slavery_as_strategy)

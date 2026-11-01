@@ -3,6 +3,7 @@ import type { Character } from '../core/types';
 import { spawnLocal } from './acquaintance';
 import { prepareEvent, type PreparedEvent } from './events';
 import { createHousehold, joinHousehold, livingChildren, marry } from './factory';
+import { houseCapacity, houseMembersCount } from './servants';
 import { bond } from './will';
 
 // ============================================================================
@@ -30,6 +31,8 @@ export function minorWifeProblem(ctx: Ctx, man: Character): string | null {
   if (man.sex !== 'm') return 'มีผัวอยู่แล้ว';
   if (age < W.age[0] || age > W.age[1]) return 'ไม่อยู่ในวัยที่จะรับเมียเพิ่ม';
   if (livingWives(ctx, man).length >= B.matchmaking.maxWives) return 'มีเมียมากพอแล้ว';
+  const hh = man.householdId ? ctx.state.households[man.householdId] : undefined;
+  if (hh && houseMembersCount(ctx, hh) >= houseCapacity(ctx, hh)) return 'คนเต็มเรือนแล้ว (ต้องขยายเรือนก่อน)';
   if (man.social.wealth < W.minWealth) return `เงินไม่พอเลี้ยงเมียอีกคน (ต้องมีอย่างน้อย ${W.minWealth} ตำลึง)`;
   return null;
 }
@@ -71,7 +74,10 @@ export function jealousyEvent(ctx: Ctx): PreparedEvent | null {
   if (!isAlive(player) || player.sex !== 'm') return null;
   const wives = livingWives(ctx, player);
   const principal = wives.find((w) => w.wifeRank !== 'minor');
-  const minor = ctx.rng.pick(wives.filter((w) => w.wifeRank === 'minor'));
+  const seenFor = (id: string) =>
+    (player.seen?.[`marriage.wife_jealousy@${id}`] ?? 0) > 0 ||
+    (player.seen?.[`marriage.wife_jealousy_slave@${id}`] ?? 0) > 0;
+  const minor = ctx.rng.pick(wives.filter((w) => w.wifeRank === 'minor' && !seenFor(w.id)));
   if (!principal || !minor) return null;
   const slave = minor.social.estate === 'that';
   const grudge = ctx.state.relations[`${principal.id}|${minor.id}|grudge`]?.strength ?? 0;

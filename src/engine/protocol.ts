@@ -37,12 +37,22 @@ export type Command =
   | { type: 'findMatches' }
   | { type: 'dropMatches'; keepId?: string }
   | { type: 'proposeMinorWife'; targetId: string }
-  /** แม่เรือน/หัวเรือนเลือกการเลี้ยงดูทาส */
+  /** แม่เรือน/หัวเรือนเลือกการเลี้ยงดูทาส งานทาส ขยายเรือน และซื้อที่ดิน */
   | { type: 'setCare'; care: 'stingy' | 'normal' | 'generous' }
+  | { type: 'setSlaveTask'; task: 'farm' | 'house' | 'guard' }
+  | { type: 'expandHouse' }
+  | { type: 'buyLand' }
+  | { type: 'buySlave' }
+  | { type: 'freeSlave' }
+  /** ฝึกวิชาประจำตัว 4 สาย และมรดกตระกูล 5 สาย */
+  | { type: 'setFocus'; focus: 'martial' | 'diplomacy' | 'stewardship' | 'learning' | null }
+  | { type: 'unlockPerk'; trackId: 'martial' | 'diplomacy' | 'stewardship' | 'learning' }
+  | { type: 'unlockLegacy'; trackId: 'court' | 'warrior' | 'wealth' | 'kin' | 'wisdom' }
   /** เมนูตัวละคร (⋯): สิ่งที่ทำกับคนนี้ได้ / ทำ */
   | { type: 'viewInteractions'; targetId: string }
   | { type: 'interact'; targetId: string; action: string }
-  | { type: 'takeSlaveConcubine' };
+  | { type: 'findSlaveConcubines' }
+  | { type: 'takeSlaveConcubine'; targetId?: string };
 
 export interface ReplyData {
   newGame: CharacterView;
@@ -70,8 +80,17 @@ export interface ReplyData {
   dropMatches: null;
   proposeMinorWife: EventView[];
   setCare: CharacterView;
+  setSlaveTask: CharacterView;
+  expandHouse: { line: string; player: CharacterView };
+  buyLand: { line: string; player: CharacterView };
+  buySlave: { line: string; player: CharacterView };
+  freeSlave: { line: string; player: CharacterView };
+  setFocus: { line: string; player: CharacterView };
+  unlockPerk: { line: string; player: CharacterView };
+  unlockLegacy: { line: string; dynasty: DynastyView; player: CharacterView };
   viewInteractions: InteractionView;
   interact: { lines: string[]; plan?: string; events?: EventView[] };
+  findSlaveConcubines: MatchView;
   takeSlaveConcubine: { lines: string[] };
 }
 
@@ -81,7 +100,7 @@ export interface InteractionView {
 }
 
 export interface MatchView {
-  mode: 'court' | 'minor_wife';
+  mode: 'court' | 'minor_wife' | 'slave_wife';
   people: Array<{ id: string; nodeId: string; name: string; age: number; detail: string; portraitTags: string[] }>;
 }
 
@@ -163,14 +182,47 @@ export interface EventView {
   artTags?: string[];
 }
 
-/** เรือนที่ผู้เล่นอยู่: คนในเรือน บ่าวไพร่ รายรับรายจ่ายต่อเดือน และการดูแลทาส */
+/** เรือนที่ผู้เล่นอยู่: ขนาดเรือน ความจุ ที่นา บ่าวไพร่ รายรับรายจ่ายต่อเดือน และการจัดการ */
 export interface HouseholdView {
   title: string;
+  tierName: string;
+  tierDesc: string;
+  members: number;
+  capacity: number;
+  crowded: boolean;
+  landPlots: number;
   lines: string[];
-  /** ตั้งการดูแลทาสได้ (หัวเรือน/แม่เรือน และมีทาส) */
+  canManage: boolean;
+  expand?: { nextName: string; nextCapacity: number; cost: number; canAfford: boolean };
+  buyLand?: { cost: number; canAfford: boolean };
+  slaveActions?: { buyCost: number; canBuy: boolean; canFree: boolean };
   /** รับทาสหญิงในเรือนเป็นเมียน้อยได้ (หัวเรือนชาย มีทาส) */
   slaveConcubine?: boolean;
   care?: { current: 'stingy' | 'normal' | 'generous'; options: Array<{ id: 'stingy' | 'normal' | 'generous'; label: string; note: string }> };
+  slaveTask?: { current: 'farm' | 'house' | 'guard'; options: Array<{ id: 'farm' | 'house' | 'guard'; label: string; note: string }> };
+}
+
+export interface SkillTrackView {
+  id: 'martial' | 'diplomacy' | 'stewardship' | 'learning';
+  name: string;
+  focusLabel: string;
+  focusDesc: string;
+  focused: boolean;
+  xp: number;
+  canUnlock: boolean;
+  perks: Array<{ id: string; tier: number; name: string; desc: string; unlocked: boolean }>;
+}
+
+export interface SkillsView {
+  canFocus: boolean;
+  currentFocus: 'martial' | 'diplomacy' | 'stewardship' | 'learning' | null;
+  tracks: SkillTrackView[];
+}
+
+/** ป้ายสถานะตัวละคร — เช่น ป่วยหนัก, ตั้งครรภ์, แผลลึก, ใจหนัก */
+export interface StatusBadge {
+  label: string;
+  tone: 'bad' | 'warn' | 'good' | 'info';
 }
 
 export interface CharacterView {
@@ -187,6 +239,8 @@ export interface CharacterView {
   /** เงินที่ใช้ได้รวมเงินในเรือน (ผัว/เมีย พ่อแม่ที่เป็นหัวเรือน) — มากกว่า wealth เมื่อใช้เงินก้อนเดียวกับคนอื่น */
   purse: number;
   household?: HouseholdView;
+  skills: SkillsView;
+  statuses: StatusBadge[];
   traits: string[];
   scars: string[];
   wounds: string[];
@@ -213,6 +267,10 @@ export interface KnownPersonView {
   /** พ่อ แม่ พี่ชาย ภรรยา ลูกสาว / เพื่อนสนิท คนรู้จัก */
   tie: string;
   kin: boolean;
+  /** อยู่เรือนเดียวกับผู้เล่นไหม (ใช้แยกหมวดคนในเรือน vs ญาติต่างเรือน) */
+  inHousehold: boolean;
+  /** ป้ายสถานะปัจจุบัน: ป่วย ท้อง แผลลึก ใจหนัก ฯลฯ */
+  statuses: StatusBadge[];
   /** "ลูกสาวบ้านช่างทอง · ต่างตำบล · ยังไม่ออกเรือน" */
   detail: string;
   /** สิ่งที่ตั้งใจทำกับคนนี้ได้ (กดแล้วเปิดหน้าเลือกวิธี) */
@@ -255,9 +313,21 @@ export interface IntentStatusView {
   factors: OddsFactorView[];
 }
 
+export interface LegacyTrackView {
+  id: 'court' | 'warrior' | 'wealth' | 'kin' | 'wisdom';
+  name: string;
+  desc: string;
+  level: number;
+  canUnlock: boolean;
+  steps: Array<{ tier: number; name: string; desc: string; unlocked: boolean }>;
+}
+
 export interface DynastyView {
   name: string;
   prestige: number;
+  isHead: boolean;
+  nextLegacyCost: number;
+  legacies: LegacyTrackView[];
   taboos: string[];
   /** เฉพาะฉบับ "ที่เล่ากัน" — ความจริงต้องค้นพบผ่าน gameplay; artTags เลือกภาพตำนาน (chronicle) */
   legends: Array<{ text: string; artTags: string[] }>;
@@ -312,6 +382,7 @@ export interface InspectView {
   sex: 'm' | 'f';
   lifespan: string;
   status: string; // ยังมีชีวิต / ถึงแก่กรรม (สาเหตุ) / เหลือแต่ชื่อ
+  statuses: StatusBadge[];
   facts: Array<[string, string]>;
   sections: Array<{ title: string; items: string[] }>;
   /** ตัวละครที่ยังอยู่ในฉาก — เปิดเมนู ⋯ ได้ (ไม่มี = เหลือแต่ชื่อในผัง) */

@@ -279,7 +279,7 @@ export function performHandover(
   log.push(...estate.lines);
 
   // [6] social
-  dyn.prestige *= 1 - B.prestigeDecay;
+  dyn.prestige *= 1 - B.prestigeDecay * (dyn.legacies?.kin && dyn.legacies.kin >= 4 ? 0.5 : 1);
   // ผู้เล่นตายขณะที่ผู้นำตระกูล (เช่น บิดา) ยังอยู่ → ตำแหน่งผู้นำไม่เปลี่ยนมือ
   const headNode = ctx.state.familyNodes[dyn.headNodeId];
   const headAlive = isAlive(headNode?.characterId ? ctx.state.characters[headNode.characterId] : undefined);

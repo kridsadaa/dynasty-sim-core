@@ -1,7 +1,7 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
 import type {
-  CharacterView, ChoiceResult, ClockState, DynastyView, InteractionView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
-  TreeView,
+  CharacterView, ChoiceResult, ClockState, DynastyView, HouseholdView, InteractionView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
+  SkillsView, StatusBadge, TreeView,
 } from './engine/protocol';
 import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
 
@@ -61,18 +61,25 @@ let lastYear = 0;
 let hasGame = false;
 let clock: ClockState = { playing: false, speed: 2, maxSpeed: 5, ended: false, resumeAfter: false };
 
-// ---------------- แท็บ: บันทึก / ผังตระกูล / เซฟ ----------------
-type Tab = 'log' | 'tree' | 'saves';
+// ---------------- แท็บ: บันทึก / คนที่รู้จัก / เรือน / วิชา / ผังตระกูล / เซฟ ----------------
+type Tab = 'log' | 'known' | 'house' | 'skills' | 'tree' | 'saves';
 let tab: Tab = 'saves';
 
 function showTab(next: Tab) {
   tab = next;
   for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === next));
-  for (const t of ['log', 'tree', 'saves'] as const) $(`tab-${t}`).hidden = t !== next;
+  for (const t of ['log', 'known', 'house', 'skills', 'tree', 'saves'] as const) $(`tab-${t}`).hidden = t !== next;
   if (next === 'tree' && hasGame) void refreshTree();
   if (next === 'saves') void refreshSlots();
 }
 for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.onclick = () => showTab(b.dataset.tab as Tab);
+
+function statusPills(badges: readonly StatusBadge[] | undefined): HTMLElement[] {
+  if (!badges?.length) return [];
+  const wrap = el('div', undefined, 'statuses');
+  for (const s of badges) wrap.append(el('span', s.label, `pill ${s.tone}`));
+  return [wrap];
+}
 
 // ---------------- บันทึก (log): แยกเป็นก้อนรายปี กรองตามหมวดได้ ----------------
 const KIND_TH: Record<LogKind, string> = {
@@ -210,48 +217,274 @@ function refreshSoon() {
   void refresh().catch(() => {});
 }
 
+function renderHouse(h: HouseholdView | undefined) {
+  const box = $('house');
+  if (!h) {
+    box.replaceChildren(el('h2', 'เรือน'), el('div', 'ไม่ได้สังกัดเรือน', 'muted'));
+    return;
+  }
+  box.replaceChildren(el('h2', `${h.title} — ${h.tierName}`));
+  box.append(el('div', h.tierDesc, 'muted'));
+  if (h.crowded) {
+    box.append(...statusPills([{ label: `เรือนคับแคบ (${h.members}/${h.capacity} คน)`, tone: 'bad' }]));
+  } else {
+    box.append(...statusPills([{ label: `คนในเรือน ${h.members}/${h.capacity} คน`, tone: h.members >= h.capacity ? 'warn' : 'info' }]));
+  }
+
+  const summaryBox = el('div', undefined, 'house-box');
+  summaryBox.style.marginTop = '8px';
+  for (const l of h.lines) summaryBox.append(el('div', l, 'lifestyle'));
+  box.append(summaryBox);
+
+  // ขยายเรือน & ซื้อที่นา
+  const estateActs = el('div', undefined, 'house-box');
+  estateActs.append(el('h2', 'ขยับขยายเรือนและไร่นา'));
+  if (!h.canManage) {
+    estateActs.append(el('div', 'ต้องเป็นหัวเรือนหรือแม่เรือนจึงจะสั่งขยายเรือนและจัดการทรัพย์สินในเรือนได้', 'muted'));
+  }
+  const actRow = el('div', undefined, 'care');
+  if (h.expand) {
+    const exp = h.expand;
+    const b = button(`ปลูกขยายเป็น${exp.nextName} (จุ ${exp.nextCapacity} คน · ${exp.cost} ตำลึง)`, async () => {
+      try {
+        const r = await engine.request({ type: 'expandHouse' });
+        write(r.line, 'household');
+        renderPlayer(r.player);
+      } catch (e) {
+        status.textContent = errorText(e);
+      }
+    });
+    b.disabled = !exp.canAfford;
+    actRow.append(b);
+  } else {
+    actRow.append(el('span', 'ขยายเรือนถึงขั้นสูงสุดแล้ว', 'muted'));
+  }
+  if (h.buyLand) {
+    const bl = h.buyLand;
+    const b = button(`ซื้อที่นาและสวนเพิ่ม (${bl.cost} ตำลึง · ได้ผลผลิตปีละ ~4 ตำลึง)`, async () => {
+      try {
+        const r = await engine.request({ type: 'buyLand' });
+        write(r.line, 'household');
+        renderPlayer(r.player);
+      } catch (e) {
+        status.textContent = errorText(e);
+      }
+    });
+    b.disabled = !bl.canAfford;
+    actRow.append(b);
+  }
+  estateActs.append(actRow);
+  box.append(estateActs);
+
+  // จัดการบ่าวไพร่และทาสในเรือน
+  const servantBox = el('div', undefined, 'house-box');
+  servantBox.append(el('h2', 'บ่าวไพร่และทาสในเรือน'));
+  const servantRow = el('div', undefined, 'care');
+  if (h.slaveActions) {
+    const sa = h.slaveActions;
+    const buyBtn = button(`ไถ่ทาสเข้าเรือนเพิ่ม (${sa.buyCost} ตำลึง)`, async () => {
+      try {
+        const r = await engine.request({ type: 'buySlave' });
+        write(r.line, 'household');
+        renderPlayer(r.player);
+      } catch (e) {
+        status.textContent = errorText(e);
+      }
+    });
+    buyBtn.disabled = !sa.canBuy;
+    servantRow.append(buyBtn);
+
+    if (sa.canFree) {
+      const freeBtn = button('ปล่อยทาสเป็นไท 1 คน (ได้บุญ)', async () => {
+        if (!confirm('ปล่อยทาสในเรือนให้พ้นจากความเป็นทาส 1 คน?')) return;
+        try {
+          const r = await engine.request({ type: 'freeSlave' });
+          write(r.line, 'household');
+          renderPlayer(r.player);
+        } catch (e) {
+          status.textContent = errorText(e);
+        }
+      });
+      servantRow.append(freeBtn);
+    }
+  }
+  if (h.slaveConcubine) {
+    servantRow.append(button('รับทาสหญิงในเรือนเป็นเมียน้อย', () => void openMatches('findSlaveConcubines')));
+  }
+  if (servantRow.childNodes.length) servantBox.append(servantRow);
+
+  if (h.slaveTask) {
+    const tRow = el('div', undefined, 'care');
+    tRow.append(el('span', 'หน้าที่ทาส:', 'muted'));
+    for (const o of h.slaveTask.options) {
+      const b = button(o.label, async () => {
+        try {
+          renderPlayer(await engine.request({ type: 'setSlaveTask', task: o.id }));
+        } catch (e) {
+          status.textContent = errorText(e);
+        }
+      }, o.id === h.slaveTask.current ? 'on' : undefined);
+      b.title = o.note;
+      b.setAttribute('aria-pressed', String(o.id === h.slaveTask.current));
+      tRow.append(b);
+    }
+    servantBox.append(tRow);
+    servantBox.append(el('div', h.slaveTask.options.find((o) => o.id === h.slaveTask!.current)!.note, 'muted'));
+  }
+
+  if (h.care) {
+    const row = el('div', undefined, 'care');
+    row.append(el('span', 'เลี้ยงดูทาส:', 'muted'));
+    for (const o of h.care.options) {
+      const b = button(o.label, async () => {
+        try {
+          renderPlayer(await engine.request({ type: 'setCare', care: o.id }));
+        } catch (e) {
+          status.textContent = errorText(e);
+        }
+      }, o.id === h.care.current ? 'on' : undefined);
+      b.title = o.note;
+      b.setAttribute('aria-pressed', String(o.id === h.care.current));
+      row.append(b);
+    }
+    servantBox.append(row);
+    servantBox.append(el('div', h.care.options.find((o) => o.id === h.care!.current)!.note, 'muted'));
+  }
+  box.append(servantBox);
+}
+
+let latestSkills: SkillsView | null = null;
+let latestDynasty: DynastyView | null = null;
+
+function renderSkillsAndLegacies() {
+  const box = $('skills');
+  box.replaceChildren(el('h2', 'การฝึกฝนวิชาและความชำนาญ'));
+  if (latestSkills) {
+    const s = latestSkills;
+    box.append(el('div', !s.canFocus
+      ? 'ยังตั้งใจฝึกวิชาไม่ได้ (ต้องอายุ 12 ปีขึ้นไปและไม่ได้อยู่ในสมณเพศ)'
+      : 'เลือกสายวิชาที่ต้องการฝึกฝนยามว่าง (ค่าครูเดือนละ 0.5 ตำลึง) เพื่อเพิ่มความชำนาญทุกเดือน และสะสมความก้าวหน้าปลดล็อกขั้นวิชา', 'muted'));
+
+    const anyCanUnlock = s.tracks.some((t) => t.canUnlock);
+    $('tabBtnSkills').textContent = anyCanUnlock ? 'วิชา (★)' : 'วิชา';
+
+    const grid = el('div', undefined, 'track-grid');
+    for (const tr of s.tracks) {
+      const card = el('div', undefined, `track-card${tr.focused ? ' active' : ''}`);
+      const head = el('div', undefined, 'panelhead');
+      head.append(el('h2', tr.name));
+      const focusBtn = button(tr.focused ? 'กำลังฝึกสายนี้' : 'เลือกฝึกสายนี้', async () => {
+        try {
+          const r = await engine.request({ type: 'setFocus', focus: tr.focused ? null : tr.id });
+          write(r.line, 'choice');
+          renderPlayer(r.player);
+        } catch (e) {
+          status.textContent = errorText(e);
+        }
+      }, tr.focused ? 'small on' : 'small');
+      focusBtn.disabled = !s.canFocus;
+      head.append(focusBtn);
+      card.append(head, el('div', `${tr.focusLabel} — ${tr.focusDesc}`, 'muted'));
+
+      const bar = el('progress') as HTMLProgressElement;
+      Object.assign(bar, { max: 100, value: Math.min(100, tr.xp) });
+      card.append(bar, el('div', `ความก้าวหน้าขั้นถัดไป: ${Math.min(100, tr.xp)}/100`, 'muted'));
+
+      const nextPerk = tr.perks.find((p) => !p.unlocked);
+      if (tr.canUnlock && nextPerk) {
+        const uBtn = button(`ปลดล็อกวิชา: ${nextPerk.name}`, async () => {
+          try {
+            const r = await engine.request({ type: 'unlockPerk', trackId: tr.id });
+            write(r.line, 'choice');
+            renderPlayer(r.player);
+          } catch (e) {
+            status.textContent = errorText(e);
+          }
+        }, 'small');
+        uBtn.style.marginTop = '6px';
+        card.append(uBtn);
+      }
+
+      const ul = el('ul', undefined, 'perk-list');
+      for (const p of tr.perks) {
+        const isNext = p.id === nextPerk?.id;
+        const li = el('li', undefined, `perk-item${p.unlocked ? ' unlocked' : isNext ? ' next' : ''}`);
+        li.append(el('strong', `${p.unlocked ? '✓ ' : `${p.tier}. `}${p.name}`), el('div', p.desc));
+        ul.append(li);
+      }
+      card.append(ul);
+      grid.append(card);
+    }
+    box.append(grid);
+  }
+
+  if (latestDynasty) {
+    const d = latestDynasty;
+    const legHead = el('h2', `มรดกประจำตระกูล (${d.name})`);
+    legHead.style.marginTop = '20px';
+    box.append(legHead);
+    box.append(el('div', `บารมีตระกูลสะสม ${d.prestige} แต้ม · ใช้บารมี ${d.nextLegacyCost} แต้มเพื่อจารึกมรดกขั้นถัดไป (ส่งผลติดตัวลูกหลานทุกรุ่น)${d.isHead ? '' : ' · เฉพาะผู้นำตระกูลจึงจะจารึกมรดกได้'}`, 'muted'));
+
+    const lGrid = el('div', undefined, 'track-grid');
+    for (const tr of d.legacies) {
+      const card = el('div', undefined, `track-card${tr.level > 0 ? ' active' : ''}`);
+      const head = el('div', undefined, 'panelhead');
+      head.append(el('h2', `${tr.name} (${tr.level}/${tr.steps.length})`));
+      if (tr.level < tr.steps.length) {
+        const uBtn = button(`จารึกขั้นที่ ${tr.level + 1} (${d.nextLegacyCost} บารมี)`, async () => {
+          try {
+            const r = await engine.request({ type: 'unlockLegacy', trackId: tr.id });
+            write(r.line, 'inherit');
+            renderDynasty(r.dynasty);
+            renderPlayer(r.player);
+          } catch (e) {
+            status.textContent = errorText(e);
+          }
+        }, 'small');
+        uBtn.disabled = !tr.canUnlock;
+        head.append(uBtn);
+      }
+      card.append(head, el('div', tr.desc, 'muted'));
+      const ul = el('ul', undefined, 'perk-list');
+      for (const s of tr.steps) {
+        const isNext = s.tier === tr.level + 1;
+        const li = el('li', undefined, `perk-item${s.unlocked ? ' unlocked' : isNext ? ' next' : ''}`);
+        li.append(el('strong', `${s.unlocked ? '✓ ' : `${s.tier}. `}${s.name}`), el('div', s.desc));
+        ul.append(li);
+      }
+      card.append(ul);
+      lGrid.append(card);
+    }
+    box.append(lGrid);
+  }
+}
+
 function renderPlayer(v: CharacterView) {
   const box = $('player');
   box.replaceChildren(el('h2', 'ตัวละคร'), ...artFigure('portrait', v.portraitTags));
   const who = el('div');
   who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
-  box.append(who);
+  box.append(who, ...statusPills(v.statuses));
   box.append(el('div', `ชนชั้น: ${v.estate} · ${v.purse > v.wealth ? `เงินใช้ในเรือน ${v.purse} ตำลึง (ของตัวเอง ${v.wealth})` : `ทรัพย์ ${v.wealth} ตำลึง`}`));
   if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));
   if (v.household) {
     const h = v.household;
-    box.append(el('h2', h.title));
-    for (const l of h.lines) box.append(el('div', l, 'lifestyle'));
-    if (h.slaveConcubine) {
-      box.append(button('รับทาสหญิงในเรือนเป็นเมียน้อย', async () => {
-        if (!confirm('รับทาสหญิงในเรือนเป็นเมียน้อย? เมียหลวงจะไม่พอใจหนัก')) return;
-        try {
-          for (const l of (await engine.request({ type: 'takeSlaveConcubine' })).lines) write(l, 'choice');
-          await refresh();
-        } catch (e) {
-          status.textContent = errorText(e);
-        }
-      }, 'small'));
-    }
-    if (h.care) {
-      const row = el('div', undefined, 'care');
-      row.append(el('span', 'เลี้ยงดูทาส:', 'muted'));
-      for (const o of h.care.options) {
-        const b = button(o.label, async () => {
-          try {
-            renderPlayer(await engine.request({ type: 'setCare', care: o.id }));
-          } catch (e) {
-            status.textContent = errorText(e);
-          }
-        }, o.id === h.care.current ? 'on' : undefined);
-        b.title = o.note;
-        b.setAttribute('aria-pressed', String(o.id === h.care.current));
-        row.append(b);
-      }
-      box.append(row);
-      box.append(el('div', h.care.options.find((o) => o.id === h.care!.current)!.note, 'muted'));
-    }
+    const head = el('div', undefined, 'panelhead');
+    head.style.marginTop = '8px';
+    head.append(el('h2', h.title), button('จัดการเรือน', () => showTab('house'), 'small'));
+    box.append(head);
+    if (h.lines[0]) box.append(el('div', h.lines[0], 'lifestyle'));
+    if (h.lines[h.lines.length - 1] && h.lines.length > 1) box.append(el('div', h.lines[h.lines.length - 1]!, 'muted'));
   }
+  renderHouse(v.household);
+  latestSkills = v.skills;
+  renderSkillsAndLegacies();
+  const sHead = el('div', undefined, 'panelhead');
+  sHead.style.marginTop = '8px';
+  sHead.append(el('h2', 'วิชาและความชำนาญ'), button('ฝึกวิชา', () => showTab('skills'), 'small'));
+  box.append(sHead);
+  const unlockedPerks = v.skills.tracks.flatMap((t) => t.perks.filter((p) => p.unlocked).map((p) => p.name));
+  if (unlockedPerks.length) box.append(el('div', `สำเร็จวิชา: ${unlockedPerks.join(' · ')}`, 'lifestyle'));
   const list = (title: string, items: string[]) => {
     if (!items.length) return;
     box.append(el('h2', title));
@@ -286,8 +519,9 @@ function renderPlayer(v: CharacterView) {
   playerNodeId = v.nodeId;
 }
 
-// ---------------- คนที่รู้จัก: ญาติ (พับไว้) + คนนอกตระกูล พร้อมปุ่มสิ่งที่ตั้งใจทำได้ ----------------
-let kinOpen = false;
+// ---------------- คนที่รู้จัก (แท็บแยก): คนในเรือน / ญาติต่างเรือน / คนนอกบ้าน พร้อมป้ายสถานะ ----------------
+let houseKinOpen = true;
+let otherKinOpen = true;
 
 function personRow(p: KnownPersonView): HTMLElement {
   const row = el('div', undefined, `person${p.focus ? ' focus' : ''}`);
@@ -297,24 +531,36 @@ function personRow(p: KnownPersonView): HTMLElement {
   more.title = `ทำอะไรกับ${p.name}`;
   more.setAttribute('aria-label', more.title);
   who.append(more);
-  row.append(who, el('div', p.detail, 'muted'));
+  row.append(who, ...statusPills(p.statuses), el('div', p.detail, 'muted'));
   return row;
 }
 
 function renderKnown(people: KnownPersonView[]) {
+  $('tabBtnKnown').textContent = people.length ? `คนที่รู้จัก (${people.length})` : 'คนที่รู้จัก';
   const box = $('known');
   const head = el('div', undefined, 'panelhead');
   head.append(el('h2', 'คนที่รู้จัก'), button('หาคู่', () => void openMatches()));
   box.replaceChildren(head);
-  const kin = people.filter((p) => p.kin);
+  const inHouse = people.filter((p) => p.kin && p.inHousehold);
+  const outKin = people.filter((p) => p.kin && !p.inHousehold);
   const others = people.filter((p) => !p.kin);
-  if (kin.length) {
+  if (inHouse.length) {
     const d = el('details') as HTMLDetailsElement;
-    d.open = kinOpen;
-    d.ontoggle = () => (kinOpen = d.open);
-    d.append(el('summary', `ครอบครัว (${kin.length})`), ...kin.map(personRow));
+    d.open = houseKinOpen;
+    d.ontoggle = () => (houseKinOpen = d.open);
+    d.append(el('summary', `คนในเรือนเดียวกัน (${inHouse.length})`), ...inHouse.map(personRow));
     box.append(d);
   }
+  if (outKin.length) {
+    const d = el('details') as HTMLDetailsElement;
+    d.open = otherKinOpen;
+    d.ontoggle = () => (otherKinOpen = d.open);
+    d.append(el('summary', `ญาติต่างเรือน (${outKin.length})`), ...outKin.map(personRow));
+    box.append(d);
+  }
+  const extHead = el('h2', `คนนอกบ้าน (${others.length})`);
+  extHead.style.marginTop = '12px';
+  box.append(extHead);
   if (!others.length) box.append(el('div', 'ยังไม่รู้จักใครนอกบ้าน', 'muted'));
   box.append(...others.map(personRow));
 }
@@ -367,8 +613,8 @@ async function openActions(targetId: string) {
   openModal(el('h2', `ทำอะไรกับ${v.name}`), ...buttons, row);
 }
 
-/** ปุ่มหาคู่: ได้รายชื่อมาดูตัว เลือกแล้วไปเกี้ยว (ยังไม่มีคู่) หรือรับเป็นเมียน้อย — หยุดเวลาไว้ระหว่างเลือก */
-async function openMatches() {
+/** ปุ่มหาคู่ / เลือกบ่าวในเรือนเป็นเมียบ่าว: ได้รายชื่อมาดูตัว เลือกแล้วไปเกี้ยวหรือรับเป็นเมียน้อย — หยุดเวลาไว้ระหว่างเลือก */
+async function openMatches(cmdType: 'findMatches' | 'findSlaveConcubines' = 'findMatches') {
   if (modalOpen()) return;
   const wasPlaying = clock.playing;
   if (wasPlaying) await clockCmd({ type: 'pause' });
@@ -378,9 +624,9 @@ async function openMatches() {
   };
   let v: MatchView;
   try {
-    v = await engine.request({ type: 'findMatches' });
+    v = await engine.request({ type: cmdType });
   } catch (e) {
-    status.textContent = `หาคู่ไม่ได้: ${errorText(e)}`;
+    status.textContent = cmdType === 'findMatches' ? `หาคู่ไม่ได้: ${errorText(e)}` : errorText(e);
     resume();
     return;
   }
@@ -398,16 +644,28 @@ async function openMatches() {
         await refresh();
         await openPlan(p.id, 'court', wasPlaying);
       })
-      : button('รับเป็นเมียน้อย', async () => {
-        try {
-          const evs = await engine.request({ type: 'proposeMinorWife', targetId: p.id });
-          closeModal();
-          await refresh();
-          if (evs[0]) renderEvent(evs[0]);
-        } catch (e) {
-          modal.append(el('p', errorText(e), 'error'));
-        }
-      });
+      : v.mode === 'slave_wife'
+        ? button('รับเป็นเมียบ่าว (เมียน้อย)', async () => {
+          try {
+            const r = await engine.request({ type: 'takeSlaveConcubine', targetId: p.id });
+            closeModal();
+            for (const l of r.lines) write(l, 'choice');
+            await refresh();
+            resume();
+          } catch (e) {
+            modal.append(el('p', errorText(e), 'error'));
+          }
+        })
+        : button('รับเป็นเมียน้อย', async () => {
+          try {
+            const evs = await engine.request({ type: 'proposeMinorWife', targetId: p.id });
+            closeModal();
+            await refresh();
+            if (evs[0]) renderEvent(evs[0]);
+          } catch (e) {
+            modal.append(el('p', errorText(e), 'error'));
+          }
+        });
     row.append(pick);
     return row;
   });
@@ -419,10 +677,13 @@ async function openMatches() {
   });
   const row = el('div', undefined, 'row');
   row.append(none);
+  const title = v.mode === 'slave_wife' ? 'รับบ่าวในเรือนเป็นเมีย' : 'หาคู่';
   const intro = v.mode === 'court'
     ? 'ถามผู้ใหญ่ที่รู้จักหลายบ้านว่าบ้านไหนมีลูกหลานยังไม่ออกเรือน ได้ชื่อมาดังนี้ คนที่ไม่ได้เลือกจะห่างหายไป'
-    : 'มีคนมาบอกว่าบ้านเหล่านี้มีลูกสาวที่พ่อแม่ยอมยกให้เป็นเมียน้อยของคนมีหน้ามีตา รับมาต้องเสียเงินและเมียหลวงย่อมไม่พอใจ';
-  openModal(el('h2', 'หาคู่'), el('p', intro), ...rows, row);
+    : v.mode === 'slave_wife'
+      ? 'บ่าวหญิงในเรือนที่พอจะยกขึ้นเป็นเมียบ่าว (เมียน้อย) ได้มีดังนี้ หากรับมาเมียหลวงย่อมไม่พอใจหนัก'
+      : 'มีคนมาบอกว่าบ้านเหล่านี้มีลูกสาวที่พ่อแม่ยอมยกให้เป็นเมียน้อยของคนมีหน้ามีตา รับมาต้องเสียเงินและเมียหลวงย่อมไม่พอใจ';
+  openModal(el('h2', title), el('p', intro), ...rows, row);
 }
 
 /** หน้าเลือกวิธี: โอกาสสำเร็จ เวลาโดยประมาณ และชีวิตประจำวันที่จะเปลี่ยน — หยุดเวลาไว้ระหว่างเลือก */
@@ -481,9 +742,17 @@ async function openPlan(targetId: string, kind: string, playingBefore?: boolean)
 }
 
 function renderDynasty(v: DynastyView) {
+  latestDynasty = v;
+  renderSkillsAndLegacies();
   const box = $('dynasty');
-  box.replaceChildren(el('h2', v.name));
+  const head = el('div', undefined, 'panelhead');
+  head.append(el('h2', v.name), button('มรดกตระกูล', () => showTab('skills'), 'small'));
+  box.replaceChildren(head);
   box.append(el('div', `บารมี ${v.prestige} · สมาชิกที่ยังมีชีวิต ${v.livingMembers} · ผังตระกูล ${v.familyNodes} คน`));
+  const unlockedLegacies = v.legacies.filter((l) => l.level > 0).map((l) => `${l.name} ขั้น ${l.level}`);
+  if (unlockedLegacies.length) {
+    box.append(el('div', `มรดกตระกูล: ${unlockedLegacies.join(' · ')}`, 'muted'));
+  }
   if (v.taboos.length) {
     const ul = el('ul');
     for (const t of v.taboos) ul.append(el('li', t));
@@ -651,7 +920,7 @@ function renderInspect(v: InspectView, reveal: boolean) {
     else dd.textContent = val;
     dl.append(el('dt', k), dd);
   }
-  box.replaceChildren(top, ...artFigure('portrait', v.portraitTags), el('div', `${v.lifespan} · ${v.status}`, 'muted'), dl);
+  box.replaceChildren(top, ...artFigure('portrait', v.portraitTags), el('div', `${v.lifespan} · ${v.status}`, 'muted'), ...statusPills(v.statuses), dl);
   for (const s of v.sections) {
     const ul = el('ul');
     for (const i of s.items) ul.append(el('li', i));
