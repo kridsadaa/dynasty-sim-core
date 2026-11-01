@@ -80,7 +80,7 @@ export interface LoreEntry {
   /** มีคนเปิดเอกสารจริงตรวจแล้ว */
   verified: boolean;
   /**
-   * AI ดึงเอกสารต้นฉบับมาเทียบแล้ว (ไม่ใช่ verified — หลักการข้อ 4 ให้คนตรวจ) — ช่วยคนตรวจรู้ว่าต้องดูตรงไหน
+   * AI ดึงเอกสารต้นฉบับมาเทียบแล้ว — นับเป็น verified ได้เมื่อ supported หรือแก้แล้ว (ROADMAP หลักการข้อ 4); verified + aiCheck = AI ตรวจ ไม่มี aiCheck = คนตรวจ
    * result: supported = ข้อความและข้ออ้างตรงต้นฉบับ, partial = บางส่วนไม่มีในต้นฉบับหรือ locator ผิด,
    *         contradicted = ต้นฉบับว่าอีกอย่าง, unreachable = หาต้นฉบับออนไลน์ไม่ได้
    * fixed: แก้รายการตามที่พบแล้ว (result ยังเป็นผลก่อนแก้)

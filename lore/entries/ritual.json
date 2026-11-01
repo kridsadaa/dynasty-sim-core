@@ -61,7 +61,7 @@
         "locator": "Part II ch. IX \"Of the Studies of the Siameses\" หน้า 58–59"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -93,7 +93,7 @@
         "locator": "บทที่ 2 หน้า 47; บทที่ 7 หน้า 143–144"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -130,7 +130,7 @@
         "locator": "เชิงอรรถบทที่ 6 ข้อ 18 หน้า 281–282"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -208,7 +208,7 @@
         "locator": "บทที่ 8 หน้า 164–165; หน้า 86, 146; เชิงอรรถบทที่ 8 ข้อ 1, 3 หน้า 290–291"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -247,7 +247,7 @@
         "quote": "It is rare that the People sends them away without giving them"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -288,7 +288,7 @@
         "quote": "They preach the next day after every new and every full Moon, and the People are ever very constant in the Temples"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "moon:any",
@@ -341,7 +341,7 @@
         "quote": "In Boxing, they guard their Hand with three or four rounds of Cord"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -381,7 +381,7 @@
         "quote": "There are of different Sizes, according to the Devotion of every particular Person"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -414,7 +414,7 @@
         "quote": "the Son and the Daughter do equally wash the Father and the Mother, the Grandfather and the Grandmother"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",

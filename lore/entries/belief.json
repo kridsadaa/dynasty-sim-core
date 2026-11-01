@@ -63,7 +63,7 @@
         "quote": "they cease not to believe themselves frequently tormented with their Apparitions"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "supernatural:guardian_spirit"
@@ -130,7 +130,7 @@
         "locator": "บทคัดย่อ"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "supernatural:omen"
@@ -174,7 +174,7 @@
         "locator": "หน้า 174–175, 178"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "supernatural:guardian_spirit"
@@ -212,7 +212,7 @@
         "locator": "หน้า 175–176"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -299,7 +299,7 @@
         "quote": "their spirits will come and haunt their friends"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "situation:childbirth"

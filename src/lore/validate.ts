@@ -186,16 +186,17 @@ for (const rule of anachronisms) {
 }
 
 // ---------- report ----------
-const byDomain = new Map<string, { total: number; verified: number }>();
+const byDomain = new Map<string, { total: number; verified: number; ai: number }>();
 for (const e of entries) {
-  const d = byDomain.get(e.domain) ?? { total: 0, verified: 0 };
+  const d = byDomain.get(e.domain) ?? { total: 0, verified: 0, ai: 0 };
   d.total++;
   if (e.verified) d.verified++;
+  if (e.verified && e.aiCheck) d.ai++;
   byDomain.set(e.domain, d);
 }
 console.log(`lore: ${sources.length} แหล่ง, ${entries.length} รายการ, ${anachronisms.length} กฎ anachronism`);
 console.log(`slice ปัจจุบัน: ${config.currentSlice.label} (พ.ศ. ${config.currentSlice.period.join('–')})`);
-for (const [d, c] of byDomain) console.log(`  ${d.padEnd(9)} ${c.verified}/${c.total} verified`);
+for (const [d, c] of byDomain) console.log(`  ${d.padEnd(9)} ${c.verified}/${c.total} verified${c.ai ? ` (AI ${c.ai})` : ''}`);
 const ai = new Map<string, number>();
 for (const e of entries) if (e.aiCheck) ai.set(e.aiCheck.result, (ai.get(e.aiCheck.result) ?? 0) + 1);
 if (ai.size) console.log(`  AI เทียบต้นฉบับแล้ว ${[...ai.values()].reduce((a, b) => a + b, 0)}/${entries.length}: ${[...ai].map(([k, n]) => `${k} ${n}`).join(', ')}`);

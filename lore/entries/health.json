@@ -41,7 +41,7 @@
         "locator": "pp. 183, 188–190 (อ้างบันทึกแบรดลีย์ ธ.ค. 2381 และ 19 ม.ค. 2382)"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "situation:smallpox"
@@ -101,7 +101,7 @@
         "locator": "หัวข้อ A life table perspective (อ้าง Varavarn 2000 และ Rungpitarangsi 1974)"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -149,7 +149,7 @@
         "quote": "died while “before the fire,”"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": [
         "situation:childbirth"
@@ -218,7 +218,7 @@
         "quote": "the average mortality is less, and the chance of life greater"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -277,7 +277,7 @@
         "quote": "probably are the only portion of the population that is doing so"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",

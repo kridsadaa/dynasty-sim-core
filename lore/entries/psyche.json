@@ -108,7 +108,7 @@
     "citations": [
       { "sourceId": "src.anuman_1962_khwan", "locator": "หน้า 131–134 และเชิงอรรถหน้า 134" }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -178,7 +178,7 @@
     "citations": [
       { "sourceId": "src.anuman_1954_phi", "locator": "หน้า 171" }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",

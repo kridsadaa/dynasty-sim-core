@@ -19,7 +19,7 @@
         "quote": "de petites citrouilles rouges en dedans, des melons d'eau"
       }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": ["food:pumpkin"]
     },
@@ -47,7 +47,7 @@
       { "sourceId": "src.la_loubere", "locator": "เล่ม 1 ภาค 1 บทที่ 9 'Des Jardins des Siamois'", "quote": "de petits concombres" },
       { "sourceId": "src.la_loubere_en_1693", "locator": "Part I ch. IX 'Of the Gardens of the Siameses'" }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": ["food:cucumber"]
     },
@@ -73,7 +73,7 @@
     "citations": [
       { "sourceId": "src.prosea_benincasa", "locator": "หัวข้อ 'Origin and geographic distribution', 'Vernacular names'" }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": ["food:wax_gourd"]
     },
@@ -102,7 +102,7 @@
     "citations": [
       { "sourceId": "src.la_loubere_en_1693", "locator": "Part II ch. II หน้า [29]–[31]" }
     ],
-    "verified": false,
+    "verified": true,
     "gameRefs": {
       "tags": ["place:kitchen", "house:riverside"]
     },
@@ -262,7 +262,7 @@
         "quote": "they are serv'd with Morsels ready cut"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -300,7 +300,7 @@
         "quote": "every one applies himself to know how to do a little of all"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -336,7 +336,7 @@
         "quote": "ร้อยดอกฉะบาเปนมาไลยไส่ ศีศะ ฅอ"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -366,7 +366,7 @@
         "quote": "Neatness appeared every where, but no Magnificence."
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",

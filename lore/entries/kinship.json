@@ -25,7 +25,7 @@
         "quote": "The new married persons continue there some Months"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -96,7 +96,7 @@
         "quote": "inherit from their Parents by equal Portions"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -159,7 +159,7 @@
         "locator": "หน้า 4, 8, 10–12 (อ้างมาตรา 50, 61)"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -199,7 +199,7 @@
         "quote": "house and hearth customarily go at death to the youngest daughter"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -233,7 +233,7 @@
         "locator": "เชิงอรรถบทที่ 2 ข้อ 24 หน้า 258"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -290,7 +290,7 @@
         "quote": "'milk money' that her husband or his parents pay her mother"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -377,7 +377,7 @@
         "locator": "หน้า 122, 134"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -426,7 +426,7 @@
         "locator": "หน้า 121 (ตาราง 12 มูลกรณี: หมวด 9 และ 11), 135–136"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -468,7 +468,7 @@
         "locator": "หน้า 122–124"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -513,7 +513,7 @@
         "quote": "The Love of free persons is not ignominious, at least amongst the Populace"
       }
     ],
-    "verified": false,
+    "verified": true,
     "appliesAs": "pattern",
     "projection": "ธรรมเนียมครอบครัวเปลี่ยนช้า และตัวบทลักษณผัวเมียที่ชำระ 2348 ยังมีโครงเดียวกัน (สู่ขอผ่านผู้ใหญ่ อำนาจพ่อแม่ หมวดหนีตามกัน หย่าได้) — ใช้เป็นแนวโน้มพฤติกรรม ไม่ยกเป็นรายละเอียดฉาก",
     "aiCheck": {
@@ -590,7 +590,7 @@
         "quote": "an old woman plaits a mat"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
@@ -653,7 +653,7 @@
         "quote": "there is found some Siameses. who disdain Marriage all their life"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "supported",
@@ -702,7 +702,7 @@
         "locator": "บทคัดย่อ — อายุและชั้นของตัวบท"
       }
     ],
-    "verified": false,
+    "verified": true,
     "aiCheck": {
       "date": "2026-10-31",
       "result": "partial",
