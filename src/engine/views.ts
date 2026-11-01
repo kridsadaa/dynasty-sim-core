@@ -10,7 +10,7 @@ import { careerHint, officeRank, officeStatus } from '../systems/career';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
-import { marriageHint, marriageStatus, purse } from '../systems/marriage';
+import { funds, marriageHint, marriageStatus, purse } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { eventArtTags, portraitArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
@@ -561,9 +561,15 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     if (items.length) sections.push({ title, items });
   };
   // ญาติในผัง — UI ทำชื่อเป็นปุ่มเปิดดูคนนั้นต่อได้
+  // คนที่ตายแล้วบอกไว้ — "คู่ครอง: อยู่" ทั้งที่ผัวตายไปแล้วชวนให้เข้าใจผิด
+  const gone = (id: FamilyNode['id']) => {
+    const n = S.familyNodes[id]!;
+    const c = n.characterId ? S.characters[n.characterId] : undefined;
+    return n.deathYear != null || (!!c && !isAlive(c));
+  };
   const linked = (label: string, ids: Array<FamilyNode['id'] | null>, sep: string) => {
     const list = ids.filter((id): id is FamilyNode['id'] => !!id && !!S.familyNodes[id])
-      .map((id) => ({ name: nodeName(id)!, nodeId: id }));
+      .map((id) => ({ name: `${nodeName(id)!}${gone(id) ? ' (ล่วงลับ)' : ''}`, nodeId: id }));
     if (!list.length) return;
     facts.push([label, list.map((x) => x.name).join(sep)]);
     links[label] = list;
@@ -798,6 +804,8 @@ interface ChoiceSnapshot {
   stats: Record<string, number>;
   /** "<role>|in" = คนนั้นรู้สึกต่อผู้เล่น, "<role>|out" = ผู้เล่นรู้สึกต่อคนนั้น */
   opinions: Record<string, number>;
+  /** คนที่เงินนับรวมเป็นของผู้เล่นตอนก่อนเลือก — หลังเลือกนับคนชุดเดิม (แต่งงานแยกเรือนแล้วเงินพ่อไม่ได้หายไปไหน) */
+  payers: Array<Character['id']>;
 }
 
 const STAT_LABEL: Record<string, [label: string, scale: number, digits: number, higherIsGood: boolean]> = {
@@ -808,10 +816,12 @@ const STAT_LABEL: Record<string, [label: string, scale: number, digits: number, 
   prestige: ['บารมีตระกูล', 1, 1, true],
 };
 
-export function choiceSnapshot(ctx: Ctx, p: PreparedEvent): ChoiceSnapshot {
+export function choiceSnapshot(ctx: Ctx, p: PreparedEvent, payers?: Array<Character['id']>): ChoiceSnapshot {
   const a = p.actor;
   const dyn = a.dynastyId ? ctx.state.dynasties[a.dynastyId] : undefined;
-  const stats: Record<string, number> = { merit: a.merit, stress: a.stress, wealth: purse(ctx, a), prestige: dyn?.prestige ?? 0 };
+  const who = payers ?? funds(ctx, a).map((c) => c.id);
+  const wealth = who.reduce((sum, id) => sum + Math.max(0, ctx.state.characters[id]?.social.wealth ?? 0), 0);
+  const stats: Record<string, number> = { merit: a.merit, stress: a.stress, wealth, prestige: dyn?.prestige ?? 0 };
   if (a.office) stats['favor'] = a.office.favor;
   for (const [k, v] of Object.entries(a.skills)) stats[`skill:${k}`] = v;
   const opinions: Record<string, number> = {};
@@ -820,14 +830,14 @@ export function choiceSnapshot(ctx: Ctx, p: PreparedEvent): ChoiceSnapshot {
     opinions[`${role}|in`] = opinion(ctx, id, a.id);
     opinions[`${role}|out`] = opinion(ctx, a.id, id);
   }
-  return { stats, opinions };
+  return { stats, opinions, payers: who };
 }
 
 export function choiceResult(
   ctx: Ctx, p: PreparedEvent, before: ChoiceSnapshot, report: EventReport, text: TextTable,
 ): ChoiceResult | undefined {
   const vars = eventVars(ctx, p);
-  const after = choiceSnapshot(ctx, p);
+  const after = choiceSnapshot(ctx, p, before.payers);
   const changes: ChoiceResult['changes'] = [];
   for (const [k, v] of Object.entries(after.stats)) {
     const d = v - (before.stats[k] ?? 0);
@@ -849,7 +859,10 @@ export function choiceResult(
     ? { text: fill(text[ageKey(ctx, p, report.outcome.textKey, text)] ?? report.outcome.textKey, vars), failed: report.outcome.failed }
     : undefined;
   // เปลี่ยนนิดเดียว (ช่วยงานบ้านทุกวัน) ไม่ต้องเด้งหน้าผล — บันทึกยังมีบรรทัดตามปกติ
-  if (!outcome && !relations.some((r) => Math.abs(r.after - r.before) >= RESULT_MIN_SHIFT)) return undefined;
+  // ตัวเลือกเสี่ยงที่สำเร็จแต่เปลี่ยนแค่ความหนักใจ/บุญเล็กน้อย (ขอไปเล่นแล้วแม่ยอม) ไม่ต้องเด้ง — พลาดเด้งเสมอ
+  const shifted = relations.some((r) => Math.abs(r.after - r.before) >= RESULT_MIN_SHIFT);
+  const weighty = changes.some((c) => c.label !== STAT_LABEL.stress![0] && c.label !== STAT_LABEL.merit![0]);
+  if (!shifted && !(outcome && (outcome.failed || weighty))) return undefined;
   const opt = p.options.find((o) => o.id === report.optionId);
   return {
     title: text[`${p.def.textKey}.title`] ?? p.def.id,

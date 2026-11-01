@@ -46,7 +46,9 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
     return req('festival.holy_day', withWho.child ? { child: withWho.child } : {}, { moon: full ? 'moon:full' : l.phaseDay === 14 ? 'moon:dark14' : 'moon:dark' });
   }
   const fairDays = (F.fairMonths[1] - F.fairMonths[0] + 1) * 29.5;
-  if (month >= F.fairMonths[0] && month <= F.fairMonths[1] && ctx.rng.chance(F.templeFairsPerYear / fairDays)) {
+  // งานวัดใกล้บ้านปีละครั้ง — สุ่มวันได้ แต่ไม่ซ้ำในปีเดียวกัน
+  const fairThisYear = Object.values(ctx.state.eventLog).some((e) => e.defId === 'festival.temple_fair' && e.bindings.actor === ch.id && ctx.state.meta.day - e.day < 300);
+  if (!fairThisYear && month >= F.fairMonths[0] && month <= F.fairMonths[1] && ctx.rng.chance(F.templeFairsPerYear / fairDays)) {
     const peer = canCourt(ctx, ch) && !withWho.beloved ? singlePeer(ctx, ch, true) : undefined;
     return req('festival.temple_fair', { ...withWho, ...(peer ? { stranger: peer.id } : {}) });
   }
