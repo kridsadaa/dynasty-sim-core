@@ -75,7 +75,7 @@ Medium-wide view of an outdoor kitchen in a house yard seen from the side: a sma
 
 ### scene.chore_housework — เด็กช่วยงานบ้าน กวาดชาน ขัดพื้นกระดาน และหาบน้ำขึ้นเรือน
 
-⬜ ยังไม่มีภาพ · tag: `chore:housework`
+✅ มีภาพแล้ว · tag: `chore:housework`
 
 lore: `material.floor_polishing` (invented, verified), `material.houses_1680s` (attested, verified), `material.household_objects_1680s` (attested), `kinship.child_chores_by_strength` (inferred, verified)
 
@@ -99,7 +99,7 @@ Medium view of a shaded veranda of a house: an old woman seated on the floor pla
 
 ### scene.chore_flowers — เด็กหญิงนั่งร้อยดอกไม้เป็นพวงกับผู้ใหญ่ มีดอกบัวกองอยู่บนกระด้ง
 
-⬜ ยังไม่มีภาพ · tag: `chore:flowers`
+✅ มีภาพแล้ว · tag: `chore:flowers`
 
 lore: `material.flower_stringing` (inferred, verified), `material.boats_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -111,7 +111,7 @@ Medium view of women and a girl seated on a reed mat on a veranda, threading sma
 
 ### scene.chore_merit — พระยืนเงียบที่หน้าประตูเรือนยามเช้า ผู้หญิงกับเด็กใส่ข้าวลงบาตร
 
-⬜ ยังไม่มีภาพ · tag: `chore:merit`
+✅ มีภาพแล้ว · tag: `chore:merit`
 
 lore: `ritual.alms_round_1680s` (attested, verified), `attire.monks_1680s` (attested), `material.household_objects_1680s` (attested)
 

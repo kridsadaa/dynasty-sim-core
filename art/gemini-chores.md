@@ -29,3 +29,20 @@ Medium view of women and a girl seated on a reed mat on a veranda, threading sma
 Image 4 (`scene.chore_merit`):
 Early morning in front of a house gate: a Buddhist monk in an ochre robe standing silently with his alms bowl held at his waist, eyes lowered; a woman and a child of about eight kneeling on a mat at the gate, the child lifting a spoonful of cooked rice from a covered bowl into the monk's bowl, a tray with bananas and small leaf-wrapped food beside them; misty light, bamboo fence, other houses in the background. (16:9 aspect ratio)
 ```
+
+---
+
+## ผลรอบแรก (1 พ.ย. 2569)
+
+ได้มา 3 ภาพ ใช้ได้ทั้งหมด: งานบ้าน งานดอกไม้ และงานบุญ ส่วนงานฝีมือยังไม่ได้ เพราะโควตา Gemini หมดก่อน
+
+ข้อบกพร่องที่ยอมรับไว้ก่อน มีจุดเดียวที่ซ้ำกันทุกภาพ คือผู้หญิงผู้ใหญ่ไว้ผมทรงบ็อบ และบางคนห่มผ้าเฉียงไหล่เดียว Gemini ยังวาดแบบนี้ซ้ำแม้ prompt จะห้ามไว้ ถ้าจะสร้างใหม่ ให้ใส่ประโยคบรรยายผมแบบด้านล่างลงไปในตัว prompt โดยตรง (รอบภาพนางขุนนางวิธีนี้ได้ผล)
+
+### ภาพที่ยังขาด: `scene.chore_craft`
+
+วางต่อจาก style block ข้างบน:
+
+```text
+Image (`scene.chore_craft`):
+Full-bleed painting filling the whole 16:9 frame edge to edge, no white paper margins. Medium view of a shaded veranda of a house: an old woman seated on the floor plaiting a reed mat, strips of dried reed fanned out around her and a half-finished mat across her lap; her grey hair is cut very short like a man's, cropped level with the top of the ears, the sides shaved close, nothing hanging down; her dark breast-cloth wrapped horizontally around her chest with both ends thrown back over both shoulders. Beside her a girl of about ten, bare-chested in a small lower cloth, shaved head with a small topknot on the crown, head bent, sewing a small piece of cotton cloth with a needle and thread; a flat basket of thread and cloth between them; afternoon light, a younger child playing in the shade under the house below. Avoid: bob haircut, hair bun, hair covering the ears, one-shoulder diagonal sash, white borders. (16:9 aspect ratio)
+```

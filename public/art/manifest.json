@@ -47,6 +47,39 @@
       "height": 572
     },
     {
+      "id": "scene.chore_housework",
+      "file": "art/scene.chore_housework.webp",
+      "style": "reality",
+      "tags": [
+        "chore:housework"
+      ],
+      "alt": "เด็กช่วยงานบ้าน กวาดชาน ขัดพื้นกระดาน และหาบน้ำขึ้นเรือน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.chore_flowers",
+      "file": "art/scene.chore_flowers.webp",
+      "style": "reality",
+      "tags": [
+        "chore:flowers"
+      ],
+      "alt": "เด็กหญิงนั่งร้อยดอกไม้เป็นพวงกับผู้ใหญ่ มีดอกบัวกองอยู่บนกระด้ง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.chore_merit",
+      "file": "art/scene.chore_merit.webp",
+      "style": "reality",
+      "tags": [
+        "chore:merit"
+      ],
+      "alt": "พระยืนเงียบที่หน้าประตูเรือนยามเช้า ผู้หญิงกับเด็กใส่ข้าวลงบาตร",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "scene.meal",
       "file": "art/scene.meal.webp",
       "style": "reality",
