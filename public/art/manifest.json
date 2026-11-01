@@ -398,6 +398,61 @@
       "height": 572
     },
     {
+      "id": "scene.bedside_first",
+      "file": "art/scene.bedside_first.webp",
+      "style": "reality",
+      "tags": [
+        "event:marriage.visit_first"
+      ],
+      "alt": "ชายหญิงนั่งเคียงกันบนแท่นนอนในห้องเล็ก ชายจับมือหญิง ตะเกียงดวงเดียว",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.bedside_pregnant",
+      "file": "art/scene.bedside_pregnant.webp",
+      "style": "reality",
+      "tags": [
+        "event:marriage.visit_pregnant"
+      ],
+      "alt": "หญิงท้องแก่พิงหมอนบนแท่นนอน ชายนั่งจับมือนางอยู่ข้างๆ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.bedside_cold",
+      "file": "art/scene.bedside_cold.webp",
+      "style": "reality",
+      "tags": [
+        "event:marriage.visit_cold"
+      ],
+      "alt": "หญิงนั่งกอดเข่าหันข้างอยู่ปลายแท่นนอน ชายถือของฝากนั่งมองนางอย่างลังเล",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.court_minor",
+      "file": "art/scene.court_minor.webp",
+      "style": "reality",
+      "tags": [
+        "event:intent.court.minor"
+      ],
+      "alt": "ชายยืนที่โคนบันไดยื่นพานหมากขึ้นไป หญิงยืนกอดอกบนชาน พ่อแม่นั่งฟังอยู่ในประตู",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.river_rescue",
+      "file": "art/scene.river_rescue.webp",
+      "style": "reality",
+      "tags": [
+        "event:life.drowning"
+      ],
+      "alt": "ชายยืนในน้ำถึงเอวอุ้มเด็กไว้จุกขึ้นฝั่ง ชาวบ้านวิ่งมา",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "legend.battle",
       "file": "art/legend.battle.webp",
       "style": "chronicle",
