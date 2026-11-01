@@ -6,7 +6,7 @@ import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
 import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB } from './core/types';
-import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
+import { chooseOption, prepareEvent, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
 import { knownLocals, spawnLocal } from './systems/acquaintance';
@@ -15,6 +15,7 @@ import { activeIntent, planIntent, startIntent, targetProblem } from './systems/
 import { bootstrapScenario } from './systems/scenario';
 import { markNursing } from './systems/lifeEvents';
 import { advanceDay } from './systems/world';
+import { riskChance } from './systems/will';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
 const content: ContentDB = buildContentDB({
@@ -354,6 +355,38 @@ demographyReport();
   console.log('ผู้เล่นเป็นฝ่ายหญิง:');
   check('ระบบแต่งงานฝั่งเจ้าสาว', problems);
   if (failed === b) console.log('  ✓ สินสอดเข้าบ้านเจ้าสาว ค่าน้ำนมแบ่งกึ่งหนึ่ง ไม่ต้องไปช่วยงานบ้านชาย');
+}
+
+// [5c] ตัวเลือกเสี่ยง: ทุก risk มีข้อความครบ, ทอยแล้วพลาดราวโอกาสที่บอก และพลาดแล้วได้ผลชุด fail
+{
+  const before = failed;
+  console.log('ตัวเลือกเสี่ยง:');
+  const text = load('text.th.json') as Record<string, string>;
+  check('ข้อความของ risk', Object.values(content.events).flatMap((d) => d.options.flatMap((o) => {
+    if (!o.risk) return [];
+    const keys = [o.risk.hintKey, o.risk.fail.textKey, ...(o.risk.successKey ? [o.risk.successKey] : [])];
+    return keys.filter((k) => !text[k]).map((k) => `${d.id}.${o.id}: ไม่มี ${k}`);
+  })));
+  const ctx = makeCtx(emptyState(23), content);
+  const hero = bootstrapScenario(ctx);
+  ctx.state.meta.day += yearsToDays(10);
+  let fails = 0;
+  let expected = 0;
+  const problems: string[] = [];
+  const N = 400;
+  for (let i = 0; i < N; i++) {
+    const p = prepareEvent(ctx, 'festival.holy_day', { actor: hero.id }, { moon: 'moon:full' });
+    p.locked.clear();
+    const opt = p.options.find((o) => o.id === 'fish')!;
+    expected += riskChance(ctx, hero, opt.risk!, () => undefined);
+    const stress = hero.stress = 0.5;
+    const r = chooseOption(ctx, p, 'fish');
+    if (r.outcome?.failed) fails++;
+    if (r.outcome?.failed !== hero.stress > stress) problems.push(`ผล ${r.outcome?.failed ? 'พลาด' : 'สำเร็จ'} แต่ความหนักใจ ${stress} → ${hero.stress}`);
+  }
+  if (Math.abs(fails - expected) > N * 0.08) problems.push(`พลาด ${fails}/${N} ครั้ง แต่คาดไว้ราว ${Math.round(expected)}`);
+  check('ทอยตัวเลือกเสี่ยง', problems.slice(0, 3));
+  if (failed === before) console.log(`  ✓ ข้อความครบ · พลาด ${fails}/${N} (คาดไว้ ${Math.round(expected)}) · ผลตรงกับที่ทอยได้`);
 }
 
 // [6] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

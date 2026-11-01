@@ -14,6 +14,7 @@ import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { eventArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
+import { riskChance } from '../systems/will';
 import type {
   CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
   OddsFactorView, TreeView,
@@ -238,8 +239,15 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
   return { default: kid.name, label: `ชื่อ${kid.sex === 'm' ? 'เด็กชาย' : 'เด็กหญิง'}` };
 }
 
-/** ผลคร่าวๆ ของตัวเลือกในราชการ: เงิน ความโปรดปราน บุญบาป — ไม่บอกตัวเลขความโปรดปราน (เดาใจนายได้แค่คร่าวๆ) */
-function effectHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects']): string | undefined {
+/**
+ * ผลคร่าวๆ ที่ตัวละครเดาได้ก่อนเลือก
+ *  ราชการ: เงิน ความโปรดปราน บุญบาป — ไม่บอกตัวเลขความโปรดปราน (เดาใจนายได้แค่คร่าวๆ)
+ *  เรื่องในบ้าน: ใจต่อผู้ใหญ่ ความหนักใจ บุญบาป หน้าตาของตระกูล — ราคาอยู่ในข้อความตัวเลือกแล้ว จึงไม่บอกเงินซ้ำ
+ */
+function effectHint(
+  ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>,
+): string | undefined {
+  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars);
   const parts: string[] = [];
   for (const e of effects) {
     if (e.op === 'followUp') {
@@ -255,6 +263,53 @@ function effectHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'
     if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
   }
   return parts.length ? parts.join(' · ') : undefined;
+}
+
+function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>): string | undefined {
+  const parts: string[] = [];
+  for (const e of effects) {
+    if (e.op === 'bond' && e.role === 'actor') {
+      const to = vars[e.toward] ?? e.toward;
+      if (e.affection) parts.push(e.affection > 0 ? `สนิทกับ${to}ขึ้น` : `ห่างเหิน${to}`);
+      if (e.awe && e.awe > 0) parts.push(`เกรง${to}ขึ้น`);
+    }
+    if (e.op === 'wound' && e.role === 'actor') parts.push(e.severity[1] >= 0.3 ? 'เจ็บหนัก' : 'เจ็บตัว');
+    if (e.op === 'stress' && e.role === 'actor' && e.delta) parts.push(e.delta > 0 ? 'หนักใจขึ้น' : 'สบายใจขึ้น');
+    if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
+    if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');
+  }
+  return parts.length ? [...new Set(parts)].join(' · ') : undefined;
+}
+
+/** ตัวเลือกเสี่ยง: "อาจถูกจับได้ (ราว 40%)" แล้วตามด้วยผลถ้าพลาด */
+function riskHint(ctx: Ctx, p: PreparedEvent, o: PreparedEvent['options'][number], text: TextTable, vars: Record<string, string>): string | undefined {
+  if (!o.risk) return undefined;
+  const who = (role: string) => ctx.state.characters[p.instance.bindings[role] ?? ('' as Character['id'])];
+  const chance = Math.round(riskChance(ctx, p.actor, o.risk, who) * 20) * 5; // ปัดทีละ 5% — เดาได้แค่คร่าวๆ
+  const ifFail = everydayHint(o.risk.fail.effects, vars);
+  return `${fill(text[o.risk.hintKey] ?? o.risk.hintKey, vars)} (ราว ${chance}%)${ifFail ? ` — ถ้าพลาด: ${ifFail}` : ''}`;
+}
+
+/** ชื่อคนในแต่ละ role (พ่อแม่ของ actor เรียกแบบลูก) และตัวแปรของ event — ใช้เติมข้อความ event และบรรทัดผลของตัวเลือก */
+export function eventVars(ctx: Ctx, p: PreparedEvent): Record<string, string> {
+  const vars: Record<string, string> = {};
+  const actorNode = ctx.state.familyNodes[p.actor.familyNodeId];
+  // ญาติที่ตาย: คำเรียกมากับ event (tie) — "เมีย(บัว)"
+  const tie = p.instance.vars['tie'] ? ctx.tags.label(p.instance.vars['tie']) : '';
+  for (const [role, id] of Object.entries(p.instance.bindings)) {
+    const ch = ctx.state.characters[id];
+    // เรียกพ่อแม่ตามที่ลูกเรียก ชื่ออยู่ในวงเล็บ: "แม่(แย้ม)" ไม่ใช่ "แย้ม"
+    const kin = ch && (ch.familyNodeId === actorNode?.motherId ? 'แม่' : ch.familyNodeId === actorNode?.fatherId ? 'พ่อ' : role === 'deceased' ? tie : '');
+    vars[role] = !ch ? role : kin ? `${kin}(${ch.name})` : ch.name;
+  }
+  // ตัวแปรส่วนใหญ่เป็น tag → ชื่อไทย; บาง event ส่งข้อความมาตรงๆ (ตำนานที่เล่ากับเรื่องจริง)
+  for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.def(v) ? ctx.tags.label(v) : v;
+  return vars;
+}
+
+/** บรรทัดในบันทึกที่บอกว่าตัวเลือกเสี่ยงสำเร็จหรือพลาด */
+export function outcomeLine(ctx: Ctx, p: PreparedEvent, textKey: string, text: TextTable): string {
+  return fill(text[textKey] ?? textKey, eventVars(ctx, p));
 }
 
 /** ตัวเลือกที่เป็นขั้นตอนแต่งงาน → บอกราคาและโอกาสไว้ก่อนเลือก */
@@ -273,18 +328,7 @@ function optionHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'
 }
 
 export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventView {
-  const vars: Record<string, string> = {};
-  const actorNode = ctx.state.familyNodes[p.actor.familyNodeId];
-  // ญาติที่ตาย: คำเรียกมากับ event (tie) — "เมีย(บัว)"
-  const tie = p.instance.vars['tie'] ? ctx.tags.label(p.instance.vars['tie']) : '';
-  for (const [role, id] of Object.entries(p.instance.bindings)) {
-    const ch = ctx.state.characters[id];
-    // เรียกพ่อแม่ตามที่ลูกเรียก ชื่ออยู่ในวงเล็บ: "แม่(แย้ม)" ไม่ใช่ "แย้ม"
-    const kin = ch && (ch.familyNodeId === actorNode?.motherId ? 'แม่' : ch.familyNodeId === actorNode?.fatherId ? 'พ่อ' : role === 'deceased' ? tie : '');
-    vars[role] = !ch ? role : kin ? `${kin}(${ch.name})` : ch.name;
-  }
-  // ตัวแปรส่วนใหญ่เป็น tag → ชื่อไทย; บาง event ส่งข้อความมาตรงๆ (ตำนานที่เล่ากับเรื่องจริง)
-  for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.def(v) ? ctx.tags.label(v) : v;
+  const vars = eventVars(ctx, p);
   const willNote = (id: string) => {
     const r = p.resist.get(id);
     if (!r) return undefined;
@@ -302,7 +346,8 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       injected: !!o.injectedBy,
       note: willNote(o.id),
       nameInput: o.input === 'name' ? nameInput(ctx, p) : undefined,
-      hint: optionHint(ctx, p, o.effects) ?? (p.def.id.startsWith('career.') ? effectHint(ctx, p, o.effects) : undefined),
+      hint: [optionHint(ctx, p, o.effects) ?? effectHint(ctx, p, o.effects, vars), riskHint(ctx, p, o, text, vars)]
+        .filter(Boolean).join(' · ') || undefined,
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
     artTags: eventArtTags(p.def.id, ctx.tags.expand(p.instance.resolvedTags)),

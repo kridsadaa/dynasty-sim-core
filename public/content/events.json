@@ -87,10 +87,11 @@
     "percepts": [],
     "options": [
       { "id": "eat", "textKey": "event.court_feast.eat", "tags": ["$dish"],
-        "effects": [ { "op": "prestige", "role": "actor", "delta": 1 } ] },
+        "effects": [ { "op": "prestige", "role": "actor", "delta": 0.5 } ] },
       { "id": "chat", "textKey": "event.court_feast.chat",
         "resist": [ { "source": "personality", "trait": "boldness", "invert": true, "weight": 0.8, "reasonKey": "shy" } ],
-        "effects": [ { "op": "prestige", "role": "actor", "delta": 0.5 } ] }
+        "risk": {"base":0.2,"factors":[{"source":"personality","trait":"boldness","invert":true,"weight":0.3,"reasonKey":"shy"}],"hintKey":"risk.misspeak","successKey":"outcome.feast_chat.ok","fail":{"textKey":"outcome.feast_chat.bad","effects":[{"op":"prestige","role":"actor","delta":-0.5},{"op":"stress","role":"actor","delta":0.03}]}},
+        "effects": [ { "op": "prestige", "role": "actor", "delta": 1.5 } ] }
     ]
   },
   "intent.befriend.done": {
@@ -1095,6 +1096,7 @@
       {
         "id": "later",
         "textKey": "event.chore_ask.later",
+        "risk": {"base":0.25,"factors":[{"source":"bond","role":"caregiver","axis":"awe","weight":0.3,"reasonKey":"awe"},{"source":"sex","f":0.15,"reasonKey":"expected_girl"}],"hintKey":"risk.chore_later","successKey":"outcome.chore_later.ok","fail":{"textKey":"outcome.chore_later.no","effects":[{"op":"chore","role":"actor","action":"join","teacher":"caregiver"},{"op":"bond","role":"actor","toward":"caregiver","affection":-0.02},{"op":"stress","role":"actor","delta":0.04}]}},
         "resist": [
           {
             "source": "bond",
@@ -1117,24 +1119,12 @@
             "reasonKey": "expected_girl"
           }
         ],
-        "effects": [
-          {
-            "op": "chore",
-            "role": "actor",
-            "action": "decline"
-          },
-          {
-            "op": "bond",
-            "role": "actor",
-            "toward": "caregiver",
-            "affection": -0.03,
-            "awe": 0.04
-          }
-        ]
+        "effects": [{"op":"chore","role":"actor","action":"decline"},{"op":"stress","role":"actor","delta":-0.02}]
       },
       {
         "id": "sneak",
         "textKey": "event.chore_ask.sneak",
+        "risk": {"base":0.45,"factors":[{"source":"personality","trait":"boldness","weight":-0.2,"reasonKey":"bold"}],"hintKey":"risk.caught","successKey":"outcome.chore_sneak.ok","fail":{"textKey":"outcome.chore_sneak.caught","effects":[{"op":"chore","role":"actor","action":"decline"},{"op":"bond","role":"actor","toward":"caregiver","affection":-0.08,"awe":0.12},{"op":"stress","role":"actor","delta":0.06}]}},
         "resist": [
           {
             "source": "bond",
@@ -1157,25 +1147,7 @@
             "reasonKey": "expected_girl"
           }
         ],
-        "effects": [
-          {
-            "op": "chore",
-            "role": "actor",
-            "action": "decline"
-          },
-          {
-            "op": "bond",
-            "role": "actor",
-            "toward": "caregiver",
-            "affection": -0.06,
-            "awe": 0.08
-          },
-          {
-            "op": "stress",
-            "role": "actor",
-            "delta": -0.05
-          }
-        ]
+        "effects": [{"op":"chore","role":"actor","action":"decline"},{"op":"stress","role":"actor","delta":-0.06}]
       }
     ]
   },
@@ -1681,6 +1653,7 @@
       {
         "id": "fish",
         "textKey": "event.holy_day.fish",
+        "risk": {"base":0.3,"hintKey":"risk.elder_finds_out","successKey":"outcome.holy_fish.ok","fail":{"textKey":"outcome.holy_fish.caught","effects":[{"op":"merit","role":"actor","delta":-1},{"op":"stress","role":"actor","delta":0.04}]}},
         "resist": [
           {
             "source": "personality",
@@ -1742,6 +1715,7 @@
       {
         "id": "box",
         "textKey": "event.temple_fair.box",
+        "risk": {"base":0.55,"factors":[{"source":"personality","trait":"boldness","weight":-0.2,"reasonKey":"bold"}],"hintKey":"risk.box_lose","successKey":"outcome.box.win","fail":{"textKey":"outcome.box.lose","effects":[{"op":"wound","role":"actor","part":{"tag":"body:face"},"kind":"blunt","severity":[0.2,0.45]},{"op":"stress","role":"actor","delta":0.03}]}},
         "conditions": [
           {
             "type": "sex",
@@ -1772,13 +1746,13 @@
             "kind": "blunt",
             "severity": [
               0.05,
-              0.35
+              0.15
             ]
           },
           {
             "op": "prestige",
             "role": "actor",
-            "delta": 0.5
+            "delta": 1
           }
         ]
       },
@@ -1954,6 +1928,11 @@
             "role": "actor",
             "toward": "parent",
             "affection": -0.02
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.02
           }
         ]
       }

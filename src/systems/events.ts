@@ -10,7 +10,7 @@ import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
 import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
-import { adjustBond, resistance, type Resistance } from './will';
+import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { divorce, takeMinorWife } from './wives';
 import { markNursing, markTopknot } from './lifeEvents';
 
@@ -275,6 +275,8 @@ export interface EventReport {
   named?: { characterId: Character['id']; name: string; byPlayer: boolean };
   /** บรรทัด log จาก effect (แต่งงานแล้วไปอยู่ที่ไหน) */
   notes: string[];
+  /** ผลของตัวเลือกเสี่ยง — textKey คือบรรทัดที่บอกผู้เล่นว่าสำเร็จหรือพลาด */
+  outcome?: { failed: boolean; textKey?: string };
 }
 
 /** input.name: ชื่อที่ผู้เล่นพิมพ์ สำหรับตัวเลือก input 'name' — ไม่ส่งมา = ใช้ชื่อที่ตั้งไว้ก่อน */
@@ -296,8 +298,14 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
     const id = p.instance.bindings[role];
     return id ? ctx.state.characters[id] : undefined;
   };
+  let effects = opt.effects;
+  if (opt.risk) {
+    const failed = ctx.rng.chance(riskChance(ctx, p.actor, opt.risk, who));
+    report.outcome = { failed, textKey: failed ? opt.risk.fail.textKey : opt.risk.successKey };
+    if (failed) effects = opt.risk.fail.effects;
+  }
 
-  for (const e of [...opt.effects, ...p.extraEffects]) {
+  for (const e of [...effects, ...p.extraEffects]) {
     if (e.op === 'followUp') {
       if (!report.followUp && ctx.rng.chance(e.chance)) report.followUp = e.event;
       continue;

@@ -12,7 +12,8 @@ import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
 import {
-  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, playerView, treeView,
+  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, outcomeLine, playerView,
+  treeView,
   type TextTable,
 } from './views';
 
@@ -293,6 +294,7 @@ async function handle(cmd: Command): Promise<unknown> {
         t.branches.map((b) => `ฝังใจ: ${describeTrait(c, must(c.state.traits[b.traitId], 'trait'))}`),
       );
       if (rep.wounds.length) lines.unshift(`บาดเจ็บ ${rep.wounds.length} แห่ง`);
+      if (rep.outcome?.textKey) lines.unshift(outcomeLine(c, p, rep.outcome.textKey, text));
       if (rep.strained) lines.unshift('ฝืนใจทำ — หนักใจขึ้น');
       if (rep.named) lines.push(`ตั้งชื่อว่า "${rep.named.name}"`);
       lines.push(...rep.notes);

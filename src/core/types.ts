@@ -620,12 +620,28 @@ export type Resist =
   /** ความคาดหวังตามเพศ (ลูกผู้หญิงปฏิเสธงานครัวยากกว่า) — ค่าต่อเพศโดยตรง */
   | { source: 'sex'; f?: number; m?: number; reasonKey: string };
 
+/**
+ * โอกาสพลาด = base + Σ (ค่าปัจจัย 0..1 × weight) ตัดไว้ที่ 5–95% — weight ติดลบ = ช่วยให้สำเร็จ
+ * ตัวเลขทั้งหมดเป็นค่าของเกม ไม่ได้มาจากเอกสาร
+ */
+export interface OptionRisk {
+  base: number;
+  factors?: Resist[];
+  /** ข้อความใต้ตัวเลือก เช่น "อาจถูกจับได้" — ระบบต่อท้ายด้วยโอกาสราวๆ */
+  hintKey: string;
+  /** บรรทัดในบันทึกเมื่อสำเร็จ (ไม่ใส่ = ไม่มีบรรทัดเพิ่ม) */
+  successKey?: string;
+  fail: { textKey: string; effects: Effect[] };
+}
+
 export interface EventOption {
   id: string;
   textKey: string;
   tags?: Array<TagId | VarRef>;
   conditions?: Condition[];
   resist?: Resist[];
+  /** ทำแล้วอาจไม่สำเร็จ — ทอยตอนเลือก พลาดแล้วใช้ fail.effects แทน effects */
+  risk?: OptionRisk;
   /** 'name' = ผู้เล่นพิมพ์ชื่อเอง — UI ถามชื่อก่อนส่งตัวเลือกนี้ */
   input?: 'name';
   effects: Effect[];

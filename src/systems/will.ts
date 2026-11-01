@@ -1,6 +1,6 @@
 import type { Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
-import type { Character, Resist } from '../core/types';
+import type { Character, OptionRisk, Resist } from '../core/types';
 
 // ============================================================================
 // Will — นิสัยและความรู้สึกต่อคนรอบตัว กำหนดว่าตัวละคร "ยอม" เลือกอะไรได้บ้าง
@@ -35,6 +35,24 @@ export function adjustBond(ctx: Ctx, from: Character, to: Character, axis: BondA
   const prev = ctx.state.relations[id];
   ctx.state.relations[id] = { id, from: from.id, to: to.id, kind: axis, strength, sinceDay: prev?.sinceDay ?? ctx.state.meta.day };
   return strength;
+}
+
+/** โอกาสที่ตัวเลือกเสี่ยงจะพลาด (ดู OptionRisk) — ปัจจัยใช้รูปแบบเดียวกับ resist แต่บวกลบได้ */
+export function riskChance(
+  ctx: Ctx, actor: Character, risk: OptionRisk, who: (role: string) => Character | undefined,
+): number {
+  let p = risk.base;
+  for (const f of risk.factors ?? []) {
+    if (f.source === 'sex') p += f[actor.sex] ?? 0;
+    else if (f.source === 'bond') {
+      const other = who(f.role);
+      if (other) p += f.weight * bond(ctx, actor, other, f.axis);
+    } else {
+      const v = actor.personality[f.trait];
+      p += f.weight * (f.invert ? 1 - v : v);
+    }
+  }
+  return Math.min(0.95, Math.max(0.05, p));
 }
 
 export interface Resistance {
