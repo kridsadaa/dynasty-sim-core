@@ -76,9 +76,10 @@ const paidText = (ch: Character, r: { by: Character; paid: number }) =>
  */
 const isBride = (ch: Character) => ch.sex === 'f';
 
-/** เงินจากบ้านเจ้าบ่าวเข้าบ้านเจ้าสาว — เข้าพ่อหรือแม่ที่เป็นหัวเรือน (หรือตัวเธอเองถ้าไม่มี) */
+/** เงินจากบ้านเจ้าบ่าวเข้าบ้านเจ้าสาว — เข้าพ่อหรือแม่ (คนที่อยู่เรือนเดียวกันก่อน) ไม่มีพ่อแม่จึงเข้ามือเธอเอง */
 function receive(ctx: Ctx, bride: Character, amount: number): Character {
-  const to = funds(ctx, bride).at(-1)!;
+  const parents = livingParents(ctx, bride);
+  const to = parents.find((p) => p.householdId === bride.householdId) ?? parents[0] ?? bride;
   to.social.wealth += amount;
   return to;
 }
@@ -235,7 +236,7 @@ function applyBrideStep(ctx: Ctx, step: MarriageStep, actor: Character, other: C
       delete actor.betrothal;
       if (!b || !free(actor) || !free(other)) break;
       const to = receive(ctx, actor, b.sinsot);
-      notes.push(`บ้าน${other.name}ยกขันหมากใหญ่มาแต่ง สินสอด ${b.sinsot} ตำลึงเข้า${to === actor ? 'มือ' : 'บ้าน'}${to.name}`);
+      notes.push(`บ้าน${other.name}ยกขันหมากใหญ่มาแต่ง สินสอด ${b.sinsot} ตำลึง${to === actor ? `เข้ามือ${actor.name}` : `ให้${to.sex === 'm' ? 'พ่อ' : 'แม่'}(${to.name})`}`);
       notes.push(wed(ctx, actor, other));
       break;
     }
