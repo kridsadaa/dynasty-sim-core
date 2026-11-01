@@ -80,18 +80,188 @@
   "adult.court_feast": {
     "id": "adult.court_feast",
     "textKey": "event.court_feast",
-    "contextTags": ["situation:feast", "place:court", "$dish"],
-    "variables": { "dish": { "oneOf": ["food:pumpkin", "food:cucumber", "food:wax_gourd"] } },
-    "roles": { "actor": { "ageRange": [16, 80] } },
-    "trigger": { "ageRange": [16, 80], "office": {}, "weight": 1, "cooldownDays": 1080 },
+    "contextTags": [
+      "situation:feast",
+      "place:court",
+      "$dish"
+    ],
+    "variables": {
+      "dish": {
+        "oneOf": [
+          "food:pumpkin",
+          "food:cucumber",
+          "food:wax_gourd"
+        ]
+      }
+    },
+    "roles": {
+      "actor": {
+        "ageRange": [
+          16,
+          80
+        ]
+      },
+      "patron": {
+        "relationToActor": "patron"
+      }
+    },
+    "trigger": {
+      "ageRange": [
+        16,
+        80
+      ],
+      "office": {},
+      "weight": 1,
+      "cooldownDays": 1080
+    },
     "percepts": [],
     "options": [
-      { "id": "eat", "textKey": "event.court_feast.eat", "tags": ["$dish"],
-        "effects": [ { "op": "prestige", "role": "actor", "delta": 0.5 } ] },
-      { "id": "chat", "textKey": "event.court_feast.chat",
-        "resist": [ { "source": "personality", "trait": "boldness", "invert": true, "weight": 0.8, "reasonKey": "shy" } ],
-        "risk": {"base":0.2,"factors":[{"source":"personality","trait":"boldness","invert":true,"weight":0.3,"reasonKey":"shy"}],"hintKey":"risk.misspeak","successKey":"outcome.feast_chat.ok","fail":{"textKey":"outcome.feast_chat.bad","effects":[{"op":"prestige","role":"actor","delta":-0.5},{"op":"stress","role":"actor","delta":0.03}]}},
-        "effects": [ { "op": "prestige", "role": "actor", "delta": 1.5 } ] }
+      {
+        "id": "eat",
+        "textKey": "event.court_feast.eat",
+        "tags": [
+          "$dish"
+        ],
+        "effects": [
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 0.5
+          }
+        ]
+      },
+      {
+        "id": "chat",
+        "textKey": "event.court_feast.chat",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.8,
+            "reasonKey": "shy"
+          }
+        ],
+        "risk": {
+          "base": 0.35,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "invert": true,
+              "weight": 0.25,
+              "reasonKey": "shy"
+            },
+            {
+              "source": "skill",
+              "skill": "speech",
+              "weight": -0.3,
+              "reasonKey": "speech"
+            }
+          ],
+          "hintKey": "risk.misspeak",
+          "successKey": "outcome.feast_chat.ok",
+          "fail": {
+            "textKey": "outcome.feast_chat.bad",
+            "effects": [
+              {
+                "op": "prestige",
+                "role": "actor",
+                "delta": -0.5
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.03
+              },
+              {
+                "op": "relation",
+                "role": "patron",
+                "toward": "actor",
+                "kind": "grudge",
+                "delta": 0.1
+              },
+              {
+                "op": "skill",
+                "role": "actor",
+                "skill": "speech",
+                "delta": 1
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "patron",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.15
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "patron",
+            "kind": "acquaintance",
+            "delta": 0.1
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "speech",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "pledge",
+        "textKey": "event.court_feast.pledge",
+        "conditions": [
+          {
+            "type": "seen",
+            "event": "adult.court_feast",
+            "option": "chat",
+            "withRole": "patron",
+            "min": 2
+          }
+        ],
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.15
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "patron",
+            "kind": "patron",
+            "atLeast": 0.6
+          },
+          {
+            "op": "relation",
+            "role": "patron",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.1
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "perSakdina": -0.02
+          }
+        ]
+      }
     ]
   },
   "intent.befriend.done": {
@@ -822,7 +992,10 @@
     "textKey": "event.rival_accuses",
     "contextTags": [],
     "roles": {
-      "actor": {}
+      "actor": {},
+      "rival": {
+        "relationToActor": "rival"
+      }
     },
     "trigger": {
       "weight": 0.8,
@@ -836,11 +1009,79 @@
       {
         "id": "explain",
         "textKey": "event.rival_accuses.explain",
+        "risk": {
+          "base": 0.45,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "speech",
+              "weight": -0.35,
+              "reasonKey": "speech"
+            },
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "invert": true,
+              "weight": 0.15,
+              "reasonKey": "shy"
+            }
+          ],
+          "hintKey": "risk.not_believed",
+          "successKey": "outcome.accused_explain.ok",
+          "fail": {
+            "textKey": "outcome.accused_explain.bad",
+            "effects": [
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.15
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.03
+              },
+              {
+                "op": "relation",
+                "role": "actor",
+                "toward": "rival",
+                "kind": "grudge",
+                "delta": 0.3
+              },
+              {
+                "op": "skill",
+                "role": "actor",
+                "skill": "speech",
+                "delta": 1
+              }
+            ]
+          }
+        },
         "effects": [
           {
             "op": "favor",
             "role": "actor",
-            "delta": -0.1
+            "delta": 0.05
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "rival",
+            "kind": "grudge",
+            "delta": 0.2
+          },
+          {
+            "op": "relation",
+            "role": "rival",
+            "toward": "actor",
+            "kind": "grudge",
+            "delta": 0.1
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "speech",
+            "delta": 2
           }
         ]
       },
@@ -862,12 +1103,75 @@
             "op": "merit",
             "role": "actor",
             "delta": -0.5
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "rival",
+            "kind": "grudge",
+            "delta": 0.2
           }
         ]
       },
       {
         "id": "counter",
         "textKey": "event.rival_accuses.counter",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.8,
+            "reasonKey": "shy"
+          }
+        ],
+        "risk": {
+          "base": 0.5,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "speech",
+              "weight": -0.3,
+              "reasonKey": "speech"
+            }
+          ],
+          "hintKey": "risk.counter_fails",
+          "successKey": "outcome.accused_counter.ok",
+          "fail": {
+            "textKey": "outcome.accused_counter.bad",
+            "effects": [
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.2
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "relation",
+                "role": "actor",
+                "toward": "rival",
+                "kind": "grudge",
+                "delta": 0.3
+              },
+              {
+                "op": "relation",
+                "role": "rival",
+                "toward": "actor",
+                "kind": "grudge",
+                "delta": 0.4
+              }
+            ]
+          }
+        },
         "effects": [
           {
             "op": "favor",
@@ -877,21 +1181,63 @@
           {
             "op": "merit",
             "role": "actor",
-            "delta": -1.5
+            "delta": -1
           },
           {
-            "op": "stress",
+            "op": "relation",
             "role": "actor",
-            "delta": 0.05
+            "toward": "rival",
+            "kind": "grudge",
+            "delta": 0.3
+          },
+          {
+            "op": "relation",
+            "role": "rival",
+            "toward": "actor",
+            "kind": "grudge",
+            "delta": 0.4
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "speech",
+            "delta": 2
           }
-        ],
+        ]
+      },
+      {
+        "id": "bear",
+        "textKey": "event.rival_accuses.bear",
         "resist": [
           {
             "source": "personality",
             "trait": "boldness",
-            "invert": true,
-            "weight": 0.8,
-            "reasonKey": "shy"
+            "weight": 0.5,
+            "reasonKey": "proud"
+          }
+        ],
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.3
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "rival",
+            "kind": "grudge",
+            "delta": 0.4
           }
         ]
       }
@@ -955,7 +1301,14 @@
       "office": {
         "maxRank": 0
       },
-      "cooldownDays": 540
+      "cooldownDays": 540,
+      "requires": [
+        {
+          "type": "seen",
+          "event": "career.page_mistake",
+          "max": 1
+        }
+      ]
     },
     "percepts": [],
     "options": [
@@ -1604,7 +1957,8 @@
       }
     },
     "roles": {
-      "actor": {}
+      "actor": {},
+      "child": {}
     },
     "trigger": {
       "weight": 0
@@ -1625,6 +1979,35 @@
             "role": "actor",
             "skill": "devotion",
             "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "child",
+        "textKey": "event.holy_day.child",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "child"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "affection": 0.08
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "skill",
+            "role": "child",
+            "skill": "devotion",
+            "delta": 2
           }
         ]
       },
@@ -1653,7 +2036,26 @@
       {
         "id": "fish",
         "textKey": "event.holy_day.fish",
-        "risk": {"base":0.3,"hintKey":"risk.elder_finds_out","successKey":"outcome.holy_fish.ok","fail":{"textKey":"outcome.holy_fish.caught","effects":[{"op":"merit","role":"actor","delta":-1},{"op":"stress","role":"actor","delta":0.04}]}},
+        "risk": {
+          "base": 0.3,
+          "hintKey": "risk.elder_finds_out",
+          "successKey": "outcome.holy_fish.ok",
+          "fail": {
+            "textKey": "outcome.holy_fish.caught",
+            "effects": [
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.04
+              }
+            ]
+          }
+        },
         "resist": [
           {
             "source": "personality",
@@ -1683,7 +2085,9 @@
     "contextTags": [],
     "roles": {
       "actor": {},
-      "stranger": {}
+      "stranger": {},
+      "beloved": {},
+      "child": {}
     },
     "trigger": {
       "weight": 0
@@ -1715,7 +2119,41 @@
       {
         "id": "box",
         "textKey": "event.temple_fair.box",
-        "risk": {"base":0.55,"factors":[{"source":"personality","trait":"boldness","weight":-0.2,"reasonKey":"bold"}],"hintKey":"risk.box_lose","successKey":"outcome.box.win","fail":{"textKey":"outcome.box.lose","effects":[{"op":"wound","role":"actor","part":{"tag":"body:face"},"kind":"blunt","severity":[0.2,0.45]},{"op":"stress","role":"actor","delta":0.03}]}},
+        "risk": {
+          "base": 0.55,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "weight": -0.2,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.box_lose",
+          "successKey": "outcome.box.win",
+          "fail": {
+            "textKey": "outcome.box.lose",
+            "effects": [
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:face"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.2,
+                  0.45
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.03
+              }
+            ]
+          }
+        },
         "conditions": [
           {
             "type": "sex",
@@ -1790,6 +2228,74 @@
             "atLeast": 0.15
           }
         ]
+      },
+      {
+        "id": "beloved",
+        "textKey": "event.temple_fair.beloved",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "beloved"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "beloved",
+            "toward": "actor",
+            "affection": 0.05
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "beloved",
+            "kind": "acquaintance",
+            "delta": 0.1
+          },
+          {
+            "op": "intent",
+            "role": "actor",
+            "odds": 0.05
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      },
+      {
+        "id": "child",
+        "textKey": "event.temple_fair.child",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "child"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "affection": 0.08
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "textKey": "event.temple_fair.stay",
+        "effects": []
       }
     ]
   },
@@ -1799,7 +2305,9 @@
     "contextTags": [],
     "roles": {
       "actor": {},
-      "stranger": {}
+      "stranger": {},
+      "beloved": {},
+      "child": {}
     },
     "trigger": {
       "weight": 0
@@ -1886,6 +2394,75 @@
             "atLeast": 0.2
           }
         ]
+      },
+      {
+        "id": "beloved",
+        "textKey": "event.lanterns.beloved",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "beloved"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "beloved",
+            "toward": "actor",
+            "affection": 0.05
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "beloved",
+            "kind": "acquaintance",
+            "delta": 0.1
+          },
+          {
+            "op": "intent",
+            "role": "actor",
+            "odds": 0.05
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      },
+      {
+        "id": "child",
+        "textKey": "event.lanterns.child",
+        "conditions": [
+          {
+            "type": "hasRole",
+            "role": "child"
+          }
+        ],
+        "effects": [
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "affection": 0.08
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          },
+          {
+            "op": "skill",
+            "role": "child",
+            "skill": "handicraft",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "textKey": "event.lanterns.stay",
+        "effects": []
       }
     ]
   },
@@ -1975,6 +2552,13 @@
       {
         "id": "merit",
         "textKey": "event.death.merit",
+        "resist": [
+          {
+            "source": "stress",
+            "weight": 0.9,
+            "reasonKey": "grief"
+          }
+        ],
         "effects": [
           {
             "op": "merit",
@@ -1989,7 +2573,7 @@
           {
             "op": "stress",
             "role": "actor",
-            "delta": 0.03
+            "delta": -0.03
           }
         ]
       },
@@ -2005,18 +2589,88 @@
           {
             "op": "stress",
             "role": "actor",
-            "delta": 0.06
+            "delta": -0.05
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.05
           }
         ]
       },
       {
         "id": "endure",
         "textKey": "event.death.endure",
+        "resist": [
+          {
+            "source": "stress",
+            "weight": 1.2,
+            "reasonKey": "grief"
+          }
+        ],
         "effects": [
           {
             "op": "stress",
             "role": "actor",
-            "delta": 0.1
+            "delta": 0.08
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.05
+          }
+        ]
+      },
+      {
+        "id": "drink",
+        "textKey": "event.death.drink",
+        "conditions": [
+          {
+            "type": "age",
+            "min": 16
+          }
+        ],
+        "risk": {
+          "base": 0.1,
+          "factors": [
+            {
+              "source": "stress",
+              "weight": 0.4,
+              "reasonKey": "grief"
+            }
+          ],
+          "hintKey": "risk.drunk",
+          "fail": {
+            "textKey": "outcome.drink.bad",
+            "effects": [
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "prestige",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": -0.04
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.08
           }
         ]
       }
@@ -2432,6 +3086,231 @@
             "toward": "elder",
             "kind": "acquaintance",
             "delta": -0.05
+          }
+        ]
+      }
+    ]
+  },
+  "adult.heavy_heart": {
+    "id": "adult.heavy_heart",
+    "textKey": "event.heavy_heart",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "ageRange": [
+        14,
+        90
+      ],
+      "weight": 1.5,
+      "cooldownDays": 300,
+      "requires": [
+        {
+          "type": "stress",
+          "min": 0.45
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "temple",
+        "textKey": "event.heavy_heart.temple",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.15
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.05
+          }
+        ]
+      },
+      {
+        "id": "work",
+        "textKey": "event.heavy_heart.work",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.05
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.05
+          }
+        ]
+      },
+      {
+        "id": "drink",
+        "textKey": "event.heavy_heart.drink",
+        "conditions": [
+          {
+            "type": "age",
+            "min": 16
+          }
+        ],
+        "risk": {
+          "base": 0.15,
+          "factors": [
+            {
+              "source": "stress",
+              "weight": 0.3,
+              "reasonKey": "grief"
+            }
+          ],
+          "hintKey": "risk.drunk",
+          "fail": {
+            "textKey": "outcome.drink.bad",
+            "effects": [
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "prestige",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": -0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.12
+          }
+        ]
+      },
+      {
+        "id": "bear",
+        "textKey": "event.heavy_heart.bear",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      }
+    ]
+  },
+  "family.child_wedding": {
+    "id": "family.child_wedding",
+    "textKey": "event.child_wedding",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "child": {},
+      "spouse": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "bless",
+        "textKey": "event.child_wedding.bless",
+        "effects": [
+          {
+            "op": "marry",
+            "role": "child",
+            "with": "spouse"
+          },
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "affection": 0.05
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "spouse",
+            "kind": "acquaintance",
+            "atLeast": 0.4
+          }
+        ]
+      },
+      {
+        "id": "feast",
+        "textKey": "event.child_wedding.feast",
+        "effects": [
+          {
+            "op": "marry",
+            "role": "child",
+            "with": "spouse"
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -10
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "affection": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "actor",
+            "toward": "spouse",
+            "kind": "acquaintance",
+            "atLeast": 0.5
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "actor",
+            "kind": "gratitude",
+            "delta": 0.2
+          }
+        ]
+      },
+      {
+        "id": "refuse",
+        "textKey": "event.child_wedding.refuse",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "affection": -0.15
+          },
+          {
+            "op": "bond",
+            "role": "child",
+            "toward": "actor",
+            "awe": 0.05
           }
         ]
       }

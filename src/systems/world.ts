@@ -3,7 +3,7 @@ import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ct
 import type { Character, GameEventDef, TagId } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type EventReport, type PreparedEvent } from './events';
-import { familiarity, knownLocals, meetPeople } from './acquaintance';
+import { familiarity, findCourtier, forgetLocal, knownLocals, meetPeople, newCourtier, setRelation, spawnLocal } from './acquaintance';
 import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingParents, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
@@ -13,6 +13,7 @@ import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, livingWives, minorWifeEvent } from './wives';
+import { servantsYearTick } from './servants';
 import { elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
@@ -88,13 +89,18 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const frail = hardToRaiseEvent(ctx);
     if (frail) out.push({ type: 'event', prepared: frail });
     for (const hh of Object.values(S.households)) {
-      const logs = householdYearTick(ctx, hh.id);
+      const logs = [...householdYearTick(ctx, hh.id), ...servantsYearTick(ctx, hh.id)];
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', kind: 'household', line });
     }
     for (const line of lifeMilestones(ctx, (kid, parent, spouse) => {
       const naming = namingEvent(ctx, kid, parent, spouse);
       if (naming) out.push({ type: 'event', prepared: naming });
       return !!naming;
+    }, (child, spouse) => {
+      // ลูกออกเรือน: ผู้เล่นได้เห็นหน้าลูกเขย/สะใภ้และตัดสินใจ (หนึ่งคนต่อปี คนอื่นแต่งตามปกติ)
+      if (!player || !isAlive(player) || out.some((o) => o.type === 'event' && o.prepared.def.id === 'family.child_wedding')) return false;
+      out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_wedding', { actor: player.id, child: child.id, spouse: spouse.id }) });
+      return true;
     })) out.push({ type: 'log', kind: 'family', line });
     for (const line of meetPeople(ctx)) out.push({ type: 'log', kind: 'people', line });
     // บวชก่อนแต่ง (การบวชยุติการสมรส lore: kinship.marriage_law_three_seals) — ถามก่อนผู้ใหญ่ทาบทามคู่
@@ -222,7 +228,8 @@ function namingEvent(ctx: Ctx, kid: Character, parent: Character, spouse: Charac
 function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
   const age = ageOf(ctx, actor);
   const day = ctx.state.meta.day;
-  const bound: Array<{ def: GameEventDef; bindings: Record<string, Character['id']> }> = [];
+  // คนในราชการที่ยังไม่เคยพบ → สร้างหลังสุ่มได้ event นั้นแล้ว (ไม่สร้างคนทิ้งไว้ทุกครั้งที่ไล่หา)
+  const bound: Array<{ def: GameEventDef; bindings: Record<string, Character['id']>; meet: Array<[string, 'rival' | 'patron']> }> = [];
   for (const def of Object.values(ctx.content.events)) {
     const t = def.trigger;
     if (t.ageRange && (age < t.ageRange[0] || age > t.ageRange[1])) continue;
@@ -239,6 +246,7 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
       if (recent) continue;
     }
     const bindings: Record<string, Character['id']> = { actor: actor.id };
+    const meet: Array<[string, 'rival' | 'patron']> = [];
     const ageOk = (ch: Character, range: [number, number] | undefined) =>
       !range || (ageOf(ctx, ch) >= range[0] && ageOf(ctx, ch) <= range[1]);
     let ok = ageOk(actor, def.roles.actor?.ageRange);
@@ -246,22 +254,35 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
       if (!ok) break;
       if (role === 'actor') continue;
       const who = resolveRole(ctx, actor, f.relationToActor);
+      if (!who && (f.relationToActor === 'rival' || f.relationToActor === 'patron')) {
+        meet.push([role, f.relationToActor]);
+        continue;
+      }
       if (!who || !ageOk(who, f.ageRange)) {
         ok = false;
         break;
       }
       bindings[role] = who.id;
     }
-    if (ok && requirementsMet(ctx, def, actor, bindings)) bound.push({ def, bindings });
+    if (ok && requirementsMet(ctx, def, actor, bindings)) bound.push({ def, bindings, meet });
   }
+  // เรื่องที่เพิ่งเกิดกับคนนี้ (ในบันทึก ~10 ปี) มีโอกาสน้อยลงทีละครั้ง
+  const recent = new Map<string, number>();
+  for (const e of Object.values(ctx.state.eventLog)) {
+    if (e.bindings.actor === actor.id) recent.set(e.defId, (recent.get(e.defId) ?? 0) + 1);
+  }
+  // สุ่มตามน้ำหนักเดิม แล้วเรื่องที่เคยเกิดมีโอกาสถูกข้าม (ไม่มีเรื่องอื่นให้ขึ้นแทน = ปีนั้นเงียบไป ดีกว่าเรื่องเดิมซ้ำ)
   const pick = ctx.rng.weighted(bound, (b) => b.def.trigger.weight);
-  return pick ? prepareEvent(ctx, pick.def.id, pick.bindings) : null;
+  if (!pick || !ctx.rng.chance(ctx.content.balance.world.repeatDamp ** (recent.get(pick.def.id) ?? 0))) return null;
+  for (const [role, kind] of pick.meet) pick.bindings[role] = newCourtier(ctx, actor, kind).id;
+  return prepareEvent(ctx, pick.def.id, pick.bindings);
 }
 
 function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Character | undefined {
   // ย้ายไปอยู่ใกล้บ้านคนที่หมายปอง → เรื่องในเรือนกับพ่อแม่/คนเลี้ยงไม่เกิด
   if ((rel === 'caregiver' || rel === 'parent') && awayLabor(ctx, actor) >= 1) return undefined;
   if (rel === 'caregiver') return actor.caregiverIds.map((id) => ctx.state.characters[id]).find(isAlive);
+  if (rel === 'rival' || rel === 'patron') return findCourtier(ctx, actor, rel);
   if (rel === 'elder_acquaintance') {
     const elders = knownLocals(ctx, actor).filter((c) => ageOf(ctx, c) >= 50 && familiarity(ctx, actor.id, c.id) >= 0.3);
     return ctx.rng.pick(elders);
@@ -289,6 +310,8 @@ export function lifeMilestones(
   ctx: Ctx,
   /** เรียกทุกครั้งที่มีเด็กเกิด — คืน true ถ้าจะให้ผู้เล่นตั้งชื่อ */
   onBirth?: (kid: Character, parent: Character, spouse: Character) => boolean,
+  /** ลูกของผู้เล่นถึงคราวออกเรือน — คืน true ถ้าจะให้ผู้เล่นตัดสินใจเอง (event จัดการแต่งให้) */
+  onChildWedding?: (child: Character, spouse: Character) => boolean,
 ): string[] {
   const W = ctx.content.balance.world;
   const day = ctx.state.meta.day;
@@ -318,7 +341,10 @@ export function lifeMilestones(
 
     const neverMarried = (ctx.state.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0;
     // ผู้เล่นไม่ถูกจับแต่ง — เกี้ยวเอง หรือรับ/ปฏิเสธคู่ที่ผู้ใหญ่ทาบทาม (arrangedMatchEvent)
-    if (neverMarried && ch.id !== ctx.state.meta.playerCharacterId && marriesThisYear(ctx, ch.sex, age)) out.push(marryOut(ctx, ch, year));
+    if (neverMarried && ch.id !== ctx.state.meta.playerCharacterId && marriesThisYear(ctx, ch.sex, age)) {
+      const line = marryOut(ctx, ch, year, onChildWedding);
+      if (line) out.push(line);
+    }
 
     // แยกเรือนเมื่อครบกำหนด — ลูกที่อยู่ดูแลพ่อแม่ไม่ย้าย
     if (ch.moveOutDay !== undefined && day >= ch.moveOutDay) {
@@ -375,9 +401,19 @@ function conceives(ctx: Ctx, ch: Character, mother: Character, year: number): bo
   return year - last >= B.minGapYears && ctx.rng.chance(B.yearlyChance);
 }
 
-function marryOut(ctx: Ctx, ch: Character, year: number): string {
+function marryOut(ctx: Ctx, ch: Character, year: number, onChildWedding?: (child: Character, spouse: Character) => boolean): string {
   const spouseSex = ch.sex === 'm' ? 'f' : 'm';
   const spouseAge = spouseAgeFor(ctx, spouseSex, ageOf(ctx, ch));
+  // ลูกของผู้เล่น: ผู้ใหญ่อีกบ้านมาทาบทาม ผู้เล่นได้เห็นหน้าและตัดสินใจ (คนนอกที่ไม่ได้แต่ง ระบบคนรู้จักลบทิ้งเอง)
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (onChildWedding && isAlive(player) && livingParents(ctx, ch).some((p) => p.id === player.id)) {
+    const trade = ctx.rng.weighted(ctx.content.trades.filter((t) => t.estate === ch.social.estate), (t) => t.weight);
+    const match = spawnLocal(ctx, ch, { sex: spouseSex, age: spouseAge, distance: 'town', single: true, avoid: inLawNames(ctx, ch), ...(trade ? { trade } : {}) });
+    // ผู้เล่นได้เห็นหน้าแล้ว — ไม่งั้นรอบคนรู้จักปีเดียวกันลบทิ้งก่อน event ขึ้น
+    setRelation(ctx, player.id, match.id, 'acquaintance', 0.05);
+    if (onChildWedding(ch, match)) return '';
+    forgetLocal(ctx, match);
+  }
   const spouse = spawnCharacter(ctx, {
     name: pickName(ctx, spouseSex, ch.social.estate, inLawNames(ctx, ch), namesInUse(ctx, ch.dynastyId, year)),
     sex: spouseSex, birthYear: year - spouseAge, estate: ch.social.estate, dynastyId: null, householdId: null,

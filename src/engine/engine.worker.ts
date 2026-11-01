@@ -3,6 +3,7 @@ import { formatLunar, formatSolar } from '../core/calendar';
 import { makeCtx, commitRng, isAlive, lunarOf, must, solarOf, yearOf, yearStart, type Ctx } from '../core/ctx';
 import type { CharacterId, ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
+import { dropMatches, findMatches, minorWifeProposal } from '../systems/matchmaking';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
@@ -12,7 +13,7 @@ import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
 import {
-  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView,
+  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView, choiceSnapshot, choiceResult, matchView,
   treeView,
   type TextTable,
 } from './views';
@@ -97,6 +98,8 @@ let speed = 2;
 let playing = false;
 let endReason: EndReason | null = null; // เกมจบแล้ว — ถึงปีจบของเรื่อง หรือตระกูลสิ้นสาย
 let resumeAfterEvent = false;
+/** รายชื่อจากปุ่มหาคู่ที่ยังเปิดอยู่ — ปิดแล้วคนที่ไม่ได้เลือกห่างหายไป */
+let matchIds: CharacterId[] = [];
 let clockLoop: Promise<void> | null = null;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -289,7 +292,9 @@ async function handle(cmd: Command): Promise<unknown> {
         return { lines: [] } satisfies ReplyData['choose'];
       }
       const p = must(pending.get(cmd.instanceId), 'event นี้ไม่ได้รออยู่');
+      const before = choiceSnapshot(c, p);
       const rep = chooseOption(c, p, cmd.optionId, { name: cmd.name });
+      const result = choiceResult(c, p, before, rep, text);
       pending.delete(cmd.instanceId);
       const lines = rep.trauma.flatMap((t) =>
         t.branches.map((b) => `ฝังใจ: ${describeTrait(c, must(c.state.traits[b.traitId], 'trait'))}`),
@@ -305,9 +310,14 @@ async function handle(cmd: Command): Promise<unknown> {
       // เซฟทันทีหลังเลือก — ปิดแท็บก่อนเดินเวลาแล้วโหลด จะไม่เจอ event เดิมซ้ำ
       // (DB เปิดค้างไว้แล้วจาก autosave ตอนหยุดเพื่อ event จึงไม่มี choose อื่นแทรกระหว่างเซฟ)
       await save('autosave');
-      // หยุดเพราะ event → ตัดสินใจครบแล้วเดินต่อเอง
+      // หยุดเพราะ event → ตัดสินใจครบแล้วเดินต่อเอง (มีหน้าผล → รอผู้เล่นปิดก่อน แล้ว UI ส่ง resume)
+      if (!result && !pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
+      return { lines, result } satisfies ReplyData['choose'];
+    }
+    case 'resume': {
+      const c = need();
       if (!pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
-      return { lines } satisfies ReplyData['choose'];
+      return clockState();
     }
     case 'viewPlayer':
       return playerView(need(), text);
@@ -326,6 +336,29 @@ async function handle(cmd: Command): Promise<unknown> {
       const player = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
       const target = must(c.state.characters[cmd.targetId as typeof player.id], 'คนนี้');
       return { lines: startIntent(c, cmd.kind, player, target, cmd.approach) } satisfies ReplyData['startIntent'];
+    }
+    case 'findMatches': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      dropMatches(c, me, matchIds);
+      const found = findMatches(c, me);
+      matchIds = found.people.map((p) => p.id);
+      return matchView(c, found.mode, found.people);
+    }
+    case 'dropMatches': {
+      const c = need();
+      dropMatches(c, must(c.state.characters[c.state.meta.playerCharacterId], 'player'), matchIds, cmd.keepId as CharacterId | undefined);
+      matchIds = [];
+      return null;
+    }
+    case 'proposeMinorWife': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const p = minorWifeProposal(c, me, must(c.state.characters[cmd.targetId as CharacterId], 'คนนี้'));
+      dropMatches(c, me, matchIds, cmd.targetId as CharacterId);
+      matchIds = [];
+      pending.set(p.instance.id, p);
+      return pendingViews(c);
     }
     case 'abandonIntent': {
       const c = need();

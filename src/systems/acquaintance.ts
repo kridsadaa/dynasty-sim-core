@@ -87,6 +87,33 @@ export function singlePeer(ctx: Ctx, ch: Character, spawn: boolean): Character |
   return other;
 }
 
+/**
+ * ขุนนางที่ผู้เล่นพบในราชการ — คู่ขัดในกรม (rival) หรือขุนนางผู้ใหญ่ที่เอ็นดู (patron)
+ * มีคนเดิมอยู่แล้วใช้คนเดิม เรื่องจึงต่อกันได้ (คนที่เคยกล่าวโทษกลับมาอีก) ไม่มีก็พบคนใหม่ในวัง
+ * ความสัมพันธ์เก็บเป็น Relation จากผู้เล่นไปหาคนนั้น ชนิด rival/patron (ค่าบอกว่ายังผูกกันอยู่ ไม่ใช่ความรู้สึก)
+ */
+export function findCourtier(ctx: Ctx, actor: Character, kind: 'rival' | 'patron'): Character | undefined {
+  return ctx.rng.pick(knownLocals(ctx, actor).filter((c) => relationStrength(ctx, actor.id, c.id, kind) > 0 && ageOf(ctx, c) < 70));
+}
+
+/** พบขุนนางคนใหม่ (เรียกหลังเลือก event แล้วเท่านั้น — ตอนไล่หา event ห้ามสร้างคน) */
+export function newCourtier(ctx: Ctx, actor: Character, kind: 'rival' | 'patron'): Character {
+  const age = ageOf(ctx, actor);
+  const noble = must(ctx.content.trades.find((t) => t.estate === 'noble'), 'noble trade');
+  const ch = spawnLocal(ctx, actor, {
+    sex: 'm', distance: 'near', trade: noble,
+    age: kind === 'patron' ? Math.min(68, Math.max(age + 15, 45)) : Math.max(20, age + Math.round(ctx.rng.range(-6, 6))),
+  });
+  ch.local!.wed = true;
+  setRelation(ctx, actor.id, ch.id, 'acquaintance', 0.2);
+  setRelation(ctx, actor.id, ch.id, kind, 0.3);
+  return ch;
+}
+
+/** คนในราชการที่ผูกเรื่องกับผู้เล่นอยู่ — ห้ามห่างหายไปเองตอนรายชื่อเต็ม */
+const tiedAtCourt = (ctx: Ctx, from: CharacterId, to: CharacterId) =>
+  relationStrength(ctx, from, to, 'rival') > 0 || relationStrength(ctx, from, to, 'patron') > 0;
+
 /** ลบคนนอกที่ไม่มีใครในฉากเกี่ยวข้องแล้ว — ไม่มีลูก/คู่ในผัง จึงลบ node ได้เลย */
 export function forgetLocal(ctx: Ctx, ch: Character): void {
   const S = ctx.state;
@@ -143,7 +170,7 @@ export function meetPeople(ctx: Ctx): string[] {
   if (alive.length >= cap && ctx.rng.chance(L.fadeChance)) {
     // คนที่ออกเรือนไปแล้วห่างหายก่อน แล้วจึงคนที่รู้จักน้อยที่สุด
     const loosest = alive
-      .filter((c) => !intentTargets.has(c.id) && relationStrength(ctx, player.id, c.id, 'friend') < 0.5)
+      .filter((c) => !intentTargets.has(c.id) && !tiedAtCourt(ctx, player.id, c.id) && relationStrength(ctx, player.id, c.id, 'friend') < 0.5)
       .sort((a, b) => Number(isSingle(ctx, a)) - Number(isSingle(ctx, b)) || familiarity(ctx, player.id, a.id) - familiarity(ctx, player.id, b.id))[0];
     if (loosest && familiarity(ctx, player.id, loosest.id) < 0.5) {
       forgetLocal(ctx, loosest);

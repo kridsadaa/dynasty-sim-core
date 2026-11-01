@@ -8,7 +8,7 @@ import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
 import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
-import { applyMarriageStep, canPay } from './marriage';
+import { applyMarriageStep, canPay, settleNpcSinsot } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { divorce, takeMinorWife } from './wives';
@@ -177,6 +177,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
     }
     case 'skill':
       return (ch.skills[c.skill] ?? 0) >= c.min;
+    case 'stress':
+      return ch.stress >= (c.min ?? 0) && ch.stress <= (c.max ?? 1);
     case 'seen': {
       const other = c.withRole ? bindings[c.withRole] : undefined;
       if (c.withRole && !other) return false;
@@ -434,7 +436,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         const other = who(e.with);
         // event ค้างอยู่นานจนมีคนแต่งงานไปก่อน → ไม่แต่งซ้อน
         if (!other || other.deathDay !== null || livingSpouse(ctx, ch) || livingSpouse(ctx, other) || other.local?.wed) break;
-        report.notes.push(wed(ctx, ch, other));
+        // สินสอดตามแบบคู่ NPC: ฝ่ายชายในตระกูลจ่ายออก ฝ่ายหญิงในตระกูลได้เข้าเรือน
+        const sinsot = settleNpcSinsot(ctx, ch, other);
+        report.notes.push(`${wed(ctx, ch, other)}${sinsot ? ` (สินสอด ${sinsot} ตำลึง)` : ''}`);
         break;
       }
       case 'career':

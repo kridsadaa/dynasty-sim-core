@@ -4,7 +4,7 @@ import type { Character, CharacterId } from '../core/types';
 import { setRelation, singlePeer, spawnLocal } from './acquaintance';
 import type { ChoreEventRequest } from './chores';
 import { requirementsMet, type PreparedEvent } from './events';
-import { livingParents, livingSpouse } from './factory';
+import { livingChildren, livingParents, livingSpouse } from './factory';
 
 // ============================================================================
 // Festivals — งานบุญและงานประจำปีของผู้เล่น (ทุกวัยตั้งแต่ minAge)
@@ -29,9 +29,10 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
   const full = l.waxing && l.phaseDay === 15;
   const req = (event: string, bindings: Record<string, CharacterId>, vars = {}) => [{ event, bindings: { actor: ch.id, ...bindings }, vars }];
 
+  const withWho = companions(ctx, ch);
   if (full && month === F.lanternMonth && ctx.rng.chance(F.lanternChance)) {
-    const peer = canCourt(ctx, ch) ? singlePeer(ctx, ch, false) : undefined;
-    return req('festival.lanterns', peer ? { stranger: peer.id } : {});
+    const peer = canCourt(ctx, ch) && !withWho.beloved ? singlePeer(ctx, ch, false) : undefined;
+    return req('festival.lanterns', { ...withWho, ...(peer ? { stranger: peer.id } : {}) });
   }
   if (full && month === F.bathingMonth && away < 1 && ctx.rng.chance(F.bathingChance)) {
     const parents = livingParents(ctx, ch);
@@ -42,12 +43,12 @@ export function tickFestivals(ctx: Ctx, away: number): ChoreEventRequest[] {
   if ((full || l.lastDay) && ctx.rng.chance(F.holyDaysPerYear / 25)) {
     const greet = templeElder(ctx, ch);
     if (greet) return greet;
-    return req('festival.holy_day', {}, { moon: full ? 'moon:full' : l.phaseDay === 14 ? 'moon:dark14' : 'moon:dark' });
+    return req('festival.holy_day', withWho.child ? { child: withWho.child } : {}, { moon: full ? 'moon:full' : l.phaseDay === 14 ? 'moon:dark14' : 'moon:dark' });
   }
   const fairDays = (F.fairMonths[1] - F.fairMonths[0] + 1) * 29.5;
   if (month >= F.fairMonths[0] && month <= F.fairMonths[1] && ctx.rng.chance(F.templeFairsPerYear / fairDays)) {
-    const peer = canCourt(ctx, ch) ? singlePeer(ctx, ch, true) : undefined;
-    return req('festival.temple_fair', peer ? { stranger: peer.id } : {});
+    const peer = canCourt(ctx, ch) && !withWho.beloved ? singlePeer(ctx, ch, true) : undefined;
+    return req('festival.temple_fair', { ...withWho, ...(peer ? { stranger: peer.id } : {}) });
   }
   return [];
 }
@@ -69,6 +70,21 @@ function templeElder(ctx: Ctx, ch: Character): ChoreEventRequest[] | null {
   });
   setRelation(ctx, ch.id, elder.id, 'acquaintance', 0.05);
   return [{ event: 'temple.elder', bindings: { actor: ch.id, caregiver: caregiver.id, elder: elder.id }, vars: {} }];
+}
+
+/**
+ * คนที่ชวนไปงานด้วยได้: beloved = ผัว/เมีย คู่หมั้น คนที่หนีมาอยู่ด้วย หรือคนที่กำลังเกี้ยว
+ * child = ลูกเล็ก (3–12 ปี) ที่อยู่เรือนเดียวกัน — คนเล็กสุดก่อน
+ */
+function companions(ctx: Ctx, ch: Character): { beloved?: CharacterId; child?: CharacterId } {
+  const S = ctx.state;
+  const court = Object.values(S.intents).find((i) => i.actorId === ch.id && ctx.content.intents[i.kind]?.target === 'court');
+  const beloved = [livingSpouse(ctx, ch)?.id, ch.betrothal?.toId, ch.eloped?.withId, court?.targetId]
+    .map((id) => (id ? S.characters[id] : undefined)).find(isAlive);
+  const child = livingChildren(ctx, ch)
+    .filter((k) => k.householdId && k.householdId === ch.householdId && ageOf(ctx, k) >= 3 && ageOf(ctx, k) <= 12)
+    .sort((a, b) => b.birthDay - a.birthDay)[0];
+  return { ...(beloved ? { beloved: beloved.id } : {}), ...(child ? { child: child.id } : {}) };
 }
 
 function canCourt(ctx: Ctx, ch: Character): boolean {

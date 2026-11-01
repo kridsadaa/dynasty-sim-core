@@ -44,6 +44,7 @@ export function riskChance(
   let p = risk.base;
   for (const f of risk.factors ?? []) {
     if (f.source === 'sex') p += f[actor.sex] ?? 0;
+    else if (f.source === 'skill' || f.source === 'stress') p += f.weight * selfFactor(actor, f);
     else if (f.source === 'bond') {
       const other = who(f.role);
       if (other) p += f.weight * bond(ctx, actor, other, f.axis);
@@ -53,6 +54,11 @@ export function riskChance(
     }
   }
   return Math.min(0.95, Math.max(0.05, p));
+}
+
+/** ค่าของ actor เอง 0..1 สำหรับ resist/risk แบบ skill และ stress */
+function selfFactor(actor: Character, r: Extract<Resist, { source: 'skill' | 'stress' }>): number {
+  return r.source === 'skill' ? Math.min(1, (actor.skills[r.skill] ?? 0) / 100) : actor.stress;
 }
 
 export interface Resistance {
@@ -79,6 +85,8 @@ export function resistance(
       top = top && top.part >= v ? top : { part: v, reasonKey: r.reasonKey };
       value += v;
       continue;
+    } else if (r.source === 'skill' || r.source === 'stress') {
+      v = selfFactor(actor, r);
     } else {
       const p = actor.personality[r.trait];
       v = r.invert ? 1 - p : p;

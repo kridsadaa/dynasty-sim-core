@@ -163,7 +163,8 @@
       "tags": [
         "event:marriage.wedding",
         "event:marriage.wedding_f",
-        "event:marriage.minor_wife"
+        "event:marriage.minor_wife",
+        "event:family.child_wedding"
       ],
       "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
       "width": 1024,

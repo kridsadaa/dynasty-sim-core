@@ -126,7 +126,7 @@
     {
       "id": "scene.wedding",
       "style": "reality",
-      "tags": ["event:marriage.wedding", "event:marriage.wedding_f", "event:marriage.minor_wife"],
+      "tags": ["event:marriage.wedding", "event:marriage.wedding_f", "event:marriage.minor_wife", "event:family.child_wedding"],
       "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
       "subject": "Interior of a Siamese timber bridal house: a young bride and groom seated side by side on a reed mat with palms pressed together in respectful greeting, wearing white sacred cotton thread rings (mongkhonแฝด) linked between their heads; the bride wears a black wrap skirt and a white muslin chest wrap horizontally across her chest with both ends thrown back over both shoulders, the groom wears a fine patterned lower cloth; an elderly couple in front of them pouring lustral water from a white conch shell over the couple's joined hands over a brass bowl of flowers, footed trays of betel nut and offerings nearby, relatives watching warmly. Avoid: one-shoulder diagonal sash, modern bridal costume.",
       "loreRefs": ["kinship.betrothal_khanmak_three_seals", "attire.women_1680s", "material.houses_1680s"]

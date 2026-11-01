@@ -2,6 +2,7 @@ import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
 import { livingParents } from './factory';
+import { opinion } from './opinion';
 
 // ============================================================================
 // Career — รับราชการ (บันไดจากทำเนียบศักดินาจริง ตำแหน่งนาพลเรือน)
@@ -192,6 +193,14 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     lines.push(`ได้ของกำนัลและผลประโยชน์ตามตำแหน่ง ${income} ตำลึง`);
   }
   const years = Math.floor((S.meta.day - player.office.sinceDay) / DAYS_PER_YEAR);
+  // ฝากตัวกับขุนนางผู้ใหญ่ไว้ (adult.court_feast → pledge): ผู้ใหญ่ยังอยู่และยังเอ็นดู → ช่วยพูดให้ทุกปี
+  //  (lore: social.protection_patronage — ฝากตัวกับผู้มีอำนาจแลกการคุ้มครอง; ตัวเลขเป็นของเกม)
+  const patron = Object.values(S.relations).find((r) => r.from === player.id && r.kind === 'patron' && r.strength >= 0.6
+    && isAlive(S.characters[r.to]) && opinion(ctx, r.to, player.id) > 0);
+  if (patron) {
+    player.office.favor = Math.min(1, player.office.favor + C.patronFavor);
+    lines.push(`${S.characters[patron.to]!.name}ช่วยพูดถึง${player.name}ให้เจ้ากรมฟัง`);
+  }
   const favor = player.office.favor;
   const next = postAt(deptOf(ctx, player), post.rank + 1);
   // มหาดเล็กพ้นไปเข้ากรม → เลือกกรมก่อน (เลื่อนขั้นแรกไปพร้อมกัน)
@@ -207,7 +216,7 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   } else if (favor >= C.promoteAt && next && years >= post.minYears && (!next.unique || ctx.rng.chance(C.uniqueVacancyChance))) {
     events.push({ event: promotion, bindings: bind });
   }
-  player.office.favor = favor * C.favorDecay;
+  player.office.favor = player.office.favor * C.favorDecay;
   return { lines, events };
 }
 

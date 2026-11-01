@@ -51,7 +51,7 @@
   },
   "mortality": { "infant": 0.2, "young": 0.025, "child": 0.004, "adult": 0.008, "oldFrom": 50, "oldBase": 0.015, "oldDoublingYears": 8, "oldAgeCause": 60, "smallpoxYearChance": 0.12, "smallpoxAttack": 0.5, "smallpoxFatality": 0.25, "smallpoxScarChance": 0.5 },
   "constitution": { "inherit": 0.5, "riskPerSD": 0.25, "hardToRaiseBelow": -1, "hardToRaiseAge": 1 },
-  "world": { "eventsPerYear": 3, "marriageAge": { "f": [15, 18], "m": [18, 22] }, "neverMarryChance": 0.05, "births": { "minGapYears": 2, "yearlyChance": 0.35, "maxMotherAge": 40 }, "childbirthDeathRisk": 0.012, "stayYears": [1, 3], "patrilocalChance": 0.35, "noviceAge": 8, "noviceChance": 0.5, "grandchildNamingChance": 0.5 },
+  "world": { "eventsPerYear": 3, "repeatDamp": 0.5, "marriageAge": { "f": [15, 18], "m": [18, 22] }, "neverMarryChance": 0.05, "births": { "minGapYears": 2, "yearlyChance": 0.35, "maxMotherAge": 40 }, "childbirthDeathRisk": 0.012, "stayYears": [1, 3], "patrilocalChance": 0.35, "noviceAge": 8, "noviceChance": 0.5, "grandchildNamingChance": 0.5 },
   "chores": {
     "ageRange": [5, 15],
     "sessionsPerYear": 3,
@@ -64,7 +64,7 @@
   },
   "festivals": {
     "minAge": 5,
-    "holyDaysPerYear": 2,
+    "holyDaysPerYear": 1,
     "templeFairsPerYear": 1,
     "fairMonths": [1, 6],
     "lanternMonth": 12,
@@ -73,9 +73,11 @@
     "bathingChance": 0.5,
     "peerAge": [13, 25],
     "habitStreak": 2,
-    "habitYears": 3,
+    "habitYears": 6,
     "elderGreetChance": 0.5
   },
+  "servants": { "estates": ["royal", "noble", "merchant"], "wealthPerSlave": 25, "maxSlaves": 12, "sakdinaPerPhrai": 40, "maxPhrai": 30, "upkeep": 0.5 },
+  "matchmaking": { "candidates": 4, "searchDays": 180, "sameEstateShare": 0.7, "maxWives": 3 },
   "wives": { "age": [25, 50], "minWealth": 60, "chance": 0.08, "wifeAge": [16, 24], "divorceAt": 0, "divorceChance": 0.3, "wealthShare": 0.2 },
   "life": { "topknotAges": [11, 13], "adultAge": 16, "illnessAge": 60, "illnessChance": 0.15, "elderAge": 55, "preceptsChance": 0.12,
     "meritPerYear": 1, "elderMeritFactor": 2, "stressRecovery": 0.3, "stressRest": 0.15, "griefStress": 0.15 },
@@ -91,6 +93,7 @@
     "punishAt": -0.45,
     "uniqueVacancyChance": 0.07,
     "promotePrestige": 2,
+    "patronFavor": 0.08,
     "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }],
     "recallYears": [2311, 2313]
   },

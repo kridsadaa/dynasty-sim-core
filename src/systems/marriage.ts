@@ -385,6 +385,11 @@ export function marriageStatus(ctx: Ctx, ch: Character): string[] {
     const months = Math.max(0, Math.ceil((ch.service.untilDay - S.meta.day) / MONTH));
     out.push(`ช่วยงานบ้านพ่อแม่ของ${S.characters[ch.service.hostId]?.name ?? 'คู่ครอง'}ชดใช้ อีก ${months} เดือน`);
   }
+  // คนนอกที่ออกเรือนไปนอกฉาก: คู่ไม่ได้อยู่ในผัง แต่มีคู่แล้ว
+  if (ch.local?.wed) {
+    out.push('ออกเรือนไปแล้ว');
+    return out;
+  }
   // พ้นวัยออกเรือนแล้วยังไม่เคยมีคู่
   const age = ageOf(ctx, ch);
   const never = (S.familyNodes[ch.familyNodeId]?.spouseIds.length ?? 0) === 0 && !ch.betrothal && !ch.eloped;

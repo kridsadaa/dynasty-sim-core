@@ -15,7 +15,11 @@ import { renderLegend } from '../systems/legend';
 import { eventArtTags, portraitArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
 import { riskChance } from '../systems/will';
+import { opinion, opinionLabel } from '../systems/opinion';
+import { servantsText } from '../systems/servants';
 import type {
+  MatchView,
+  ChoiceResult,
   CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
   OddsFactorView, TreeView,
 } from './protocol';
@@ -186,6 +190,8 @@ function kinTies(ctx: Ctx, me: Character): Map<Character, string> {
   if (me.sex === 'm') for (const w of livingWives(ctx, me)) if (w.wifeRank === 'minor') out.set(w, 'เมียน้อย');
   for (const kid of livingChildren(ctx, me)) {
     out.set(kid, kid.sex === 'm' ? 'ลูกชาย' : 'ลูกสาว');
+    const inLaw = livingSpouse(ctx, kid);
+    if (inLaw) out.set(inLaw, kid.sex === 'm' ? `ลูกสะใภ้ (เมีย${kid.name})` : `ลูกเขย (ผัว${kid.name})`);
     for (const g of livingChildren(ctx, kid)) out.set(g, g.sex === 'm' ? 'หลานชาย' : 'หลานสาว');
   }
   return out;
@@ -308,6 +314,20 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
       if (e.awe && e.awe > 0) parts.push(`เกรง${to}ขึ้น`);
     }
     if (e.op === 'wound' && e.role === 'actor') parts.push(e.severity[1] >= 0.3 ? 'เจ็บหนัก' : 'เจ็บตัว');
+    // คนอื่นรู้สึกต่อเรา: "{rival}ไม่พอใจ" / "{patron}เอ็นดู"
+    if (e.op === 'relation' && e.role !== 'actor' && e.toward === 'actor' && e.delta) {
+      const who = vars[e.role] ?? e.role;
+      if (e.kind === 'grudge' || e.kind === 'rival') parts.push(e.delta > 0 ? `${who}ไม่พอใจ` : `${who}หายเคือง`);
+      else if (e.kind === 'friend' || e.kind === 'gratitude' || e.kind === 'affection') parts.push(e.delta > 0 ? `${who}เอ็นดู` : `${who}ห่างเหิน`);
+    }
+    if (e.op === 'relation' && e.role === 'actor' && (e.kind === 'grudge' || e.kind === 'rival')) {
+      parts.push(`ไม่ชอบหน้า${vars[e.toward] ?? e.toward}`);
+      continue;
+    }
+    if (e.op === 'relation' && e.role === 'actor' && e.kind === 'patron') {
+      parts.push(`เป็นคนของ${vars[e.toward] ?? e.toward}`);
+      continue;
+    }
     if (e.op === 'relation' && e.role === 'actor') {
       const to = vars[e.toward] ?? e.toward;
       const up = Math.max(e.atLeast ?? 0, e.delta ?? 0);
@@ -322,13 +342,22 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
   return parts.length ? [...new Set(parts)].join(' · ') : undefined;
 }
 
+/**
+ * ข้อความของ event ที่ผู้ใหญ่ (ADULT_AGE ขึ้นไป) อ่านแล้วไม่ขัด — งานบุญเขียนจากสายตาเด็กที่ตามผู้ใหญ่ไป
+ * ใส่ `<key>.adult` ไว้ข้างกันใน text.th.json แล้วระบบเลือกให้ (ไม่มี = ใช้ข้อความเดิม)
+ */
+const ADULT_AGE = 20;
+function ageKey(ctx: Ctx, p: PreparedEvent, key: string, text: TextTable): string {
+  return ageOf(ctx, p.actor) >= ADULT_AGE && text[`${key}.adult`] ? `${key}.adult` : key;
+}
+
 /** ตัวเลือกเสี่ยง: "อาจถูกจับได้ (ราว 40%)" แล้วตามด้วยผลถ้าพลาด */
 function riskHint(ctx: Ctx, p: PreparedEvent, o: PreparedEvent['options'][number], text: TextTable, vars: Record<string, string>): string | undefined {
   if (!o.risk) return undefined;
   const who = (role: string) => ctx.state.characters[p.instance.bindings[role] ?? ('' as Character['id'])];
   const chance = Math.round(riskChance(ctx, p.actor, o.risk, who) * 20) * 5; // ปัดทีละ 5% — เดาได้แค่คร่าวๆ
   const ifFail = everydayHint(o.risk.fail.effects, vars);
-  return `${fill(text[o.risk.hintKey] ?? o.risk.hintKey, vars)} (ราว ${chance}%)${ifFail ? ` — ถ้าพลาด: ${ifFail}` : ''}`;
+  return `${fill(text[ageKey(ctx, p, o.risk.hintKey, text)] ?? o.risk.hintKey, vars)} (ราว ${chance}%)${ifFail ? ` — ถ้าพลาด: ${ifFail}` : ''}`;
 }
 
 /** ชื่อคนในแต่ละ role (พ่อแม่ของ actor เรียกแบบลูก) และตัวแปรของ event — ใช้เติมข้อความ event และบรรทัดผลของตัวเลือก */
@@ -352,7 +381,9 @@ export function eventVars(ctx: Ctx, p: PreparedEvent): Record<string, string> {
  * event ที่มาซ้ำทุกปี (งานบุญ) มีข้อความหลายแบบ: key, key.v2, key.v3… — เลือกตาม id ของ event
  * ครั้งเดียวกันได้ข้อความเดิมเสมอ (โหลดเซฟแล้วไม่เปลี่ยน)
  */
-function variantKey(p: PreparedEvent, text: TextTable): string {
+function variantKey(ctx: Ctx, p: PreparedEvent, text: TextTable): string {
+  const adult = ageKey(ctx, p, p.def.textKey, text);
+  if (adult !== p.def.textKey) return adult;
   const keys = [p.def.textKey];
   for (let i = 2; text[`${p.def.textKey}.v${i}`]; i++) keys.push(`${p.def.textKey}.v${i}`);
   let h = 0;
@@ -364,15 +395,15 @@ function variantKey(p: PreparedEvent, text: TextTable): string {
 export function habitLines(ctx: Ctx, p: PreparedEvent, report: EventReport, text: TextTable): string[] {
   const vars = eventVars(ctx, p);
   const opt = p.options.find((o) => o.id === report.optionId);
-  const did = opt ? fill(text[opt.textKey] ?? opt.textKey, { ...vars, ...opt.params }) : report.optionId;
+  const did = opt ? fill(text[ageKey(ctx, p, opt.textKey, text)] ?? opt.textKey, { ...vars, ...opt.params }) : report.optionId;
   const lines = [`${text[`${p.def.textKey}.title`] ?? p.def.id} — ${did} (ตามเคย)`];
-  if (report.outcome?.textKey) lines.push(fill(text[report.outcome.textKey] ?? report.outcome.textKey, vars));
+  if (report.outcome?.textKey) lines.push(outcomeLine(ctx, p, report.outcome.textKey, text));
   return [...lines, ...report.notes];
 }
 
 /** บรรทัดในบันทึกที่บอกว่าตัวเลือกเสี่ยงสำเร็จหรือพลาด */
 export function outcomeLine(ctx: Ctx, p: PreparedEvent, textKey: string, text: TextTable): string {
-  return fill(text[textKey] ?? textKey, eventVars(ctx, p));
+  return fill(text[ageKey(ctx, p, textKey, text)] ?? textKey, eventVars(ctx, p));
 }
 
 /** ตัวเลือกที่เป็นขั้นตอนแต่งงาน → บอกราคาและโอกาสไว้ก่อนเลือก */
@@ -401,10 +432,10 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
   return {
     instanceId: p.instance.id,
     title: text[`${p.def.textKey}.title`] ?? p.def.id,
-    text: fill(text[variantKey(p, text)] ?? p.def.textKey, vars),
+    text: fill(text[variantKey(ctx, p, text)] ?? p.def.textKey, vars),
     options: p.options.map((o) => ({
       id: o.id,
-      text: fill(text[o.textKey] ?? o.textKey, { ...vars, ...o.params }),
+      text: fill(text[ageKey(ctx, p, o.textKey, text)] ?? o.textKey, { ...vars, ...o.params }),
       locked: p.locked.has(o.id),
       injected: !!o.injectedBy,
       note: willNote(o.id),
@@ -516,28 +547,33 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   };
   const deathYear = node.deathYear ?? (ch?.deathDay != null ? yearOf(ctx, ch.deathDay) : null);
   const cause = ch?.deathCause ?? node.summary?.causeOfDeath ?? null;
-  const names = (ids: Array<FamilyNode['id'] | null>) => ids.map(nodeName).filter((x): x is string => !!x);
   const percent = (x: number) => `${pct(x)}%`;
 
   const facts: InspectView['facts'] = [];
   const sections: InspectView['sections'] = [];
+  const links: NonNullable<InspectView['links']> = {};
   const section = (title: string, items: string[]) => {
     if (items.length) sections.push({ title, items });
+  };
+  // ญาติในผัง — UI ทำชื่อเป็นปุ่มเปิดดูคนนั้นต่อได้
+  const linked = (label: string, ids: Array<FamilyNode['id'] | null>, sep: string) => {
+    const list = ids.filter((id): id is FamilyNode['id'] => !!id && !!S.familyNodes[id])
+      .map((id) => ({ name: nodeName(id)!, nodeId: id }));
+    if (!list.length) return;
+    facts.push([label, list.map((x) => x.name).join(sep)]);
+    links[label] = list;
   };
 
   // ข้อมูลในผัง — มีทุกคน รวมคนที่ถูก prune
   const dyn = node.dynastyId ? S.dynasties[node.dynastyId] : undefined;
   if (dyn?.founderNodeId === node.id) facts.push(['ต้นตระกูล', dyn.name]);
   if (dyn?.headNodeId === node.id) facts.push(['ตำแหน่ง', `ผู้นำตระกูล${dyn.name}`]);
-  const parents = names([node.fatherId, node.motherId]);
-  if (parents.length) facts.push(['บิดามารดา', parents.join(' · ')]);
+  linked('บิดามารดา', [node.fatherId, node.motherId], ' · ');
   const parentage = parentageLabel(node.parentage);
   if (parentage) facts.push(['ฐานะในบ้าน', parentage]);
   facts.push(['รุ่นที่', String(node.generation + 1)]); // generation นับจาก 0 ที่รุ่นต้นตระกูล
-  const spouses = names(node.spouseIds);
-  if (spouses.length) facts.push(['คู่ครอง', spouses.join(', ')]);
-  const kids = names(node.childIds);
-  if (kids.length) facts.push(['บุตร', kids.join(', ')]);
+  linked('คู่ครอง', node.spouseIds, ', ');
+  linked('บุตร', node.childIds, ', ');
   section('ตำนานที่เล่าถึงคนนี้', node.legendIds.map((id) => S.legends[id]).filter((l) => !!l).map((l) => renderLegend(ctx, l!, 'current')));
 
   if (!ch) {
@@ -571,7 +607,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
       status: node.driftedYear !== undefined
         ? `แยกไปอยู่ที่อื่นตั้งแต่ พ.ศ. ${node.driftedYear} — ขาดการติดต่อกับตระกูล`
         : `เหลือแต่ชื่อในผังตระกูล${cause ? ` · ${ctx.tags.label(cause)}` : ''}`,
-      facts, sections,
+      facts, sections, links,
       portraitTags: portraitArtTags({
         sex: node.sex, age: prunedAge, topknotCut: prunedAge >= 13,
         estate: sm?.estate ?? 'noble', roles: prunedRoles,
@@ -592,8 +628,19 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   if (ch.social.patronId) facts.push(['มูลนาย', charName(ch.social.patronId)]);
   facts.push(['ความหนักใจ', percent(ch.stress)], ['บุญ', ch.merit.toFixed(1)], ['ถนัดมือ', ch.handedness === 'l' ? 'ซ้าย' : 'ขวา']);
   const hh = ch.householdId ? S.households[ch.householdId] : undefined;
-  if (hh) facts.push(['เรือน', `${hh.headId === ch.id ? 'เป็นหัวเรือน' : `อยู่เรือนของ${charName(hh.headId)}`} · ${hh.memberIds.length} คน`]);
+  if (hh) {
+    const help = servantsText(ctx, hh.id);
+    facts.push(['เรือน', `${hh.headId === ch.id ? 'เป็นหัวเรือน' : `อยู่เรือนของ${charName(hh.headId)}`} · ${hh.memberIds.length} คน${help ? ` · ${help}` : ''}`]);
+  }
 
+  // ความรู้สึกระหว่างคนนี้กับผู้เล่น −100..100 (systems/opinion.ts)
+  const me = S.characters[S.meta.playerCharacterId];
+  if (me && me.id !== ch.id && isAlive(ch)) {
+    facts.unshift(
+      [`รู้สึกต่อ${me.name}`, opinionLabel(opinion(ctx, ch.id, me.id))],
+      [`${me.name}รู้สึกต่อคนนี้`, opinionLabel(opinion(ctx, me.id, ch.id))],
+    );
+  }
   section('ชีวิตคู่', marriageStatus(ctx, ch));
   section('ปมในใจ (รวมปมแฝง)', ch.traitIds.map((id) => S.traits[id]).filter((x): x is Trait => !!x).map((tr) => {
     const o = tr.origin;
@@ -629,7 +676,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     nodeId: node.id, name: node.name, sex: node.sex,
     lifespan: `${node.birthYear}–${deathYear ?? ''}`,
     status: isAlive(ch) ? 'ยังมีชีวิต' : `ถึงแก่กรรม${cause ? ` (${ctx.tags.label(cause)})` : ''}`,
-    facts, sections,
+    facts, sections, links,
     portraitTags: portraitArtTags({
       sex: ch.sex, age: charAge, topknotCut: ch.topknotCutYear !== undefined,
       estate: ch.social.estate, roles: characterRoles(ctx, ch, node),
@@ -730,5 +777,93 @@ export function endingView(ctx: Ctx, reason: EndReason, startYear: number): Endi
       : 'ไม่เหลือลูก หลาน หรือพี่น้องที่จะสืบตระกูลต่อ',
     facts,
     sections,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// หน้าผลของตัวเลือก: เก็บค่าก่อนเลือก แล้วเทียบหลังเลือก → "บุญ +0.5 · ความหนักใจ −8" และความรู้สึกของคนใน event
+// ---------------------------------------------------------------------------
+
+/** ความรู้สึกเปลี่ยนอย่างน้อยเท่านี้จึงเด้งหน้าผล (ไม่มีตัวเลือกเสี่ยง) */
+const RESULT_MIN_SHIFT = 5;
+
+interface ChoiceSnapshot {
+  stats: Record<string, number>;
+  /** "<role>|in" = คนนั้นรู้สึกต่อผู้เล่น, "<role>|out" = ผู้เล่นรู้สึกต่อคนนั้น */
+  opinions: Record<string, number>;
+}
+
+const STAT_LABEL: Record<string, [label: string, scale: number, digits: number, higherIsGood: boolean]> = {
+  merit: ['บุญ', 1, 1, true],
+  stress: ['ความหนักใจ', 100, 0, false],
+  wealth: ['เงินทอง', 1, 0, true],
+  favor: ['ความโปรดปรานของเจ้ากรม', 100, 0, true],
+  prestige: ['บารมีตระกูล', 1, 1, true],
+};
+
+export function choiceSnapshot(ctx: Ctx, p: PreparedEvent): ChoiceSnapshot {
+  const a = p.actor;
+  const dyn = a.dynastyId ? ctx.state.dynasties[a.dynastyId] : undefined;
+  const stats: Record<string, number> = { merit: a.merit, stress: a.stress, wealth: a.social.wealth, prestige: dyn?.prestige ?? 0 };
+  if (a.office) stats['favor'] = a.office.favor;
+  for (const [k, v] of Object.entries(a.skills)) stats[`skill:${k}`] = v;
+  const opinions: Record<string, number> = {};
+  for (const [role, id] of Object.entries(p.instance.bindings)) {
+    if (role === 'actor' || id === a.id) continue;
+    opinions[`${role}|in`] = opinion(ctx, id, a.id);
+    opinions[`${role}|out`] = opinion(ctx, a.id, id);
+  }
+  return { stats, opinions };
+}
+
+export function choiceResult(
+  ctx: Ctx, p: PreparedEvent, before: ChoiceSnapshot, report: EventReport, text: TextTable,
+): ChoiceResult | undefined {
+  const vars = eventVars(ctx, p);
+  const after = choiceSnapshot(ctx, p);
+  const changes: ChoiceResult['changes'] = [];
+  for (const [k, v] of Object.entries(after.stats)) {
+    const d = v - (before.stats[k] ?? 0);
+    const [label, scale, digits, up] = STAT_LABEL[k]
+      ?? [ctx.content.chores.skillLabels[k.slice(6)] ?? t(text, 'skill', k.slice(6)), 1, 0, true];
+    const shown = d * scale;
+    if (Math.abs(shown) < (digits ? 0.05 : 0.5)) continue;
+    changes.push({ label, delta: `${shown > 0 ? '+' : '−'}${Math.abs(shown).toFixed(digits)}`, good: (shown > 0) === up });
+  }
+  const relations: ChoiceResult['relations'] = [];
+  for (const [key, v] of Object.entries(after.opinions)) {
+    const prev = before.opinions[key] ?? 0;
+    if (v === prev) continue;
+    const [role, dir] = key.split('|');
+    const name = vars[role!] ?? role!;
+    relations.push({ who: dir === 'in' ? `${name}รู้สึกต่อ${p.actor.name}` : `${p.actor.name}รู้สึกต่อ${name}`, before: prev, after: v });
+  }
+  const outcome = report.outcome?.textKey
+    ? { text: fill(text[ageKey(ctx, p, report.outcome.textKey, text)] ?? report.outcome.textKey, vars), failed: report.outcome.failed }
+    : undefined;
+  // เปลี่ยนนิดเดียว (ช่วยงานบ้านทุกวัน) ไม่ต้องเด้งหน้าผล — บันทึกยังมีบรรทัดตามปกติ
+  if (!outcome && !relations.some((r) => Math.abs(r.after - r.before) >= RESULT_MIN_SHIFT)) return undefined;
+  const opt = p.options.find((o) => o.id === report.optionId);
+  return {
+    title: text[`${p.def.textKey}.title`] ?? p.def.id,
+    did: opt ? fill(text[ageKey(ctx, p, opt.textKey, text)] ?? opt.textKey, { ...vars, ...opt.params }) : report.optionId,
+    outcome, changes, relations,
+  };
+}
+
+/** รายชื่อจากปุ่มหาคู่ — ใครบ้านไหน อยู่ไกลแค่ไหน นิสัยที่คนพูดถึง */
+export function matchView(ctx: Ctx, mode: MatchView['mode'], people: Character[]): MatchView {
+  return {
+    mode,
+    people: people.map((c) => {
+      const p = c.personality;
+      const said = p.agreeableness >= 0.65 ? 'ว่ากันว่าใจดี' : p.agreeableness <= 0.35 ? 'ว่ากันว่าปากจัด'
+        : p.piety >= 0.7 ? 'ว่ากันว่าเข้าวัดเป็นนิจ' : p.boldness >= 0.65 ? 'ว่ากันว่าใจกล้า' : p.pride >= 0.7 ? 'ว่ากันว่าถือตัว' : '';
+      return {
+        id: c.id, nodeId: c.familyNodeId, name: c.name, age: ageOf(ctx, c),
+        detail: [localOrigin(ctx, c), estateLabel(ctx, c.social.estate), DISTANCE_TH[c.local!.distance], said].filter(Boolean).join(' · '),
+        portraitTags: portraitArtTags({ sex: c.sex, age: ageOf(ctx, c), topknotCut: true, estate: c.social.estate, roles: [] }),
+      };
+    }),
   };
 }

@@ -28,7 +28,13 @@ export type Command =
   | { type: 'viewKnown' }
   | { type: 'planIntent'; targetId: string; kind: string }
   | { type: 'startIntent'; targetId: string; kind: string; approach: string }
-  | { type: 'abandonIntent' };
+  | { type: 'abandonIntent' }
+  /** ผู้เล่นปิดหน้าผลของตัวเลือกแล้ว → เดินเวลาต่อ (ถ้าหยุดไว้เพราะ event) */
+  | { type: 'resume' }
+  /** ปุ่มหาคู่: ได้รายชื่อมาดูตัว / ปิดรายชื่อ (คนที่ไม่ได้เลือกห่างหายไป) / รับเป็นเมียน้อย */
+  | { type: 'findMatches' }
+  | { type: 'dropMatches'; keepId?: string }
+  | { type: 'proposeMinorWife'; targetId: string };
 
 export interface ReplyData {
   newGame: CharacterView;
@@ -39,7 +45,7 @@ export interface ReplyData {
   play: ClockState;
   pause: ClockState;
   setSpeed: ClockState;
-  choose: { lines: string[] };
+  choose: { lines: string[]; result?: ChoiceResult };
   viewPlayer: CharacterView;
   viewDynasty: DynastyView;
   viewPending: EventView[];
@@ -50,6 +56,29 @@ export interface ReplyData {
   planIntent: IntentPlanView;
   startIntent: { lines: string[] };
   abandonIntent: { lines: string[] };
+  resume: ClockState;
+  findMatches: MatchView;
+  dropMatches: null;
+  proposeMinorWife: EventView[];
+}
+
+export interface MatchView {
+  mode: 'court' | 'minor_wife';
+  people: Array<{ id: string; nodeId: string; name: string; age: number; detail: string; portraitTags: string[] }>;
+}
+
+/**
+ * หน้าผลของตัวเลือก — เด้งขึ้นเมื่อตัวเลือกเสี่ยงสำเร็จ/พลาด หรือความรู้สึกของใครเปลี่ยน
+ * (เวลายังหยุดอยู่จนผู้เล่นปิดหน้านี้ แล้วส่ง resume)
+ */
+export interface ChoiceResult {
+  title: string;
+  did: string;
+  outcome?: { text: string; failed: boolean };
+  /** "บุญ +0.5" — good บอกสีว่าดีหรือร้ายสำหรับผู้เล่น */
+  changes: Array<{ label: string; delta: string; good: boolean }>;
+  /** ความรู้สึก −100..100 ก่อนและหลัง */
+  relations: Array<{ who: string; before: number; after: number }>;
 }
 
 /** playing = เวลากำลังเดิน; ended = เกมจบ เล่นต่อไม่ได้ (endReason บอกว่าจบเพราะอะไร) */
@@ -252,6 +281,8 @@ export interface InspectView {
   status: string; // ยังมีชีวิต / ถึงแก่กรรม (สาเหตุ) / เหลือแต่ชื่อ
   facts: Array<[string, string]>;
   sections: Array<{ title: string; items: string[] }>;
+  /** ชื่อญาติใน facts ที่กดเปิดดูต่อได้ — key คือหัวข้อของ fact */
+  links?: Record<string, Array<{ name: string; nodeId: string }>>;
   /** tag สำหรับเลือกภาพตัวละคร (portrait) */
   portraitTags?: string[];
 }

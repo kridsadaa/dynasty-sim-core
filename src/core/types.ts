@@ -256,6 +256,8 @@ export interface Character {
    * ครั้งต่อไปทำเองไม่ถามจนถึง until — ข้ามช่วงวัย (stage) หรือคนที่เกี่ยวข้องเปลี่ยน (with) ก็ถามใหม่
    */
   habits?: Record<string, { optionId: string; streak: number; stage: string; with: string; until?: Day }>;
+  /** วันที่ถามหาคู่ครั้งล่าสุด (systems/matchmaking.ts) */
+  matchSearchDay?: Day;
   /**
    * ประวัติการเลือกที่ไม่ถูกล้าง (eventLog ถูกตัดทิ้งเมื่อเก่า) — นับต่อ "event", "event.option",
    * "event@คน" และ "event.option@คน" (คนใน role อื่นนอกจาก actor) ดู Condition 'seen'
@@ -379,6 +381,8 @@ export interface Household {
   memberIds: CharacterId[];
   dynastyId: DynastyId | null;
   rules: HouseholdRule[];
+  /** บ่าวไพร่ (systems/servants.ts) — เซฟเก่าไม่มี = ยังไม่มีใคร */
+  retainers?: { that: number; phrai: number };
 }
 
 // ============================================================================
@@ -561,6 +565,8 @@ export type Condition =
   | { type: 'office'; minRank?: number; maxRank?: number }
   /** ทักษะอย่างน้อย min (เช่น อ่านออกเขียนได้ literacy) */
   | { type: 'skill'; skill: string; min: number }
+  /** ความหนักใจของ actor อยู่ในช่วงนี้ (0..1) */
+  | { type: 'stress'; min?: number; max?: number }
   /**
    * เคยเลือกใน event นี้มาแล้วกี่ครั้ง (Character.seen) — option: นับเฉพาะตัวเลือกนั้น, withRole: นับเฉพาะครั้งที่คนใน role
    * นั้นเป็นคนเดียวกับครั้งนี้ — max 0 = ยังไม่เคย (event ครั้งเดียว / ครั้งเดียวต่อคน)
@@ -636,7 +642,11 @@ export type Resist =
   | { source: 'bond'; role: string; axis: 'affection' | 'awe'; weight: number; reasonKey: string }
   | { source: 'personality'; trait: keyof Personality; invert?: boolean; weight: number; reasonKey: string }
   /** ความคาดหวังตามเพศ (ลูกผู้หญิงปฏิเสธงานครัวยากกว่า) — ค่าต่อเพศโดยตรง */
-  | { source: 'sex'; f?: number; m?: number; reasonKey: string };
+  | { source: 'sex'; f?: number; m?: number; reasonKey: string }
+  /** ทักษะของ actor (0..100 → 0..1) เช่น การพูดจา — ใน risk ใส่ weight ติดลบ ทักษะสูงพลาดน้อยลง */
+  | { source: 'skill'; skill: string; weight: number; reasonKey: string }
+  /** ความหนักใจของ actor (0..1) — ใจไม่อยู่กับตัว ทำเรื่องที่ต้องตั้งสติได้ยากขึ้น */
+  | { source: 'stress'; weight: number; reasonKey: string };
 
 /**
  * โอกาสพลาด = base + Σ (ค่าปัจจัย 0..1 × weight) ตัดไว้ที่ 5–95% — weight ติดลบ = ช่วยให้สำเร็จ
@@ -994,6 +1004,8 @@ export interface Balance {
   };
   world: {
     eventsPerYear: number;
+    /** น้ำหนักของ event คูณค่านี้ทุกครั้งที่เคยเกิดกับคนนี้ในบันทึก (กันเรื่องเดิมวนซ้ำ) */
+    repeatDamp: Unit;
     /**
      * ช่วงอายุออกเรือนตามเพศ — แต่ละปีในช่วงมีโอกาสเท่ากัน (lore: kinship.marry_young_1680s)
      * ตัวเลขเป็นของเกม: ลา ลูแบร์บอกแค่ว่าแต่งกันอายุน้อยมาก
@@ -1059,6 +1071,10 @@ export interface Balance {
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   /** เมียน้อยและการหย่า (lore: social.wife_categories, kinship.inheritance_divorce_1680s) — ตัวเลขเป็นของเกม */
+  /** ปุ่มหาคู่ (systems/matchmaking.ts) — ค่าของเกม */
+  /** บ่าวไพร่ในเรือน (systems/servants.ts) — ค่าของเกม */
+  servants: { estates: Estate[]; wealthPerSlave: number; maxSlaves: number; sakdinaPerPhrai: number; maxPhrai: number; upkeep: number };
+  matchmaking: { candidates: number; searchDays: number; sameEstateShare: Unit; maxWives: number };
   wives: {
     /** ผู้เล่นชายอายุช่วงนี้ที่มีเงินอย่างน้อย minWealth อาจมีคนเสนอเมียน้อย (ปีละ chance) */
     age: [number, number];
@@ -1122,6 +1138,8 @@ export interface Balance {
     uniqueVacancyChance: Unit;
     /** บารมีตระกูลที่ได้ต่อขั้นเมื่อเลื่อน */
     promotePrestige: number;
+    /** ความโปรดปรานที่ได้เพิ่มทุกปีจากขุนนางผู้ใหญ่ที่ฝากตัวไว้ */
+    patronFavor: number;
     /**
      * ตระกูลได้ฝักฝ่ายเมื่อผู้เล่นรับราชการในช่วงปีนี้ (รวมปีปลาย) — เช่น รับราชการกรุงธนบุรี → ฝ่ายพระเจ้าตาก
      * ฝักฝ่ายมีผลตอน shock ที่ purgeFactions ระบุ แล้วหมดไปหลังจากนั้น

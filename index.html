@@ -67,7 +67,11 @@
       .slot .info b { display: block; }
 
       /* หน้าดูตัวละคร */
-      #inspect { margin-bottom: 16px; }
+      /* หน้าดูตัวละครเป็นหน้าต่างลอย ทับหน้าหลักแต่อยู่ใต้หน้าต่าง event */
+      #sheet { position: fixed; inset: 0; z-index: 9; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(0 0 0 / .35); }
+      #sheet[hidden] { display: none; }
+      #inspect { width: min(620px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: 0 12px 40px rgb(0 0 0 / .3); }
+      #inspect figure.art { max-width: 420px; }
       #inspect .top { display: flex; align-items: baseline; gap: 8px; }
       #inspect .top h2 { margin: 0 auto 0 0; color: var(--fg); font-size: 17px; }
       #inspect dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 14px; margin: 8px 0; }
@@ -92,6 +96,24 @@
       #event .triggered { color: var(--accent); font-size: 14px; }
       #event .opt .note { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
       #event .opt.strained .note { color: var(--accent); }
+      .panelhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+      .panelhead h2 { margin: 0; }
+      #event .match { display: grid; grid-template-columns: 96px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+      #event .match figure.art { margin: 0; }
+      #event .match figure.art img { aspect-ratio: 1; }
+      @media (max-width: 480px) { #event .match { grid-template-columns: 64px 1fr; } #event .match > button { grid-column: 1 / -1; } }
+      /* หน้าผลของตัวเลือก */
+      #event .outcome { padding: 8px 10px; border-radius: 6px; border-left: 4px solid var(--good); background: var(--bg); }
+      #event .outcome.bad { border-left-color: var(--accent); }
+      #event .changes { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0; }
+      #event .up { color: var(--good); }
+      #event .down { color: var(--accent); }
+      #event .rel { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; font-size: 14px; margin: 8px 0; }
+      #event .opbar { grid-column: 1 / -1; position: relative; height: 6px; border-radius: 3px; background: var(--line); }
+      #event .opbar::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--muted); }
+      #event .opbar i { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+      #event .opbar i.pos { background: var(--good); }
+      #event .opbar i.neg { background: var(--accent); }
       ul { margin: 0; padding-left: 18px; font-size: 14px; }
       #status { color: var(--muted); font-size: 14px; }
       .clock { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
@@ -161,8 +183,8 @@
           <div id="slots"></div>
         </section>
       </div>
+      <div id="sheet" hidden><section id="inspect"></section></div>
       <aside>
-        <section id="inspect" hidden></section>
         <section id="player"><h2>ตัวละคร</h2></section>
         <section id="known" style="margin-top:16px"><h2>คนที่รู้จัก</h2></section>
         <section id="dynasty" style="margin-top:16px"><h2>ตระกูล</h2></section>

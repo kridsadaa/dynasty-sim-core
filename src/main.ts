@@ -1,6 +1,6 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
 import type {
-  CharacterView, ClockState, DynastyView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
+  CharacterView, ChoiceResult, ClockState, DynastyView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
   TreeView,
 } from './engine/protocol';
 import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
@@ -260,7 +260,9 @@ function personRow(p: KnownPersonView): HTMLElement {
 
 function renderKnown(people: KnownPersonView[]) {
   const box = $('known');
-  box.replaceChildren(el('h2', 'คนที่รู้จัก'));
+  const head = el('div', undefined, 'panelhead');
+  head.append(el('h2', 'คนที่รู้จัก'), button('หาคู่', () => void openMatches()));
+  box.replaceChildren(head);
   const kin = people.filter((p) => p.kin);
   const others = people.filter((p) => !p.kin);
   if (kin.length) {
@@ -274,10 +276,68 @@ function renderKnown(people: KnownPersonView[]) {
   box.append(...others.map(personRow));
 }
 
-/** หน้าเลือกวิธี: โอกาสสำเร็จ เวลาโดยประมาณ และชีวิตประจำวันที่จะเปลี่ยน — หยุดเวลาไว้ระหว่างเลือก */
-async function openPlan(targetId: string, kind: string) {
+/** ปุ่มหาคู่: ได้รายชื่อมาดูตัว เลือกแล้วไปเกี้ยว (ยังไม่มีคู่) หรือรับเป็นเมียน้อย — หยุดเวลาไว้ระหว่างเลือก */
+async function openMatches() {
   if (modalOpen()) return;
   const wasPlaying = clock.playing;
+  if (wasPlaying) await clockCmd({ type: 'pause' });
+  if (modalOpen()) return;
+  const resume = () => {
+    if (wasPlaying && !modalOpen()) void clockCmd({ type: 'play' });
+  };
+  let v: MatchView;
+  try {
+    v = await engine.request({ type: 'findMatches' });
+  } catch (e) {
+    status.textContent = `หาคู่ไม่ได้: ${errorText(e)}`;
+    resume();
+    return;
+  }
+  await refresh();
+  const rows = v.people.map((p) => {
+    const row = el('div', undefined, 'match');
+    const info = el('div');
+    info.append(el('strong', `${p.name} · ${p.age} ปี`), el('div', p.detail, 'muted'));
+    const fig = artFigure('portrait', p.portraitTags);
+    row.append(...(fig.length ? fig : [el('div')]), info);
+    const pick = v.mode === 'court'
+      ? button('เกี้ยว / ทาบทาม', async () => {
+        await engine.request({ type: 'dropMatches', keepId: p.id });
+        closeModal();
+        await refresh();
+        await openPlan(p.id, 'court', wasPlaying);
+      })
+      : button('รับเป็นเมียน้อย', async () => {
+        try {
+          const evs = await engine.request({ type: 'proposeMinorWife', targetId: p.id });
+          closeModal();
+          await refresh();
+          if (evs[0]) renderEvent(evs[0]);
+        } catch (e) {
+          modal.append(el('p', errorText(e), 'error'));
+        }
+      });
+    row.append(pick);
+    return row;
+  });
+  const none = button('ไม่เลือกใคร', async () => {
+    await engine.request({ type: 'dropMatches' }).catch(() => {});
+    closeModal();
+    await refresh();
+    resume();
+  });
+  const row = el('div', undefined, 'row');
+  row.append(none);
+  const intro = v.mode === 'court'
+    ? 'ถามผู้ใหญ่ที่รู้จักหลายบ้านว่าบ้านไหนมีลูกหลานยังไม่ออกเรือน ได้ชื่อมาดังนี้ คนที่ไม่ได้เลือกจะห่างหายไป'
+    : 'มีคนมาบอกว่าบ้านเหล่านี้มีลูกสาวที่พ่อแม่ยอมยกให้เป็นเมียน้อยของคนมีหน้ามีตา รับมาต้องเสียเงินและเมียหลวงย่อมไม่พอใจ';
+  openModal(el('h2', 'หาคู่'), el('p', intro), ...rows, row);
+}
+
+/** หน้าเลือกวิธี: โอกาสสำเร็จ เวลาโดยประมาณ และชีวิตประจำวันที่จะเปลี่ยน — หยุดเวลาไว้ระหว่างเลือก */
+async function openPlan(targetId: string, kind: string, playingBefore?: boolean) {
+  if (modalOpen()) return;
+  const wasPlaying = playingBefore ?? clock.playing;
   if (wasPlaying) await clockCmd({ type: 'pause' });
   // event เด้งขึ้นก่อนเวลาหยุดทัน — event มาก่อน ไม่เอาหน้าเลือกวิธีไปทับ
   if (modalOpen()) return;
@@ -466,9 +526,7 @@ async function inspect(nodeId: string, reveal = true) {
   inspecting = nodeId;
   for (const b of document.querySelectorAll<HTMLElement>('#tree .person')) b.classList.toggle('selected', b.dataset.node === nodeId);
   try {
-    renderInspect(await engine.request({ type: 'viewCharacter', nodeId }));
-    // จอแคบ: แผงอยู่ใต้บันทึก — เลื่อนไปให้เห็น (จอกว้างแผงอยู่ข้างๆ เห็นอยู่แล้ว)
-    if (reveal && matchMedia('(max-width: 800px)').matches) $('inspect').scrollIntoView({ block: 'start' });
+    renderInspect(await engine.request({ type: 'viewCharacter', nodeId }), reveal);
   } catch (e) {
     // คนนี้ถูกยุบออกจากผังไปแล้ว (prune) — ปิดหน้าแล้วบอกเหตุ
     closeInspect();
@@ -478,24 +536,42 @@ async function inspect(nodeId: string, reveal = true) {
 
 function closeInspect() {
   inspecting = null;
-  $('inspect').hidden = true;
+  $('sheet').hidden = true;
   for (const b of document.querySelectorAll<HTMLElement>('#tree .person.selected')) b.classList.remove('selected');
 }
 
-function renderInspect(v: InspectView) {
+function renderInspect(v: InspectView, reveal: boolean) {
   const box = $('inspect');
+  // เปิดคนใหม่ → เริ่มอ่านจากบนสุด (refresh คนเดิมระหว่างเวลาเดินไม่เลื่อน)
+  if (box.dataset.node !== v.nodeId) box.scrollTop = 0;
+  box.dataset.node = v.nodeId;
   const top = el('div', undefined, 'top');
   top.append(el('h2', `${v.sex === 'm' ? '♂' : '♀'} ${v.name}`), button('ปิด', closeInspect));
   const dl = el('dl');
-  for (const [k, val] of v.facts) dl.append(el('dt', k), el('dd', val));
+  for (const [k, val] of v.facts) {
+    const dd = el('dd');
+    const people = v.links?.[k];
+    if (people) people.forEach((p, i) => dd.append(...(i ? [document.createTextNode(k === 'บิดามารดา' ? ' · ' : ', ')] : []), button(p.name, () => void inspect(p.nodeId), 'who')));
+    else dd.textContent = val;
+    dl.append(el('dt', k), dd);
+  }
   box.replaceChildren(top, ...artFigure('portrait', v.portraitTags), el('div', `${v.lifespan} · ${v.status}`, 'muted'), dl);
   for (const s of v.sections) {
     const ul = el('ul');
     for (const i of s.items) ul.append(el('li', i));
     box.append(el('h3', s.title), ul);
   }
-  box.hidden = false;
+  // refresh ระหว่างเวลาเดินแค่อัปเดตเนื้อหา — ไม่เปิดหน้าต่างที่ผู้เล่นปิดไปแล้วขึ้นมาใหม่
+  if (reveal || !$('sheet').hidden) $('sheet').hidden = false;
 }
+
+// ปิดหน้าดูตัวละคร: คลิกพื้นหลัง หรือกด Esc (เมื่อไม่มีหน้าต่าง event ทับอยู่)
+$('sheet').onclick = (e) => {
+  if (e.target === $('sheet')) closeInspect();
+};
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !$('sheet').hidden && $('backdrop').hidden) closeInspect();
+});
 
 // ---------------- เซฟ/โหลด ----------------
 let slots: SaveSlotInfo[] = [];
@@ -589,12 +665,51 @@ async function choose(ev: EventView, o: EventView['options'][number], name?: str
     write(`→ ${o.text}`, 'choice');
     for (const l of r.lines) write(l, 'choice');
     await refresh();
+    if (r.result) return showResult(r.result); // เวลาหยุดรอจนกดรับทราบ
     await showPending(); // event ต่อเนื่อง (ถ้ามี) — ไม่มีแล้ว worker เดินเวลาต่อเอง
   } catch (e) {
     // event ยังค้างอยู่ใน worker → แสดงใหม่ให้เลือกอีกครั้ง แทนที่จะปล่อยให้ปุ่มค้าง
     await showPending();
     modal.append(el('p', errorText(e), 'error'));
   }
+}
+
+/** หน้าผลของตัวเลือก: สำเร็จ/พลาด ค่าที่เปลี่ยน และความรู้สึกของคนใน event (−100..100) */
+function showResult(r: ChoiceResult) {
+  const parts: Node[] = [el('h2', r.title), el('p', `→ ${r.did}`, 'muted')];
+  if (r.outcome) parts.push(el('p', r.outcome.text, r.outcome.failed ? 'outcome bad' : 'outcome good'));
+  if (r.changes.length) {
+    const ul = el('ul', undefined, 'changes');
+    for (const c of r.changes) {
+      const li = el('li', `${c.label} `);
+      li.append(el('b', c.delta, c.good ? 'up' : 'down'));
+      ul.append(li);
+    }
+    parts.push(ul);
+  }
+  for (const rel of r.relations) {
+    const row = el('div', undefined, 'rel');
+    const d = rel.after - rel.before;
+    row.append(el('span', rel.who), el('b', `${rel.before > 0 ? '+' : ''}${rel.before} → ${rel.after > 0 ? '+' : ''}${rel.after}`, d >= 0 ? 'up' : 'down'));
+    const bar = el('div', undefined, 'opbar');
+    const fill = el('i');
+    // แถบ −100..100: กลางคือ 0
+    fill.style.left = `${50 + Math.min(0, rel.after) / 2}%`;
+    fill.style.width = `${Math.abs(rel.after) / 2}%`;
+    fill.className = rel.after >= 0 ? 'pos' : 'neg';
+    bar.append(fill);
+    row.append(bar);
+    parts.push(row);
+  }
+  const ok = button('รับทราบ', async () => {
+    closeModal();
+    await engine.request({ type: 'resume' }).catch(() => {});
+    await showPending();
+  });
+  ok.classList.add('opt');
+  parts.push(ok);
+  openModal(...parts);
+  queueMicrotask(() => ok.focus());
 }
 
 function renderEvent(ev: EventView) {

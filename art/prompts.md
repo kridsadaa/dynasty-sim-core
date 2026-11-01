@@ -195,7 +195,7 @@ Interior of a timber house: two groups of middle-aged adults seated on reed mats
 
 ### scene.wedding — พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่
 
-✅ มีภาพแล้ว · tag: `event:marriage.wedding` `event:marriage.wedding_f` `event:marriage.minor_wife`
+✅ มีภาพแล้ว · tag: `event:marriage.wedding` `event:marriage.wedding_f` `event:marriage.minor_wife` `event:family.child_wedding`
 
 lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `attire.women_1680s` (attested), `material.houses_1680s` (attested, verified)
 
