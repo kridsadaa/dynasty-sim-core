@@ -13,7 +13,8 @@ import { knownLocals, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
-import { markNursing } from './systems/lifeEvents';
+import { kinYearTick, markNursing } from './systems/lifeEvents';
+import { habitOption } from './systems/festivals';
 import { advanceDay } from './systems/world';
 import { riskChance } from './systems/will';
 
@@ -387,6 +388,47 @@ demographyReport();
   if (Math.abs(fails - expected) > N * 0.08) problems.push(`พลาด ${fails}/${N} ครั้ง แต่คาดไว้ราว ${Math.round(expected)}`);
   check('ทอยตัวเลือกเสี่ยง', problems.slice(0, 3));
   if (failed === before) console.log(`  ✓ ข้อความครบ · พลาด ${fails}/${N} (คาดไว้ ${Math.round(expected)}) · ผลตรงกับที่ทอยได้`);
+}
+
+// [5d] งานบุญทำตามนิสัย และใจ/บุญของญาติขยับเองทุกปี
+{
+  const before = failed;
+  console.log('นิสัยและญาติ:');
+  const ctx = makeCtx(emptyState(29), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(8);
+  const holy = () => prepareEvent(ctx, 'festival.holy_day', { actor: hero.id }, { moon: 'moon:full' });
+  const problems: string[] = [];
+  const first = holy();
+  if (habitOption(ctx, hero, first)) problems.push('ยังไม่เคยเลือกก็ทำตามนิสัยแล้ว');
+  chooseOption(ctx, first, 'temple');
+  chooseOption(ctx, holy(), 'temple');
+  if (habitOption(ctx, hero, holy()) !== 'temple') problems.push('เลือกไปวัดสองครั้งแล้วยังถามอีก');
+  S.meta.day += yearsToDays(content.balance.festivals.habitYears) + 1;
+  if (habitOption(ctx, hero, holy())) problems.push('ครบปีแล้วไม่ถามใหม่');
+  const mom = S.characters[S.familyNodes[S.familyNodes[hero.familyNodeId]!.motherId!]!.characterId!]!;
+  const bathing = () => prepareEvent(ctx, 'festival.bathing', { actor: hero.id, parent: mom.id });
+  chooseOption(ctx, bathing(), 'bathe');
+  chooseOption(ctx, bathing(), 'bathe');
+  const dad = S.characters[S.familyNodes[S.familyNodes[hero.familyNodeId]!.fatherId!]!.characterId!]!;
+  if (habitOption(ctx, hero, prepareEvent(ctx, 'festival.bathing', { actor: hero.id, parent: dad.id })))
+    problems.push('รดน้ำคนละคนกับที่เคย แต่ไม่ถาม');
+  check('นิสัยงานบุญ', problems);
+
+  const kin: string[] = [];
+  mom.personality.piety = 0.8;
+  mom.stress = 0.8;
+  const merit0 = mom.merit;
+  kinYearTick(ctx);
+  if (!(mom.merit > merit0)) kin.push('ญาติไม่ได้บุญเลยทั้งปี');
+  if (!(mom.stress < 0.8)) kin.push('ความหนักใจไม่คลายลง');
+  const calm = mom.stress;
+  markDead(ctx, dad, 'situation:old_age');
+  kinYearTick(ctx);
+  if (!(mom.stress > calm)) kin.push('ผัวตายแล้วไม่หนักใจขึ้น');
+  check('ญาติขยับเองรายปี', kin);
+  if (failed === before) console.log('  ✓ เลือกแบบเดิมสองครั้งแล้วทำเอง ครบปีหรือเปลี่ยนคนถามใหม่ · ญาติได้บุญ หายหนักใจ และเศร้าเมื่อคนใกล้ชิดตาย');
 }
 
 // [6] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

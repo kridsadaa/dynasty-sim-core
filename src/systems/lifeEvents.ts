@@ -1,4 +1,5 @@
 import { ageOf, isAlive, yearOf, type Ctx } from '../core/ctx';
+import { clamp01 } from '../core/rng';
 import type { Character } from '../core/types';
 import { prepareEvent, type PreparedEvent } from './events';
 import { livingChildren, livingParents } from './factory';
@@ -55,4 +56,30 @@ export function elderPreceptsEvent(ctx: Ctx): PreparedEvent | null {
   const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
   if (!isAlive(player) || ageOf(ctx, player) < B.elderAge || !ctx.rng.chance(B.preceptsChance)) return null;
   return prepareEvent(ctx, 'ritual.elder_precepts', { actor: player.id });
+}
+
+/**
+ * รายปี: ใจและบุญของคนในฉากขยับตามวัยและนิสัย (ตัวเลขเป็นค่าของเกม — balance.life)
+ *  - บุญ: ญาติที่ไม่ใช่ผู้เล่นทำบุญตามแรงศรัทธา ผู้สูงวัยทำมากขึ้น (ผู้เล่นได้บุญจากสิ่งที่เลือกเอง)
+ *  - หนักใจ: คลายลงทุกปีเข้าหาระดับประจำตัว (คนขี้กังวลไม่หายสนิท) แล้วเพิ่มเมื่อคนใกล้ชิดตายในปีที่ผ่านมา
+ *    ผู้เล่นไม่โดนข้อหลัง — งานศพของผู้เล่นเป็น event ให้เลือกเอง
+ */
+export function kinYearTick(ctx: Ctx): void {
+  const S = ctx.state;
+  const L = ctx.content.balance.life;
+  const day = S.meta.day;
+  const playerId = S.meta.playerCharacterId;
+  const recentDead = Object.values(S.characters).filter((c) => c.deathDay !== null && day - c.deathDay < 366);
+  for (const ch of Object.values(S.characters)) {
+    if (!isAlive(ch) || !ch.householdId) continue;
+    const age = ageOf(ctx, ch);
+    if (ch.id !== playerId && age >= 15) ch.merit += ch.personality.piety * L.meritPerYear * (age >= L.elderAge ? L.elderMeritFactor : 1);
+    const rest = ch.personality.neuroticism * L.stressRest;
+    ch.stress = clamp01(ch.stress + (rest - ch.stress) * L.stressRecovery);
+    if (ch.id === playerId) continue;
+    const node = S.familyNodes[ch.familyNodeId];
+    const close = new Set([...(node?.spouseIds ?? []), ...(node?.childIds ?? []), node?.fatherId, node?.motherId]);
+    const grief = recentDead.filter((d) => close.has(d.familyNodeId)).length;
+    if (grief) ch.stress = clamp01(ch.stress + grief * L.griefStress * (0.5 + ch.personality.neuroticism));
+  }
 }

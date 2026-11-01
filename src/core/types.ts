@@ -249,6 +249,11 @@ export interface Character {
   ordainedYear?: number;
   /** minor = เมียกลางนอก (เมียน้อย) — ลูกเป็นบุตรภรรยาน้อย; ไม่มี = เมียหลวง/ไม่ใช่เมียใคร */
   wifeRank?: 'minor';
+  /**
+   * งานบุญที่ทำเหมือนเดิมจนเป็นนิสัย (ดู systems/festivals.ts) ต่อ event: เลือกแบบเดิมติดกัน streak ครั้ง
+   * ครั้งต่อไปทำเองไม่ถามจนถึง until — ข้ามช่วงวัย (stage) หรือคนที่เกี่ยวข้องเปลี่ยน (with) ก็ถามใหม่
+   */
+  habits?: Record<string, { optionId: string; streak: number; stage: string; with: string; until?: Day }>;
   /** ปีที่โกนจุก (lore: ritual.topknot_cutting) */
   topknotCutYear?: number;
   /** ปีที่ป่วยหนักล่าสุด (event family.parent_illness) — ไม่ถามซ้ำในปีเดียวกัน */
@@ -1031,6 +1036,9 @@ export interface Balance {
     bathingChance: number;
     /** ช่วงอายุที่อาจมีคนต่างเพศที่ยังไม่มีคู่ในงาน (แอบมอง ชวนไปลอยโคม) */
     peerAge: [number, number];
+    /** เลือกแบบเดิมติดกันกี่ครั้งจึงเป็นนิสัย แล้วทำเองไปกี่ปีก่อนถามใหม่ */
+    habitStreak: number;
+    habitYears: number;
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   /** เมียน้อยและการหย่า (lore: social.wife_categories, kinship.inheritance_divorce_1680s) — ตัวเลขเป็นของเกม */
@@ -1058,6 +1066,14 @@ export interface Balance {
     /** ผู้เล่นอายุถึงนี้อาจไปถือศีล ปีละ preceptsChance */
     elderAge: number;
     preceptsChance: Unit;
+    /** ญาติในฉาก (ไม่ใช่ผู้เล่น) ได้บุญปีละ piety × meritPerYear — ตั้งแต่ elderAge คูณ elderMeritFactor */
+    meritPerYear: number;
+    elderMeritFactor: number;
+    /** ความหนักใจของทุกคนคลายลงปีละสัดส่วนนี้ เข้าหา neuroticism × stressRest */
+    stressRecovery: Unit;
+    stressRest: Unit;
+    /** ญาติใกล้ชิด (คู่ครอง พ่อแม่ ลูก) ตายในปีที่ผ่านมา → หนักใจขึ้น griefStress × (0.5 + neuroticism) */
+    griefStress: Unit;
   };
   /** บวชเรียน (lore: ritual.ordination) — ตัวเลขเป็นของเกม */
   ordination: {

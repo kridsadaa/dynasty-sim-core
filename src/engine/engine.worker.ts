@@ -12,7 +12,7 @@ import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
 import {
-  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, outcomeLine, playerView,
+  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView,
   treeView,
   type TextTable,
 } from './views';
@@ -125,6 +125,7 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir'
     let stop: 'done' | 'event' | 'heir' = 'done';
     for (const sig of advanceDay(c)) {
       if (sig.type === 'log') lines.push({ kind: sig.kind, text: sig.line });
+      else if (sig.type === 'habit') for (const line of habitLines(c, sig.prepared, sig.report, text)) lines.push({ kind: 'choice', text: line });
       else if (sig.type === 'event') {
         pending.set(sig.prepared.instance.id, sig.prepared);
         stop = 'event';

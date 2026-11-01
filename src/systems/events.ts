@@ -12,6 +12,7 @@ import { applyMarriageStep, canPay } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { divorce, takeMinorWife } from './wives';
+import { recordHabit } from './festivals';
 import { markNursing, markTopknot } from './lifeEvents';
 
 // ============================================================================
@@ -287,6 +288,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
   const typedName = input.name === undefined ? undefined : cleanName(input.name);
   if (typedName === null) throw new Error('ชื่อต้องเป็นอักษรไทย 1–20 ตัว ไม่มีช่องว่าง');
   p.instance.optionId = optionId;
+  recordHabit(ctx, p.actor, p, optionId);
   const report: EventReport = { optionId, wounds: [], trauma: [], notes: [] };
   const strain = p.resist.get(optionId);
   if (strain) {

@@ -2,7 +2,7 @@ import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef, TagId } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
-import { prepareEvent, type PreparedEvent } from './events';
+import { chooseOption, prepareEvent, prepareFollowUp, type EventReport, type PreparedEvent } from './events';
 import { meetPeople } from './acquaintance';
 import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingParents, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
@@ -13,9 +13,9 @@ import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, livingWives, minorWifeEvent } from './wives';
-import { elderPreceptsEvent, parentIllnessEvent, topknotEvent } from './lifeEvents';
+import { elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
-import { tickFestivals } from './festivals';
+import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
@@ -33,6 +33,8 @@ export type LogKind = 'family' | 'death' | 'inherit' | 'body' | 'household' | 'd
 export type WorldSignal =
   | { type: 'log'; kind: LogKind; line: string }
   | { type: 'event'; prepared: PreparedEvent }
+  /** งานบุญที่ทำตามนิสัย — เลือกให้แล้ว (report) ไม่ต้องถามผู้เล่น */
+  | { type: 'habit'; prepared: PreparedEvent; report: EventReport }
   | { type: 'playerDied' };
 
 const WOUND_RESULT_TH: Record<WoundOutcome['result'], string> = {
@@ -82,6 +84,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', kind: 'history', line });
     // ตายในปีที่ผ่านมา (เด็ก ไข้ทรพิษ ป่วย ชรา) — ก่อนการเกิด/แต่งงาน/พบคนใหม่ของปีนี้ ไม่ให้ event ผูกกับคนที่จะตาย
     for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', kind: 'death', line });
+    kinYearTick(ctx);
     const frail = hardToRaiseEvent(ctx);
     if (frail) out.push({ type: 'event', prepared: frail });
     for (const hh of Object.values(S.households)) {
@@ -152,8 +155,19 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (drifted) out.push({ type: 'log', kind: 'family', line: drifted });
   }
 
-  // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่
-  for (const req of player ? tickFestivals(ctx, awayLabor(ctx, player)) : []) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
+  // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่ — ที่ทำจนเป็นนิสัยแล้วเลือกให้เอง
+  for (const req of player ? tickFestivals(ctx, awayLabor(ctx, player)) : []) {
+    const prepared = prepareEvent(ctx, req.event, req.bindings, req.vars);
+    const habit = habitOption(ctx, player!, prepared);
+    if (!habit) {
+      out.push({ type: 'event', prepared });
+      continue;
+    }
+    const report = chooseOption(ctx, prepared, habit);
+    out.push({ type: 'habit', prepared, report });
+    const next = prepareFollowUp(ctx, prepared, report);
+    if (next) out.push({ type: 'event', prepared: next });
+  }
 
   // เหตุการณ์ของผู้เล่น
   if (isAlive(player) && ctx.rng.chance(B.world.eventsPerYear / DAYS_PER_YEAR)) {

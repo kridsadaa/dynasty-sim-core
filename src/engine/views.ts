@@ -3,7 +3,7 @@ import { ageOf, isAlive, lunarOf, must, solarOf, yearOf, type Ctx } from '../cor
 import type { CapabilityId, Character, FamilyNode, Item, Parentage, Personality, Trait } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, knownLocals, localOrigin, relationStrength, tradeOf } from '../systems/acquaintance';
 import { capability } from '../systems/body';
-import type { PreparedEvent } from '../systems/events';
+import type { EventReport, PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus } from '../systems/career';
@@ -307,6 +307,28 @@ export function eventVars(ctx: Ctx, p: PreparedEvent): Record<string, string> {
   return vars;
 }
 
+/**
+ * event ที่มาซ้ำทุกปี (งานบุญ) มีข้อความหลายแบบ: key, key.v2, key.v3… — เลือกตาม id ของ event
+ * ครั้งเดียวกันได้ข้อความเดิมเสมอ (โหลดเซฟแล้วไม่เปลี่ยน)
+ */
+function variantKey(p: PreparedEvent, text: TextTable): string {
+  const keys = [p.def.textKey];
+  for (let i = 2; text[`${p.def.textKey}.v${i}`]; i++) keys.push(`${p.def.textKey}.v${i}`);
+  let h = 0;
+  for (const c of p.instance.id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return keys[h % keys.length]!;
+}
+
+/** งานบุญที่ทำตามนิสัย: "วันพระ — ตามผู้ใหญ่ไปวัด… (ตามเคย)" ตามด้วยผลของตัวเลือกเสี่ยงและบรรทัดจาก effect */
+export function habitLines(ctx: Ctx, p: PreparedEvent, report: EventReport, text: TextTable): string[] {
+  const vars = eventVars(ctx, p);
+  const opt = p.options.find((o) => o.id === report.optionId);
+  const did = opt ? fill(text[opt.textKey] ?? opt.textKey, { ...vars, ...opt.params }) : report.optionId;
+  const lines = [`${text[`${p.def.textKey}.title`] ?? p.def.id} — ${did} (ตามเคย)`];
+  if (report.outcome?.textKey) lines.push(fill(text[report.outcome.textKey] ?? report.outcome.textKey, vars));
+  return [...lines, ...report.notes];
+}
+
 /** บรรทัดในบันทึกที่บอกว่าตัวเลือกเสี่ยงสำเร็จหรือพลาด */
 export function outcomeLine(ctx: Ctx, p: PreparedEvent, textKey: string, text: TextTable): string {
   return fill(text[textKey] ?? textKey, eventVars(ctx, p));
@@ -338,7 +360,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
   return {
     instanceId: p.instance.id,
     title: text[`${p.def.textKey}.title`] ?? p.def.id,
-    text: fill(text[p.def.textKey] ?? p.def.textKey, vars),
+    text: fill(text[variantKey(p, text)] ?? p.def.textKey, vars),
     options: p.options.map((o) => ({
       id: o.id,
       text: fill(text[o.textKey] ?? o.textKey, { ...vars, ...o.params }),
@@ -357,6 +379,20 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
 // ---------------------------------------------------------------------------
 // ผังตระกูล + หน้าดูตัวละคร — ใช้เล่นทดสอบ/debug ระบบ จึงโชว์ข้อมูลภายในมากกว่าหน้าตัวละครปกติ (เช่น ปมแฝง นิสัยเป็นตัวเลข)
 // ---------------------------------------------------------------------------
+
+/**
+ * เงินของคนนี้ — เกมนับเงินเป็นรายคน แต่ลูกที่ยังอยู่ในเรือนพ่อแม่และเมียที่ผัวถือเงินอยู่ไม่มีเงินของตัวเอง
+ * ไม่แสดง "0 ตำลึง" ให้ดูเหมือนยากจน แต่บอกว่าทรัพย์อยู่กับใคร
+ */
+function wealthText(ctx: Ctx, ch: Character): string {
+  const debt = ch.social.debt ? ` · หนี้ ${Math.round(ch.social.debt)}` : '';
+  if (Math.round(ch.social.wealth) > 0 || !isAlive(ch)) return `${Math.round(ch.social.wealth)} ตำลึง${debt}`;
+  const spouse = livingSpouse(ctx, ch);
+  const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+  const head = hh && hh.headId !== ch.id ? ctx.state.characters[hh.headId] : undefined;
+  const holder = spouse && spouse.social.wealth > 0 ? spouse : head;
+  return holder ? `ไม่มีเงินของตัวเอง ทรัพย์อยู่กับ${holder.name}${debt}` : `ไม่มีเงิน${debt}`;
+}
 
 /** สถานะแม่ในผัง — ภรรยาหลวง/ไม่ทราบ เป็นค่าปกติ ไม่ต้องแสดง */
 const parentageLabel = (p: Parentage): string | null =>
@@ -456,7 +492,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   if (parents.length) facts.push(['บิดามารดา', parents.join(' · ')]);
   const parentage = parentageLabel(node.parentage);
   if (parentage) facts.push(['ฐานะในบ้าน', parentage]);
-  facts.push(['รุ่นที่', String(node.generation)]);
+  facts.push(['รุ่นที่', String(node.generation + 1)]); // generation นับจาก 0 ที่รุ่นต้นตระกูล
   const spouses = names(node.spouseIds);
   if (spouses.length) facts.push(['คู่ครอง', spouses.join(', ')]);
   const kids = names(node.childIds);
@@ -496,8 +532,9 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   if (ch.topknotCutYear !== undefined) facts.push(['โกนจุก', `พ.ศ. ${ch.topknotCutYear}`]);
   const office = officeStatus(ctx, ch);
   if (office) facts.push(['ราชการ', office]);
-  facts.push(['เงินทอง', `${Math.round(ch.social.wealth)} ตำลึง${ch.social.debt ? ` · หนี้ ${Math.round(ch.social.debt)}` : ''}`]);
-  facts.push(['ศักดินา', String(ch.social.sakdina)]);
+  facts.push(['เงินทอง', wealthText(ctx, ch)]);
+  // ศักดินาในเกมมาจากตำแหน่งราชการเท่านั้น — คนไม่มีตำแหน่งยังไม่มีตัวเลขที่ lore ยืนยัน จึงไม่แสดง 0
+  facts.push(['ศักดินา', ch.social.sakdina ? String(ch.social.sakdina) : 'ไม่มีตำแหน่ง']);
   if (ch.social.patronId) facts.push(['มูลนาย', charName(ch.social.patronId)]);
   facts.push(['ความหนักใจ', percent(ch.stress)], ['บุญ', ch.merit.toFixed(1)], ['ถนัดมือ', ch.handedness === 'l' ? 'ซ้าย' : 'ขวา']);
   const hh = ch.householdId ? S.households[ch.householdId] : undefined;

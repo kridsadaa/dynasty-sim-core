@@ -1,7 +1,9 @@
+import { yearsToDays } from '../core/calendar';
 import { ageOf, isAlive, lunarOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId } from '../core/types';
 import { singlePeer } from './acquaintance';
 import type { ChoreEventRequest } from './chores';
+import type { PreparedEvent } from './events';
 import { livingParents, livingSpouse } from './factory';
 
 // ============================================================================
@@ -52,4 +54,50 @@ function canCourt(ctx: Ctx, ch: Character): boolean {
   const age = ageOf(ctx, ch);
   const [min, max] = ctx.content.balance.festivals.peerAge;
   return age >= min && age <= max && !livingSpouse(ctx, ch) && !ch.betrothal && !ch.eloped;
+}
+
+// ---------------------------------------------------------------------------
+// นิสัย: งานบุญมาทุกปีทุกเดือน — คนจริงไม่ได้คิดใหม่ทุกครั้ง ทำอย่างที่เคยทำ
+//  เลือกแบบเดิมติดกัน habitStreak ครั้ง → ครั้งต่อไปทำเองแล้วลงบันทึก "ตามเคย" ไปอีก habitYears ปี
+//  ถามใหม่เมื่อครบปี, ข้ามช่วงวัย (เด็ก/หนุ่มสาว/ผู้ใหญ่/ชรา) หรือคนที่ตัวเลือกเกี่ยวข้องเปลี่ยน (รดน้ำแม่ → แม่ไม่อยู่แล้ว)
+//  ตัวเลข habitStreak/habitYears เป็นค่าของเกม
+// ---------------------------------------------------------------------------
+
+const STAGES: Array<[number, string]> = [[13, 'child'], [20, 'youth'], [55, 'adult'], [Infinity, 'elder']];
+const stageOf = (ctx: Ctx, ch: Character) => STAGES.find(([max]) => ageOf(ctx, ch) < max)![1];
+
+/** คนที่ตัวเลือกนี้เกี่ยวข้อง (role อื่นนอกจาก actor ที่ effect อ้างถึง) — เปลี่ยนคนแล้วต้องถามใหม่ */
+function involved(p: PreparedEvent, optionId: string): string {
+  const opt = p.options.find((o) => o.id === optionId);
+  const roles = new Set<string>();
+  for (const e of opt?.effects ?? []) {
+    for (const k of ['role', 'toward', 'with', 'teacher'] as const) {
+      const r = (e as Record<string, unknown>)[k];
+      if (typeof r === 'string' && r !== 'actor') roles.add(r);
+    }
+  }
+  return [...roles].sort().map((r) => `${r}=${p.instance.bindings[r] ?? ''}`).join(',');
+}
+
+/** ตัวเลือกที่ทำตามนิสัย — ไม่มี = ต้องถามผู้เล่น */
+export function habitOption(ctx: Ctx, ch: Character, p: PreparedEvent): string | undefined {
+  const h = ch.habits?.[p.def.id];
+  if (!h || h.until === undefined || ctx.state.meta.day >= h.until) return undefined;
+  if (h.stage !== stageOf(ctx, ch) || h.with !== involved(p, h.optionId)) return undefined;
+  return p.options.some((o) => o.id === h.optionId) && !p.locked.has(h.optionId) ? h.optionId : undefined;
+}
+
+/** จดสิ่งที่ผู้เล่นเลือกในงานบุญ (เรียกจาก chooseOption) */
+export function recordHabit(ctx: Ctx, ch: Character, p: PreparedEvent, optionId: string): void {
+  if (!p.def.id.startsWith('festival.')) return;
+  const F = ctx.content.balance.festivals;
+  const day = ctx.state.meta.day;
+  const stage = stageOf(ctx, ch);
+  const withWho = involved(p, optionId);
+  const habits = (ch.habits ??= {});
+  const h = habits[p.def.id];
+  if (h && h.optionId === optionId && h.stage === stage && h.with === withWho) h.streak++;
+  else habits[p.def.id] = { optionId, streak: 1, stage, with: withWho };
+  const cur = habits[p.def.id]!;
+  if (cur.streak >= F.habitStreak && (cur.until === undefined || day >= cur.until)) cur.until = day + yearsToDays(F.habitYears);
 }
