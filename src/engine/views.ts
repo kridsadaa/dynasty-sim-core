@@ -317,7 +317,7 @@ const parentageLabel = (p: Parentage): string | null =>
 
 const PERSONALITY_TH: Record<keyof Personality, string> = {
   neuroticism: 'หวั่นไหว',
-  imagination: 'จินตนาการ',
+  imagination: 'ช่างคิด',
   boldness: 'ใจกล้า',
   agreeableness: 'ว่านอนสอนง่าย',
   piety: 'ศรัทธา/ถือโชคลาง',
@@ -449,7 +449,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   if (ch.topknotCutYear !== undefined) facts.push(['โกนจุก', `พ.ศ. ${ch.topknotCutYear}`]);
   const office = officeStatus(ctx, ch);
   if (office) facts.push(['ราชการ', office]);
-  facts.push(['เงินสด', `${Math.round(ch.social.wealth)} ตำลึง${ch.social.debt ? ` · หนี้ ${Math.round(ch.social.debt)}` : ''}`]);
+  facts.push(['เงินทอง', `${Math.round(ch.social.wealth)} ตำลึง${ch.social.debt ? ` · หนี้ ${Math.round(ch.social.debt)}` : ''}`]);
   facts.push(['ศักดินา', String(ch.social.sakdina)]);
   if (ch.social.patronId) facts.push(['มูลนาย', charName(ch.social.patronId)]);
   facts.push(['ความหนักใจ', percent(ch.stress)], ['บุญ', ch.merit.toFixed(1)], ['ถนัดมือ', ch.handedness === 'l' ? 'ซ้าย' : 'ขวา']);

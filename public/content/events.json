@@ -83,7 +83,7 @@
     "contextTags": ["situation:feast", "place:court", "$dish"],
     "variables": { "dish": { "oneOf": ["food:pumpkin", "food:cucumber", "food:wax_gourd"] } },
     "roles": { "actor": { "ageRange": [16, 80] } },
-    "trigger": { "ageRange": [16, 80], "estates": ["noble", "phrai_luang", "merchant"], "weight": 1, "cooldownDays": 1080 },
+    "trigger": { "ageRange": [16, 80], "office": {}, "weight": 1, "cooldownDays": 1080 },
     "percepts": [],
     "options": [
       { "id": "eat", "textKey": "event.court_feast.eat", "tags": ["$dish"],

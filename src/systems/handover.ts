@@ -602,7 +602,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
         const loss = ctx.rng.range(ev.shock.wealthLoss[0], ev.shock.wealthLoss[1]);
         m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : loss);
         if (purged && m.social.title) {
-          out.push(`${m.name}ถูกริบราชบาดาล ถอดจาก${m.social.title}`);
+          out.push(`${m.name}ถูกริบราชบาตร ถอดจาก${m.social.title}`);
           m.social.title = null;
         }
         if (m.office && (purged || ev.shock.endsOffices)) {

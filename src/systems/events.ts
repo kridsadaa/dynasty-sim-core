@@ -380,7 +380,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'ordain':
         ch.ordainedYear = yearOf(ctx, ctx.state.meta.day);
         ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, ctx.content.balance.ordination.literacy);
-        report.notes.push(`${ch.name}บวชครบพรรษาแล้วลาสิกขา — อ่านออกเขียนได้`);
+        report.notes.push(`${ch.name}เข้าพิธีอุปสมบท เล่าเรียนหนังสือกับพระอาจารย์ที่วัด — อ่านออกเขียนได้`);
         break;
       case 'intent': {
         // ความตั้งใจที่ role ทำอยู่ (คนละไม่เกินหนึ่ง) — ไม่มีแล้ว (เพิ่งจบ) ก็ไม่ต้องทำอะไร

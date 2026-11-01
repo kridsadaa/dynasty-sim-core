@@ -138,7 +138,7 @@ function story(seed: number, verbose: boolean): boolean {
   if (!verbose) return scarred && bizarre && direct;
 
   say(`\n=== Part 2: ตระกูล${dyn.name} (seed ${seed}) ===`);
-  say(`\n[${yearOf(ctx, prepared.instance.day)}] ${hero.name} อายุ 6 ขวบ ช่วยแม่${mother.name}ผ่าฟักทองในโรงครัว มีดพลาดบาดนิ้ว`);
+  say(`\n[${yearOf(ctx, prepared.instance.day)}] ${hero.name} อายุ 6 ขวบ ช่วยแม่${mother.name}หั่นฟักทองในโรงครัว มีดพลาดบาดนิ้ว`);
   say(`  impact=${tr.impact.toFixed(2)}  rationality=${tr.rationality.toFixed(2)} (เด็ก+จินตนาการ ${hero.personality.imagination})`);
   say('  สมองโทษอะไร:', tr.attribution.map((a) => `${ctx.tags.label(a.tag)}(${a.role}) ${pct(a.weight).trim()}`).join(' | '));
   for (const b of tr.branches) {
@@ -227,7 +227,7 @@ function story(seed: number, verbose: boolean): boolean {
           tickWounds(ctx, c);
         }
         setYear(year);
-        say(`[${year}] ${c.name} (7 ขวบ) โดนมีดบาดตอนผ่า${ctx.tags.label(must(pe.instance.vars['target_food'], 'food'))}` +
+        say(`[${year}] ${c.name} (7 ขวบ) โดนมีดบาดตอนหั่น${ctx.tags.label(must(pe.instance.vars['target_food'], 'food'))}` +
           ` → ${r?.branches.length ? r.branches.map((b) => describeTrait(ctx, ctx.state.traits[b.traitId]!)).join(', ') : 'ไม่ฝังใจ'}`);
       }
     }

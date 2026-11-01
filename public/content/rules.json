@@ -46,7 +46,7 @@
         "place": "ที่{v}",
         "adversary": "ขณะต่อสู้กับ{v}{magnitude}",
         "magnitude": "ถึง {n} คน",
-        "target": "ขณะผ่า{v}",
+        "target": "ขณะหั่น{v}",
         "instrument": "ด้วย{v}",
         "supernatural": "โดยมี{v}คุ้มครอง"
       },

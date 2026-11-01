@@ -95,9 +95,16 @@ function formRules(ctx: Ctx, hh: Household, log: string[]): void {
       statedReason: reasonFor(t),
     };
     hh.rules.push(rule);
-    log.push(`${head.name}ตั้งกฎในเรือน: ${rule.kind === 'ban' ? 'ห้ามมี' : 'ต้องทำพิธีเมื่อเจอ'}${ctx.tags.label(t.target)} (เหตุผลที่บอก: ${rule.statedReason})`);
+    log.push(`${head.name}ตั้งกฎในเรือน: ${rule.kind === 'ban' ? 'ห้ามมี' : 'ต้องทำพิธีเมื่อเจอ'}${ctx.tags.label(t.target)} ${REASON_TH[rule.statedReason]}`);
   }
 }
+
+/** เหตุผลที่หัวเรือนบอกคนในเรือน — จำผิดหรือจำถูก คนฟังก็ได้ยินเหมือนกัน */
+const REASON_TH: Record<HouseholdRule['statedReason'], string> = {
+  true_cause: 'ว่าเคยให้โทษแก่ตน',
+  false_cause: 'ว่าเคยให้โทษแก่ตน',
+  inauspicious: 'ว่าเป็นของอัปมงคล',
+};
 
 function reasonFor(t: Trait): HouseholdRule['statedReason'] {
   if (t.kind === 'superstition' || t.awareness === 'unknown') return 'inauspicious';

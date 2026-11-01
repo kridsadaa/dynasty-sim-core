@@ -509,7 +509,7 @@ async function refreshSlots() {
   }
   const box = $('slots');
   if (!slots.length) {
-    box.replaceChildren(el('p', 'ยังไม่มีเซฟ — ระหว่างเวลาเดินเกมจะบันทึกอัตโนมัติในช่อง "autosave"', 'muted'));
+    box.replaceChildren(el('p', 'ยังไม่มีเซฟ — ระหว่างเวลาเดินเกมจะบันทึกอัตโนมัติให้เอง', 'muted'));
     return;
   }
   box.replaceChildren(...slots.map((s) => {
@@ -517,7 +517,7 @@ async function refreshSlots() {
     const info = el('div', undefined, 'info');
     const when = new Date(s.savedAt).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
     info.append(
-      el('b', s.slot === 'autosave' ? 'autosave (บันทึกอัตโนมัติ)' : s.slot),
+      el('b', s.slot === 'autosave' ? 'บันทึกอัตโนมัติ' : s.slot),
       el('span', `พ.ศ. ${s.year} · ${s.playerName} · ${s.dynastyName} · ${when} · ${(s.bytes / 1024).toFixed(0)} KB`, 'muted'),
     );
     row.append(info, button('โหลด', () => void start(s.slot)), button('ลบ', () => void removeSlot(s.slot)));
