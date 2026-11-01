@@ -81,7 +81,8 @@
       #event h2 { font-size: 18px; color: var(--fg); }
       figure.art { margin: 8px 0; }
       figure.art img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; background: var(--line); }
-      #dynasty figure.art { margin: 4px 0 6px; }
+      figure.art.portrait img { object-position: center 20%; }
+      #dynasty figure.art, #player figure.art, #inspect figure.art { margin: 4px 0 8px; }
       #event form { display: grid; gap: 8px; margin-top: 8px; }
       #event form .row { display: flex; gap: 8px; justify-content: flex-end; }
       #event input { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }

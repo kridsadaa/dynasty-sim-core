@@ -138,6 +138,8 @@ export interface CharacterView {
   office: string | null;
   /** ฝีมืองานบ้าน: "งานครัว 23 (หัดได้ 4 ขั้น)" */
   craftSkills: string[];
+  /** tag สำหรับเลือกภาพตัวละคร (portrait) */
+  portraitTags?: string[];
 }
 
 /** คนในแผง "คนที่รู้จัก" — ญาติที่ยังมีชีวิต และคนนอกตระกูลที่ผู้เล่นรู้จัก */
@@ -250,4 +252,6 @@ export interface InspectView {
   status: string; // ยังมีชีวิต / ถึงแก่กรรม (สาเหตุ) / เหลือแต่ชื่อ
   facts: Array<[string, string]>;
   sections: Array<{ title: string; items: string[] }>;
+  /** tag สำหรับเลือกภาพตัวละคร (portrait) */
+  portraitTags?: string[];
 }

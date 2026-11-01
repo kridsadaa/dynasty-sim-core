@@ -2,6 +2,19 @@
   "styleVersion": "0.1",
   "images": [
     {
+      "id": "scene.compound",
+      "file": "art/scene.compound.webp",
+      "style": "reality",
+      "tags": [
+        "group:family",
+        "event:family.legend_truth",
+        "place:domestic"
+      ],
+      "alt": "เรือนหมู่ไม้จริงของขุนนางผู้น้อย มีชานแล่น โรงครัว เรือนบ่าวไพร่ในรั้วไผ่ริมคลองตะเคียน",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "scene.village",
       "file": "art/scene.village.webp",
       "style": "reality",
@@ -17,6 +30,23 @@
       "height": 572
     },
     {
+      "id": "scene.kitchen_yard",
+      "file": "art/scene.kitchen_yard.webp",
+      "style": "reality",
+      "tags": [
+        "place:kitchen",
+        "situation:kitchen_work",
+        "group:chore",
+        "group:childhood",
+        "event:childhood.kitchen_cut",
+        "event:chore.learn",
+        "event:chore.learn_chop"
+      ],
+      "alt": "ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "scene.meal",
       "file": "art/scene.meal.webp",
       "style": "reality",
@@ -24,6 +54,126 @@
         "situation:feast"
       ],
       "alt": "สำรับข้าวกับปลาแห้งบนถาดไม่มีขา",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.court_feast",
+      "file": "art/scene.court_feast.webp",
+      "style": "reality",
+      "tags": [
+        "event:adult.court_feast"
+      ],
+      "alt": "แขกนั่งล้อมถาดอาหารบนเสื่อในงานเลี้ยงของขุนนาง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.newborn",
+      "file": "art/scene.newborn.webp",
+      "style": "reality",
+      "tags": [
+        "event:family.newborn",
+        "event:family.grandchild_naming",
+        "situation:childbirth"
+      ],
+      "alt": "แม่ลูกอ่อนนอนอยู่ไฟ ทารกนอนบนเสื่อข้างตัว",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.sickbed",
+      "file": "art/scene.sickbed.webp",
+      "style": "reality",
+      "tags": [
+        "event:family.parent_illness",
+        "event:family.hard_to_raise",
+        "situation:illness"
+      ],
+      "alt": "ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.funeral_home",
+      "file": "art/scene.funeral_home.webp",
+      "style": "reality",
+      "tags": [
+        "event:family.death",
+        "event:family.death_bad"
+      ],
+      "alt": "ศพห่อผ้าขาวในเรือน ญาตินั่งล้อม พระสวด",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.betrothal",
+      "file": "art/scene.betrothal.webp",
+      "style": "reality",
+      "tags": [
+        "group:marriage",
+        "event:family.arranged_match",
+        "event:intent.court.accepted_formal",
+        "event:marriage.refused",
+        "event:marriage.milk_claim"
+      ],
+      "alt": "ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.wedding",
+      "file": "art/scene.wedding.webp",
+      "style": "reality",
+      "tags": [
+        "event:marriage.wedding",
+        "event:marriage.minor_wife"
+      ],
+      "alt": "ขบวนขันหมากเดินไปเรือนเจ้าสาว",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.courtship",
+      "file": "art/scene.courtship.webp",
+      "style": "reality",
+      "tags": [
+        "event:intent.court.trial",
+        "event:intent.court.gossip",
+        "event:intent.court.accepted",
+        "event:intent.court.rejected",
+        "event:marriage.divorce"
+      ],
+      "alt": "หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.lotus_pond",
+      "file": "art/scene.lotus_pond.webp",
+      "style": "reality",
+      "tags": [
+        "group:outing",
+        "event:outing.lotus_f",
+        "event:outing.lotus_m",
+        "event:outing.lotus_fall_f",
+        "event:outing.lotus_fall_m"
+      ],
+      "alt": "เรือลำเล็กกลางบึงบัว",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.temple_holy_day",
+      "file": "art/scene.temple_holy_day.webp",
+      "style": "reality",
+      "tags": [
+        "group:festival",
+        "group:ritual",
+        "event:festival.holy_day",
+        "event:ritual.elder_precepts"
+      ],
+      "alt": "ชาวบ้านนำของไปถวายพระที่วัดในวันพระ",
       "width": 1024,
       "height": 572
     },
@@ -38,6 +188,201 @@
         "situation:war"
       ],
       "alt": "ภาพจิตรกรรม: นักรบฟันข้าศึก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "legend.duel",
+      "file": "art/legend.duel.webp",
+      "style": "chronicle",
+      "tags": [
+        "place:duel_ground"
+      ],
+      "alt": "ภาพจิตรกรรม: สองคนประลองดาบต่อหน้าผู้คน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "legend.court",
+      "file": "art/legend.court.webp",
+      "style": "chronicle",
+      "tags": [
+        "place:court"
+      ],
+      "alt": "ภาพจิตรกรรม: ขุนนางหมอบรับความชอบในวัง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "legend.spirit",
+      "file": "art/legend.spirit.webp",
+      "style": "chronicle",
+      "tags": [
+        "supernatural:guardian_spirit",
+        "supernatural:phi"
+      ],
+      "alt": "ภาพจิตรกรรม: ผีบรรพบุรุษคุ้มครองลูกหลาน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "legend.omen",
+      "file": "art/legend.omen.webp",
+      "style": "chronicle",
+      "tags": [
+        "supernatural:omen"
+      ],
+      "alt": "ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.youth.commoner",
+      "file": "art/portrait.m.youth.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "ชายหนุ่มชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.commoner",
+      "file": "art/portrait.m.adult.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "ชายผู้ใหญ่ชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_patrol",
+      "file": "art/portrait.m.adult.official_patrol.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนสวมเสื้อมัสลินและลอมพอก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_palace",
+      "file": "art/portrait.m.adult.official_palace.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace"
+      ],
+      "alt": "ขุนนางกรมชาวที่สวมลอมพอก ข้างพานเครื่องทอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_scholar",
+      "file": "art/portrait.m.adult.official_scholar.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตยสวมลอมพอก ข้างสมุดไทยดำ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.youth.noble",
+      "file": "art/portrait.f.youth.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "estate:noble",
+        "estate:merchant"
+      ],
+      "alt": "หญิงสาวตระกูลขุนนางห่มผ้าขาวพาดสองไหล่",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.adult.noble",
+      "file": "art/portrait.f.adult.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant",
+        "role:principal_wife"
+      ],
+      "alt": "ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.adult.head",
+      "file": "art/portrait.f.adult.head.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant",
+        "role:household_head"
+      ],
+      "alt": "เจ้าเรือนหญิงผู้นำตระกูล นั่งข้างหีบไม้และเชี่ยนหมาก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.elder.commoner",
+      "file": "art/portrait.f.elder.commoner.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:elder",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
+      "alt": "หญิงชราชาวบ้านผมหงอก ฟันดำ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.elder.noble",
+      "file": "art/portrait.f.elder.noble.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:elder",
+        "estate:noble",
+        "estate:merchant",
+        "role:principal_wife",
+        "role:household_head"
+      ],
+      "alt": "แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่",
       "width": 1024,
       "height": 572
     }

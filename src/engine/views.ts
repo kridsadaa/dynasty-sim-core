@@ -12,7 +12,7 @@ import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../syste
 import { choreSkills } from '../systems/chores';
 import { marriageHint, marriageStatus } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
-import { eventArtTags } from '../art/select';
+import { eventArtTags, portraitArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
 import { riskChance } from '../systems/will';
 import type {
@@ -58,13 +58,40 @@ function woundLines(ctx: Ctx, ch: Character, text: TextTable): string[] {
   return ch.woundIds.map((id) => ctx.state.wounds[id]).filter((w) => !!w).map((w) => `${partLabel(w!.partDefId)}: ${t(text, 'wound.stage', w!.stage)}`);
 }
 
+function characterRoles(ctx: Ctx, ch: Character, node?: FamilyNode): string[] {
+  const roles: string[] = [];
+  if (ch.social.estate === 'monk') roles.push('monk');
+  const rank = officeRank(ctx, ch);
+  if (rank === 0) roles.push('page');
+  else if (rank !== undefined && rank > 0) {
+    roles.push('official');
+    const dept = ch.office?.deptId;
+    if (dept === 'royal_chamber_right') roles.push('official_palace');
+    else if (dept === 'royal_scholars') roles.push('official_scholar');
+    else roles.push('official_patrol');
+  }
+  const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+  const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
+  if (ch.sex === 'f') {
+    if (ch.pregnantUntilDay !== undefined && ctx.state.meta.day <= ch.pregnantUntilDay) roles.push('pregnant');
+    if (ch.wifeRank === 'minor') roles.push('minor_wife');
+    else {
+      if (hh?.headId === ch.id || dyn?.headNodeId === ch.familyNodeId) roles.push('household_head');
+      if (ch.marriedDay !== undefined || (node?.spouseIds.length ?? 0) > 0) roles.push('principal_wife');
+    }
+  }
+  return roles;
+}
+
 /** UI ไม่ควรเห็นคีย์ภายใน ("noble", "finger.index.l", "manipulation.fine") — แปลงเป็นคำไทยที่นี่ */
 export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
   const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
+  const age = ageOf(ctx, ch);
+  const node = ctx.state.familyNodes[ch.familyNodeId];
   return {
     name: ch.name,
     nodeId: ch.familyNodeId,
-    age: ageOf(ctx, ch),
+    age,
     year: yearOf(ctx, ctx.state.meta.day),
     solar: formatSolar(solarOf(ctx)),
     lunar: formatLunar(lunarOf(ctx)),
@@ -80,6 +107,10 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     marriage: marriageStatus(ctx, ch),
     office: officeStatus(ctx, ch),
     craftSkills: choreSkills(ctx, ch),
+    portraitTags: portraitArtTags({
+      sex: ch.sex, age, topknotCut: ch.topknotCutYear !== undefined,
+      estate: ch.social.estate, roles: characterRoles(ctx, ch, node),
+    }),
   };
 }
 
@@ -516,6 +547,14 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
       }
       section('ร่องรอยบนร่างกาย', [...scars].map(([l, n]) => (n > 1 ? `${l} ×${n}` : l)));
     }
+    const prunedAge = Math.max(0, (deathYear ?? node.birthYear + 50) - node.birthYear);
+    const prunedRoles: string[] = [];
+    if (sm?.estate === 'monk') prunedRoles.push('monk');
+    else if (sm?.title && node.sex === 'm') prunedRoles.push('official');
+    else if (node.sex === 'f') {
+      if (dyn?.headNodeId === node.id) prunedRoles.push('household_head');
+      if (node.spouseIds.length > 0) prunedRoles.push('principal_wife');
+    }
     return {
       nodeId: node.id, name: node.name, sex: node.sex,
       lifespan: `${node.birthYear}–${deathYear ?? '?'}`,
@@ -523,10 +562,15 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
         ? `แยกไปอยู่ที่อื่นตั้งแต่ พ.ศ. ${node.driftedYear} — ขาดการติดต่อกับตระกูล`
         : `เหลือแต่ชื่อในผังตระกูล${cause ? ` · ${ctx.tags.label(cause)}` : ''}`,
       facts, sections,
+      portraitTags: portraitArtTags({
+        sex: node.sex, age: prunedAge, topknotCut: prunedAge >= 13,
+        estate: sm?.estate ?? 'noble', roles: prunedRoles,
+      }),
     };
   }
 
-  facts.unshift(['อายุ', `${ageOf(ctx, ch, ch.deathDay ?? S.meta.day)} ปี`], ['ชนชั้น', estateLabel(ctx, ch.social.estate)]);
+  const charAge = ageOf(ctx, ch, ch.deathDay ?? S.meta.day);
+  facts.unshift(['อายุ', `${charAge} ปี`], ['ชนชั้น', estateLabel(ctx, ch.social.estate)]);
   if (ch.social.title) facts.push(['บรรดาศักดิ์', ch.social.title]);
   if (ch.ordainedYear !== undefined) facts.push(['บวชเรียน', `พ.ศ. ${ch.ordainedYear}`]);
   if (ch.topknotCutYear !== undefined) facts.push(['โกนจุก', `พ.ศ. ${ch.topknotCutYear}`]);
@@ -576,6 +620,10 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     lifespan: `${node.birthYear}–${deathYear ?? ''}`,
     status: isAlive(ch) ? 'ยังมีชีวิต' : `ถึงแก่กรรม${cause ? ` (${ctx.tags.label(cause)})` : ''}`,
     facts, sections,
+    portraitTags: portraitArtTags({
+      sex: ch.sex, age: charAge, topknotCut: ch.topknotCutYear !== undefined,
+      estate: ch.social.estate, roles: characterRoles(ctx, ch, node),
+    }),
   };
 }
 

@@ -27,7 +27,8 @@ const loreLine = (refs: string[], at: string) =>
     return `\`${id}\`${e ? ` (${e.status}${e.verified ? ', verified' : ''})` : ' ❌'}`;
   }).join(', ');
 
-const block = (styleId: 'reality' | 'chronicle', subject: string) => `${style.styles[styleId].prompt}\n\n${subject}`;
+const block = (styleId: 'reality' | 'chronicle' | 'portrait', subject: string) =>
+  `${style.styles[styleId === 'portrait' ? 'reality' : styleId].prompt}\n\n${subject}`;
 
 const out: string[] = [
   '# Prompt ภาพประกอบ (สร้างจาก `npm run art:prompts` — ห้ามแก้มือ)',
@@ -48,7 +49,11 @@ out.push('## Baseline (สร้างใหม่ด้วย style ปัจ�
 for (const b of spec.baseline) {
   out.push(`### ${b.id}`, '', `แทน \`${b.replaces}\` — ${b.why}`, '', `lore: ${loreLine(b.loreRefs, b.id)}`, '', '```', block('reality', b.subject), '```', '');
 }
-for (const [title, styleId] of [['ภาพฉาก (Reality)', 'reality'], ['ภาพตำนาน (Chronicle)', 'chronicle']] as const) {
+for (const [title, styleId] of [
+  ['ภาพฉาก (Reality)', 'reality'],
+  ['ภาพตำนาน (Chronicle)', 'chronicle'],
+  ['ภาพตัวละคร (Portrait)', 'portrait'],
+] as const) {
   out.push(`## ${title}`, '');
   for (const img of spec.images.filter((i) => i.style === styleId)) {
     out.push(

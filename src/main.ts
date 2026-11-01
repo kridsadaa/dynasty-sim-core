@@ -202,7 +202,7 @@ function refreshSoon() {
 
 function renderPlayer(v: CharacterView) {
   const box = $('player');
-  box.replaceChildren(el('h2', 'ตัวละคร'));
+  box.replaceChildren(el('h2', 'ตัวละคร'), ...artFigure('portrait', v.portraitTags));
   const who = el('div');
   who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
   box.append(who);
@@ -488,7 +488,7 @@ function renderInspect(v: InspectView) {
   top.append(el('h2', `${v.sex === 'm' ? '♂' : '♀'} ${v.name}`), button('ปิด', closeInspect));
   const dl = el('dl');
   for (const [k, val] of v.facts) dl.append(el('dt', k), el('dd', val));
-  box.replaceChildren(top, el('div', `${v.lifespan} · ${v.status}`, 'muted'), dl);
+  box.replaceChildren(top, ...artFigure('portrait', v.portraitTags), el('div', `${v.lifespan} · ${v.status}`, 'muted'), dl);
   for (const s of v.sections) {
     const ul = el('ul');
     for (const i of s.items) ul.append(el('li', i));

@@ -2,7 +2,7 @@
 //   ภาพแต่ละภาพมี tag; สถานการณ์ส่ง tag ที่อยากได้มา → ให้คะแนนตาม tag ที่ตรง เลือกคะแนนสูงสุด
 //   ไม่มีภาพที่ตรงเลย → null (UI ไม่แสดงช่องภาพ) — เกมต้องเล่นได้ครบแม้ไม่มีภาพสักภาพ
 
-export type ArtStyle = 'reality' | 'chronicle';
+export type ArtStyle = 'reality' | 'chronicle' | 'portrait';
 
 export interface ArtImage {
   id: string;
@@ -20,16 +20,27 @@ export interface ArtManifest {
   images: ArtImage[];
 }
 
-/** tag ที่บอกว่าภาพสร้างมาเพื่อ event นั้นโดยตรง มีน้ำหนักกว่า tag ฉาก/หมวด */
-const weightOf = (tag: string) => (tag.startsWith('event:') ? 4 : tag.startsWith('group:') ? 1 : 2);
+/** tag ที่บอกว่าภาพสร้างมาเพื่อ event หรือ role นั้นโดยตรง มีน้ำหนักกว่า tag ฉาก/ฐานะ/หมวด */
+const weightOf = (tag: string) =>
+  tag === 'role:pregnant' ? 8
+    : tag.startsWith('role:') ? 6
+      : tag.startsWith('event:') || tag.startsWith('age:') ? 4
+        : tag.startsWith('estate:') ? 3
+          : tag.startsWith('group:') ? 1
+            : 2;
 
 export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: readonly string[]): ArtImage | null {
   if (!manifest || !wanted.length) return null;
   const want = new Set(wanted);
+  const wantSex = wanted.find((t) => t.startsWith('sex:'));
+  const wantAge = wanted.find((t) => t.startsWith('age:'));
   let best: ArtImage | null = null;
   let bestScore = 0;
   for (const img of manifest.images) {
     if (img.style !== style) continue;
+    // ภาพตัวละครต้องตรงเพศและช่วงวัยเสมอ (ภาพที่ใช้ได้หลายวัยใส่ age:* หลายค่าได้)
+    if (wantSex && img.tags.some((t) => t.startsWith('sex:')) && !img.tags.includes(wantSex)) continue;
+    if (wantAge && img.tags.some((t) => t.startsWith('age:')) && !img.tags.includes(wantAge)) continue;
     const score = img.tags.reduce((s, t) => s + (want.has(t) ? weightOf(t) : 0), 0);
     if (score > bestScore) [best, bestScore] = [img, score];
   }
@@ -39,4 +50,18 @@ export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: r
 /** tag ภาพของ event: id ของ event, หมวด (ส่วนหน้าของ id) และ tag ฉากที่ event ใช้ (รวมบรรพบุรุษของ tag) */
 export function eventArtTags(defId: string, contextTags: Iterable<string>): string[] {
   return [`event:${defId}`, `group:${defId.split('.')[0]}`, ...contextTags];
+}
+
+export interface PortraitSpec {
+  sex: 'm' | 'f';
+  age: number;
+  topknotCut?: boolean;
+  estate: string;
+  roles?: readonly string[];
+}
+
+/** tag ภาพตัวละคร: เพศ + ช่วงวัย + ชนชั้น + บทบาท (มหาดเล็ก/ขุนนางแต่ละกรม/พระ/เมียเอก/เมียน้อย/เจ้าเรือน) */
+export function portraitArtTags(p: PortraitSpec): string[] {
+  const ageTag = p.age < 13 && !p.topknotCut ? 'age:child' : p.age < 25 ? 'age:youth' : p.age < 50 ? 'age:adult' : 'age:elder';
+  return [`sex:${p.sex}`, ageTag, `estate:${p.estate}`, ...(p.roles ?? []).map((r) => `role:${r}`)];
 }

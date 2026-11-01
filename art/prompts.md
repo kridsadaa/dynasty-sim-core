@@ -20,7 +20,7 @@ lore: `material.houses_1680s` (attested, verified)
 ```
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Wide view of a small Siamese commoner house: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of floods, reached by a hanging bamboo ladder; a bamboo fence around the yard; river behind, rainy-season sky. No people in the foreground.
+Wide view of a small Siamese commoner house by a canal: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of seasonal floods, reached by a hanging bamboo ladder tied with ropes; open muddy bank sloping down to the water with banana trees and coconut palms, a small dugout boat tied to a post; river behind, rainy-season sky. No enclosed perimeter fence, no people in the foreground.
 ```
 
 ### baseline.meal_tray
@@ -37,16 +37,16 @@ Top-down still life on a reed mat: a round footless lacquered wooden tray holdin
 
 ## ภาพฉาก (Reality)
 
-### scene.compound — เรือนไม้ของขุนนางผู้น้อยกับเรือนเล็กในรั้วไผ่
+### scene.compound — เรือนหมู่ไม้จริงของขุนนางผู้น้อย มีชานแล่น โรงครัว เรือนบ่าวไพร่ในรั้วไผ่ริมคลองตะเคียน
 
-⬜ ยังไม่มีภาพ · tag: `group:family` `event:family.legend_truth` `place:domestic`
+✅ มีภาพแล้ว · tag: `group:family` `event:family.legend_truth` `place:domestic`
 
 lore: `material.houses_1680s` (attested, verified), `material.household_objects_1680s` (attested)
 
 ```
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Wide view of a minor Siamese official's household compound: a single-storey house of real timber planks raised on wooden posts, with two smaller woven-bamboo houses for wives and household slaves inside the same bamboo fence; a packed-earth yard with a jar of water by the ladder, an elderly woman seated on the veranda, a child playing below; canal behind, morning light.
+Wide view of a minor Siamese official's compound (ruean mu) by a canal: a main cluster of raised teak-wood pavilions with traditional recessed-panelled timber walls (fa pakon), open sitting hall (ho nang), and a separate semi-open kitchen house at the back, all linked by a broad raised wooden deck (chan laen) on stout timber posts; inside the surrounding bamboo compound fence stand two smaller woven-bamboo houses for minor wives and household slaves; shaded by betel-nut palms, banana clusters, and a large takian tree by a wooden canal landing with a moored boat; earthenware water jars, servants pound rice and carry water under the high stilts, an elderly woman seated on the veranda, a child with a topknot playing in the yard; morning light.
 ```
 
 ### scene.village — เรือนไผ่ยกสูงของชาวบ้านริมน้ำ
@@ -58,12 +58,12 @@ lore: `material.houses_1680s` (attested, verified)
 ```
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Wide view of a small Siamese commoner house: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of floods, reached by a hanging bamboo ladder; a bamboo fence around the yard; river behind, rainy-season sky. No people in the foreground.
+Wide view of a small Siamese commoner house by a canal: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of seasonal floods, reached by a hanging bamboo ladder tied with ropes; open muddy bank sloping down to the water with banana trees and coconut palms, a small dugout boat tied to a post; river behind, rainy-season sky. No enclosed perimeter fence, no people in the foreground.
 ```
 
 ### scene.kitchen_yard — ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว
 
-⬜ ยังไม่มีภาพ · tag: `place:kitchen` `situation:kitchen_work` `group:chore` `group:childhood` `event:childhood.kitchen_cut` `event:chore.learn` `event:chore.learn_chop`
+✅ มีภาพแล้ว · tag: `place:kitchen` `situation:kitchen_work` `group:chore` `group:childhood` `event:childhood.kitchen_cut` `event:chore.learn` `event:chore.learn_chop`
 
 lore: `material.houses_1680s` (attested, verified), `material.kitchen_tasks` (inferred, verified), `material.food_1680s` (attested)
 
@@ -87,7 +87,7 @@ Top-down still life on a reed mat: a round footless lacquered wooden tray holdin
 
 ### scene.court_feast — แขกนั่งล้อมถาดอาหารบนเสื่อในงานเลี้ยงของขุนนาง
 
-⬜ ยังไม่มีภาพ · tag: `event:adult.court_feast`
+✅ มีภาพแล้ว · tag: `event:adult.court_feast`
 
 lore: `material.household_objects_1680s` (attested), `material.food_1680s` (attested)
 
@@ -99,7 +99,7 @@ Medium-wide view inside a timber house during a household feast: adult men seate
 
 ### scene.newborn — แม่ลูกอ่อนนอนอยู่ไฟ ทารกนอนบนเสื่อข้างตัว
 
-⬜ ยังไม่มีภาพ · tag: `event:family.newborn` `event:family.grandchild_naming` `situation:childbirth`
+✅ มีภาพแล้ว · tag: `event:family.newborn` `event:family.grandchild_naming` `situation:childbirth`
 
 lore: `ritual.yu_fai_placenta` (inferred)
 
@@ -111,7 +111,7 @@ Interior of a house at dusk: a young mother wrapped in a lower cloth and a shawl
 
 ### scene.sickbed — ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย
 
-⬜ ยังไม่มีภาพ · tag: `event:family.parent_illness` `event:family.hard_to_raise` `situation:illness`
+✅ มีภาพแล้ว · tag: `event:family.parent_illness` `event:family.hard_to_raise` `situation:illness`
 
 lore: `material.household_objects_1680s` (attested)
 
@@ -123,7 +123,7 @@ Interior of a house in dim daylight: an old man lying ill on a reed mat under a 
 
 ### scene.funeral_home — ศพห่อผ้าขาวในเรือน ญาตินั่งล้อม พระสวด
 
-⬜ ยังไม่มีภาพ · tag: `event:family.death` `event:family.death_bad`
+✅ มีภาพแล้ว · tag: `event:family.death` `event:family.death_bad`
 
 lore: `ritual.funeral_cremation` (inferred, verified), `attire.monks_1680s` (attested)
 
@@ -135,7 +135,7 @@ Interior of a house: a body wrapped entirely in white cloth lying on a mat, only
 
 ### scene.betrothal — ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง
 
-⬜ ยังไม่มีภาพ · tag: `group:marriage` `event:family.arranged_match` `event:intent.court.accepted_formal` `event:marriage.refused` `event:marriage.milk_claim`
+✅ มีภาพแล้ว · tag: `group:marriage` `event:family.arranged_match` `event:intent.court.accepted_formal` `event:marriage.refused` `event:marriage.milk_claim`
 
 lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `material.household_objects_1680s` (attested)
 
@@ -147,7 +147,7 @@ Interior of a timber house: two groups of middle-aged adults seated on reed mats
 
 ### scene.wedding — ขบวนขันหมากเดินไปเรือนเจ้าสาว
 
-⬜ ยังไม่มีภาพ · tag: `event:marriage.wedding` `event:marriage.minor_wife`
+✅ มีภาพแล้ว · tag: `event:marriage.wedding` `event:marriage.minor_wife`
 
 lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `material.houses_1680s` (attested, verified)
 
@@ -159,7 +159,7 @@ Wide view of a small procession walking along a path beside a canal toward a sti
 
 ### scene.courtship — หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ
 
-⬜ ยังไม่มีภาพ · tag: `event:intent.court.trial` `event:intent.court.gossip` `event:intent.court.accepted` `event:intent.court.rejected` `event:marriage.divorce`
+✅ มีภาพแล้ว · tag: `event:intent.court.trial` `event:intent.court.gossip` `event:intent.court.accepted` `event:intent.court.rejected` `event:marriage.divorce`
 
 lore: `kinship.courtship_liberty_1680s` (attested, verified), `attire.women_1680s` (attested)
 
@@ -171,7 +171,7 @@ A wooden landing on a canal in late afternoon: a young woman wearing a lower clo
 
 ### scene.lotus_pond — เรือลำเล็กกลางบึงบัว
 
-⬜ ยังไม่มีภาพ · tag: `group:outing` `event:outing.lotus_f` `event:outing.lotus_m` `event:outing.lotus_fall_f` `event:outing.lotus_fall_m`
+✅ มีภาพแล้ว · tag: `group:outing` `event:outing.lotus_f` `event:outing.lotus_m` `event:outing.lotus_fall_f` `event:outing.lotus_fall_m`
 
 lore: `kinship.lotus_boat_meeting` (invented)
 
@@ -219,7 +219,7 @@ Night by a canal bank: three patrol men, bare-chested, in lower cloths, carrying
 
 ### scene.temple_holy_day — ชาวบ้านนำของไปถวายพระที่วัดในวันพระ
 
-⬜ ยังไม่มีภาพ · tag: `group:festival` `group:ritual` `event:festival.holy_day` `event:ritual.elder_precepts`
+✅ มีภาพแล้ว · tag: `group:festival` `group:ritual` `event:festival.holy_day` `event:ritual.elder_precepts`
 
 lore: `ritual.holy_days_1680s` (attested, verified), `ritual.alms_round_1680s` (attested, verified), `attire.monks_1680s` (attested)
 
@@ -305,7 +305,7 @@ A lone warrior with a sword cutting down several enemy soldiers in a battle scen
 
 ### legend.duel — ภาพจิตรกรรม: สองคนประลองดาบต่อหน้าผู้คน
 
-⬜ ยังไม่มีภาพ · tag: `place:duel_ground`
+✅ มีภาพแล้ว · tag: `place:duel_ground`
 
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
@@ -317,7 +317,7 @@ Two men dueling with swords and shields on an open ground, a crowd of onlookers 
 
 ### legend.court — ภาพจิตรกรรม: ขุนนางหมอบรับความชอบในวัง
 
-⬜ ยังไม่มีภาพ · tag: `place:court`
+✅ มีภาพแล้ว · tag: `place:court`
 
 lore: `attire.wat_ko_kaeo_reference` (attested), `attire.officials_1680s` (attested)
 
@@ -329,7 +329,7 @@ A palace scene: an official in a tall pointed hat prostrating to receive a rewar
 
 ### legend.spirit — ภาพจิตรกรรม: ผีบรรพบุรุษคุ้มครองลูกหลาน
 
-⬜ ยังไม่มีภาพ · tag: `supernatural:guardian_spirit` `supernatural:phi`
+✅ มีภาพแล้ว · tag: `supernatural:guardian_spirit` `supernatural:phi`
 
 lore: `attire.wat_ko_kaeo_reference` (attested), `belief.spirits_1680s` (inferred, verified)
 
@@ -341,7 +341,7 @@ An ancestral spirit drawn as a pale floating figure above a house, shielding a s
 
 ### legend.omen — ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า
 
-⬜ ยังไม่มีภาพ · tag: `supernatural:omen`
+✅ มีภาพแล้ว · tag: `supernatural:omen`
 
 lore: `attire.wat_ko_kaeo_reference` (attested), `belief.chronicle_omens` (inferred, verified)
 
@@ -349,4 +349,330 @@ lore: `attire.wat_ko_kaeo_reference` (attested), `belief.chronicle_omens` (infer
 In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.
 
 A strange omen in the sky: a comet and a ring around the sun above a town wall, small figures below pointing upward in alarm.
+```
+
+## ภาพตัวละคร (Portrait)
+
+### portrait.m.child.commoner — เด็กชายชาวบ้านหัวโกนไว้จุก
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `ritual.month_old_tham_khwan` (inferred), `ritual.topknot_cutting` (inferred, verified), `attire.commoner_men_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a young Siamese commoner boy of about eight years old with warm olive-brown skin, broad cheekbones, calm dark eyes, and a straight nose; shaved head with a small topknot left on the crown, bare-chested, no shirt, wearing a plain knee-length woven cotton lower cloth, standing in a bamboo yard.
+```
+
+### portrait.m.child.noble — เด็กชายลูกขุนนางหัวโกนไว้จุก สวมกำไลทอง
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:child` `estate:noble` `estate:merchant` `estate:royal`
+
+lore: `attire.children_1680s` (attested), `ritual.topknot_cutting` (inferred, verified), `attire.indian_chintz_royal` (inferred)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a young well-born Siamese boy of about eight years old with warm olive-brown skin, broad cheekbones, calm dark eyes, and a straight nose; shaved head with a neat topknot on the crown fastened with a small gold pin, bare-chested, no shirt, wearing gold bracelets at the wrists and a patterned Indian chintz lower cloth, on the timber veranda of a house.
+```
+
+### portrait.m.youth.commoner — ชายหนุ่มชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-commoner-man.jpg` · tag: `sex:m` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a Siamese commoner young man of about eighteen with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a knee-length painted-cotton lower cloth, standing beside a bamboo fence.
+```
+
+### portrait.m.youth.noble — ชายหนุ่มลูกขุนนางในเรือนไม้
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `estate:noble` `estate:merchant`
+
+lore: `attire.hair_1680s` (attested), `attire.indian_chintz_royal` (inferred)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a well-born Siamese young man of about十八 (eighteen) years old with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned Indian chintz lower cloth with a betel pouch at the waist, seated on a reed mat inside a timber house.
+```
+
+### portrait.m.youth.page — มหาดเล็กหนุ่มสวมเสื้อมัสลินขาวผ่าหน้า หมอบรับใช้ในวัง
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `age:adult` `estate:noble` `role:page`
+
+lore: `social.royal_pages_1680s` (inferred, verified), `attire.officials_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a young Siamese royal page of about nineteen with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-headed without a hat, wearing an open-front collarless white muslin over-shirt with wide long sleeves over a patterned silk lower cloth, kneeling respectfully beside a lacquered betel box in a palace pavilion.
+```
+
+### portrait.m.youth.monk — พระภิกษุหนุ่มครองจีวรเหลือง
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `age:adult` `estate:monk` `role:monk`
+
+lore: `attire.monks_1680s` (attested), `ritual.ordination` (inferred, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a young Siamese Buddhist monk in his early twenties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; completely shaved head and shaved eyebrows, wearing a patched ochre-yellow robe leaving the right shoulder bare and a yellow waist sash, holding an iron alms bowl in a cloth sling inside a quiet monastery hall.
+```
+
+### portrait.m.adult.commoner — ชายผู้ใหญ่ชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-commoner-man.jpg` · tag: `sex:m` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a Siamese commoner man in his thirties with a sun-weathered face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a knee-length cotton lower cloth tucked at the back, standing in front of a bamboo stilt house.
+```
+
+### portrait.m.adult.noble — ชายผู้ใหญ่เจ้าเรือนผู้มีฐานะ นั่งข้างเชี่ยนหมาก
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:adult` `estate:noble` `estate:merchant`
+
+lore: `attire.hair_1680s` (attested), `attire.indian_chintz_royal` (inferred), `material.household_objects_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a well-to-do Siamese household head in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned silk lower cloth, seated cross-legged on a reed mat beside a lacquered betel box inside a timber house.
+```
+
+### portrait.m.adult.official_patrol — ขุนนางกรมกองกระเวนสวมเสื้อมัสลินและลอมพอก
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-official-lomphok.jpg` · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_patrol`
+
+lore: `attire.officials_1680s` (attested), `social.patrol_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a Siamese patrol-department official in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, and a tall brimless white conical cloth hat (lomphok) with thin gold bands near the base and a chin cord; a sheathed sword resting on a stand beside him inside a timber hall. Avoid: hat brim, wide-brimmed hat.
+```
+
+### portrait.m.adult.official_palace — ขุนนางกรมชาวที่สวมลอมพอก ข้างพานเครื่องทอง
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-official-lomphok.jpg` · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace`
+
+lore: `attire.officials_1680s` (attested), `social.royal_chamber_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a Siamese palace-chamber official in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; seated cross-legged on a reed mat in a palace hall, wearing an open-front collarless white muslin over-shirt with wide sleeves over a rich patterned silk lower cloth, and a tall brimless white conical cloth hat (lomphok) with gold bands and chin cord, a footed brass tray and betel box beside him. Avoid: hat brim, wide-brimmed hat.
+```
+
+### portrait.m.adult.official_scholar — ขุนนางกรมราชบัณฑิตยสวมลอมพอก ข้างสมุดไทยดำ
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-official-lomphok.jpg` · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar`
+
+lore: `attire.officials_1680s` (attested), `social.royal_scholars_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a Siamese royal-scholar official in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a silk lower cloth, and a tall brimless white conical cloth hat (lomphok) with gold bands and chin cord, an accordion-folded black khoi-paper manuscript (samut thai dam) and white steatite stylus on a low tray before him. Avoid: hat brim, wide-brimmed hat.
+```
+
+### portrait.m.elder.commoner — ชายชราชาวบ้านผมหงอก เปลือยท่อนบน
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: an elderly Siamese commoner man in his sixties with a deeply lined weathered face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; grey hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a plain cotton lower cloth, seated on the veranda of a bamboo stilt house.
+```
+
+### portrait.m.elder.noble — ชายชราเจ้าเรือนผู้มีฐานะ ผมหงอก นั่งข้างเชี่ยนหมาก
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `estate:merchant`
+
+lore: `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: an elderly well-to-do Siamese household patriarch in his sixties with a lined dignified face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; grey hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned silk lower cloth, seated on a reed mat beside a lacquered betel set inside a timber house.
+```
+
+### portrait.m.elder.official — ขุนนางอาวุโสวัยชราสวมเสื้อมัสลินและลอมพอก
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_patrol` `role:official_palace` `role:official_scholar`
+
+lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: an elderly senior Siamese official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated on a reed mat inside a timber hall. Avoid: hat brim, wide-brimmed hat.
+```
+
+### portrait.m.elder.monk — พระเถระชราครองจีวรเหลือง ถือตาลปัตร
+
+⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:monk` `role:monk`
+
+lore: `attire.monks_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: an elderly Siamese Buddhist monk in his sixties with a serene deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, and a straight nose; completely shaved head and shaved eyebrows, wearing a patched ochre-yellow robe leaving the right shoulder bare, seated on a mat holding a palm-leaf fan inside a temple hall.
+```
+
+### portrait.f.child.commoner — เด็กหญิงชาวบ้านหัวโกนไว้จุก
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `ritual.month_old_tham_khwan` (inferred), `ritual.topknot_cutting` (inferred, verified), `attire.children_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a young Siamese commoner girl of about eight years old with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; shaved head with a small topknot of hair left on the crown, bare-chested, wearing a plain woven cotton wrap skirt at the waist, standing in a house yard.
+```
+
+### portrait.f.child.noble — เด็กหญิงลูกขุนนางหัวโกนไว้จุก สวมกำไลและต่างหูทอง
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:child` `estate:noble` `estate:merchant` `estate:royal`
+
+lore: `attire.children_1680s` (attested), `ritual.topknot_cutting` (inferred, verified), `attire.women_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait from the waist up: a young well-born Siamese girl of about eight years old with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; shaved head with a neat topknot on the crown adorned with a small flower garland and gold pin, small gold earrings and gold wrist bangles, bare-chested, wearing a patterned silk wrap skirt at the waist, on a timber veranda.
+```
+
+### portrait.f.youth.commoner — หญิงสาวชาวบ้านตัดผมสั้นระดับใบหู
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Portrait cropped from the upper shoulders up in three-quarter view: a young Siamese village woman of about eighteen with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears, shaved close below and combed up off the forehead; soft daylight against a woven bamboo wall.
+```
+
+### portrait.f.youth.noble — หญิงสาวตระกูลขุนนางห่มผ้าขาวพาดสองไหล่
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:youth` `estate:noble` `estate:merchant`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a young well-to-do Siamese woman of about eighteen with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt and a single white muslin breast-cloth wrapped horizontally around her chest covering both breasts with its two ends thrown back over both shoulders, pear-shaped gold earrings, seated on a mat in a timber house. Avoid: one-shoulder diagonal sash.
+```
+
+### portrait.f.adult.commoner — หญิงผู้ใหญ่ชาวบ้านตัดผมสั้น ฟันดำจากหมาก
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Portrait cropped from the upper shoulders up in three-quarter view: an adult Siamese commoner woman in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and a faint smile showing teeth blackened from chewing betel; black hair cropped level with the top of the ears and lifted off the forehead; bamboo house background.
+```
+
+### portrait.f.adult.noble — ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant` `role:principal_wife`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a well-to-do Siamese noble wife in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and teeth blackened from chewing betel; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt and a single white muslin breast-cloth wrapped around her chest covering both breasts with its two loose ends draped back over both shoulders, pear-shaped gold earrings and gold rings on her last three fingers, a lacquered betel box beside her. Avoid: one-shoulder diagonal sash.
+```
+
+### portrait.f.adult.minor_wife — เมียกลางนอกห่มผ้าพาดสองไหล่ นั่งพับเพียบสำรวม
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:phrai_luang` `estate:phrai_som` `role:minor_wife`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a young Siamese minor wife in her twenties with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, seated modestly on a reed mat with legs folded to one side in a small bamboo-and-timber house, wearing a dark wrap skirt and a soft off-white cotton breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders, small gold earrings. Avoid: one-shoulder diagonal sash.
+```
+
+### portrait.f.adult.head — เจ้าเรือนหญิงผู้นำตระกูล นั่งข้างหีบไม้และเชี่ยนหมาก
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant` `role:household_head`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a dignified Siamese female household head in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and teeth blackened from chewing betel; black hair cropped level with the top of the ears, wearing a fine black wrap skirt and a white muslin breast-cloth wrapped around her chest covering both breasts with both ends draped over both shoulders, pear-shaped gold earrings and gold finger rings, seated upright beside a wooden chest and betel set inside a timber house. Avoid: one-shoulder diagonal sash.
+```
+
+### portrait.f.elder.commoner — หญิงชราชาวบ้านผมหงอก ฟันดำ
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-elder-woman-portrait.jpg` · tag: `sex:f` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+
+lore: `attire.hair_1680s` (attested), `attire.women_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Portrait from the shoulders up: an elderly Siamese village woman in her sixties with a deeply lined sun-weathered oval face, warm olive-brown skin, high cheekbones, calm dark eyes, grey hair cropped level with the top of the ears and lifted off the forehead, smiling slightly to show teeth blackened from chewing betel; plain background of a bamboo wall.
+```
+
+### portrait.f.elder.noble — แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่
+
+🟡 ใช้ภาพชั่วคราว `art/approved/reality-elder-woman-portrait.jpg` · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant` `role:principal_wife` `role:household_head`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: an elderly well-to-do Siamese matriarch in her sixties with a lined dignified oval face, warm olive-brown skin, high cheekbones, calm dark eyes, grey hair cropped level with the top of the ears and lifted off the forehead, teeth blackened from chewing betel; wearing a black wrap skirt, a white muslin breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders, and gold pear-shaped earrings, seated on a reed mat inside a timber house. Avoid: one-shoulder diagonal sash.
+```
+
+### portrait.f.pregnant.commoner — หญิงชาวบ้านกำลังตั้งครรภ์
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that` `role:pregnant`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait in three-quarter profile: a visibly pregnant Siamese village woman in her twenties with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, wearing a plain cotton breast-cloth wrapped horizontally across the chest and a woven wrap skirt over her rounded pregnant belly, one hand resting gently on her abdomen, standing on the veranda of a bamboo stilt house. Avoid: one-shoulder diagonal sash.
+```
+
+### portrait.f.pregnant.noble — หญิงตระกูลขุนนางกำลังตั้งครรภ์ ห่มผ้าขาวพาดสองไหล่
+
+⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:merchant` `role:pregnant`
+
+lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese adults of both sexes wear their black hair cropped level with the top of the ears, the hair below shaved close, lifted off the forehead, and their teeth are blackened from chewing betel. Commoner men are bare-chested. A well-to-do woman's breast-cloth is wrapped around the chest covering both breasts, its two ends thrown back over both shoulders. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a breast-cloth worn as a one-shoulder diagonal sash, modern Thai costume, shirts on commoner men, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait: a visibly pregnant well-to-do Siamese woman in her twenties with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt over her rounded pregnant belly and a single white muslin breast-cloth wrapped horizontally around her chest covering both breasts with its two ends thrown back over both shoulders, pear-shaped gold earrings, seated on a reed mat with one hand resting gently on her abdomen inside a timber house. Avoid: one-shoulder diagonal sash.
 ```
