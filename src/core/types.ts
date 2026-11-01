@@ -1166,6 +1166,12 @@ export interface Balance {
     stressRest: Unit;
     /** ญาติใกล้ชิด (คู่ครอง พ่อแม่ ลูก) ตายในปีที่ผ่านมา → หนักใจขึ้น griefStress × (0.5 + neuroticism) */
     griefStress: Unit;
+    /** ผู้เล่นรู้สึกถึงการสูญเสียตามความรัก (affection ÷ ค่ากลาง) และเมียที่ความรักต่ำกว่า visitColdAt ปีละ coldWifeStress ต่อคน (สูงสุด 2 คน) */
+    coldWifeStress: Unit;
+    /** ผู้เล่นหนักใจจากคนตายน้อยกว่าญาติคนอื่นตามส่วนนี้ (ผู้เล่นมีงานศพให้เลือกรับมือ และเกมต้องเล่นต่อได้) */
+    playerGriefFactor: Unit;
+    /** เหตุการณ์บ้านเมืองทำคนในตระกูลหนักใจ ตามชนิด × (0.5 + neuroticism) */
+    historyStress: Record<'war' | 'plague' | 'famine' | 'succession', Unit>;
   };
   /** บวชเรียน (lore: ritual.ordination) — ตัวเลขเป็นของเกม */
   ordination: {

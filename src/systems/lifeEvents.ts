@@ -4,6 +4,8 @@ import type { Character } from '../core/types';
 import { prepareEvent, type PreparedEvent } from './events';
 import { spawnLocal } from './acquaintance';
 import { livingChildren, livingParents } from './factory';
+import { bond } from './will';
+import { livingWives } from './wives';
 
 // ============================================================================
 // event วัยผู้ใหญ่และวัยชรา — ปีละครั้ง เฉพาะผู้เล่น (ตัวเลขทั้งหมดเป็นของเกม)
@@ -73,6 +75,26 @@ export function elderPreceptsEvent(ctx: Ctx): PreparedEvent | null {
 }
 
 /**
+ * ผู้เล่นรู้สึกถึงเรื่องที่ทำให้หนักใจเอง (งานศพยังเป็น event ให้เลือกวิธีรับมือ แต่ใจหนักตั้งแต่ก่อนเลือก):
+ *  - ญาติใกล้ชิด (คู่ครอง พ่อแม่ ลูก) ตายในปีที่ผ่านมา: griefStress × playerGriefFactor × (ความรักต่อผู้ตาย ÷ ค่ากลาง) × (0.5 + neuroticism)
+ *  - เมียที่ความรักต่อผู้เล่นต่ำกว่า visitColdAt: coldWifeStress ต่อคน (สูงสุด 2 คน) — แก้ได้ด้วยการไปค้างเรือนนางหรือดูแลเอาใจ
+ * ตัวเลขทั้งหมดเป็นค่าของเกม (balance.life)
+ */
+function playerStress(ctx: Ctx, player: Character, recentDead: Character[]): void {
+  const L = ctx.content.balance.life;
+  const node = ctx.state.familyNodes[player.familyNodeId];
+  const close = new Set([...(node?.spouseIds ?? []), ...(node?.childIds ?? []), node?.fatherId, node?.motherId]);
+  const mid = ctx.content.balance.bond.affection;
+  const grief = recentDead.filter((d) => close.has(d.familyNodeId)).reduce((sum, d) => sum + bond(ctx, player, d, 'affection') / mid, 0);
+  let up = grief * L.griefStress * L.playerGriefFactor * (0.5 + player.personality.neuroticism);
+  if (player.sex === 'm') {
+    const cold = livingWives(ctx, player).filter((w) => bond(ctx, w, player, 'affection') < ctx.content.balance.interactions.visitColdAt).length;
+    up += Math.min(2, cold) * L.coldWifeStress;
+  }
+  player.stress = clamp01(player.stress + up);
+}
+
+/**
  * รายปี: ใจและบุญของคนในฉากขยับตามวัยและนิสัย (ตัวเลขเป็นค่าของเกม — balance.life)
  *  - บุญ: ญาติที่ไม่ใช่ผู้เล่นทำบุญตามแรงศรัทธา ผู้สูงวัยทำมากขึ้น (ผู้เล่นได้บุญจากสิ่งที่เลือกเอง)
  *  - หนักใจ: คลายลงทุกปีเข้าหาระดับประจำตัว (คนขี้กังวลไม่หายสนิท) แล้วเพิ่มเมื่อคนใกล้ชิดตายในปีที่ผ่านมา
@@ -90,7 +112,10 @@ export function kinYearTick(ctx: Ctx): void {
     if (ch.id !== playerId && age >= 15) ch.merit += ch.personality.piety * L.meritPerYear * (age >= L.elderAge ? L.elderMeritFactor : 1);
     const rest = ch.personality.neuroticism * L.stressRest;
     ch.stress = clamp01(ch.stress + (rest - ch.stress) * L.stressRecovery);
-    if (ch.id === playerId) continue;
+    if (ch.id === playerId) {
+      playerStress(ctx, ch, recentDead);
+      continue;
+    }
     const node = S.familyNodes[ch.familyNodeId];
     const close = new Set([...(node?.spouseIds ?? []), ...(node?.childIds ?? []), node?.fatherId, node?.motherId]);
     const grief = recentDead.filter((d) => close.has(d.familyNodeId)).length;

@@ -603,6 +603,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
       for (const m of members) {
         const loss = ctx.rng.range(ev.shock.wealthLoss[0], ev.shock.wealthLoss[1]);
         m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : loss);
+        m.stress = Math.min(1, m.stress + ctx.content.balance.life.historyStress[ev.kind] * (0.5 + m.personality.neuroticism));
         if (purged && m.social.title) {
           out.push(`${m.name}ถูกริบราชบาตร ถอดจาก${m.social.title}`);
           m.social.title = null;

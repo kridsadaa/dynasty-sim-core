@@ -8,7 +8,7 @@ import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from 
 import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
-import { estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
+import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
@@ -623,6 +623,52 @@ demographyReport();
   if (asked(hero)) problems.push('ไพร่ได้โอกาสฝากตัวเข้ากรม');
   check('ฝากตัวเข้ากรม', problems);
   if (failed === before) console.log('  ✓ ชายขุนนางผู้ใหญ่ฝากตัวเข้ากรมได้ ได้ขั้นแรก · ผู้หญิงและไพร่ไม่ได้');
+}
+
+// [5i] ผู้เล่นรู้สึกหนักใจเอง: ญาติใกล้ชิดตาย (ยิ่งรักยิ่งหนัก) เมียที่ไม่รักแล้ว และเหตุการณ์บ้านเมือง
+{
+  const before = failed;
+  console.log('ความหนักใจของผู้เล่น:');
+  const ctx = makeCtx(emptyState(47), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(20);
+  hero.sex = 'm';
+  hero.personality.neuroticism = 0.5;
+  const problems: string[] = [];
+  const mk = (name: string) => spawnCharacter(ctx, { name, sex: 'f', birthYear: yearOf(ctx, S.meta.day) - 22, estate: 'noble', dynastyId: null, householdId: hero.householdId });
+  const wife = mk('เมียรัก');
+  marry(ctx, hero, wife);
+  const rested = () => { hero.stress = 0; setRelation(ctx, wife.id, hero.id, 'affection', 0.6); };
+  const tick = () => { hero.stress = 0; kinYearTick(ctx); return hero.stress; };
+
+  // ปกติไม่มีเรื่องหนักใจ (ลงมาอยู่ที่ระดับพักของนิสัย ไม่เกิน 0.1)
+  rested();
+  const calm = tick();
+  if (calm > 0.1) problems.push(`ไม่มีเรื่องอะไรแต่หนักใจ ${calm.toFixed(2)}`);
+  // เมียไม่รัก → หนักใจขึ้น
+  setRelation(ctx, wife.id, hero.id, 'affection', 0.1);
+  const cold = tick();
+  if (cold <= calm) problems.push(`เมียไม่รักแล้วแต่หนักใจไม่ขึ้น (${calm.toFixed(3)} → ${cold.toFixed(3)})`);
+  // คนใกล้ชิดตาย: ยิ่งรักยิ่งหนัก
+  const lose = (aff: number) => {
+    const w = mk(`เมีย${aff}`);
+    marry(ctx, hero, w);
+    setRelation(ctx, hero.id, w.id, 'affection', aff);
+    markDead(ctx, w, 'tag:test' as never);
+    return tick();
+  };
+  setRelation(ctx, wife.id, hero.id, 'affection', 0.6);
+  const loveless = lose(0.1);
+  const loved = lose(0.9);
+  if (!(loved > loveless + 0.05)) problems.push(`ยิ่งรักยิ่งต้องหนักกว่า แต่ ${loveless.toFixed(2)} vs ${loved.toFixed(2)}`);
+  // เหตุการณ์บ้านเมือง (โรคระบาด) ทำให้หนักใจ
+  rested();
+  hero.stress = 0;
+  applyHistoricalShocks(ctx, 2363);
+  if (isAlive(hero) && hero.stress <= 0) problems.push('โรคระบาดผ่านไปแต่ผู้เล่นไม่หนักใจเลย');
+  check('ความหนักใจของผู้เล่น', problems);
+  if (failed === before) console.log('  ✓ ปกติใจเบา · เมียไม่รักทำให้หนักใจ · คนที่รักตายหนักกว่า · โรคระบาดทำให้หนักใจ');
 }
 
 // [6] การจัดการเรือน วิชาความชำนาญ และมรดกตระกูล

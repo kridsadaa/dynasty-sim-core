@@ -3204,7 +3204,7 @@
       "requires": [
         {
           "type": "stress",
-          "min": 0.25
+          "min": 0.4
         }
       ]
     },
