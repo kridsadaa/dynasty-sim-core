@@ -8,7 +8,7 @@ import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingParents, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
-import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
+import { applyHistoricalShocks, historyHeadline, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
@@ -33,7 +33,8 @@ import { kinDeathEvent } from './mourning';
 export type LogKind = 'family' | 'death' | 'inherit' | 'body' | 'household' | 'daily' | 'people' | 'career' | 'history' | 'choice';
 
 export type WorldSignal =
-  | { type: 'log'; kind: LogKind; line: string }
+  /** art: tag เลือกภาพจิตรกรรมให้บรรทัดนี้ (หัวเหตุการณ์ประวัติศาสตร์) */
+  | { type: 'log'; kind: LogKind; line: string; art?: string[] }
   | { type: 'event'; prepared: PreparedEvent }
   /** งานบุญที่ทำตามนิสัย — เลือกให้แล้ว (report) ไม่ต้องถามผู้เล่น */
   | { type: 'habit'; prepared: PreparedEvent; report: EventReport }
@@ -96,7 +97,11 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
 
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
   if (dayOfYear(ctx, S.meta.day) === 0) {
-    for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', kind: 'history', line });
+    const events = ctx.content.history.filter((h) => h.year === year);
+    for (const line of applyHistoricalShocks(ctx, year)) {
+      const ev = events.find((e) => line === historyHeadline(ctx, e));
+      out.push({ type: 'log', kind: 'history', line, ...(ev ? { art: [ev.tag, `historykind:${ev.kind}`] } : {}) });
+    }
     // ตายในปีที่ผ่านมา (เด็ก ไข้ทรพิษ ป่วย ชรา) — ก่อนการเกิด/แต่งงาน/พบคนใหม่ของปีนี้ ไม่ให้ event ผูกกับคนที่จะตาย
     for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', kind: 'death', line });
     kinYearTick(ctx);

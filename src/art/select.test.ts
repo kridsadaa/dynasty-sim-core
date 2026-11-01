@@ -87,9 +87,11 @@ test('ทุกภาพใน assets.spec.json มี tag ที่มีอย
   const tags = new Set((JSON.parse(readFileSync('public/content/tags.json', 'utf8')) as Array<{ id: string }>).map((t) => t.id));
   const events = Object.keys(JSON.parse(readFileSync('public/content/events.json', 'utf8')) as Record<string, unknown>);
   const groups = new Set(events.map((e) => e.split('.')[0]));
+  const history = (JSON.parse(readFileSync('public/content/rules.json', 'utf8')) as { history: Array<{ kind: string }> }).history;
+  const kinds = new Set(history.map((h) => h.kind));
   for (const i of spec.images) {
     for (const t of i.tags) {
-      const ok = t === 'legend:any' || PORTRAIT_TAGS.has(t)
+      const ok = t === 'legend:any' || PORTRAIT_TAGS.has(t) || (t.startsWith('historykind:') && kinds.has(t.slice(12)))
         || (t.startsWith('event:') ? events.includes(t.slice(6)) : t.startsWith('group:') ? groups.has(t.slice(6)) : tags.has(t));
       assert.ok(ok, `${i.id}: tag ${t} ไม่มีอยู่จริง`);
     }
@@ -107,4 +109,17 @@ test('งานบ้านแต่ละหมวดได้ภาพขอ�
   assert.equal(pickArt(all, 'reality', eventArtTags('marriage.wedding_f', []))?.id, 'scene.wedding');
   assert.equal(pickArt(all, 'reality', eventArtTags('temple.elder', []))?.id, 'scene.elder_visit');
   assert.equal(pickArt(all, 'reality', eventArtTags('temple.other', []))?.id, 'scene.temple_holy_day');
+});
+
+test('เหตุการณ์ประวัติศาสตร์ที่เป็นศึก ข้าวยาก โรคระบาด ได้ภาพจิตรกรรมของชนิดนั้น ส่วนผลัดแผ่นดินไม่มีภาพ', () => {
+  const spec = JSON.parse(readFileSync('art/assets.spec.json', 'utf8')) as { images: Array<{ id: string; style: ArtImage['style']; tags: string[] }> };
+  const all: ArtManifest = { styleVersion: 'spec', images: spec.images.map((i) => img(i.id, i.style, i.tags)) };
+  const history = (JSON.parse(readFileSync('public/content/rules.json', 'utf8')) as { history: Array<{ tag: string; kind: string }> }).history;
+  for (const h of history) {
+    const picked = pickArt(all, 'chronicle', [h.tag, `historykind:${h.kind}`])?.id;
+    if (h.kind === 'succession') assert.equal(picked, undefined, h.tag);
+    else assert.ok(picked?.startsWith('history.'), `${h.tag} ได้ ${picked}`);
+  }
+  assert.equal(pickArt(all, 'chronicle', ['history:fall_of_ayutthaya', 'historykind:war'])?.id, 'history.fall_of_ayutthaya');
+  assert.equal(pickArt(all, 'chronicle', ['history:cholera_2363', 'historykind:plague'])?.id, 'history.plague');
 });

@@ -132,7 +132,7 @@
     {
       "id": "scene.courtship",
       "style": "reality",
-      "tags": ["event:intent.court.trial", "event:intent.court.gossip", "event:intent.court.accepted", "event:intent.court.rejected", "event:marriage.divorce"],
+      "tags": ["event:intent.court.trial", "event:intent.court.gossip", "event:intent.court.accepted", "event:intent.court.rejected", "event:intent.court.meet", "event:marriage.divorce"],
       "alt": "หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ",
       "subject": "A wooden landing on a canal in late afternoon: a young woman wearing a lower cloth and a breast-cloth wrapped around her chest covering both breasts, ends thrown back over both shoulders, holding an earthenware water jar on her hip, and a young man standing a few steps away speaking to her; other villagers bathing far off in the water.",
       "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s"]
@@ -258,6 +258,14 @@
       "loreRefs": ["attire.commoner_men_1680s", "material.household_objects_1680s"]
     },
     {
+      "id": "scene.court_boat",
+      "style": "reality",
+      "tags": ["event:intent.court.boat"],
+      "alt": "หนุ่มสาวสองคนในเรือขุดลำเล็กพายเลียบคลองยามเย็น ห่างตาผู้ใหญ่",
+      "subject": "Early evening on a narrow canal: a young Siamese man and a young woman in a small narrow wooden dugout boat, he paddling at the stern, she seated in front with her hands in her lap; she wears a lower cloth and a breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders; stilt houses and banana trees along the bank, no other people near, golden low light on the water, shy quiet mood, seen from a distance.",
+      "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s"]
+    },
+    {
       "id": "legend.battle",
       "style": "chronicle",
       "tags": ["legend:any", "place:battlefield", "situation:combat", "situation:war"],
@@ -297,6 +305,38 @@
       "alt": "ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า",
       "subject": "A strange omen in the sky: a comet and a ring around the sun above a town wall, small figures below pointing upward in alarm.",
       "loreRefs": ["attire.wat_ko_kaeo_reference", "belief.chronicle_omens"]
+    },
+    {
+      "id": "history.fall_of_ayutthaya",
+      "style": "chronicle",
+      "tags": ["history:fall_of_ayutthaya"],
+      "alt": "ภาพจิตรกรรม: กรุงถูกไฟไหม้ ข้าศึกบุกเข้าประตูเมือง ผู้คนหนีลงเรือ",
+      "subject": "A walled royal city burning at night: flames rising from tiered-roof pavilions and temple spires inside the city walls, invading soldiers with spears and shields climbing the walls and streaming through a gate, townspeople fleeing along the riverbank carrying bundles, boats crowded on the river, smoke curling in stylized patterns; no gore, no close-up of wounds.",
+      "loreRefs": ["event.fall_of_ayutthaya_2310", "attire.wat_ko_kaeo_reference"]
+    },
+    {
+      "id": "history.famine",
+      "style": "chronicle",
+      "tags": ["history:famine_after_fall", "historykind:famine"],
+      "alt": "ภาพจิตรกรรม: ชาวบ้านผอมโซเข้าแถวรับข้าวที่หน้าวัด",
+      "subject": "A village in time of famine: thin villagers in plain lower cloths sitting and standing in a line before a monastery gate where monks and a few officials distribute small portions of rice from large pots, an elderly woman and a child receiving rice into a coconut-shell bowl, empty rice barns on stilts and dry cracked fields in the background, a thin dog, decorative trees; sombre but dignified, no corpses.",
+      "loreRefs": ["event.famine_2310_2313", "attire.wat_ko_kaeo_reference"]
+    },
+    {
+      "id": "history.plague",
+      "style": "chronicle",
+      "tags": ["historykind:plague"],
+      "alt": "ภาพจิตรกรรม: คนป่วยนอนบนเสื่อริมท่า พระสวด ศพห่อผ้าขาวถูกหามไปวัด",
+      "subject": "A river landing during an epidemic: sick people lying on mats under a shelter on the bank, relatives wiping their faces with cloths, monks in a row seated chanting with palm-leaf fans in front of their faces, a few bodies wrapped entirely in white cloth being carried on poles toward a temple compound, boats moored, decorative trees and water patterns; no visible faces or wounds on the bodies.",
+      "loreRefs": ["event.cholera_2363", "attire.wat_ko_kaeo_reference", "attire.monks_1680s"]
+    },
+    {
+      "id": "history.war",
+      "style": "chronicle",
+      "tags": ["historykind:war"],
+      "alt": "ภาพจิตรกรรม: กองทัพเคลื่อนพลตามช้างศึก ธงและกลองนำหน้า",
+      "subject": "An army marching to war: a column of soldiers with spears, swords and shields following a war elephant with a mahout and a howdah, standard-bearers carrying tall banners, drummers and a conch blower at the front, officials on horseback, villagers watching from the roadside with palms pressed together, decorative trees and rocks; stylized, no fighting shown.",
+      "loreRefs": ["event.nine_armies_2328", "attire.wat_ko_kaeo_reference"]
     },
     {
       "id": "portrait.m.child.commoner",

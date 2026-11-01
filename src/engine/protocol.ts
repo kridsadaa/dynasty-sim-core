@@ -163,6 +163,8 @@ export type WorkerMessage = { kind: 'reply'; reply: Reply } | { kind: 'push'; pu
 export interface LogLine {
   kind: LogKind;
   text: string;
+  /** tag เลือกภาพจิตรกรรม (chronicle) แสดงเหนือบรรทัดนี้ */
+  artTags?: string[];
 }
 
 export interface EventView {

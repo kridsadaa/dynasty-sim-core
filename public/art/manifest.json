@@ -190,6 +190,7 @@
         "event:intent.court.gossip",
         "event:intent.court.accepted",
         "event:intent.court.rejected",
+        "event:intent.court.meet",
         "event:marriage.divorce"
       ],
       "alt": "หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ",

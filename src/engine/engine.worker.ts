@@ -130,7 +130,7 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir'
     if (c.state.meta.day >= endDayOf(c)) return 'end';
     let stop: 'done' | 'event' | 'heir' = 'done';
     for (const sig of advanceDay(c)) {
-      if (sig.type === 'log') lines.push({ kind: sig.kind, text: sig.line });
+      if (sig.type === 'log') lines.push({ kind: sig.kind, text: sig.line, ...(sig.art ? { artTags: sig.art } : {}) });
       else if (sig.type === 'habit') for (const line of habitLines(c, sig.prepared, sig.report, text)) lines.push({ kind: 'choice', text: line });
       else if (sig.type === 'event') {
         pending.set(sig.prepared.instance.id, sig.prepared);

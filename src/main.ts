@@ -126,11 +126,11 @@ const lineVisible = (p: HTMLElement) => {
 /** ก้อนปีที่ไม่มีบรรทัดไหนผ่านตัวกรอง → ซ่อนหัว พ.ศ. ด้วย */
 function updateBlock(block: HTMLElement) {
   if (!block.classList.contains('yr')) return;
-  block.hidden = ![...block.querySelectorAll<HTMLElement>('p[data-kind]')].some(lineVisible);
+  block.hidden = ![...block.querySelectorAll<HTMLElement>('[data-kind]')].some(lineVisible);
 }
 
 function applyFilter() {
-  for (const p of log.querySelectorAll<HTMLElement>('p[data-kind]')) p.hidden = !lineVisible(p);
+  for (const p of log.querySelectorAll<HTMLElement>('[data-kind]')) p.hidden = !lineVisible(p);
   for (const b of log.querySelectorAll<HTMLElement>('.yr')) updateBlock(b);
 }
 
@@ -150,9 +150,15 @@ function startYear(year: number) {
   log.append(yearBlock);
 }
 
-function write(text: string, kind: LogKind | 'system', cls?: string) {
+function write(text: string, kind: LogKind | 'system', cls?: string, artTags?: readonly string[]) {
   const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
   const target = yearBlock ?? log;
+  // ภาพเหนือบรรทัด (หัวเหตุการณ์บ้านเมือง) — ซ่อน/แสดงตามตัวกรองเดียวกับบรรทัด
+  for (const fig of artFigure('chronicle', artTags)) {
+    fig.dataset.kind = kind;
+    fig.hidden = !lineVisible(fig);
+    target.append(fig);
+  }
   const p = el('p', text, cls ?? (kind === 'system' ? 'system' : undefined));
   p.dataset.kind = kind;
   p.hidden = !lineVisible(p);
@@ -1198,7 +1204,7 @@ engine.onPush((p) => {
       break;
     case 'log':
       startYear(p.year);
-      for (const l of p.lines) write(l.text, l.kind);
+      for (const l of p.lines) write(l.text, l.kind, undefined, l.artTags);
       break;
     case 'progress':
       $('date').textContent = p.solar;

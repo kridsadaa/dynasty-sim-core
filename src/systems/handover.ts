@@ -1,7 +1,7 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
-import type { Character, Dynasty, FamilyNode, FamilyTaboo, Item, KinRelation, Parentage, Relation, TagId } from '../core/types';
+import type { Character, Dynasty, FamilyNode, FamilyTaboo, HistoricalEvent, Item, KinRelation, Parentage, Relation, TagId } from '../core/types';
 import { livingSpouse, pickCaregiverChild } from './factory';
 import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from './legend';
 import { pruneState, type PruneReport } from './prune';
@@ -591,10 +591,12 @@ function crystallizeTaboos(
 // Anti-snowball: เหตุการณ์ประวัติศาสตร์ "ล้างไพ่" — เรียกเมื่อเวลาในเกมผ่านปีนั้น
 // ============================================================================
 
+export const historyHeadline = (ctx: Ctx, ev: HistoricalEvent) => `== ${ctx.tags.label(ev.tag)} (${ev.year}) ==`;
+
 export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
   const out: string[] = [];
   for (const ev of ctx.content.history.filter((h) => h.year === year)) {
-    out.push(`== ${ctx.tags.label(ev.tag)} (${ev.year}) ==`);
+    out.push(historyHeadline(ctx, ev));
     for (const dyn of Object.values(ctx.state.dynasties)) {
       const members = Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c));
       const purged = !!dyn.faction && (ev.shock.purgeFactions ?? []).includes(dyn.faction) && ctx.rng.chance(ev.shock.purgeChance ?? 1);
