@@ -30,7 +30,7 @@
       "approaches": [
         { "id": "visit", "textKey": "intent.court.visit", "odds": 0,
           "by": { "near": { "labor": 0, "months": 10 }, "town": { "labor": 0.15, "months": 14 }, "far": null } },
-        { "id": "serve", "textKey": "intent.court.serve", "odds": 0.2, "learnTrade": 0.6,
+        { "id": "serve", "textKey": "intent.court.serve", "sex": "m", "odds": 0.2, "learnTrade": 0.6,
           "by": { "near": { "labor": 0.3, "months": 7 }, "town": { "labor": 0.6, "months": 7 }, "far": { "labor": 1, "months": 8 } } },
         { "id": "elder", "textKey": "intent.court.elder", "odds": 0.05, "cost": 5, "formal": true, "success": "intent.court.accepted_formal",
           "by": { "near": { "labor": 0, "months": 3 }, "town": { "labor": 0, "months": 3 }, "far": { "labor": 0, "months": 4 } } }

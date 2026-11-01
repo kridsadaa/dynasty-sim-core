@@ -36,7 +36,7 @@ export interface OddsFactor {
 export interface ApproachPlan {
   def: IntentApproachDef;
   /** เหตุผลที่ใช้วิธีนี้ไม่ได้ (key ใน text: intent.unavailable.*) */
-  unavailable?: 'far' | 'age' | 'elder' | 'money';
+  unavailable?: 'far' | 'age' | 'sex' | 'elder' | 'money';
   odds: number;
   factors: OddsFactor[];
   months: number;
@@ -144,6 +144,7 @@ export function planIntent(ctx: Ctx, kind: IntentKindId, actor: Character, targe
       monthlyCost: (by?.labor ?? 0) * I.laborValue[pays.social.estate],
     };
     if (!by) plan.unavailable = 'far';
+    else if (ap.sex && ap.sex !== actor.sex) plan.unavailable = 'sex';
     else if (age < (ap.minAge ?? 0) || (by.labor >= 1 && age < I.relocateMinAge)) plan.unavailable = 'age';
     else if (ap.formal && !livingParents(ctx, actor).length) plan.unavailable = 'elder';
     else if ((ap.cost ?? 0) > Math.max(actor.social.wealth, pays.social.wealth)) plan.unavailable = 'money';

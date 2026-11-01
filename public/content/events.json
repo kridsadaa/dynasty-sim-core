@@ -201,7 +201,9 @@
     "trigger": { "weight": 0 },
     "percepts": [],
     "options": [
-      { "id": "propose", "textKey": "event.court_accepted.propose",
+      { "id": "propose", "textKey": "event.court_accepted.propose", "conditions": [ { "type": "sex", "is": "m" } ],
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "propose" } ] },
+      { "id": "propose_f", "textKey": "event.court_accepted.propose_f", "conditions": [ { "type": "sex", "is": "f" } ],
         "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "propose" } ] },
       { "id": "wait", "textKey": "event.court_accepted.wait",
         "effects": [
@@ -308,6 +310,57 @@
       { "id": "serve", "textKey": "event.milk_claim.serve",
         "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "serveElope" } ] },
       { "id": "return", "textKey": "event.milk_claim.return",
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "returnBride" } ] }
+    ]
+  },
+  "marriage.refused_f": {
+    "id": "marriage.refused_f",
+    "textKey": "event.marriage_refused_f",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "accept", "textKey": "event.marriage_refused.accept",
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.08 } ] },
+      { "id": "wait", "textKey": "event.marriage_refused.wait",
+        "effects": [
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "friend", "atLeast": 0.5 },
+          { "op": "stress", "role": "actor", "delta": 0.04 }
+        ] },
+      { "id": "elope", "textKey": "event.marriage_refused_f.elope",
+        "resist": [
+          { "source": "bond", "role": "elder", "axis": "awe", "weight": 1.0, "reasonKey": "awe" },
+          { "source": "personality", "trait": "boldness", "invert": true, "weight": 0.5, "reasonKey": "timid" }
+        ],
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "elope" } ] }
+    ]
+  },
+  "marriage.wedding_f": {
+    "id": "marriage.wedding_f",
+    "textKey": "event.marriage_wedding_f",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "wed", "textKey": "event.marriage_wedding_f.wed",
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "wed" } ] },
+      { "id": "break", "textKey": "event.marriage_wedding_f.break",
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "breakOff" } ] }
+    ]
+  },
+  "marriage.milk_claim_f": {
+    "id": "marriage.milk_claim_f",
+    "textKey": "event.milk_claim_f",
+    "contextTags": [],
+    "roles": { "actor": {}, "target": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "pay", "textKey": "event.milk_claim_f.pay",
+        "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "settleElope" } ] },
+      { "id": "return", "textKey": "event.milk_claim_f.return",
         "effects": [ { "op": "marriage", "role": "actor", "with": "target", "step": "returnBride" } ] }
     ]
   },

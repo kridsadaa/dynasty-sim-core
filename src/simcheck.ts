@@ -9,7 +9,8 @@ import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
-import { knownLocals } from './systems/acquaintance';
+import { knownLocals, spawnLocal } from './systems/acquaintance';
+import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { markNursing } from './systems/lifeEvents';
@@ -303,6 +304,56 @@ demographyReport();
   console.log('ไม่ได้รักษาไข้:');
   check('ไม่ได้ส่วนมรดก', problems);
   if (failed === b) console.log('  ✓ ไม่ได้รักษาไข้ไม่ได้ส่วน ติดราชการได้เต็มส่วน');
+}
+
+// [5b] ผู้เล่นเป็นฝ่ายหญิง → บ้านชายเป็นฝ่ายออกเงิน สินสอดเข้าบ้านเจ้าสาว หนีตามกันแล้วชายช่วยออกค่าน้ำนมกึ่งหนึ่ง
+{
+  const ctx = makeCtx(emptyState(17), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(25);
+  const wife = spawnCharacter(ctx, { name: 'ภรรยา', sex: 'f', birthYear: 2290, estate: 'noble', dynastyId: null, householdId: null });
+  marry(ctx, hero, wife);
+  const year = yearOf(ctx, S.meta.day);
+  const daughter = (name: string, wealth: number) => spawnCharacter(ctx, {
+    name, sex: 'f', birthYear: year - 18, estate: 'noble', father: hero, mother: wife, householdId: hero.householdId, wealth,
+  });
+  const suitor = (name: string) => spawnCharacter(ctx, { name, sex: 'm', birthYear: year - 22, estate: 'noble', dynastyId: null, householdId: null, wealth: 0 });
+  const sum = (cs: Character[]) => [...new Set(cs)].reduce((a, c) => a + c.social.wealth, 0);
+  const problems: string[] = [];
+
+  const bride = daughter('ลูกสาวหนึ่ง', 0);
+  const groom = suitor('เจ้าบ่าว');
+  const household = () => [bride, hero, wife, S.characters[S.households[hero.householdId!]!.headId]!];
+  const before = sum(household());
+  applyMarriageStep(ctx, 'betroth', bride, groom);
+  const sinsot = bride.betrothal?.sinsot ?? 0;
+  if (!sinsot) problems.push('หมั้นแล้วไม่มีสินสอด');
+  applyMarriageStep(ctx, 'wed', bride, groom);
+  if (!S.familyNodes[bride.familyNodeId]!.spouseIds.length) problems.push('แต่งแล้วไม่เป็นผัวเมีย');
+  if (Math.round(sum(household()) - before) !== sinsot) problems.push(`สินสอด ${sinsot} แต่บ้านเจ้าสาวได้ ${Math.round(sum(household()) - before)}`);
+
+  const runaway = daughter('ลูกสาวสอง', 10);
+  const lover = suitor('คนรัก');
+  applyMarriageStep(ctx, 'elope', runaway, lover);
+  const claim = runaway.eloped?.amount ?? 0;
+  const parentsBefore = hero.social.wealth;
+  applyMarriageStep(ctx, 'settleElope', runaway, lover);
+  const his = Math.round(claim / 2);
+  const hers = Math.min(claim - his, 10);
+  if (runaway.social.wealth !== 10 - hers) problems.push(`ลูกสาวออก ${10 - runaway.social.wealth} ไม่ใช่ ${hers}`);
+  if (hero.social.wealth - parentsBefore !== his + hers) problems.push(`พ่อได้ ${hero.social.wealth - parentsBefore} ไม่ใช่ ${his + hers}`);
+  if (lover.social.wealth !== 0) problems.push('เงินของชายถูกหักทั้งที่บ้านเขาอยู่นอกฉาก');
+
+  for (const id of ['marriage.refused_f', 'marriage.wedding_f', 'marriage.milk_claim_f']) if (!content.events[id]) problems.push(`ไม่มี event ${id}`);
+  const local = spawnLocal(ctx, bride, { sex: 'm', age: 20, distance: 'near', trade: content.trades[0]!, single: true });
+  const serve = planIntent(ctx, 'court', runaway, local).find((p) => p.def.id === 'serve');
+  if (serve?.unavailable !== 'sex') problems.push('หญิงยังไปช่วยงานบ้านชายเพื่อเกี้ยวได้');
+
+  const b = failed;
+  console.log('ผู้เล่นเป็นฝ่ายหญิง:');
+  check('ระบบแต่งงานฝั่งเจ้าสาว', problems);
+  if (failed === b) console.log('  ✓ สินสอดเข้าบ้านเจ้าสาว ค่าน้ำนมแบ่งกึ่งหนึ่ง ไม่ต้องไปช่วยงานบ้านชาย');
 }
 
 // [6] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
