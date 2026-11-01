@@ -30,7 +30,7 @@
     "chronicle": {
       "use": "ตำนานตระกูล (Legend.current), พงศาวดาร",
       "testedIn": "รอบ 01 (style block v0.2)",
-      "prompt": "In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.",
+      "prompt": "In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.",
       "loreRefs": ["attire.wat_ko_kaeo_reference"]
     }
   },

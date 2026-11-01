@@ -298,9 +298,9 @@ Interior of a house: a child of about eleven, bare-chested and wearing a lower c
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
 ```
-In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.
+In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.
 
-A lone warrior with a sword cutting down several enemy soldiers in a battle scene, celestial beings watching from above with hands joined, zig-zag divisions separating the scenes.
+A lone warrior with a sword cutting down several enemy soldiers in a battle scene, celestial beings watching from above with hands joined, decorative trees, rocks and water framing the battlefield.
 ```
 
 ### legend.duel — ภาพจิตรกรรม: สองคนประลองดาบต่อหน้าผู้คน
@@ -310,7 +310,7 @@ A lone warrior with a sword cutting down several enemy soldiers in a battle scen
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
 ```
-In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.
+In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.
 
 Two men dueling with swords and shields on an open ground, a crowd of onlookers seated in rows around them, one fighter leaping in a heroic pose, decorative trees and rocks.
 ```
@@ -322,7 +322,7 @@ Two men dueling with swords and shields on an open ground, a crowd of onlookers 
 lore: `attire.wat_ko_kaeo_reference` (attested), `attire.officials_1680s` (attested)
 
 ```
-In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.
+In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.
 
 A palace scene: an official in a tall pointed hat prostrating to receive a reward of cloth and a sword on a tray, other officials kneeling in rows, a pavilion with tiered roofs; the ruler is not shown, only an empty raised seat behind a curtain.
 ```
@@ -334,7 +334,7 @@ A palace scene: an official in a tall pointed hat prostrating to receive a rewar
 lore: `attire.wat_ko_kaeo_reference` (attested), `belief.spirits_1680s` (inferred, verified)
 
 ```
-In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.
+In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.
 
 An ancestral spirit drawn as a pale floating figure above a house, shielding a sleeping family below from dark demonic figures at the edge of the scene.
 ```
@@ -346,7 +346,7 @@ An ancestral spirit drawn as a pale floating figure above a house, shielding a s
 lore: `attire.wat_ko_kaeo_reference` (attested), `belief.chronicle_omens` (inferred, verified)
 
 ```
-In the style of an 18th-century Thai temple mural painting: flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, scenes separated by zig-zag dividing lines, decorative trees, rocks and water patterns. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs on commoner houses.
+In the style of an 18th-century Thai temple mural painting: a single unified continuous scene filling the entire frame, flat colors without shading, deep red-brown background, fine dark hand-painted outlines of uneven weight, no Western perspective, stylized figures in profile and three-quarter view, decorative trees, rocks and water patterns naturally framing the composition. Aged mineral pigments, faded and slightly flaking plaster surface. Avoid: 3D shading, photorealism, crisp vector look, modern objects, tiled roofs or curved horn-shaped gable ornaments on commoner houses, zig-zag dividing lines, geometric frame borders, split panels, multiple framed vignettes.
 
 A strange omen in the sky: a comet and a ring around the sun above a town wall, small figures below pointing upward in alarm.
 ```
