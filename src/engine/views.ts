@@ -275,11 +275,13 @@ function optionHint(ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'
 export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventView {
   const vars: Record<string, string> = {};
   const actorNode = ctx.state.familyNodes[p.actor.familyNodeId];
+  // ญาติที่ตาย: คำเรียกมากับ event (tie) — "เมีย(บัว)"
+  const tie = p.instance.vars['tie'] ? ctx.tags.label(p.instance.vars['tie']) : '';
   for (const [role, id] of Object.entries(p.instance.bindings)) {
     const ch = ctx.state.characters[id];
-    // เรียกพ่อแม่ตามที่ลูกเรียก: "แม่แย้ม" ไม่ใช่ "แย้ม"
-    const kin = ch && (ch.familyNodeId === actorNode?.motherId ? 'แม่' : ch.familyNodeId === actorNode?.fatherId ? 'พ่อ' : '');
-    vars[role] = ch ? `${kin}${ch.name}` : role;
+    // เรียกพ่อแม่ตามที่ลูกเรียก ชื่ออยู่ในวงเล็บ: "แม่(แย้ม)" ไม่ใช่ "แย้ม"
+    const kin = ch && (ch.familyNodeId === actorNode?.motherId ? 'แม่' : ch.familyNodeId === actorNode?.fatherId ? 'พ่อ' : role === 'deceased' ? tie : '');
+    vars[role] = !ch ? role : kin ? `${kin}(${ch.name})` : ch.name;
   }
   // ตัวแปรส่วนใหญ่เป็น tag → ชื่อไทย; บาง event ส่งข้อความมาตรงๆ (ตำนานที่เล่ากับเรื่องจริง)
   for (const [k, v] of Object.entries(p.instance.vars)) vars[k] = ctx.tags.def(v) ? ctx.tags.label(v) : v;
