@@ -15,7 +15,7 @@ import { renderLegend } from './systems/legend';
 import { householdYearTick } from './systems/socialLearning';
 import { describeTrait } from './systems/traits';
 import { arrangedMatchEvent } from './systems/intent';
-import { lifeMilestones } from './systems/world';
+import { deliverBirths, lifeMilestones } from './systems/world';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
 const content: ContentDB = buildContentDB({
@@ -200,6 +200,9 @@ function story(seed: number, verbose: boolean): boolean {
     // แต่งงาน ที่อยู่หลังแต่งงาน แยกเรือน มีบุตร เป็นเณร — ใช้กลไกเดียวกับตัวเกม (world.ts)
     const family = new Set([player.name, ...livingChildren(ctx, player).map((c) => c.name)]);
     for (const l of lifeMilestones(ctx)) if ([...family].some((n) => l.startsWith(n))) say(`[${year}] ${l}`);
+    // เดโมเดินทีละปี — คลอดทันที ไม่รอครบกำหนด
+    for (const c of Object.values(ctx.state.characters)) if (c.pregnancy) c.pregnancy.dueDay = ctx.state.meta.day;
+    for (const l of deliverBirths(ctx)) if ([...family].some((n) => l.startsWith(n))) say(`[${year}] ${l}`);
     // ผู้เล่นไม่ถูกจับแต่งอัตโนมัติ — ในเดโมรับคู่ที่ผู้ใหญ่ทาบทามให้เสมอ
     const match = arrangedMatchEvent(ctx);
     if (match) {

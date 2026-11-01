@@ -13,7 +13,7 @@ import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, livingWives, minorWifeEvent } from './wives';
-import { servantsYearTick } from './servants';
+import { householdMonthTick, servantsYearTick } from './servants';
 import { elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
@@ -80,6 +80,16 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const req of m.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
   }
 
+  // เด็กเกิด: ผู้เล่นตั้งชื่อลูกเอง (namingEvent)
+  const onBirth = (kid: Character, parent: Character, spouse: Character) => {
+    const naming = namingEvent(ctx, kid, parent, spouse);
+    if (naming) out.push({ type: 'event', prepared: naming });
+    return !!naming;
+  };
+  for (const line of deliverBirths(ctx, onBirth)) out.push({ type: 'log', kind: 'family', line });
+  // ค่ากินอยู่และงานของทาส — เดือนละครั้ง (ทุก 30 วัน)
+  if (S.meta.day % 30 === 0) for (const hh of Object.values(S.households)) householdMonthTick(ctx, hh.id);
+
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
   if (dayOfYear(ctx, S.meta.day) === 0) {
     for (const line of applyHistoricalShocks(ctx, year)) out.push({ type: 'log', kind: 'history', line });
@@ -92,11 +102,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       const logs = [...householdYearTick(ctx, hh.id), ...servantsYearTick(ctx, hh.id)];
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', kind: 'household', line });
     }
-    for (const line of lifeMilestones(ctx, (kid, parent, spouse) => {
-      const naming = namingEvent(ctx, kid, parent, spouse);
-      if (naming) out.push({ type: 'event', prepared: naming });
-      return !!naming;
-    }, (child, spouse) => {
+    for (const line of lifeMilestones(ctx, (child, spouse) => {
       // ลูกออกเรือน: ผู้เล่นได้เห็นหน้าลูกเขย/สะใภ้และตัดสินใจ (หนึ่งคนต่อปี คนอื่นแต่งตามปกติ)
       if (!player || !isAlive(player) || out.some((o) => o.type === 'event' && o.prepared.def.id === 'family.child_wedding')) return false;
       out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_wedding', { actor: player.id, child: child.id, spouse: spouse.id }) });
@@ -308,8 +314,6 @@ function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Chara
  */
 export function lifeMilestones(
   ctx: Ctx,
-  /** เรียกทุกครั้งที่มีเด็กเกิด — คืน true ถ้าจะให้ผู้เล่นตั้งชื่อ */
-  onBirth?: (kid: Character, parent: Character, spouse: Character) => boolean,
   /** ลูกของผู้เล่นถึงคราวออกเรือน — คืน true ถ้าจะให้ผู้เล่นตัดสินใจเอง (event จัดการแต่งให้) */
   onChildWedding?: (child: Character, spouse: Character) => boolean,
 ): string[] {
@@ -365,24 +369,57 @@ export function lifeMilestones(
 
     // มีบุตร — นับจากฝั่งคนในตระกูลเพื่อไม่ให้นับซ้ำ; ผู้ชายที่มีเมียน้อยมีลูกกับเมียแต่ละคน
     const mothers = ch.sex === 'f' ? (spouse ? [ch] : []) : livingWives(ctx, ch);
+    // ตั้งครรภ์ปีนี้ → คลอดเมื่อครบกำหนด (deliverBirths ทุกวัน) — ระหว่างนั้นภาพตัวละครเป็นหญิงมีครรภ์
     for (const mother of mothers) {
-      if (ch.marriedDay === undefined || !conceives(ctx, ch, mother, year)) continue;
+      if (ch.marriedDay === undefined || mother.pregnancy || !conceives(ctx, ch, mother, year)) continue;
       const partner = ch.sex === 'f' ? spouse! : mother;
-      const father = ch.sex === 'm' ? ch : spouse!;
-      const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
-      // ชื่อผู้เล่นห้ามซ้ำเสมอ — เรื่องทั้งเกมเล่าผ่านคนนี้
-      const kid = spawnCharacter(ctx, {
-        name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, partner), namesInUse(ctx, ch.dynastyId, year)),
-        sex, birthYear: year, estate: ch.social.estate, father, mother,
-        ...(mother.wifeRank === 'minor' ? { parentage: 'minor_wife' as const } : {}),
-      });
-      // แม่ตายตอนคลอด (lore: health.childbirth_deaths) — ก่อน event ตั้งชื่อ จะได้ไม่ให้แม่ที่ตายแล้วตั้งชื่อ
-      const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(Math.min(1, W.childbirthDeathRisk * frailty(ctx, mother)));
-      if (motherDied) markDead(ctx, mother, 'situation:childbirth');
-      // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log
-      const naming = onBirth?.(kid, ch, partner) ?? false;
-      out.push(naming ? `${ch.name}มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name}มีบุตร: ${kid.name}`);
-      if (motherDied && mother.id !== ctx.state.meta.playerCharacterId) out.push(`${mother.name}ตายตอนคลอด`);
+      const dueDay = day + Math.round(ctx.rng.range(W.births.dueDays[0], W.births.dueDays[1]));
+      mother.pregnancy = { memberId: ch.id, partnerId: partner.id, dueDay };
+      mother.pregnantUntilDay = dueDay;
+      out.push(`${mother.name}ตั้งครรภ์`);
+    }
+  }
+  return out;
+}
+
+/** คลอดลูกที่ครบกำหนดวันนี้ — แม่ตายก่อนกำหนด ลูกก็ไม่ได้เกิด */
+export function deliverBirths(
+  ctx: Ctx, onBirth?: (kid: Character, parent: Character, spouse: Character) => boolean,
+): string[] {
+  const W = ctx.content.balance.world;
+  const day = ctx.state.meta.day;
+  const year = yearOf(ctx, day);
+  const out: string[] = [];
+  for (const mother of Object.values(ctx.state.characters)) {
+    const pg = mother.pregnancy;
+    if (!pg || day < pg.dueDay) continue;
+    delete mother.pregnancy;
+    delete mother.pregnantUntilDay;
+    const ch = ctx.state.characters[pg.memberId];
+    const partner = ctx.state.characters[pg.partnerId];
+    if (!isAlive(mother) || !ch || !partner) continue;
+    const father = mother === ch ? partner : ch;
+    const sex = ctx.rng.chance(0.5) ? 'm' : 'f';
+    // ชื่อผู้เล่นห้ามซ้ำเสมอ — เรื่องทั้งเกมเล่าผ่านคนนี้
+    const kid = spawnCharacter(ctx, {
+      name: pickName(ctx, sex, ch.social.estate, newbornAvoid(ctx, ch, partner), namesInUse(ctx, ch.dynastyId, year)),
+      sex, birthYear: year, estate: ch.social.estate, father, mother,
+      ...(mother.wifeRank === 'minor' ? { parentage: 'minor_wife' as const } : {}),
+    });
+    kid.birthDay = day;
+    // แม่ตายตอนคลอด (lore: health.childbirth_deaths) — ก่อน event ตั้งชื่อ จะได้ไม่ให้แม่ที่ตายแล้วตั้งชื่อ
+    const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(Math.min(1, W.childbirthDeathRisk * frailty(ctx, mother)));
+    if (motherDied) markDead(ctx, mother, 'situation:childbirth');
+    // ผู้เล่นจะตั้งชื่อเอง → ยังไม่บอกชื่อชั่วคราวใน log (พ่อ/แม่ฝั่งตระกูลตายไปก่อนคลอด → ไม่ถาม)
+    const naming = isAlive(ch) ? onBirth?.(kid, ch, partner) ?? false : false;
+    out.push(naming ? `${ch.name}มีบุตร${sex === 'm' ? 'ชาย' : 'หญิง'}` : `${ch.name}มีบุตร: ${kid.name}`);
+    if (motherDied && mother.id !== ctx.state.meta.playerCharacterId) {
+      out.push(`${mother.name}ตายตอนคลอด`);
+      // ตายกลางปี — แบ่งมรดกและออกจากเรือนเลย (คนที่ตายวันขึ้นปีใหม่ รอบประจำปีจัดการให้)
+      if (dayOfYear(ctx, day) !== 0) {
+        const r = settleDeath(ctx, mother);
+        if (r.heirIds.includes(ctx.state.meta.playerCharacterId)) out.push(...r.lines);
+      }
     }
   }
   return out;

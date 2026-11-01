@@ -8,7 +8,7 @@ import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
 import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
-import { applyMarriageStep, canPay, settleNpcSinsot } from './marriage';
+import { applyMarriageStep, canPay, settleNpcSinsot, spend } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { divorce, takeMinorWife } from './wives';
@@ -453,7 +453,8 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'wealth': {
         // ปรับไหมตามบรรดาศักดิ์ (perSakdina × ศักดินา) — จ่ายไม่ไหวก็จ่ายเท่าที่มี เงินไม่ติดลบ
         const d = (e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina;
-        ch.social.wealth = Math.max(0, ch.social.wealth + d);
+        if (d >= 0) ch.social.wealth += d;
+        else spend(ctx, ch, -d); // เงินตัวเองไม่พอ ใช้เงินในเรือน (ผัว/เมีย พ่อแม่)
         break;
       }
       case 'marriage': {

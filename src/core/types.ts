@@ -251,6 +251,8 @@ export interface Character {
   wifeRank?: 'minor';
   /** วันครบกำหนดคลอด (ถ้ากำลังตั้งครรภ์) */
   pregnantUntilDay?: Day;
+  /** ตั้งครรภ์อยู่ (systems/world.ts deliverBirths): คนในตระกูลฝั่งไหน คู่คือใคร คลอดวันไหน */
+  pregnancy?: { memberId: CharacterId; partnerId: CharacterId; dueDay: Day };
   /**
    * งานบุญที่ทำเหมือนเดิมจนเป็นนิสัย (ดู systems/festivals.ts) ต่อ event: เลือกแบบเดิมติดกัน streak ครั้ง
    * ครั้งต่อไปทำเองไม่ถามจนถึง until — ข้ามช่วงวัย (stage) หรือคนที่เกี่ยวข้องเปลี่ยน (with) ก็ถามใหม่
@@ -381,9 +383,13 @@ export interface Household {
   memberIds: CharacterId[];
   dynastyId: DynastyId | null;
   rules: HouseholdRule[];
-  /** บ่าวไพร่ (systems/servants.ts) — เซฟเก่าไม่มี = ยังไม่มีใคร */
-  retainers?: { that: number; phrai: number };
+  /** บ่าวไพร่ (systems/servants.ts) — loyalty 0..1 ใจของทาสต่อนาย · เซฟเก่าไม่มี = ยังไม่มีใคร */
+  retainers?: { that: number; phrai: number; loyalty: Unit };
+  /** หัวเรือน/แม่เรือนเลือกว่าจะเลี้ยงดูทาสอย่างไร — ไม่มี = ตามสมควร */
+  care?: SlaveCare;
 }
+
+export type SlaveCare = 'stingy' | 'normal' | 'generous';
 
 // ============================================================================
 // Family / Dynasty — FamilyNode อยู่รอดหลัง Character ถูก prune (เหลือแค่ชื่อในผังตระกูล)
@@ -1017,7 +1023,8 @@ export interface Balance {
      * การมีบุตร (lore: health.population_stationary): ให้นมลูก 2–3 ปีจึงเว้นอย่างน้อย minGapYears หลังลูกคนก่อน
      * แล้วมีโอกาสปีละ yearlyChance จนแม่อายุ maxMotherAge — ตัวเลขเป็นของเกม ตั้งให้แต่ละรุ่นราวคงที่เมื่อรวมเด็กตาย
      */
-    births: { minGapYears: number; yearlyChance: Unit; maxMotherAge: number };
+    /** dueDays: ตั้งครรภ์ตอนต้นปีแล้วคลอดหลังจากนั้นกี่วัน (สุ่มในช่วงนี้) */
+    births: { minGapYears: number; yearlyChance: Unit; maxMotherAge: number; dueDays: [number, number] };
     /** แม่ตายตอนคลอดต่อการคลอดหนึ่งครั้ง (lore: health.childbirth_deaths — ไม่มีอัตราในเอกสาร ตัวเลขเป็นของเกม) */
     childbirthDeathRisk: Unit;
     /** โอกาสที่ลูกของผู้เล่นพาหลานมาให้ผู้เล่นตั้งชื่อ */
@@ -1073,7 +1080,17 @@ export interface Balance {
   /** เมียน้อยและการหย่า (lore: social.wife_categories, kinship.inheritance_divorce_1680s) — ตัวเลขเป็นของเกม */
   /** ปุ่มหาคู่ (systems/matchmaking.ts) — ค่าของเกม */
   /** บ่าวไพร่ในเรือน (systems/servants.ts) — ค่าของเกม */
-  servants: { estates: Estate[]; wealthPerSlave: number; maxSlaves: number; sakdinaPerPhrai: number; maxPhrai: number; upkeep: number };
+  servants: {
+    estates: Estate[]; wealthPerSlave: number; maxSlaves: number; sakdinaPerPhrai: number; maxPhrai: number;
+    /** ค่ากินอยู่ต่อคนในเรือนต่อปี ตามชนชั้นของหัวเรือน */
+    memberUpkeep: Partial<Record<Estate, number>>;
+    /** เงินที่ทาสหนึ่งคนหาได้ต่อปีเมื่อทำงานเต็มมือ · ของกำนัลจากไพร่ในสังกัดต่อคนต่อปี · ค่าไถ่ทาสใหม่ */
+    slaveYield: number; phraiGift: number; slavePrice: number;
+    /** โอกาสหนีต่อปีของทาสที่ใจกลางๆ · ใจทาสเข้าหาระดับของการดูแลปีละสัดส่วนนี้ */
+    fleeBase: Unit; loyaltyDrift: Unit;
+    /** ต่อทาสต่อปี: ค่าเลี้ยงดู ตัวคูณงาน โอกาสป่วยตาย ระดับใจที่เข้าหา บุญและบารมีที่ได้ */
+    care: Record<SlaveCare, { cost: number; work: number; death: Unit; loyalty: Unit; merit: number; prestige: number }>;
+  };
   matchmaking: { candidates: number; searchDays: number; sameEstateShare: Unit; maxWives: number };
   wives: {
     /** ผู้เล่นชายอายุช่วงนี้ที่มีเงินอย่างน้อย minWealth อาจมีคนเสนอเมียน้อย (ปีละ chance) */

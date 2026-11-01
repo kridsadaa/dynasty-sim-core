@@ -10,14 +10,15 @@ import { careerHint, officeRank, officeStatus } from '../systems/career';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
-import { marriageHint, marriageStatus } from '../systems/marriage';
+import { marriageHint, marriageStatus, purse } from '../systems/marriage';
 import { renderLegend } from '../systems/legend';
 import { eventArtTags, portraitArtTags } from '../art/select';
 import { describeTrait } from '../systems/traits';
 import { riskChance } from '../systems/will';
 import { opinion, opinionLabel } from '../systems/opinion';
-import { servantsText } from '../systems/servants';
+import { canManage, CARE_TH, householdMonth, loyaltyText, servantsText } from '../systems/servants';
 import type {
+  HouseholdView,
   MatchView,
   ChoiceResult,
   CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
@@ -105,6 +106,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     estate: estateLabel(ctx, ch.social.estate),
     title: ch.social.title,
     wealth: Math.round(ch.social.wealth),
+    purse: Math.round(purse(ctx, ch)),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: scarLines(ctx, ch, text),
     wounds: woundLines(ctx, ch, text),
@@ -113,6 +115,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     ...lifestyleView(ctx, ch, text),
     marriage: marriageStatus(ctx, ch),
     office: officeStatus(ctx, ch),
+    household: householdView(ctx, ch),
     craftSkills: choreSkills(ctx, ch),
     portraitTags: portraitArtTags({
       sex: ch.sex, age, topknotCut: ch.topknotCutYear !== undefined,
@@ -626,6 +629,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
   // ศักดินาในเกมมาจากตำแหน่งราชการเท่านั้น — คนไม่มีตำแหน่งยังไม่มีตัวเลขที่ lore ยืนยัน จึงไม่แสดง 0
   facts.push(['ศักดินา', ch.social.sakdina ? String(ch.social.sakdina) : 'ไม่มีตำแหน่ง']);
   if (ch.social.patronId) facts.push(['มูลนาย', charName(ch.social.patronId)]);
+  if (ch.pregnancy && isAlive(ch)) facts.push(['ครรภ์', `ตั้งครรภ์อยู่ อีกราว ${Math.max(1, Math.round((ch.pregnancy.dueDay - S.meta.day) / 30))} เดือนจะคลอด`]);
   facts.push(['ความหนักใจ', percent(ch.stress)], ['บุญ', ch.merit.toFixed(1)], ['ถนัดมือ', ch.handedness === 'l' ? 'ซ้าย' : 'ขวา']);
   const hh = ch.householdId ? S.households[ch.householdId] : undefined;
   if (hh) {
@@ -804,7 +808,7 @@ const STAT_LABEL: Record<string, [label: string, scale: number, digits: number, 
 export function choiceSnapshot(ctx: Ctx, p: PreparedEvent): ChoiceSnapshot {
   const a = p.actor;
   const dyn = a.dynastyId ? ctx.state.dynasties[a.dynastyId] : undefined;
-  const stats: Record<string, number> = { merit: a.merit, stress: a.stress, wealth: a.social.wealth, prestige: dyn?.prestige ?? 0 };
+  const stats: Record<string, number> = { merit: a.merit, stress: a.stress, wealth: purse(ctx, a), prestige: dyn?.prestige ?? 0 };
   if (a.office) stats['favor'] = a.office.favor;
   for (const [k, v] of Object.entries(a.skills)) stats[`skill:${k}`] = v;
   const opinions: Record<string, number> = {};
@@ -865,5 +869,36 @@ export function matchView(ctx: Ctx, mode: MatchView['mode'], people: Character[]
         portraitTags: portraitArtTags({ sex: c.sex, age: ageOf(ctx, c), topknotCut: true, estate: c.social.estate, roles: [] }),
       };
     }),
+  };
+}
+
+/** แผงเรือนของผู้เล่น — เงินเข้าออกต่อเดือนให้เห็นว่าคนในเรือนและทาสมีผลกับเงินอย่างไร */
+function householdView(ctx: Ctx, ch: Character): HouseholdView | undefined {
+  const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
+  if (!hh) return undefined;
+  const S = ctx.state;
+  const head = S.characters[hh.headId];
+  const r = hh.retainers;
+  const m = householdMonth(ctx, hh);
+  // เก็บและจ่ายทุกเดือน แต่ยอดต่อเดือนเล็กจนอ่านยาก — แสดงเป็นยอดต่อปี
+  const money = (perMonth: number) => { const y = perMonth * 12; return (y >= 10 ? Math.round(y) : Math.round(y * 10) / 10).toString(); };
+  const members = hh.memberIds.filter((id) => isAlive(S.characters[id])).length;
+  const lines = [`คนในเรือน ${members} คน — ค่ากินอยู่ปีละ ${money(m.upkeep)} ตำลึง`];
+  if (r?.that) {
+    lines.push(`ทาส ${r.that} คน (${loyaltyText(r.loyalty)}) — ค่าเลี้ยงดูปีละ ${money(m.slaveCost)} · ทำนาทำสวนได้ปีละ ${money(m.slaveYield)} ตำลึง`);
+  }
+  if (r?.phrai) lines.push(`ไพร่ในสังกัด ${r.phrai} คน — ของกำนัลปีละ ${money(m.phraiGifts)} ตำลึง`);
+  const net = m.slaveYield + m.phraiGifts - m.upkeep - m.slaveCost;
+  lines.push(`รวมเรือนนี้ ${net >= 0 ? 'ได้' : 'เสีย'}ปีละ ${money(Math.abs(net))} ตำลึง หักและรับทุกเดือน (ไม่นับรายได้ตามตำแหน่ง)`);
+  const C = ctx.content.balance.servants.care;
+  const note = (id: keyof typeof C) => id === 'stingy' ? 'ประหยัด แต่ทาสทำงานไม่เต็มมือ ป่วยตายและหนีง่าย ชาวบ้านติฉิน'
+    : id === 'generous' ? 'จ่ายมาก ทาสรักนาย ทำงานดี อยู่ยาว ได้บุญ' : 'เลี้ยงดูพอสมควร';
+  return {
+    title: head && head.id !== ch.id ? `เรือนของ${head.name}` : 'เรือนของเรา',
+    lines,
+    care: r?.that && canManage(ctx, ch) ? {
+      current: hh.care ?? 'normal',
+      options: (['stingy', 'normal', 'generous'] as const).map((id) => ({ id, label: CARE_TH[id], note: `ค่าเลี้ยงดูทาสคนละ ${C[id].cost} ตำลึงต่อปี · ${note(id)}` })),
+    } : undefined,
   };
 }

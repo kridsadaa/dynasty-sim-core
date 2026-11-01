@@ -4,6 +4,7 @@ import { makeCtx, commitRng, isAlive, lunarOf, must, solarOf, yearOf, yearStart,
 import type { CharacterId, ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { dropMatches, findMatches, minorWifeProposal } from '../systems/matchmaking';
+import { canManage } from '../systems/servants';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
@@ -359,6 +360,14 @@ async function handle(cmd: Command): Promise<unknown> {
       matchIds = [];
       pending.set(p.instance.id, p);
       return pendingViews(c);
+    }
+    case 'setCare': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const hh = canManage(c, me);
+      if (!hh) throw new Error('ไม่ได้เป็นหัวเรือนหรือแม่เรือน');
+      hh.care = cmd.care;
+      return playerView(c, text);
     }
     case 'abandonIntent': {
       const c = need();

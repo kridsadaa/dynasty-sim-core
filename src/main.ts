@@ -206,8 +206,31 @@ function renderPlayer(v: CharacterView) {
   const who = el('div');
   who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
   box.append(who);
-  box.append(el('div', `ชนชั้น: ${v.estate} · ทรัพย์ ${v.wealth} ตำลึง`));
+  box.append(el('div', `ชนชั้น: ${v.estate} · ${v.purse > v.wealth ? `เงินใช้ในเรือน ${v.purse} ตำลึง (ของตัวเอง ${v.wealth})` : `ทรัพย์ ${v.wealth} ตำลึง`}`));
   if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));
+  if (v.household) {
+    const h = v.household;
+    box.append(el('h2', h.title));
+    for (const l of h.lines) box.append(el('div', l, 'lifestyle'));
+    if (h.care) {
+      const row = el('div', undefined, 'care');
+      row.append(el('span', 'เลี้ยงดูทาส:', 'muted'));
+      for (const o of h.care.options) {
+        const b = button(o.label, async () => {
+          try {
+            renderPlayer(await engine.request({ type: 'setCare', care: o.id }));
+          } catch (e) {
+            status.textContent = errorText(e);
+          }
+        }, o.id === h.care.current ? 'on' : undefined);
+        b.title = o.note;
+        b.setAttribute('aria-pressed', String(o.id === h.care.current));
+        row.append(b);
+      }
+      box.append(row);
+      box.append(el('div', h.care.options.find((o) => o.id === h.care!.current)!.note, 'muted'));
+    }
+  }
   const list = (title: string, items: string[]) => {
     if (!items.length) return;
     box.append(el('h2', title));

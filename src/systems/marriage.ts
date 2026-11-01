@@ -44,15 +44,33 @@ export function sinsotFor(ctx: Ctx, a: Character, b: Character): number {
 }
 
 /**
- * ใครออกเงิน: ตามตัวบทเจ้าบ่าวหรือพ่อแม่เจ้าบ่าว — มีเงินเองพอก็จ่ายเอง ไม่พอก็พ่อหรือแม่ที่เป็นหัวเรือนเดียวกัน
- * (lore: kinship.milk_money)
+ * ใครออกเงิน: ตามตัวบทเจ้าบ่าวหรือพ่อแม่เจ้าบ่าว — มีเงินเองพอก็จ่ายเอง ไม่พอก็ผัว/เมียที่อยู่เรือนเดียวกัน
+ * แล้วจึงพ่อหรือแม่ที่เป็นหัวเรือนเดียวกัน (lore: kinship.milk_money) — ผัวเมียใช้เงินก้อนเดียวกันในเรือน
  */
-function funds(ctx: Ctx, ch: Character): Character[] {
+export function funds(ctx: Ctx, ch: Character): Character[] {
   const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
   const head = hh ? ctx.state.characters[hh.headId] : undefined;
-  const parentHead = head && head !== ch && livingParents(ctx, ch).includes(head) ? head : undefined;
-  return parentHead ? [ch, parentHead] : [ch];
+  const spouse = livingSpouse(ctx, ch);
+  const out = [ch];
+  if (spouse && spouse.householdId === ch.householdId) out.push(spouse);
+  if (head && !out.includes(head) && livingParents(ctx, ch).includes(head)) out.push(head);
+  return out;
 }
+
+/** จ่ายจากเงินตัวเองก่อน ขาดเท่าไหร่ใช้เงินในเรือนต่อ (ผัว/เมีย พ่อแม่ที่เป็นหัวเรือน) — คืนยอดที่จ่ายได้ */
+export function spend(ctx: Ctx, ch: Character, amount: number): number {
+  let left = amount;
+  for (const c of funds(ctx, ch)) {
+    const take = Math.min(left, Math.max(0, c.social.wealth));
+    c.social.wealth -= take;
+    left -= take;
+    if (left <= 0) break;
+  }
+  return amount - left;
+}
+
+/** เงินที่ ch ใช้ได้ทั้งหมด (ตัวเอง + เงินในเรือน) */
+export const purse = (ctx: Ctx, ch: Character) => funds(ctx, ch).reduce((a, c) => a + Math.max(0, c.social.wealth), 0);
 
 export function canPay(ctx: Ctx, ch: Character, amount: number): boolean {
   return funds(ctx, ch).some((c) => c.social.wealth >= amount);

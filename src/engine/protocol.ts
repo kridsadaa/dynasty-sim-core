@@ -34,7 +34,9 @@ export type Command =
   /** ปุ่มหาคู่: ได้รายชื่อมาดูตัว / ปิดรายชื่อ (คนที่ไม่ได้เลือกห่างหายไป) / รับเป็นเมียน้อย */
   | { type: 'findMatches' }
   | { type: 'dropMatches'; keepId?: string }
-  | { type: 'proposeMinorWife'; targetId: string };
+  | { type: 'proposeMinorWife'; targetId: string }
+  /** แม่เรือน/หัวเรือนเลือกการเลี้ยงดูทาส */
+  | { type: 'setCare'; care: 'stingy' | 'normal' | 'generous' };
 
 export interface ReplyData {
   newGame: CharacterView;
@@ -60,6 +62,7 @@ export interface ReplyData {
   findMatches: MatchView;
   dropMatches: null;
   proposeMinorWife: EventView[];
+  setCare: CharacterView;
 }
 
 export interface MatchView {
@@ -143,6 +146,14 @@ export interface EventView {
   artTags?: string[];
 }
 
+/** เรือนที่ผู้เล่นอยู่: คนในเรือน บ่าวไพร่ รายรับรายจ่ายต่อเดือน และการดูแลทาส */
+export interface HouseholdView {
+  title: string;
+  lines: string[];
+  /** ตั้งการดูแลทาสได้ (หัวเรือน/แม่เรือน และมีทาส) */
+  care?: { current: 'stingy' | 'normal' | 'generous'; options: Array<{ id: 'stingy' | 'normal' | 'generous'; label: string; note: string }> };
+}
+
 export interface CharacterView {
   name: string;
   nodeId: string; // เปิดหน้าดูตัวละคร/ผังตระกูลจากชื่อผู้เล่น
@@ -154,6 +165,9 @@ export interface CharacterView {
   estate: string;
   title: string | null;
   wealth: number;
+  /** เงินที่ใช้ได้รวมเงินในเรือน (ผัว/เมีย พ่อแม่ที่เป็นหัวเรือน) — มากกว่า wealth เมื่อใช้เงินก้อนเดียวกับคนอื่น */
+  purse: number;
+  household?: HouseholdView;
   traits: string[];
   scars: string[];
   wounds: string[];
