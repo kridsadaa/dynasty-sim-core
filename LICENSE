@@ -1,0 +1,43 @@
+หนึ่งตระกูล (Dynasty Sim) ใช้สัญญาอนุญาต 2 แบบ แยกตามประเภทไฟล์
+This project uses two licenses, split by type of file.
+
+1. Code: MIT License
+   Everything in src/, index.html, the build and config files
+   (package.json, vite.config.ts, tsconfig.json, vercel.json, .github/),
+   and any other file not listed in section 2.
+
+2. Content and art: Creative Commons Attribution-NonCommercial 4.0
+   International (CC BY-NC 4.0)
+   - public/content/  (events, story text, names, game data)
+   - lore/            (lore entries and notes)
+   - public/art/ and art/  (illustrations, art specs and prompts)
+   - WRITING.md, PLAYTEST.md, ROADMAP.md, BACKLOG.md
+
+   You may share and adapt this material for non-commercial purposes,
+   provided you credit "หนึ่งตระกูล (Dynasty Sim) by kridsadaa", link to
+   https://github.com/kridsadaa/dynasty-sim-core, and indicate if changes
+   were made. Full terms: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+-------------------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2026 kridsadaa
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
