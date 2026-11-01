@@ -3315,5 +3315,734 @@
         ]
       }
     ]
+  },
+  "scheme.assassin": {
+    "id": "scheme.assassin",
+    "textKey": "event.assassin",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "target": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "skilled",
+        "textKey": "event.assassin.skilled",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "piety",
+            "weight": 0.7,
+            "reasonKey": "pious"
+          }
+        ],
+        "risk": {
+          "base": 0.3,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "role": "target",
+              "weight": 0.2,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.assassin",
+          "successKey": "outcome.assassin.ok",
+          "fail": {
+            "textKey": "outcome.assassin.caught",
+            "effects": [
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -50
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.5
+              },
+              {
+                "op": "prestige",
+                "role": "actor",
+                "delta": -3
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -3
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.1
+              },
+              {
+                "op": "relation",
+                "role": "target",
+                "toward": "actor",
+                "kind": "grudge",
+                "atLeast": 0.9
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -40
+          },
+          {
+            "op": "kill",
+            "role": "target",
+            "cause": "situation:combat"
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -8
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.08
+          }
+        ]
+      },
+      {
+        "id": "cheap",
+        "textKey": "event.assassin.cheap",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "piety",
+            "weight": 0.7,
+            "reasonKey": "pious"
+          }
+        ],
+        "risk": {
+          "base": 0.6,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "role": "target",
+              "weight": 0.2,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.assassin",
+          "successKey": "outcome.assassin.ok",
+          "fail": {
+            "textKey": "outcome.assassin.caught",
+            "effects": [
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -50
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.5
+              },
+              {
+                "op": "prestige",
+                "role": "actor",
+                "delta": -3
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -3
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.1
+              },
+              {
+                "op": "relation",
+                "role": "target",
+                "toward": "actor",
+                "kind": "grudge",
+                "atLeast": 0.9
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -10
+          },
+          {
+            "op": "kill",
+            "role": "target",
+            "cause": "situation:combat"
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -8
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.08
+          }
+        ]
+      },
+      {
+        "id": "cancel",
+        "textKey": "event.assassin.cancel",
+        "effects": []
+      }
+    ]
+  },
+  "marriage.wife_jealousy": {
+    "id": "marriage.wife_jealousy",
+    "textKey": "event.wife_jealousy",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "spouse": {},
+      "other": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "principal",
+        "textKey": "event.wife_jealousy.principal",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.05
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": -0.15
+          },
+          {
+            "op": "stress",
+            "role": "other",
+            "delta": 0.1
+          }
+        ]
+      },
+      {
+        "id": "minor",
+        "textKey": "event.wife_jealousy.minor",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": -0.15
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "other",
+            "kind": "grudge",
+            "delta": 0.2
+          }
+        ]
+      },
+      {
+        "id": "separate",
+        "textKey": "event.wife_jealousy.separate",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -15
+          },
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.02
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": 0.03
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "other",
+            "kind": "grudge",
+            "delta": -0.1
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "textKey": "event.wife_jealousy.ignore",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": -0.05
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "other",
+            "kind": "grudge",
+            "delta": 0.1
+          }
+        ]
+      }
+    ]
+  },
+  "intent.court.boat": {
+    "id": "intent.court.boat",
+    "textKey": "event.court_boat",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "target": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "merit",
+        "textKey": "event.court_boat.merit",
+        "risk": {
+          "base": 0.65,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "piety",
+              "role": "target",
+              "weight": -0.7,
+              "reasonKey": "pious"
+            }
+          ],
+          "hintKey": "risk.bored",
+          "successKey": "outcome.court_talk.ok",
+          "fail": {
+            "textKey": "outcome.court_talk.flat",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "odds": -0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.1,
+            "odds": 0.08
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.1
+          }
+        ]
+      },
+      {
+        "id": "joke",
+        "textKey": "event.court_boat.joke",
+        "risk": {
+          "base": 0.65,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "agreeableness",
+              "role": "target",
+              "weight": -0.7,
+              "reasonKey": "agreeable"
+            }
+          ],
+          "hintKey": "risk.bored",
+          "successKey": "outcome.court_talk.ok",
+          "fail": {
+            "textKey": "outcome.court_talk.flat",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "odds": -0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.1,
+            "odds": 0.08
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.1
+          }
+        ]
+      },
+      {
+        "id": "boast",
+        "textKey": "event.court_boat.boast",
+        "risk": {
+          "base": 0.7,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "pride",
+              "role": "target",
+              "weight": -0.7,
+              "reasonKey": "proud"
+            }
+          ],
+          "hintKey": "risk.bored",
+          "successKey": "outcome.court_talk.ok",
+          "fail": {
+            "textKey": "outcome.court_talk.bad",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "odds": -0.12
+              },
+              {
+                "op": "relation",
+                "role": "target",
+                "toward": "actor",
+                "kind": "grudge",
+                "delta": 0.1
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.1,
+            "odds": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.1
+          }
+        ]
+      }
+    ]
+  },
+  "intent.court.meet": {
+    "id": "intent.court.meet",
+    "textKey": "event.court_meet",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "target": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "verse",
+        "textKey": "event.court_meet.verse",
+        "risk": {
+          "base": 0.55,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "speech",
+              "weight": -0.4,
+              "reasonKey": "speech"
+            },
+            {
+              "source": "personality",
+              "trait": "imagination",
+              "role": "target",
+              "weight": -0.3,
+              "reasonKey": "dreamy"
+            }
+          ],
+          "hintKey": "risk.bored",
+          "successKey": "outcome.court_talk.ok",
+          "fail": {
+            "textKey": "outcome.court_talk.flat",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "odds": -0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.15,
+            "odds": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.15
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "speech",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "promise",
+        "textKey": "event.court_meet.promise",
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "odds": 0.05
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.05
+          }
+        ]
+      },
+      {
+        "id": "bold",
+        "textKey": "event.court_meet.bold",
+        "resist": [
+          {
+            "source": "personality",
+            "trait": "boldness",
+            "invert": true,
+            "weight": 0.6,
+            "reasonKey": "bashful"
+          }
+        ],
+        "risk": {
+          "base": 0.6,
+          "factors": [
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "role": "target",
+              "weight": -0.4,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.offend",
+          "successKey": "outcome.court_bold.ok",
+          "fail": {
+            "textKey": "outcome.court_bold.bad",
+            "effects": [
+              {
+                "op": "intent",
+                "role": "actor",
+                "end": true
+              },
+              {
+                "op": "relation",
+                "role": "target",
+                "toward": "actor",
+                "kind": "grudge",
+                "delta": 0.4
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "intent",
+            "role": "actor",
+            "progress": 0.3,
+            "odds": 0.15
+          },
+          {
+            "op": "relation",
+            "role": "target",
+            "toward": "actor",
+            "kind": "friend",
+            "delta": 0.2
+          }
+        ]
+      }
+    ]
+  },
+  "marriage.wife_jealousy_slave": {
+    "id": "marriage.wife_jealousy_slave",
+    "textKey": "event.wife_jealousy.slave",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "spouse": {},
+      "other": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "principal",
+        "textKey": "event.wife_jealousy.principal",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.05
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": -0.15
+          },
+          {
+            "op": "stress",
+            "role": "other",
+            "delta": 0.1
+          }
+        ]
+      },
+      {
+        "id": "minor",
+        "textKey": "event.wife_jealousy.minor",
+        "effects": [
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": -0.15
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": 0.1
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "other",
+            "kind": "grudge",
+            "delta": 0.2
+          }
+        ]
+      },
+      {
+        "id": "separate",
+        "textKey": "event.wife_jealousy.separate",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -15
+          },
+          {
+            "op": "bond",
+            "role": "spouse",
+            "toward": "actor",
+            "affection": 0.02
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": 0.03
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "other",
+            "kind": "grudge",
+            "delta": -0.1
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "textKey": "event.wife_jealousy.ignore",
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "bond",
+            "role": "other",
+            "toward": "actor",
+            "affection": -0.05
+          },
+          {
+            "op": "relation",
+            "role": "spouse",
+            "toward": "other",
+            "kind": "grudge",
+            "delta": 0.1
+          }
+        ]
+      }
+    ]
   }
 }

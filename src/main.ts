@@ -1,6 +1,6 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
 import type {
-  CharacterView, ChoiceResult, ClockState, DynastyView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
+  CharacterView, ChoiceResult, ClockState, DynastyView, InteractionView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
   TreeView,
 } from './engine/protocol';
 import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
@@ -59,7 +59,7 @@ const log = $('log');
 const status = $('status');
 let lastYear = 0;
 let hasGame = false;
-let clock: ClockState = { playing: false, speed: 2, maxSpeed: 5, ended: false };
+let clock: ClockState = { playing: false, speed: 2, maxSpeed: 5, ended: false, resumeAfter: false };
 
 // ---------------- แท็บ: บันทึก / ผังตระกูล / เซฟ ----------------
 type Tab = 'log' | 'tree' | 'saves';
@@ -164,9 +164,12 @@ const modalOpen = () => !$('backdrop').hidden;
 
 function renderClock() {
   const play = $<HTMLButtonElement>('play');
-  play.textContent = clock.playing ? '⏸ หยุด' : '▶ เดิน';
-  play.classList.toggle('playing', clock.playing);
-  play.disabled = !hasGame || clock.ended || modalOpen();
+  // มีหน้าต่าง event: เวลาหยุดรออยู่แล้ว ปุ่มนี้สั่งว่าตัดสินใจเสร็จแล้วจะให้เดินต่อเองหรือหยุดค้างไว้
+  const waiting = modalOpen() && !clock.playing;
+  const running = clock.playing || (waiting && clock.resumeAfter);
+  play.textContent = running ? (waiting ? '⏸ หยุดหลังเลือก' : '⏸ หยุด') : '▶ เดิน';
+  play.classList.toggle('playing', running);
+  play.disabled = !hasGame || clock.ended;
   $<HTMLButtonElement>('slower').disabled = !hasGame || clock.speed <= 1;
   $<HTMLButtonElement>('faster').disabled = !hasGame || clock.speed >= clock.maxSpeed;
   $<HTMLButtonElement>('saveBtn').disabled = !hasGame;
@@ -188,7 +191,14 @@ async function clockCmd(cmd: { type: 'play' } | { type: 'pause' } | { type: 'set
   status.textContent = error; // หลัง renderClock — ไม่งั้นข้อความสถานะทับ error หายเงียบ
   if (!modalOpen()) await showPending(); // เดินไม่ได้เพราะมี event ค้างที่ไม่ได้แสดง → แสดงให้เลือก
 }
-const togglePlay = () => clockCmd(clock.playing ? { type: 'pause' } : { type: 'play' });
+const togglePlay = async () => {
+  if (modalOpen() && !clock.playing) {
+    clock = await engine.request({ type: 'setResume', on: !clock.resumeAfter });
+    renderClock();
+    return;
+  }
+  return clockCmd(clock.playing ? { type: 'pause' } : { type: 'play' });
+};
 const changeSpeed = (d: number) => clockCmd({ type: 'setSpeed', speed: clock.speed + d });
 
 // อัปเดตแผงตัวละคร/ตระกูลระหว่างเวลาเดิน — ไม่ถี่กว่า REFRESH_MS
@@ -212,6 +222,17 @@ function renderPlayer(v: CharacterView) {
     const h = v.household;
     box.append(el('h2', h.title));
     for (const l of h.lines) box.append(el('div', l, 'lifestyle'));
+    if (h.slaveConcubine) {
+      box.append(button('รับทาสหญิงในเรือนเป็นเมียน้อย', async () => {
+        if (!confirm('รับทาสหญิงในเรือนเป็นเมียน้อย? เมียหลวงจะไม่พอใจหนัก')) return;
+        try {
+          for (const l of (await engine.request({ type: 'takeSlaveConcubine' })).lines) write(l, 'choice');
+          await refresh();
+        } catch (e) {
+          status.textContent = errorText(e);
+        }
+      }, 'small'));
+    }
     if (h.care) {
       const row = el('div', undefined, 'care');
       row.append(el('span', 'เลี้ยงดูทาส:', 'muted'));
@@ -272,12 +293,11 @@ function personRow(p: KnownPersonView): HTMLElement {
   const row = el('div', undefined, `person${p.focus ? ' focus' : ''}`);
   const who = el('div');
   who.append(button(p.name, () => void inspect(p.nodeId), 'who'), document.createTextNode(` ${p.age} ปี · `), el('span', p.tie, 'tie'));
+  const more = button('⋯', () => void openActions(p.id), 'more');
+  more.title = `ทำอะไรกับ${p.name}`;
+  more.setAttribute('aria-label', more.title);
+  who.append(more);
   row.append(who, el('div', p.detail, 'muted'));
-  if (p.actions.length) {
-    const acts = el('div', undefined, 'acts');
-    for (const a of p.actions) acts.append(button(a.label, () => void openPlan(p.id, a.kind)));
-    row.append(acts);
-  }
   return row;
 }
 
@@ -297,6 +317,54 @@ function renderKnown(people: KnownPersonView[]) {
   }
   if (!others.length) box.append(el('div', 'ยังไม่รู้จักใครนอกบ้าน', 'muted'));
   box.append(...others.map(personRow));
+}
+
+/** เมนู ⋯: สิ่งที่ทำกับคนนี้ได้ (ทำไม่ได้ก็บอกเหตุผล) — หยุดเวลาไว้ระหว่างเลือก */
+async function openActions(targetId: string) {
+  if (modalOpen()) return;
+  const wasPlaying = clock.playing;
+  if (wasPlaying) await clockCmd({ type: 'pause' });
+  if (modalOpen()) return;
+  const resume = () => {
+    if (wasPlaying && !modalOpen()) void clockCmd({ type: 'play' });
+  };
+  let v: InteractionView;
+  try {
+    v = await engine.request({ type: 'viewInteractions', targetId });
+  } catch (e) {
+    status.textContent = errorText(e);
+    resume();
+    return;
+  }
+  const buttons = v.actions.map((a) => {
+    const b = el('button', undefined, 'opt') as HTMLButtonElement;
+    b.append(el('strong', a.label));
+    if (a.problem) b.append(el('span', `ทำไม่ได้: ${a.problem}`, 'note'));
+    else if (a.hint) b.append(el('span', a.hint, 'note'));
+    b.disabled = !!a.problem;
+    b.onclick = async () => {
+      try {
+        const r = await engine.request({ type: 'interact', targetId, action: a.id });
+        closeModal();
+        $('sheet').hidden = true;
+        for (const l of r.lines) write(l, 'choice');
+        await refresh();
+        if (r.plan) return void openPlan(targetId, r.plan, wasPlaying);
+        if (r.events?.[0]) return renderEvent(r.events[0]);
+        resume();
+      } catch (e) {
+        modal.append(el('p', errorText(e), 'error'));
+      }
+    };
+    return b;
+  });
+  const back = button('ปิด', () => {
+    closeModal();
+    resume();
+  });
+  const row = el('div', undefined, 'row');
+  row.append(back);
+  openModal(el('h2', `ทำอะไรกับ${v.name}`), ...buttons, row);
 }
 
 /** ปุ่มหาคู่: ได้รายชื่อมาดูตัว เลือกแล้วไปเกี้ยว (ยังไม่มีคู่) หรือรับเป็นเมียน้อย — หยุดเวลาไว้ระหว่างเลือก */
@@ -569,7 +637,12 @@ function renderInspect(v: InspectView, reveal: boolean) {
   if (box.dataset.node !== v.nodeId) box.scrollTop = 0;
   box.dataset.node = v.nodeId;
   const top = el('div', undefined, 'top');
-  top.append(el('h2', `${v.sex === 'm' ? '♂' : '♀'} ${v.name}`), button('ปิด', closeInspect));
+  top.append(el('h2', `${v.sex === 'm' ? '♂' : '♀'} ${v.name}`));
+  if (v.characterId) {
+    const id = v.characterId;
+    top.append(button('⋯ ทำอะไรกับคนนี้', () => void openActions(id)));
+  }
+  top.append(button('ปิด', closeInspect));
   const dl = el('dl');
   for (const [k, val] of v.facts) {
     const dd = el('dd');
@@ -873,7 +946,10 @@ $('slower').onclick = () => changeSpeed(-1);
 $('faster').onclick = () => changeSpeed(1);
 // คีย์ลัด: Space เดิน/หยุด, + / − ปรับความเร็ว — ไม่ทำงานตอนพิมพ์หรือมีหน้าต่างเปิดอยู่
 document.addEventListener('keydown', (e) => {
-  if (!hasGame || modalOpen() || e.target instanceof HTMLInputElement || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (!hasGame || e.target instanceof HTMLInputElement || e.ctrlKey || e.metaKey || e.altKey) return;
+  // Space ใช้ได้แม้มีหน้าต่าง event (สั่งหยุดค้างหลังเลือก) — แต่ถ้าโฟกัสอยู่ที่ปุ่มในหน้าต่าง ให้ปุ่มทำงานตามปกติ
+  if (e.code === 'Space' && modalOpen() && e.target instanceof HTMLButtonElement && $('event').contains(e.target)) return;
+  if (modalOpen() && e.code !== 'Space') return;
   if (e.code === 'Space') {
     e.preventDefault();
     void togglePlay();

@@ -22,6 +22,18 @@ export function livingWives(ctx: Ctx, man: Character): Character[] {
     .filter((c): c is Character => isAlive(c) && c.sex === 'f');
 }
 
+/** ชายที่มีเมียแล้วรับเมียเพิ่มได้ไหม — คืนเหตุผลถ้าไม่ได้ (ใช้ทั้งปุ่มหาคู่ การเกี้ยว และเมนูตัวละคร) */
+export function minorWifeProblem(ctx: Ctx, man: Character): string | null {
+  const B = ctx.content.balance;
+  const W = B.wives;
+  const age = ageOf(ctx, man);
+  if (man.sex !== 'm') return 'มีผัวอยู่แล้ว';
+  if (age < W.age[0] || age > W.age[1]) return 'ไม่อยู่ในวัยที่จะรับเมียเพิ่ม';
+  if (livingWives(ctx, man).length >= B.matchmaking.maxWives) return 'มีเมียมากพอแล้ว';
+  if (man.social.wealth < W.minWealth) return `เงินไม่พอเลี้ยงเมียอีกคน (ต้องมีอย่างน้อย ${W.minWealth} ตำลึง)`;
+  return null;
+}
+
 /** ผู้เล่นชายที่แต่งงานแล้ว มีฐานะ และยังไม่มีเมียน้อย → บางปีมีคนเสนอหญิงมาเป็นเมียกลางนอก */
 export function minorWifeEvent(ctx: Ctx): PreparedEvent | null {
   const B = ctx.content.balance.wives;
@@ -47,6 +59,24 @@ export function takeMinorWife(ctx: Ctx, man: Character, woman: Character): strin
   const hh = man.householdId ? ctx.state.households[man.householdId] : undefined;
   joinHousehold(ctx, woman, hh ?? createHousehold(ctx, man));
   return `${man.name}รับ${woman.name}เป็นเมียน้อย`;
+}
+
+/**
+ * เมียหลวงกีดกันเมียน้อย — ปีละครั้งตามโอกาส ถ้าเมียน้อยเป็นทาสที่ยกขึ้นมาหนักกว่า
+ * (เมียหลวงยังแค้นเมียน้อยมาก โอกาสยิ่งสูง)
+ */
+export function jealousyEvent(ctx: Ctx): PreparedEvent | null {
+  const B = ctx.content.balance.interactions;
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (!isAlive(player) || player.sex !== 'm') return null;
+  const wives = livingWives(ctx, player);
+  const principal = wives.find((w) => w.wifeRank !== 'minor');
+  const minor = ctx.rng.pick(wives.filter((w) => w.wifeRank === 'minor'));
+  if (!principal || !minor) return null;
+  const slave = minor.social.estate === 'that';
+  const grudge = ctx.state.relations[`${principal.id}|${minor.id}|grudge`]?.strength ?? 0;
+  if (!ctx.rng.chance(Math.min(0.9, B.jealousyChance * (slave ? B.jealousySlaveFactor : 1) * (1 + grudge)))) return null;
+  return prepareEvent(ctx, slave ? 'marriage.wife_jealousy_slave' : 'marriage.wife_jealousy', { actor: player.id, spouse: principal.id, other: minor.id });
 }
 
 /** เมียที่ไม่รักผู้เล่นแล้ว (affection ต่ำ) ขอแยกทาง */

@@ -86,6 +86,11 @@
       "generous": { "cost": 1, "work": 1.1, "death": 0.01, "loyalty": 0.85, "merit": 0.3, "prestige": 0.1 }
     }
   },
+  "interactions": {
+    "giftCost": 3, "giftDays": 180, "giftGratitude": 0.15,
+    "visitDays": 60, "visitAffection": 0.05, "visitJealousy": 0.03, "favoredBirthFactor": 1.8,
+    "minorWifeFamiliarity": 0.4, "slaveConcubineHurt": 0.5, "jealousyChance": 0.3, "jealousySlaveFactor": 2
+  },
   "matchmaking": { "candidates": 4, "searchDays": 180, "sameEstateShare": 0.7, "maxWives": 3 },
   "wives": { "age": [25, 50], "minWealth": 60, "chance": 0.08, "wifeAge": [16, 24], "divorceAt": 0, "divorceChance": 0.3, "wealthShare": 0.2 },
   "life": { "topknotAges": [11, 13], "adultAge": 16, "illnessAge": 60, "illnessChance": 0.15, "elderAge": 55, "preceptsChance": 0.12,

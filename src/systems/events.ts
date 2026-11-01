@@ -1,4 +1,4 @@
-import { ageOf, must, newId, yearOf, type Ctx } from '../core/ctx';
+import { ageOf, must, newId, yearOf, type Ctx, isAlive } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type {
   Character, Condition, Effect, EventInstance, EventOption, GameEventDef, Percept,
@@ -11,6 +11,7 @@ import { applyChore } from './chores';
 import { applyMarriageStep, canPay, settleNpcSinsot, spend } from './marriage';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
+import { markDead } from './handover';
 import { divorce, takeMinorWife } from './wives';
 import { recordHabit } from './festivals';
 import { markNursing, markTopknot } from './lifeEvents';
@@ -399,6 +400,12 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         if (other) report.notes.push(...markNursing(ctx, ch, other, e.neglected));
         break;
       }
+      case 'kill': {
+        if (!ch.local || !isAlive(ch)) break;
+        markDead(ctx, ch, e.cause);
+        report.notes.push(`${ch.name}ตายแล้ว`);
+        break;
+      }
       case 'takeWife': {
         const other = who(e.with);
         if (other) report.notes.push(takeMinorWife(ctx, ch, other));
@@ -418,6 +425,10 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         // ความตั้งใจที่ role ทำอยู่ (คนละไม่เกินหนึ่ง) — ไม่มีแล้ว (เพิ่งจบ) ก็ไม่ต้องทำอะไร
         const i = Object.values(ctx.state.intents).find((x) => x.actorId === ch.id);
         if (!i) break;
+        if (e.end) {
+          delete ctx.state.intents[i.id];
+          break;
+        }
         if (e.progress) i.progress = clamp01(i.progress + e.progress);
         if (e.odds) i.bonus += e.odds;
         break;

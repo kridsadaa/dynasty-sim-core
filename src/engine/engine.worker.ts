@@ -5,6 +5,7 @@ import type { CharacterId, ContentDB } from '../core/types';
 import { chooseOption, prepareFollowUp, restoreEvent, snapshotEvent, type PreparedEvent } from '../systems/events';
 import { dropMatches, findMatches, minorWifeProposal } from '../systems/matchmaking';
 import { canManage } from '../systems/servants';
+import { performInteraction, takeSlaveConcubine, type InteractionId } from '../systems/interactions';
 import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
@@ -14,7 +15,7 @@ import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
 import {
-  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView, choiceSnapshot, choiceResult, matchView,
+  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView, choiceSnapshot, choiceResult, matchView, interactionView,
   treeView,
   type TextTable,
 } from './views';
@@ -105,7 +106,7 @@ let clockLoop: Promise<void> | null = null;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 function clockState(): ClockState {
-  return { playing, speed, maxSpeed: MAX_SPEED, ended: endReason !== null, ...(endReason ? { endReason } : {}) };
+  return { playing, speed, maxSpeed: MAX_SPEED, ended: endReason !== null, resumeAfter: resumeAfterEvent, ...(endReason ? { endReason } : {}) };
 }
 const pushClock = () => push({ type: 'clock', clock: clockState() });
 
@@ -315,6 +316,9 @@ async function handle(cmd: Command): Promise<unknown> {
       if (!result && !pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
       return { lines, result } satisfies ReplyData['choose'];
     }
+    case 'setResume':
+      resumeAfterEvent = cmd.on;
+      return clockState();
     case 'resume': {
       const c = need();
       if (!pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
@@ -360,6 +364,23 @@ async function handle(cmd: Command): Promise<unknown> {
       matchIds = [];
       pending.set(p.instance.id, p);
       return pendingViews(c);
+    }
+    case 'viewInteractions':
+      return interactionView(need(), cmd.targetId);
+    case 'interact': {
+      const c = need();
+      const me = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+      const r = performInteraction(c, me, must(c.state.characters[cmd.targetId as CharacterId], 'คนนี้'), cmd.action as InteractionId);
+      if ('plan' in r) return { lines: [], plan: r.plan };
+      if ('event' in r) {
+        pending.set(r.event.instance.id, r.event);
+        return { lines: [], events: pendingViews(c) };
+      }
+      return { lines: r.lines };
+    }
+    case 'takeSlaveConcubine': {
+      const c = need();
+      return { lines: takeSlaveConcubine(c, must(c.state.characters[c.state.meta.playerCharacterId], 'player')) };
     }
     case 'setCare': {
       const c = need();

@@ -17,7 +17,9 @@ import { describeTrait } from '../systems/traits';
 import { riskChance } from '../systems/will';
 import { opinion, opinionLabel } from '../systems/opinion';
 import { canManage, CARE_TH, householdMonth, loyaltyText, servantsText } from '../systems/servants';
+import { interactionsFor, slaveConcubineProblem } from '../systems/interactions';
 import type {
+  InteractionView,
   HouseholdView,
   MatchView,
   ChoiceResult,
@@ -681,6 +683,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     lifespan: `${node.birthYear}–${deathYear ?? ''}`,
     status: isAlive(ch) ? 'ยังมีชีวิต' : `ถึงแก่กรรม${cause ? ` (${ctx.tags.label(cause)})` : ''}`,
     facts, sections, links,
+    ...(isAlive(ch) && ch.id !== S.meta.playerCharacterId ? { characterId: ch.id } : {}),
     portraitTags: portraitArtTags({
       sex: ch.sex, age: charAge, topknotCut: ch.topknotCutYear !== undefined,
       estate: ch.social.estate, roles: characterRoles(ctx, ch, node),
@@ -896,9 +899,16 @@ function householdView(ctx: Ctx, ch: Character): HouseholdView | undefined {
   return {
     title: head && head.id !== ch.id ? `เรือนของ${head.name}` : 'เรือนของเรา',
     lines,
+    slaveConcubine: !slaveConcubineProblem(ctx, ch),
     care: r?.that && canManage(ctx, ch) ? {
       current: hh.care ?? 'normal',
       options: (['stingy', 'normal', 'generous'] as const).map((id) => ({ id, label: CARE_TH[id], note: `ค่าเลี้ยงดูทาสคนละ ${C[id].cost} ตำลึงต่อปี · ${note(id)}` })),
     } : undefined,
   };
+}
+
+export function interactionView(ctx: Ctx, targetId: string): InteractionView {
+  const me = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
+  const target = must(ctx.state.characters[targetId as Character['id']], 'คนนี้');
+  return { name: target.name, actions: interactionsFor(ctx, me, target) };
 }

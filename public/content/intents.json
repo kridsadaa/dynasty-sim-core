@@ -40,6 +40,8 @@
       "midEvents": [
         { "event": "intent.court.trial", "approaches": ["serve"] },
         { "event": "intent.court.gossip" },
+        { "event": "intent.court.boat", "approaches": ["visit", "serve"] },
+        { "event": "intent.court.meet", "approaches": ["visit", "serve"] },
         { "event": "intent.called_home", "needsElder": true, "minLabor": 0.4 }
       ]
     }

@@ -6,6 +6,7 @@ import { DISTANCE_TH, familiarity, isSingle, relationStrength, setRelation, spaw
 import { scarModifiers } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
 import { inLawNames, livingParents, livingSpouse, spouseAgeFor } from './factory';
+import { livingWives, minorWifeProblem } from './wives';
 import { officeLabor } from './career';
 import { serviceLabor } from './marriage';
 import { adjustBond } from './will';
@@ -78,7 +79,8 @@ export function targetProblem(ctx: Ctx, def: IntentDef, actor: Character, target
   }
   if (target.sex === actor.sex) return 'invalid';
   if (ageOf(ctx, target) < def.minAge) return 'young';
-  if (livingSpouse(ctx, actor)) return 'married';
+  // ชายที่มีเมียแล้วเกี้ยวหญิงอื่นได้ถ้ารับเมียน้อยไหว — สำเร็จแล้วรับเป็นเมียน้อย (ดู tickIntents)
+  if (livingSpouse(ctx, actor) && minorWifeProblem(ctx, actor)) return 'married';
   if (actor.betrothal || actor.eloped) return 'betrothed';
   if (!isSingle(ctx, target)) return 'taken';
   return null;
@@ -268,7 +270,11 @@ export function tickIntents(ctx: Ctx): { lines: string[]; events: PreparedEvent[
     if (i.progress >= 1) {
       delete S.intents[i.id];
       const { odds: o } = odds(ctx, def, ap, actor, target, i.bonus);
-      events.push(prepareEvent(ctx, ctx.rng.chance(o) ? ap.success ?? def.success : def.failure, bindings(ctx, actor, target)));
+      const won = ctx.rng.chance(o);
+      const wife = def.target === 'court' && won ? livingWives(ctx, actor).find((w) => w.wifeRank !== 'minor') : undefined;
+      // มีเมียหลวงอยู่แล้ว → หญิงที่เกี้ยวได้ใจมาเป็นเมียน้อย (เมียหลวงย่อมไม่พอใจ)
+      if (wife) events.push(prepareEvent(ctx, 'marriage.minor_wife', { actor: actor.id, spouse: wife.id, other: target.id }));
+      else events.push(prepareEvent(ctx, won ? ap.success ?? def.success : def.failure, bindings(ctx, actor, target)));
       continue;
     }
     if (ctx.rng.chance(I.midEventChance)) {

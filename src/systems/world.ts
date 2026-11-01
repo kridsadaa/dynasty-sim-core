@@ -12,7 +12,7 @@ import { applyHistoricalShocks, driftLine, heirCandidates, isGraced, markDead, p
 import { careerYearTick, deptOf, officeRank } from './career';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
-import { divorceEvent, livingWives, minorWifeEvent } from './wives';
+import { divorceEvent, jealousyEvent, livingWives, minorWifeEvent } from './wives';
 import { householdMonthTick, servantsYearTick } from './servants';
 import { elderPreceptsEvent, parentIllnessEvent, topknotEvent, kinYearTick } from './lifeEvents';
 import { tickChores, tickOutings } from './chores';
@@ -118,6 +118,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const life of [topknotEvent(ctx), parentIllnessEvent(ctx), elderPreceptsEvent(ctx)]) {
       if (life) out.push({ type: 'event', prepared: life });
     }
+    const jealous = jealousyEvent(ctx);
+    if (jealous) out.push({ type: 'event', prepared: jealous });
     const split = divorceEvent(ctx);
     if (split) out.push({ type: 'event', prepared: split });
     // ความลับตำนานแตก: ญาติที่ทันเห็นเรื่องจริงเล่าให้ฟัง — ส่งข้อความตำนานทั้งสองแบบเป็นตัวแปรของ event
@@ -407,6 +409,11 @@ export function deliverBirths(
       ...(mother.wifeRank === 'minor' ? { parentage: 'minor_wife' as const } : {}),
     });
     kid.birthDay = day;
+    // ทาสหญิงที่มีบุตรกับนาย พ้นจากความเป็นทาส (lore: social.slavery_as_strategy)
+    if (mother.social.estate === 'that' && father.social.estate !== 'that') {
+      mother.social.estate = 'phrai_som';
+      out.push(`${mother.name}พ้นจากความเป็นทาส เพราะมีบุตรกับนาย`);
+    }
     // แม่ตายตอนคลอด (lore: health.childbirth_deaths) — ก่อน event ตั้งชื่อ จะได้ไม่ให้แม่ที่ตายแล้วตั้งชื่อ
     const motherDied = !isGraced(ctx, mother) && ctx.rng.chance(Math.min(1, W.childbirthDeathRisk * frailty(ctx, mother)));
     if (motherDied) markDead(ctx, mother, 'situation:childbirth');
@@ -435,7 +442,9 @@ function conceives(ctx: Ctx, ch: Character, mother: Character, year: number): bo
   if (yearsBetween(ctx, since) < 1 || ageOf(ctx, mother) > B.maxMotherAge) return false;
   const nodes = ctx.state.familyNodes;
   const last = Math.max(-Infinity, ...(nodes[mother.familyNodeId]?.childIds ?? []).map((id) => nodes[id]?.birthYear ?? -Infinity));
-  return year - last >= B.minGapYears && ctx.rng.chance(B.yearlyChance);
+  // ผัวมาค้างด้วยบ่อย (เมนูตัวละคร) → ปีนี้มีลูกง่ายขึ้น
+  const favored = (mother.favoredUntil ?? -1) >= ctx.state.meta.day ? ctx.content.balance.interactions.favoredBirthFactor : 1;
+  return year - last >= B.minGapYears && ctx.rng.chance(Math.min(0.95, B.yearlyChance * favored));
 }
 
 function marryOut(ctx: Ctx, ch: Character, year: number, onChildWedding?: (child: Character, spouse: Character) => boolean): string {

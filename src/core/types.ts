@@ -258,6 +258,10 @@ export interface Character {
    * ครั้งต่อไปทำเองไม่ถามจนถึง until — ข้ามช่วงวัย (stage) หรือคนที่เกี่ยวข้องเปลี่ยน (with) ก็ถามใหม่
    */
   habits?: Record<string, { optionId: string; streak: number; stage: string; with: string; until?: Day }>;
+  /** วันที่ทำแต่ละอย่างจากเมนูตัวละครครั้งล่าสุด — key "<action>@<characterId>" (systems/interactions.ts) */
+  lastActs?: Record<string, Day>;
+  /** ผัวมาค้างด้วย/ได้รับการเอาใจ — ก่อนวันนี้มีลูกง่ายขึ้น (conceives) */
+  favoredUntil?: Day;
   /** วันที่ถามหาคู่ครั้งล่าสุด (systems/matchmaking.ts) */
   matchSearchDay?: Day;
   /**
@@ -599,7 +603,8 @@ export type Effect =
   | { op: 'name'; role: string; by: 'input' | 'pick' }
   | { op: 'merit'; role: string; delta: number }
   /** ความตั้งใจที่ role กำลังทำอยู่: เดินหน้า/ถอยหลัง (progress) และโอกาสสำเร็จ (odds) */
-  | { op: 'intent'; role: string; progress?: number; odds?: number }
+  /** end: เลิกความตั้งใจนั้นเลย (เกี้ยวแล้วพูดผิดร้ายแรง) */
+  | { op: 'intent'; role: string; progress?: number; odds?: number; end?: boolean }
   /** ความสัมพันธ์ของ role ต่อ toward: delta บวกเข้าค่าเดิม, atLeast ยกขึ้นอย่างน้อยเท่านี้ */
   | { op: 'relation'; role: string; toward: string; kind: RelationKind; delta?: number; atLeast?: number }
   /** role แต่งงานกับ with — ที่อยู่หลังแต่งตามธรรมเนียม (ดู wed ใน factory.ts) */
@@ -630,6 +635,8 @@ export type Effect =
   | { op: 'legend'; role: string; action: 'reveal' | 'record' | 'keep' }
   /** role (ผู้ชาย) รับ with เป็นเมียน้อย — ดู systems/wives.ts */
   | { op: 'takeWife'; role: string; with: string }
+  /** role ตาย (ลอบฆ่า) — เฉพาะคนนอกตระกูล คนในตระกูลต้องผ่านการแบ่งมรดก จึงไม่ใช้ op นี้ */
+  | { op: 'kill'; role: string; cause: TagId }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
   | { op: 'divorce'; role: string; with: string }
   /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
@@ -646,7 +653,8 @@ export type Effect =
  */
 export type Resist =
   | { source: 'bond'; role: string; axis: 'affection' | 'awe'; weight: number; reasonKey: string }
-  | { source: 'personality'; trait: keyof Personality; invert?: boolean; weight: number; reasonKey: string }
+  /** role: ดูนิสัยของคนใน role นั้นแทน actor (ใน risk เท่านั้น — เช่น คนที่เกี้ยวชอบเรื่องบุญไหม) */
+  | { source: 'personality'; trait: keyof Personality; invert?: boolean; weight: number; reasonKey: string; role?: string }
   /** ความคาดหวังตามเพศ (ลูกผู้หญิงปฏิเสธงานครัวยากกว่า) — ค่าต่อเพศโดยตรง */
   | { source: 'sex'; f?: number; m?: number; reasonKey: string }
   /** ทักษะของ actor (0..100 → 0..1) เช่น การพูดจา — ใน risk ใส่ weight ติดลบ ทักษะสูงพลาดน้อยลง */
@@ -1078,6 +1086,14 @@ export interface Balance {
   };
   /** ราชการ — ตัวเลขทั้งหมดเป็นค่าของเกม (lore: social.officers_no_salary_1680s, social.court_punishments_1680s) */
   /** เมียน้อยและการหย่า (lore: social.wife_categories, kinship.inheritance_divorce_1680s) — ตัวเลขเป็นของเกม */
+  /** เมนูตัวละคร (systems/interactions.ts) — ค่าของเกม */
+  interactions: {
+    giftCost: number; giftDays: number; giftGratitude: number;
+    visitDays: number; visitAffection: number; visitJealousy: number; favoredBirthFactor: number;
+    minorWifeFamiliarity: Unit; slaveConcubineHurt: number;
+    /** ต่อปี: โอกาสที่เมียหลวงกีดกันเมียน้อย (คูณเพิ่มถ้าเมียน้อยเป็นทาส) */
+    jealousyChance: Unit; jealousySlaveFactor: number;
+  };
   /** ปุ่มหาคู่ (systems/matchmaking.ts) — ค่าของเกม */
   /** บ่าวไพร่ในเรือน (systems/servants.ts) — ค่าของเกม */
   servants: {

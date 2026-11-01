@@ -49,7 +49,9 @@ export function riskChance(
       const other = who(f.role);
       if (other) p += f.weight * bond(ctx, actor, other, f.axis);
     } else {
-      const v = actor.personality[f.trait];
+      const of = f.role ? who(f.role) : actor;
+      if (!of) continue;
+      const v = of.personality[f.trait];
       p += f.weight * (f.invert ? 1 - v : v);
     }
   }

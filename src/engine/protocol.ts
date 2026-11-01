@@ -31,12 +31,18 @@ export type Command =
   | { type: 'abandonIntent' }
   /** ผู้เล่นปิดหน้าผลของตัวเลือกแล้ว → เดินเวลาต่อ (ถ้าหยุดไว้เพราะ event) */
   | { type: 'resume' }
+  /** ระหว่างมี event: ตัดสินใจครบแล้วให้เดินต่อเองไหม (ปุ่มหยุดตอน event เด้งถี่) */
+  | { type: 'setResume'; on: boolean }
   /** ปุ่มหาคู่: ได้รายชื่อมาดูตัว / ปิดรายชื่อ (คนที่ไม่ได้เลือกห่างหายไป) / รับเป็นเมียน้อย */
   | { type: 'findMatches' }
   | { type: 'dropMatches'; keepId?: string }
   | { type: 'proposeMinorWife'; targetId: string }
   /** แม่เรือน/หัวเรือนเลือกการเลี้ยงดูทาส */
-  | { type: 'setCare'; care: 'stingy' | 'normal' | 'generous' };
+  | { type: 'setCare'; care: 'stingy' | 'normal' | 'generous' }
+  /** เมนูตัวละคร (⋯): สิ่งที่ทำกับคนนี้ได้ / ทำ */
+  | { type: 'viewInteractions'; targetId: string }
+  | { type: 'interact'; targetId: string; action: string }
+  | { type: 'takeSlaveConcubine' };
 
 export interface ReplyData {
   newGame: CharacterView;
@@ -59,10 +65,19 @@ export interface ReplyData {
   startIntent: { lines: string[] };
   abandonIntent: { lines: string[] };
   resume: ClockState;
+  setResume: ClockState;
   findMatches: MatchView;
   dropMatches: null;
   proposeMinorWife: EventView[];
   setCare: CharacterView;
+  viewInteractions: InteractionView;
+  interact: { lines: string[]; plan?: string; events?: EventView[] };
+  takeSlaveConcubine: { lines: string[] };
+}
+
+export interface InteractionView {
+  name: string;
+  actions: Array<{ id: string; label: string; problem?: string; hint?: string }>;
 }
 
 export interface MatchView {
@@ -90,6 +105,8 @@ export interface ClockState {
   speed: number;
   maxSpeed: number;
   ended: boolean;
+  /** หยุดเพราะ event อยู่ และตัดสินใจครบแล้วจะเดินต่อเอง — ผู้เล่นสั่งให้หยุดค้างไว้ได้ (setResume) */
+  resumeAfter: boolean;
   /** era = ถึงปีจบของเรื่อง · extinct = ตระกูลสิ้นสาย */
   endReason?: EndReason;
 }
@@ -151,6 +168,8 @@ export interface HouseholdView {
   title: string;
   lines: string[];
   /** ตั้งการดูแลทาสได้ (หัวเรือน/แม่เรือน และมีทาส) */
+  /** รับทาสหญิงในเรือนเป็นเมียน้อยได้ (หัวเรือนชาย มีทาส) */
+  slaveConcubine?: boolean;
   care?: { current: 'stingy' | 'normal' | 'generous'; options: Array<{ id: 'stingy' | 'normal' | 'generous'; label: string; note: string }> };
 }
 
@@ -295,6 +314,8 @@ export interface InspectView {
   status: string; // ยังมีชีวิต / ถึงแก่กรรม (สาเหตุ) / เหลือแต่ชื่อ
   facts: Array<[string, string]>;
   sections: Array<{ title: string; items: string[] }>;
+  /** ตัวละครที่ยังอยู่ในฉาก — เปิดเมนู ⋯ ได้ (ไม่มี = เหลือแต่ชื่อในผัง) */
+  characterId?: string;
   /** ชื่อญาติใน facts ที่กดเปิดดูต่อได้ — key คือหัวข้อของ fact */
   links?: Record<string, Array<{ name: string; nodeId: string }>>;
   /** tag สำหรับเลือกภาพตัวละคร (portrait) */

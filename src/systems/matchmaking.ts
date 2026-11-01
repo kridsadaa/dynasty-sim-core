@@ -4,7 +4,7 @@ import { familiarity, forgetLocal, setRelation, spawnLocal } from './acquaintanc
 import { prepareEvent, type PreparedEvent } from './events';
 import { inLawNames, livingSpouse, spouseAgeFor } from './factory';
 import { activeIntent } from './intent';
-import { livingWives } from './wives';
+import { livingWives, minorWifeProblem } from './wives';
 
 // ============================================================================
 // หาคู่ — ผู้เล่นถามผู้ใหญ่ที่รู้จักหลายบ้านว่าบ้านไหนมีลูกหลานยังไม่ออกเรือน ได้รายชื่อมาดูตัว
@@ -30,12 +30,8 @@ export function matchProblem(ctx: Ctx, me: Character): { mode: MatchMode } | { p
     if (cur && ctx.content.intents[cur.kind]?.target === 'court') return { problem: 'กำลังเกี้ยวคนอื่นอยู่' };
     return { mode: 'court' };
   }
-  if (me.sex !== 'm') return { problem: 'มีผัวอยู่แล้ว' };
-  const W = B.wives;
-  if (age < W.age[0] || age > W.age[1]) return { problem: 'ไม่อยู่ในวัยที่จะรับเมียเพิ่ม' };
-  if (livingWives(ctx, me).length >= B.matchmaking.maxWives) return { problem: 'มีเมียมากพอแล้ว' };
-  if (me.social.wealth < W.minWealth) return { problem: `เงินไม่พอเลี้ยงเมียอีกคน (ต้องมีอย่างน้อย ${W.minWealth} ตำลึง)` };
-  return { mode: 'minor_wife' };
+  const no = minorWifeProblem(ctx, me);
+  return no ? { problem: no } : { mode: 'minor_wife' };
 }
 
 /** ได้รายชื่อมาดูตัว — คนที่ยังไม่มีคู่ ต่างเพศ อายุพอเหมาะ ส่วนใหญ่ฐานะใกล้กัน */
