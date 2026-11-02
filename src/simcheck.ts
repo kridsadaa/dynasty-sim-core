@@ -197,7 +197,15 @@ for (let seed = 1; seed <= SEEDS; seed++) {
       if (player.focus !== track) setSkillFocus(ctx, player, track);
       try { unlockNextPerk(player, track); } catch { /* แต้มยังไม่ครบหรือครบทุกขั้นแล้ว */ }
     }
-    for (const sig of advanceDay(ctx)) {
+    const signals = advanceDay(ctx);
+    // event ที่ส่งถึงผู้เล่นต้องอ้างถึงตัวละครที่ยังอยู่ในโลก — ไม่งั้นข้อความขึ้นชื่อ role ดิบ (เช่น "แต่งกับspouse")
+    for (const sig of signals) {
+      if (sig.type !== 'event') continue;
+      for (const [role, id] of Object.entries(sig.prepared.instance.bindings)) {
+        if (!S.characters[id]) throw new Error(`seed ${seed}: event ${sig.prepared.def.id} อ้าง ${role} (${id}) ที่ถูกลบจากโลกไปแล้ว`);
+      }
+    }
+    for (const sig of signals) {
       if (sig.type === 'event') {
         // เลือกตัวเลือกแรกที่ไม่ล็อก แล้วเล่น event ต่อเนื่อง (followUp) จนจบสาย
         if (sig.prepared.def.id === 'family.hard_to_raise') hardToRaise++;

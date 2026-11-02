@@ -135,8 +135,8 @@ export function localOrigin(ctx: Ctx, ch: Character): string {
   return `${who}บ้าน${tradeOf(ctx, ch)?.label.th ?? ''}`;
 }
 
-/** ปีละครั้ง — คืน log ของผู้เล่น */
-export function meetPeople(ctx: Ctx): string[] {
+/** ปีละครั้ง — คืน log ของผู้เล่น; keep = คนที่ event ค้างของผู้เล่นอ้างถึงอยู่ ห้ามลบ (เช่น คู่ที่ผู้ใหญ่มาทาบทามให้ลูก) */
+export function meetPeople(ctx: Ctx, keep: Iterable<CharacterId> = []): string[] {
   const S = ctx.state;
   const L = ctx.content.balance.locals;
   const W = ctx.content.balance.world;
@@ -144,7 +144,7 @@ export function meetPeople(ctx: Ctx): string[] {
   if (!isAlive(player)) return [];
   const out: string[] = [];
   // คนที่กำลังเกี้ยว/หมั้นอยู่ ห้ามห่างหายหรือถูกลบ
-  const intentTargets = new Set(Object.values(S.intents).map((i) => i.targetId));
+  const intentTargets = new Set([...Object.values(S.intents).map((i) => i.targetId), ...keep]);
   if (player.betrothal) intentTargets.add(player.betrothal.toId);
   if (player.eloped) intentTargets.add(player.eloped.withId);
 

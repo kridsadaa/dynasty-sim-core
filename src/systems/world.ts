@@ -119,7 +119,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_wedding', { actor: player.id, child: child.id, spouse: spouse.id }) });
       return true;
     })) out.push({ type: 'log', kind: 'family', line });
-    for (const line of meetPeople(ctx)) out.push({ type: 'log', kind: 'people', line });
+    const inEvents = out.flatMap((o) => (o.type === 'event' ? Object.values(o.prepared.instance.bindings) : []));
+    for (const line of meetPeople(ctx, inEvents)) out.push({ type: 'log', kind: 'people', line });
     // บวชก่อนแต่ง (การบวชยุติการสมรส lore: kinship.marriage_law_three_seals) — ถามก่อนผู้ใหญ่ทาบทามคู่
     const ordination = ordinationEvent(ctx);
     if (ordination) out.push({ type: 'event', prepared: ordination });
