@@ -15,7 +15,7 @@
     "sim:check": "tsx src/simcheck.ts",
     "art:prompts": "tsx src/art/prompts.ts",
     "art:ingest": "tsx src/art/ingest.ts",
-    "test": "tsx --test src/engine/persistence.test.ts src/art/select.test.ts && npm run sim:check -- 30"
+    "test": "tsx --test src/engine/persistence.test.ts src/art/select.test.ts src/release.test.ts && npm run sim:check -- 30"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

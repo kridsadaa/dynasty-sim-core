@@ -4,6 +4,7 @@ import type {
   SkillsView, StatusBadge, TreeView,
 } from './engine/protocol';
 import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
+import { APP_VERSION, BUILD_DATE, CHANGELOG, CREATOR, GIT_HASH, REPO_URL, releaseNotes, thaiDate, type ChangelogEntry } from './release';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
 
@@ -1349,6 +1350,7 @@ function showNotice(first: boolean) {
     button(first ? 'เข้าใจแล้ว เริ่มเล่น' : 'ปิด', () => {
       prefs.set('noticeAck', NOTICE_VERSION);
       closeModal();
+      if (first) showReleaseIfNew(); // รุ่นใหม่ค้างอยู่ → แสดงต่อจากหน้าเรต
     }),
   );
   openModal(
@@ -1362,6 +1364,93 @@ function showNotice(first: boolean) {
   );
 }
 $('notice').onclick = () => showNotice(false);
+
+// ---------------- รุ่นของเกม: มีอะไรใหม่ · เกี่ยวกับ · สนับสนุนผู้พัฒนา ----------------
+/** รายการของรุ่นหนึ่ง จัดเป็นกลุ่ม เพิ่ม/ปรับ/แก้ */
+function releaseBody(e: ChangelogEntry): Node[] {
+  const out: Node[] = [];
+  if (e.summary) out.push(el('p', e.summary));
+  for (const [title, items] of [['เพิ่มใหม่', e.added], ['ปรับปรุง', e.changed], ['แก้ไข', e.fixed]] as const) {
+    if (!items?.length) continue;
+    const ul = el('ul', undefined, 'release-list');
+    for (const t of items) ul.append(el('li', t));
+    out.push(el('h3', title, 'release-group'), ul);
+  }
+  return out;
+}
+
+/** รุ่นที่ผู้เล่นรับทราบแล้วจำไว้ต่อเครื่อง (localStorage) — ขึ้นอีกเมื่อเลขรุ่นเปลี่ยน */
+function showReleaseIfNew() {
+  if (prefs.get<string>('releaseAck', '') === APP_VERSION) return;
+  const notes = releaseNotes(APP_VERSION);
+  if (!notes) return;
+  const first = prefs.get<string>('releaseAck', '') === '';
+  const ok = button('รับทราบ', () => {
+    prefs.set('releaseAck', APP_VERSION);
+    closeModal();
+  });
+  ok.classList.add('opt');
+  openModal(
+    el('h2', first ? `ยินดีต้อนรับสู่ หนึ่งตระกูล (รุ่น ${APP_VERSION})` : `หนึ่งตระกูล อัปเดตเป็นรุ่น ${APP_VERSION}`),
+    el('p', `ออกเมื่อ ${thaiDate(notes.date)}`, 'release-meta'),
+    ...releaseBody(notes),
+    ok,
+  );
+  queueMicrotask(() => ok.focus());
+}
+
+function showDonate(back: () => void) {
+  const img = el('img') as HTMLImageElement;
+  Object.assign(img, { src: `${import.meta.env.BASE_URL}donate-qr.jpeg`, alt: 'QR Code พร้อมเพย์สำหรับสนับสนุนผู้พัฒนา', decoding: 'async' });
+  const box = el('div', undefined, 'donate');
+  box.append(
+    el('p', 'ขอบคุณที่เล่นเกมนี้นะครับ ถ้าสนุกและอยากช่วยค่าน้ำร้อนน้ำชา ค่าไฟ และค่าประมวลผลระหว่างทำเกม สแกนพร้อมเพย์ด้านล่างได้เลย'),
+    img,
+    el('p', 'ไม่สนับสนุนก็ไม่เป็นไรเลย — แค่คุณได้ใช้เวลากับตระกูลของคุณสักพักก็ดีใจมากแล้ว ☕', 'muted'),
+  );
+  const row = el('div', undefined, 'row');
+  row.append(button('กลับ', back));
+  openModal(el('h2', 'เลี้ยงน้ำร้อนน้ำชาผู้พัฒนา'), box, row);
+}
+
+function showAbout() {
+  const links = el('div', undefined, 'about-links');
+  const link = (text: string, href: string) => {
+    const a = el('a', text) as HTMLAnchorElement;
+    Object.assign(a, { href, target: '_blank', rel: 'noopener noreferrer' });
+    return a;
+  };
+  links.append(link('โค้ดบน GitHub', REPO_URL), link('ประวัติการแก้ไข (git)', `${REPO_URL}/commits/main`), link('แจ้งปัญหา/เสนอไอเดีย', `${REPO_URL}/issues`));
+  const dl = el('dl');
+  dl.append(
+    el('dt', 'รุ่น'), el('dd', APP_VERSION),
+    el('dt', 'git'), el('dd', GIT_HASH),
+    ...(BUILD_DATE ? [el('dt', 'สร้างเมื่อ'), el('dd', thaiDate(BUILD_DATE))] : []),
+    el('dt', 'ผู้สร้าง'), el('dd', CREATOR),
+  );
+  const history = el('div', undefined, 'history');
+  CHANGELOG.forEach((e, i) => {
+    const d = el('details') as HTMLDetailsElement;
+    d.open = i === 0;
+    d.append(el('summary', `รุ่น ${e.version} · ${thaiDate(e.date)}`), ...releaseBody(e));
+    history.append(d);
+  });
+  const row = el('div', undefined, 'row split');
+  row.append(button('☕ เลี้ยงน้ำร้อนน้ำชาผู้พัฒนา', () => showDonate(showAbout)), button('ปิด', closeModal));
+  openModal(
+    el('h2', 'หนึ่งตระกูล'),
+    el('p', 'เกมจำลองตระกูลขุนนางผู้น้อย ปลายอยุธยาถึงต้นรัตนโกสินทร์ เล่นต่อกันหลายรุ่นจน พ.ศ. 2400 — ตัวเลขสมดุลเป็นของเกม ส่วนเนื้อหาประวัติศาสตร์อ้างอิงที่มาในคลัง lore', 'release-meta'),
+    dl,
+    links,
+    el('p', 'ขอบคุณที่ลองเล่นนะครับ ถ้าเจอข้อผิดพลาดหรือมีไอเดีย บอกได้ตามลิงก์ด้านบน', 'release-meta'),
+    el('h3', 'ประวัติการอัปเดต'),
+    history,
+    row,
+  );
+}
+$('about').onclick = showAbout;
+
 if (prefs.get<number>('noticeAck', 0) < NOTICE_VERSION) showNotice(true);
+else showReleaseIfNew();
 
 showTab('saves');
