@@ -298,8 +298,10 @@ export function careerHint(
     const keep = ch.office?.name && namePool(to, next).includes(ch.office.name);
     const name = next.title?.includes('{name}') ? (keep ? ch.office!.name : '…') : undefined;
     const top = to.posts.reduce((a, p) => (p.rank > a.rank ? p : a));
+    const skill = careerSkill(ctx, ch);
     return `เป็น${titleOf(next, name) ?? next.label.th} ศักดินา ${next.sakdina} · บารมีตระกูล +${C.promotePrestige * next.rank}` +
-      (action === 'assign' ? ` · สูงสุดเป็น${top.title?.includes('{name}') ? top.label.th : top.title ?? top.label.th} นา ${top.sakdina}` : '');
+      (action === 'assign' ? ` · สูงสุดเป็น${top.title?.includes('{name}') ? top.label.th : top.title ?? top.label.th} นา ${top.sakdina}` : '') +
+      (action === 'promote' && skill.tier > 0 ? ` · ฝีมือด้าน${skill.track.name}ขั้น ${skill.tier} ช่วยให้ได้เลื่อนครั้งนี้` : '');
   }
   if (action === 'enter_dept') {
     const first = ctx.content.offices.departments.find((d) => d.id === deptId)?.posts.find((p) => p.rank === 1);

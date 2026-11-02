@@ -14,7 +14,7 @@ import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
-import { applyCareer, careerYearTick, officeRank, officeStatus } from './systems/career';
+import { applyCareer, careerSkill, careerYearTick, officeRank, officeStatus } from './systems/career';
 import { habitOption } from './systems/festivals';
 import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
@@ -38,6 +38,7 @@ const content: ContentDB = buildContentDB({
   balance: load('balance.json'),
 });
 const SEEDS = Number(process.argv[2] ?? 5);
+const INVEST = process.argv[3] === 'invest';
 let failed = 0;
 
 function check(label: string, problems: string[]) {
@@ -105,6 +106,7 @@ const bal = {
   firstDeathAges: [] as number[], // อายุที่ตัวละครแรกของผู้เล่นตาย (seed ที่ยังไม่ตายจนจบไม่นับ)
   takeoverAges: [] as number[], // อายุของผู้สืบตอนรับช่วงเป็นผู้เล่น
   stress: [0, 0], // [ผลรวม, จำนวน] ความหนักใจของผู้เล่นที่มีชีวิตทุก 1 ม.ค.
+  senior: [0, 0], // [ขั้น 2 ขึ้นไป (ขุนขึ้นไป), จำนวน] ผู้เล่นที่มีชีวิต — รายงานเฉยๆ ใช้ดูผลของโหมด invest
   office: [0, 0], // [มีตำแหน่ง, จำนวน] ผู้เล่นที่มีชีวิตทุก 1 ม.ค. ตั้งแต่ OFFICE_FROM_YEAR
   wealthPerHead: [] as number[], // เงินเฉลี่ยต่อคนของคนในตระกูลที่ยังมีชีวิตตอนจบ (seed ที่ไม่สิ้นสาย)
 };
@@ -185,6 +187,12 @@ for (let seed = 1; seed <= SEEDS; seed++) {
       const pick = ctx.rng.pick(options);
       if (pick) startIntent(ctx, pick.def.id, player, pick.t, pick.p.def.id);
     }
+    // โหมด invest (npm run sim:check -- 30 invest): ผู้เล่นฝึกวิชาสายของกรมต่อเนื่องและปลดล็อกทุกครั้งที่แต้มครบ — ไว้วัดว่าวิชาทำให้เลื่อนยศเร็วเกินไปไหม
+    if (INVEST && isAlive(player) && ageOf(ctx, player) >= 12 && dayOfYear(ctx, S.meta.day) % 30 === 0) {
+      const track = careerSkill(ctx, player).track.id;
+      if (player.focus !== track) setSkillFocus(ctx, player, track);
+      try { unlockNextPerk(player, track); } catch { /* แต้มยังไม่ครบหรือครบทุกขั้นแล้ว */ }
+    }
     for (const sig of advanceDay(ctx)) {
       if (sig.type === 'event') {
         // เลือกตัวเลือกแรกที่ไม่ล็อก แล้วเล่น event ต่อเนื่อง (followUp) จนจบสาย
@@ -211,6 +219,8 @@ for (let seed = 1; seed <= SEEDS; seed++) {
       bal.stress[0]! += me.stress;
       bal.stress[1]!++;
       if (yearOf(ctx, S.meta.day) >= OFFICE_FROM_YEAR) {
+        bal.senior[0]! += (officeRank(ctx, me) ?? 0) >= 2 ? 1 : 0;
+        bal.senior[1]!++;
         bal.office[0]! += me.office ? 1 : 0;
         bal.office[1]!++;
       }
@@ -249,14 +259,15 @@ function balanceCheck(): void {
     [`ผู้เล่นมีตำแหน่งราชการ (ตั้งแต่ พ.ศ. ${OFFICE_FROM_YEAR})`, ratio(bal.office), 0.15, 0.6],
     ['เงินเฉลี่ยต่อคนในตระกูลตอนจบ (ตำลึง)', median(bal.wealthPerHead), 10, 150],
   ];
-  const enforce = SEEDS >= BALANCE_MIN_SEEDS;
-  console.log(`สมดุลของผู้เล่น (${SEEDS} seed${enforce ? '' : ` — น้อยกว่า ${BALANCE_MIN_SEEDS} จึงเป็นรายงานเฉยๆ`}):`);
+  const enforce = SEEDS >= BALANCE_MIN_SEEDS && !INVEST; // โหมด invest เป็นการทดลอง ไม่นับเป็นข้อผิด
+  console.log(`สมดุลของผู้เล่น (${SEEDS} seed${enforce ? '' : INVEST ? ' — โหมด invest เป็นรายงานเฉยๆ' : ` — น้อยกว่า ${BALANCE_MIN_SEEDS} จึงเป็นรายงานเฉยๆ`}):`);
   const bad: string[] = [];
   for (const [label, v, lo, hi] of rows) {
     const ok = v >= lo && v <= hi; // NaN = ไม่มีข้อมูล ถือว่าไม่ผ่าน
     console.log(`  ${ok ? '✓' : enforce ? '✗' : '⚠'} ${label} ${+v.toFixed(3)} (ช่วงที่ยอมรับ ${lo}–${hi})`);
     if (!ok) bad.push(`${label} ${+v.toFixed(3)}`);
   }
+  console.log(`  · ผู้เล่นถึงขั้นขุนขึ้นไป (ตั้งแต่ พ.ศ. ${OFFICE_FROM_YEAR}) ${+ratio(bal.senior).toFixed(3)}${INVEST ? ' [โหมด invest]' : ''}`);
   if (enforce) check('สมดุลของผู้เล่นหลุดช่วง', bad);
 }
 balanceCheck();
