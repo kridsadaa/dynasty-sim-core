@@ -11,6 +11,8 @@ export type { LogKind };
 
 export type Command =
   | { type: 'newGame'; seed: number; heroName?: string }
+  /** ชื่อตัวเอกที่สุ่มจากคลังชื่อ ไว้เติมในช่องตอนเริ่มเกมใหม่ */
+  | { type: 'suggestName' }
   | { type: 'load'; slot: string }
   | { type: 'save'; slot: string }
   | { type: 'listSaves' }
@@ -56,6 +58,7 @@ export type Command =
 
 export interface ReplyData {
   newGame: CharacterView;
+  suggestName: string;
   load: CharacterView;
   save: SaveSlotInfo;
   listSaves: SaveSlotInfo[];

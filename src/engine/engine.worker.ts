@@ -7,7 +7,7 @@ import { dropMatches, findMatches, minorWifeProposal } from '../systems/matchmak
 import { buyHouseholdLand, buyHouseholdSlave, canManage, expandHousehold, freeHouseholdSlave } from '../systems/servants';
 import { setSkillFocus, unlockDynastyLegacy, unlockNextPerk } from '../systems/skills';
 import { findSlaveConcubines, performInteraction, takeSlaveConcubine, type InteractionId } from '../systems/interactions';
-import { cleanName, emptyState, rememberCustomName } from '../systems/factory';
+import { cleanName, emptyState, pickName, rememberCustomName } from '../systems/factory';
 import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
@@ -265,6 +265,9 @@ async function handle(cmd: Command): Promise<unknown> {
     }
     case 'viewPending':
       return (endReason === 'extinct' ? [] : pendingViews(need())) satisfies ReplyData['viewPending'];
+    case 'suggestName':
+      // ชื่อตัวเอกที่เสนอให้ตอนเริ่มเกมใหม่ — สุ่มจากคลังชื่อ (ไม่ซ้ำพ่อแม่ในฉาก); ผู้เล่นแก้เองได้
+      return pickName(makeCtx(emptyState(Math.floor(Math.random() * 2 ** 31)), must(content, 'content')), 'm', 'noble', new Set(['หมื่นอิน', 'แย้ม'])) satisfies ReplyData['suggestName'];
     case 'viewEnding': {
       const c = need();
       const dyn = c.state.dynasties[c.state.meta.playerDynastyId];

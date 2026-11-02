@@ -1297,10 +1297,15 @@ async function start(from: 'new' | string, heroName?: string) {
 
 $('new').onclick = async () => {
   if (clock.playing) await clockCmd({ type: 'pause' });
+  // เสนอชื่อสุ่มจากคลังชื่อก่อน — ไม่ชอบก็สุ่มใหม่หรือพิมพ์เอง
+  const suggest = () => engine.request({ type: 'suggestName' }).catch(() => 'บุญมา');
+  const form = nameForm('ชื่อตัวละคร', await suggest(), 'เริ่ม', (name) => void start('new', name), closeModal);
+  const input = form.querySelector('input')!;
+  form.querySelector('.row')!.prepend(button('สุ่มชื่อใหม่', async () => { input.value = await suggest(); input.select(); }));
   openModal(
     el('h2', 'เริ่มชีวิตใหม่'),
     el('p', 'ลูกชายคนโตวัย 7 ขวบของขุนนางชั้นผู้น้อย ปลายกรุงศรีอยุธยา พ.ศ. 2288'),
-    nameForm('ชื่อตัวละคร', 'บุญมา', 'เริ่ม', (name) => void start('new', name), closeModal),
+    form,
   );
 };
 $('play').onclick = togglePlay;
