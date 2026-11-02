@@ -24,7 +24,7 @@ import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './s
 import { advanceDay } from './systems/world';
 import { eraConditions } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
-import { buryValuables, unearthBuried } from './systems/war';
+import { buryValuables, unearthBuried, warBadges } from './systems/war';
 import { riskChance } from './systems/will';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -872,6 +872,65 @@ balanceCheck();
   if (!ids3.includes('war.prepare')) problems.push('ผู้หญิงไม่ได้ event เตรียมรับศึก');
   check('เตรียมรับศึกและหมายเรียกพล', problems);
   if (failed === before) console.log('  ✓ ฝังทรัพย์ได้ไหซ่อนและขุดคืน ~80% · หมายเรียกพลเฉพาะชายวัยฉกรรจ์ · ไปรบเสี่ยงตายจริงและส่งต่อผู้สืบได้ · ผู้หญิงไม่ถูกเรียก');
+}
+
+// [5h2e] ศึกพม่า ขั้น 3: ตัดสินใจอยู่หรือหนี — ตัวเลือกตามหัวเรือน, รายชื่อคนที่ไปด้วย, ที่อยู่ต่างกันตอนกรุงแตกเสี่ยงตายต่างกัน
+{
+  const before = failed;
+  console.log('ออกจากกรุงหรืออยู่:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(53), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day = yearStart(ctx, 2308) + 319;
+  hero.sex = 'm';
+  const wife = spawnCharacter(ctx, { name: 'ภรรยา', sex: 'f', birthYear: 2285, estate: 'noble', dynastyId: null, householdId: hero.householdId });
+  marry(ctx, hero, wife);
+  for (const n of ['ลูกหนึ่ง', 'ลูกสอง']) spawnCharacter(ctx, { name: n, sex: 'm', birthYear: 2305, estate: 'noble', father: hero, mother: wife, householdId: hero.householdId });
+  const hh = S.households[hero.householdId!]!;
+  const optionIds = () => prepareEvent(ctx, 'war.decide_leave', { actor: hero.id }).options.map((o) => o.id).join();
+  if (hh.headId === hero.id) problems.push('ฉากเริ่มผู้เล่นเป็นหัวเรือนอยู่แล้ว ข้อทดสอบเงื่อนไขหัวเรือนใช้ไม่ได้');
+  if (optionIds().includes('east_all')) problems.push('คนที่ไม่ใช่หัวเรือนเห็นตัวเลือกยกทั้งเรือน');
+  const father = S.characters[hh.headId]!;
+  const members = hh.memberIds.filter((id) => isAlive(S.characters[id])).length;
+  const choose = (id: string) => chooseOption(ctx, prepareEvent(ctx, 'war.decide_leave', { actor: hero.id }), id);
+  choose('east_nuclear');
+  const nuclear = S.meta.war?.party ?? [];
+  if (nuclear.length !== 4 || !nuclear.includes(hero.id) || !nuclear.includes(wife.id)) problems.push(`พาคนใกล้ชิด ได้ ${nuclear.length} คน ควร 4 (ตัวเอง เมีย ลูก 2)`);
+  if (nuclear.includes(father.id)) problems.push('พาคนใกล้ชิดแล้วพ่อซึ่งเป็นหัวเรือนไปด้วย');
+  choose('east_alone');
+  if (S.meta.war?.party?.length !== 1) problems.push('ไปคนเดียวแล้วมีคนอื่นไปด้วย');
+  hh.headId = hero.id;
+  if (!optionIds().includes('east_all')) problems.push('หัวเรือนไม่เห็นตัวเลือกยกทั้งเรือน');
+  choose('east_all');
+  if (S.meta.war?.party?.length !== members || S.meta.war?.dir !== 'east') problems.push(`ยกทั้งเรือน ได้ ${S.meta.war?.party?.length} คน ควร ${members}`);
+  choose('forest_nuclear');
+  if (S.meta.war?.dir !== 'forest') problems.push('หนีเข้าป่าแล้วทิศไม่ใช่ป่า');
+  choose('stay');
+  if (S.meta.war?.stance !== 'stay' || S.meta.war?.party) problems.push('ปักหลักแล้วยังมีรายชื่อคนที่ออกไป');
+  S.meta.day = yearStart(ctx, 2309) + 10;
+  if (!warBadges(ctx).some((b) => b.label === 'ปักหลักอยู่ในกรุง')) problems.push('ไม่มีป้ายสถานะปักหลักในกรุง');
+
+  // ตอนกรุงแตก: ที่อยู่ต่างกัน → ความเสี่ยงตายและเงินสดที่ถูกริบต่างกัน (ตัวคูณของเกม: ตะวันออก 0.3 · กรุง 1 · ป่า 1.3)
+  const outcome = (seed: number, where: 'city' | 'east' | 'forest') => {
+    const c = makeCtx(emptyState(seed), content);
+    const h = bootstrapScenario(c);
+    const folk = Array.from({ length: 1000 }, (_, i) => spawnCharacter(c, {
+      name: `ชาวบ้าน${i}`, sex: 'm', birthYear: 2280, estate: 'noble', dynastyId: h.dynastyId, householdId: null, wealth: 100,
+    }));
+    if (where !== 'city') c.state.meta.war = { prep: 0, stance: 'leave', dir: where, party: folk.map((f) => f.id) };
+    applyHistoricalShocks(c, 2310);
+    const alive = folk.filter((f) => isAlive(f));
+    return { dead: folk.length - alive.length, cash: alive.reduce((a, f) => a + f.social.wealth, 0) / Math.max(1, alive.length) };
+  };
+  const city = outcome(60, 'city');
+  const east = outcome(61, 'east');
+  const forest = outcome(62, 'forest');
+  if (!(east.dead < city.dead * 0.6)) problems.push(`หนีตะวันออกตาย ${east.dead}/1000 ไม่น้อยกว่าอยู่ในกรุง ${city.dead}/1000 พอ`);
+  if (!(forest.dead > city.dead)) problems.push(`หนีเข้าป่าตาย ${forest.dead}/1000 ไม่มากกว่าอยู่ในกรุง ${city.dead}/1000`);
+  if (!(east.cash > 70 && city.cash < 55)) problems.push(`เงินสดที่เหลือ: หนีตะวันออก ${east.cash.toFixed(0)} · อยู่ในกรุง ${city.cash.toFixed(0)} (ควร >70 และ <55)`);
+  check('ออกจากกรุงหรืออยู่', problems);
+  if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ตายต่อพัน กรุง ${city.dead} ตะวันออก ${east.dead} ป่า ${forest.dead} · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
 }
 
 // [5h3] ข้อแลกเปลี่ยนใน event ที่เจอบ่อย: งานบุญและผลผูกมิตรต้องมีตัวเลือกที่เสียเงินกับตัวเลือกที่ไม่เสีย และเสียแล้วเงินลดจริง

@@ -57,7 +57,8 @@
     { "year": 2308, "day": 40, "event": "war.news_tenasserim", "minAge": 12 },
     { "year": 2308, "day": 140, "event": "war.west_falls", "minAge": 12 },
     { "year": 2308, "day": 175, "event": "war.levy", "minAge": 18 },
-    { "year": 2308, "day": 265, "event": "war.prepare", "minAge": 16 }
+    { "year": 2308, "day": 265, "event": "war.prepare", "minAge": 16 },
+    { "year": 2308, "day": 320, "event": "war.decide_leave", "minAge": 18 }
   ],
   "history": [
     { "tag": "history:burmese_invasion", "year": 2308, "kind": "war", "lasts": 3,

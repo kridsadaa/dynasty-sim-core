@@ -7,6 +7,7 @@ import type { EventReport, PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus, officeTier } from '../systems/career';
+import { warBadges } from '../systems/war';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
@@ -201,7 +202,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     wealth: Math.round(ch.social.wealth),
     purse: Math.round(purse(ctx, ch)),
     statuses: statusBadges(ctx, ch, text),
-    conditions: eraConditions(ctx),
+    conditions: [...eraConditions(ctx), ...warBadges(ctx)],
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: scarLines(ctx, ch, text),
     wounds: woundLines(ctx, ch, text),
@@ -412,7 +413,7 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
 function effectHint(
   ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>,
 ): string | undefined {
-  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars, ['festival.', 'intent.', 'war.'].some((prefix) => p.def.id.startsWith(prefix)));
+  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars, ['festival.', 'intent.', 'war.'].some((prefix) => p.def.id.startsWith(prefix)), !!p.actor.office);
   const parts: string[] = [];
   for (const e of effects) {
     if (e.op === 'followUp') {
@@ -431,7 +432,7 @@ function effectHint(
 }
 
 /** showCost: บอกเงินที่เสียด้วย (งานบุญ/ผูกมิตร ราคาไม่อยู่ในข้อความตัวเลือก) */
-function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>, showCost = false): string | undefined {
+function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>, showCost = false, hasOffice = true): string | undefined {
   const parts: string[] = [];
   for (const e of effects) {
     if (showCost && e.op === 'wealth' && e.role === 'actor' && (e.delta ?? 0) < 0) parts.push(`เสียเงิน ${+Math.abs(e.delta!).toFixed(1)} ตำลึง`);
@@ -466,6 +467,9 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
     if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
     if (e.op === 'war' && e.action === 'prep' && e.delta > 0) parts.push('รับมือศึกได้ดีขึ้น');
     if (e.op === 'war' && e.action === 'bury') parts.push('ฝังเงินทองไว้ (ใช้ไม่ได้จนกว่าศึกจะผ่าน)');
+    if (e.op === 'war' && e.action === 'stay') parts.push('อยู่ในกรุง');
+    if (e.op === 'war' && e.action === 'leave') parts.push(`${e.dir === 'east' ? 'ไปทางตะวันออก' : 'เข้าป่าทางตะวันตก'} · ${e.party === 'all' ? 'ทั้งเรือน' : e.party === 'nuclear' ? 'คนใกล้ชิด' : 'คนเดียว'}`);
+    if (showCost && hasOffice && e.op === 'favor' && e.delta < 0) parts.push('ถูกมองว่าทิ้งราชการ');
     if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');
   }
   return parts.length ? [...new Set(parts)].join(' · ') : undefined;
@@ -485,7 +489,7 @@ function riskHint(ctx: Ctx, p: PreparedEvent, o: PreparedEvent['options'][number
   if (!o.risk) return undefined;
   const who = (role: string) => ctx.state.characters[p.instance.bindings[role] ?? ('' as Character['id'])];
   const chance = Math.round(riskChance(ctx, p.actor, o.risk, who) * 20) * 5; // ปัดทีละ 5% — เดาได้แค่คร่าวๆ
-  const ifFail = everydayHint(o.risk.fail.effects, vars);
+  const ifFail = everydayHint(o.risk.fail.effects.filter((e) => e.op !== 'war' || e.action !== 'leave'), vars);
   return `${fill(text[ageKey(ctx, p, o.risk.hintKey, text)] ?? o.risk.hintKey, vars)} (ราว ${chance}%)${ifFail ? ` — ถ้าพลาด: ${ifFail}` : ''}`;
 }
 

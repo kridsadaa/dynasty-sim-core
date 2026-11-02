@@ -14,6 +14,121 @@
         "effects": [ { "op": "wealth", "role": "actor", "delta": -1 }, { "op": "war", "role": "actor", "action": "prep", "delta": 1.5 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] }
     ]
   },
+  "war.decide_leave": {
+    "id": "war.decide_leave",
+    "textKey": "event.war_decide_leave",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "stay", "textKey": "event.war_decide_leave.stay",
+        "effects": [ { "op": "war", "role": "actor", "action": "stay" }, { "op": "stress", "role": "actor", "delta": 0.02 } ] },
+      { "id": "east_all", "textKey": "event.war_decide_leave.east_all", "conditions": [ { "type": "householdHead" } ],
+        "risk": {
+          "base": 0.35,
+          "factors": [
+            { "source": "skill", "skill": "stewardship", "weight": -0.2, "reasonKey": "stewardship" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_road",
+          "successKey": "outcome.road.ok",
+          "fail": {
+            "textKey": "outcome.road.robbed",
+            "effects": [
+              { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "all" },
+              { "op": "wealth", "role": "actor", "delta": -18 },
+              { "op": "favor", "role": "actor", "delta": -0.5 },
+              { "op": "stress", "role": "actor", "delta": 0.06 },
+              { "op": "war", "role": "actor", "action": "prep", "delta": -1 }
+            ]
+          }
+        },
+        "effects": [
+          { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "all" },
+          { "op": "wealth", "role": "actor", "delta": -6 },
+          { "op": "favor", "role": "actor", "delta": -0.5 }
+        ] },
+      { "id": "east_nuclear", "textKey": "event.war_decide_leave.east_nuclear",
+        "risk": {
+          "base": 0.2,
+          "factors": [
+            { "source": "skill", "skill": "stewardship", "weight": -0.2, "reasonKey": "stewardship" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_road",
+          "successKey": "outcome.road.ok",
+          "fail": {
+            "textKey": "outcome.road.robbed",
+            "effects": [
+              { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "nuclear" },
+              { "op": "wealth", "role": "actor", "delta": -15 },
+              { "op": "favor", "role": "actor", "delta": -0.5 },
+              { "op": "stress", "role": "actor", "delta": 0.1 },
+              { "op": "war", "role": "actor", "action": "prep", "delta": -1 }
+            ]
+          }
+        },
+        "effects": [
+          { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "nuclear" },
+          { "op": "wealth", "role": "actor", "delta": -3 },
+          { "op": "favor", "role": "actor", "delta": -0.5 },
+          { "op": "stress", "role": "actor", "delta": 0.04 }
+        ] },
+      { "id": "east_alone", "textKey": "event.war_decide_leave.east_alone",
+        "risk": {
+          "base": 0.1,
+          "factors": [
+            { "source": "skill", "skill": "stewardship", "weight": -0.2, "reasonKey": "stewardship" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_road",
+          "successKey": "outcome.road.ok",
+          "fail": {
+            "textKey": "outcome.road.robbed",
+            "effects": [
+              { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "alone" },
+              { "op": "wealth", "role": "actor", "delta": -13 },
+              { "op": "favor", "role": "actor", "delta": -0.5 },
+              { "op": "stress", "role": "actor", "delta": 0.1 },
+              { "op": "war", "role": "actor", "action": "prep", "delta": -1 }
+            ]
+          }
+        },
+        "effects": [
+          { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "alone" },
+          { "op": "wealth", "role": "actor", "delta": -1 },
+          { "op": "favor", "role": "actor", "delta": -0.5 },
+          { "op": "stress", "role": "actor", "delta": 0.04 }
+        ] },
+      { "id": "forest_nuclear", "textKey": "event.war_decide_leave.forest_nuclear",
+        "risk": {
+          "base": 0.3,
+          "factors": [
+            { "source": "skill", "skill": "stewardship", "weight": -0.2, "reasonKey": "stewardship" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_road",
+          "successKey": "outcome.road.ok",
+          "fail": {
+            "textKey": "outcome.road.robbed",
+            "effects": [
+              { "op": "war", "role": "actor", "action": "leave", "dir": "forest", "party": "nuclear" },
+              { "op": "wealth", "role": "actor", "delta": -13 },
+              { "op": "favor", "role": "actor", "delta": -0.5 },
+              { "op": "stress", "role": "actor", "delta": 0.1 },
+              { "op": "war", "role": "actor", "action": "prep", "delta": -1 }
+            ]
+          }
+        },
+        "effects": [
+          { "op": "war", "role": "actor", "action": "leave", "dir": "forest", "party": "nuclear" },
+          { "op": "wealth", "role": "actor", "delta": -1 },
+          { "op": "favor", "role": "actor", "delta": -0.5 },
+          { "op": "stress", "role": "actor", "delta": 0.04 }
+        ] }
+    ]
+  },
   "war.levy": {
     "id": "war.levy",
     "textKey": "event.war_levy",
@@ -39,7 +154,7 @@
           }
         },
         "effects": [
-          { "op": "wound", "role": "actor", "part": { "tag": "body:torso" }, "kind": "cut", "severity": [0.1, 0.3] },
+          { "op": "wound", "role": "actor", "part": { "tag": "body:torso" }, "kind": "cut", "severity": [0.1, 0.25] },
           { "op": "merit", "role": "actor", "delta": 2 },
           { "op": "prestige", "role": "actor", "delta": 2 },
           { "op": "favor", "role": "actor", "delta": 0.25 },

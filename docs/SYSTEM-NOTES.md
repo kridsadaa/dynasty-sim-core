@@ -23,7 +23,7 @@
 | `world.ts` | `advanceDay` — 1 call = 1 วัน ส่ง signal (`log` `event` `habit` `playerDied`); ไม่รู้จัก DOM/Worker |
 | `events.ts` | เลือก/เตรียม/ตัดสิน event; ฉีดตัวเลือกจากปม/แผล (injection); ทอยตัวเลือกเสี่ยง |
 | `handover.ts` | ผู้เล่นตาย → ผู้สืบ มรดก ตำนาน ข้อห้ามตระกูล; `applyHistoricalShocks` (เหตุการณ์ประวัติศาสตร์) |
-| `war.ts` | เตรียมรับศึก 2308–2310: ฝังเงินเป็นไหทองซ่อน (`buryValuables`) และขุดคืนตอนกรุงแตก (`unearthBuried`) |
+| `war.ts` | ศึกพม่า 2308–2310: ฝังเงินเป็นไหทองซ่อน (`buryValuables`/`unearthBuried`), ตัดสินใจอยู่/หนี (`stayInCity`/`leaveCity` เก็บใน `meta.war`), ที่อยู่รายคน (`warWhere`) และตัวคูณผลตอนกรุงแตก (`WAR_DEATH_MULT`, `WAR_CASH_LOSS_MULT`) |
 | `historyEvents.ts` | ส่ง event ให้ผู้เล่นตามวันที่ของปีประวัติศาสตร์ (`rules.json` `historyEvents`) — ศึกพม่า 2308–2310 ดู [design-war-2308.md](design-war-2308.md) |
 | `mortality.ts` `mourning.ts` | ทอยตายรายปีตามอายุ ไข้ทรพิษ; event งานศพของญาติใกล้ชิด |
 | `career.ts` | ราชการ: ตำแหน่ง, `favor`, เลื่อนยศ/ถูกลงโทษ, รายได้ตามศักดินา; `careerSkill` = ขั้นวิชาในสายของกรม → `favor` รายปี |

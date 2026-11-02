@@ -593,6 +593,8 @@ export type Condition =
   | { type: 'canPay'; what: 'sinsot' | 'elope' }
   /** มีเงินที่ใช้ได้ (ตัวเอง + เรือน) อย่างน้อย min ตำลึง */
   | { type: 'purse'; min: number }
+  /** เป็นหัวเรือนของเรือนที่อยู่ */
+  | { type: 'householdHead' }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
   | { type: 'office'; minRank?: number; maxRank?: number }
   /** ทักษะอย่างน้อย min (เช่น อ่านออกเขียนได้ literacy) */
@@ -670,7 +672,11 @@ export type Effect =
   /** ศึกพม่า 2308–2310 (docs/design-war-2308.md): prep = เตรียมตัวรับศึก (เก็บข้าว ของมีค่า) สะสมใน meta.war */
   | { op: 'war'; role: string; action: 'prep'; delta: number }
   /** ย้ายเงินสด fraction ของเงินที่ใช้ได้ไปเป็นไหทองซ่อน (systems/war.ts) */
-  | { op: 'war'; role: string; action: 'bury'; fraction: Unit };
+  | { op: 'war'; role: string; action: 'bury'; fraction: Unit }
+  /** ปักหลักอยู่ในกรุง */
+  | { op: 'war'; role: string; action: 'stay' }
+  /** ออกจากกรุง: ทิศ + พาใคร (all = ทั้งเรือน, nuclear = คู่ครองและลูกในเรือน, alone = ไปคนเดียว) */
+  | { op: 'war'; role: string; action: 'leave'; dir: 'east' | 'forest'; party: 'all' | 'nuclear' | 'alone' };
 
 /**
  * แรงต้านในใจตัวละครต่อตัวเลือก — บวกกันทุกข้อ (เฉพาะส่วนที่เป็นบวก)
@@ -1354,7 +1360,7 @@ export interface GameState {
     /** เรื่องจบเมื่อถึง 1 ม.ค. ปีนี้ — ฉากเริ่มเป็นคนกำหนด (เซฟเก่าไม่มี → END_YEAR ใน scenario.ts) */
     endYear?: number;
     /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
-    war?: { prep: number };
+    war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest'; party?: CharacterId[] };
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;

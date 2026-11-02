@@ -7,7 +7,7 @@ import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from '.
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 import { applyCareer } from './career';
-import { unearthBuried } from './war';
+import { fallLeaverLines, unearthBuried, WAR_CASH_LOSS_MULT, WAR_DEATH_MULT, warWhere } from './war';
 
 // ============================================================================
 // Generational Handover — เรียกเมื่อตัวละครผู้เล่นตาย
@@ -603,7 +603,9 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
       const purged = !!dyn.faction && (ev.shock.purgeFactions ?? []).includes(dyn.faction) && ctx.rng.chance(ev.shock.purgeChance ?? 1);
       for (const m of members) {
         const loss = ctx.rng.range(ev.shock.wealthLoss[0], ev.shock.wealthLoss[1]);
-        m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : loss);
+        // กรุงแตก: คนที่หนีออกไปพกเงินสดไปด้วย ถูกริบน้อยกว่าคนในกรุง (war.ts)
+        const cashLoss = ev.tag === 'history:fall_of_ayutthaya' ? loss * WAR_CASH_LOSS_MULT[warWhere(ctx, m.id)] : loss;
+        m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : cashLoss);
         m.stress = Math.min(1, m.stress + ctx.content.balance.life.historyStress[ev.kind] * (0.5 + m.personality.neuroticism));
         if (purged && m.social.title) {
           out.push(`${m.name}ถูกริบราชบาตร ถอดจาก${m.social.title}`);
@@ -635,12 +637,13 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c) || isGraced(ctx, c) || (!ev.shock.everyone && !c.dynastyId)) continue;
       if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
-      if (!ctx.rng.chance(ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk)) continue;
+      const whereMult = ev.tag === 'history:fall_of_ayutthaya' ? WAR_DEATH_MULT[warWhere(ctx, c.id)] : 1;
+      if (!ctx.rng.chance((ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk) * whereMult)) continue;
       markDead(ctx, c, ev.tag);
       out.push(`${c.name}เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
     }
     // กรุงแตกแล้ว — ไหทองที่ผู้เล่นฝังไว้ตอนเตรียมรับศึกขุดคืนเป็นเงินสด (ที่ซ่อนรอดจากการปล้นข้างบน)
-    if (ev.tag === 'history:fall_of_ayutthaya') out.push(...unearthBuried(ctx));
+    if (ev.tag === 'history:fall_of_ayutthaya') out.push(...fallLeaverLines(ctx), ...unearthBuried(ctx));
   }
   return out;
 }

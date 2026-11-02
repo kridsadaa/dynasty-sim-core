@@ -9,7 +9,7 @@ import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharact
 import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
 import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
-import { buryValuables } from './war';
+import { buryValuables, leaveCity, stayInCity } from './war';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { markDead } from './handover';
@@ -171,6 +171,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
     }
     case 'purse':
       return purse(ctx, ch) >= c.min;
+    case 'householdHead':
+      return !!ch.householdId && ctx.state.households[ch.householdId]?.headId === ch.id;
     case 'canPay': {
       const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.eloped?.amount;
       return amount !== undefined && canPay(ctx, ch, amount);
@@ -492,7 +494,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       }
       case 'war':
         if (e.action === 'prep') ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };
-        else report.notes.push(...buryValuables(ctx, ch, e.fraction));
+        else if (e.action === 'bury') report.notes.push(...buryValuables(ctx, ch, e.fraction));
+        else if (e.action === 'stay') report.notes.push(...stayInCity(ctx, ch));
+        else report.notes.push(...leaveCity(ctx, ch, e.dir, e.party));
         break;
       case 'prestige': {
         const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
