@@ -8,7 +8,8 @@ import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
 import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
-import { applyMarriageStep, canPay, settleNpcSinsot, spend } from './marriage';
+import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
+import { buryValuables } from './war';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { markDead } from './handover';
@@ -168,6 +169,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       const who = c.role ? ctx.state.characters[bindings[c.role]!] : ch;
       return who?.sex === c.is;
     }
+    case 'purse':
+      return purse(ctx, ch) >= c.min;
     case 'canPay': {
       const amount = c.what === 'sinsot' ? ch.betrothal?.sinsot : ch.eloped?.amount;
       return amount !== undefined && canPay(ctx, ch, amount);
@@ -403,7 +406,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       }
       case 'kill': {
-        if (!ch.local || !isAlive(ch)) break;
+        if ((!ch.local && !e.allowKin) || !isAlive(ch)) break;
         markDead(ctx, ch, e.cause);
         report.notes.push(`${ch.name}ตายแล้ว`);
         break;
@@ -488,7 +491,8 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       }
       case 'war':
-        ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };
+        if (e.action === 'prep') ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };
+        else report.notes.push(...buryValuables(ctx, ch, e.fraction));
         break;
       case 'prestige': {
         const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;

@@ -1,7 +1,7 @@
 import { ageOf, dayOfYear, isAlive, yearOf, type Ctx } from '../core/ctx';
 import type { Character } from '../core/types';
 import { spawnLocal } from './acquaintance';
-import { prepareEvent, type PreparedEvent } from './events';
+import { prepareEvent, requirementsMet, type PreparedEvent } from './events';
 
 // ============================================================================
 // event ตามปฏิทินประวัติศาสตร์ — ต่างจาก applyHistoricalShocks (ผลต่อทุกคนในตระกูล) ตรงที่ส่ง event ให้ผู้เล่นตัดสินใจ
@@ -22,6 +22,9 @@ export function historyEventsToday(ctx: Ctx): PreparedEvent[] {
     const def = ctx.content.events[s.event];
     if (!def) continue;
     const bindings: Record<string, Character['id']> = { actor: player.id };
+    const age = ageOf(ctx, player);
+    if (def.trigger.ageRange && (age < def.trigger.ageRange[0] || age > def.trigger.ageRange[1])) continue;
+    if (!requirementsMet(ctx, def, player, bindings)) continue;
     if ('refugee' in def.roles) {
       bindings.refugee = spawnLocal(ctx, player, {
         sex: ctx.rng.chance(0.5) ? 'm' : 'f', age: Math.round(ctx.rng.range(22, 50)), distance: 'far',

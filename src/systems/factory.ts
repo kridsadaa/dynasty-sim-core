@@ -229,7 +229,22 @@ export function pickNameFor(ctx: Ctx, kid: Character): string {
 }
 
 /** sinceDay: วันแต่ง — ไม่ระบุ = วันนี้ (ฉากเริ่มใส่วันในอดีตให้คู่ที่แต่งกันมาก่อนเริ่มเรื่อง) */
+/**
+ * คนนอกที่จะแต่งเข้าเรือนชื่อซ้ำกับสะใภ้/เขยของพี่น้องของคู่ (หรือชื่อเดียวกับคู่เอง) → เปลี่ยนชื่อคนนอกก่อนแต่ง
+ * ชื่อของคนนอกถูกเลือกไปตั้งแต่ก่อนรู้ว่าจะแต่งกับใคร (คนรู้จัก/คู่ที่ผู้ใหญ่หาให้) กันซ้ำตอนสุ่มอย่างเดียวไม่พอ
+ */
+function dedupeInLawName(ctx: Ctx, member: Character, incoming: Character): void {
+  const inNode = ctx.state.familyNodes[incoming.familyNodeId];
+  if (inNode?.fatherId || inNode?.motherId) return; // มีพ่อแม่ในผัง = ไม่ใช่คนนอกที่แต่งเข้ามา
+  const clash = inLawNames(ctx, member);
+  if (!clash.has(incoming.name)) return;
+  const avoid = new Set([...clash, ...relativeNames(ctx, member, undefined), incoming.name]);
+  renameCharacter(ctx, incoming, pickName(ctx, incoming.sex, incoming.social.estate, avoid, namesInUse(ctx, member.dynastyId, yearOf(ctx, ctx.state.meta.day))));
+}
+
 export function marry(ctx: Ctx, a: Character, b: Character, sinceDay = ctx.state.meta.day): void {
+  dedupeInLawName(ctx, a, b);
+  dedupeInLawName(ctx, b, a);
   const na = must(ctx.state.familyNodes[a.familyNodeId], 'a');
   const nb = must(ctx.state.familyNodes[b.familyNodeId], 'b');
   na.spouseIds.push(nb.id);
@@ -366,11 +381,29 @@ export function relativeNames(ctx: Ctx, ch: Character, spouse: Character | undef
 /** ชื่อที่ห้ามใช้กับคู่ครองที่แต่งเข้ามา: ตัวเจ้าบ่าว/เจ้าสาวเอง และคู่ครองของพี่น้อง (สะใภ้/เขยสองคนชื่อเดียวกันอ่านไม่รู้เรื่อง) */
 export function inLawNames(ctx: Ctx, ch: Character): Set<string> {
   const names = new Set([ch.name]);
-  for (const parent of livingParents(ctx, ch)) {
-    for (const sib of livingChildren(ctx, parent)) {
-      const sp = livingSpouse(ctx, sib);
-      if (sp) names.add(sp.name);
-    }
+  // พี่น้องหาจากผังตระกูล (ไม่ใช่จากพ่อแม่ที่ยังมีชีวิต) — พ่อแม่ตายแล้วสะใภ้/เขยของพี่น้องก็ยังอยู่ ชื่อซ้ำกันไม่ได้
+  const node = ctx.state.familyNodes[ch.familyNodeId];
+  const sibNodes = new Set([node?.fatherId, node?.motherId].flatMap((p) => (p ? ctx.state.familyNodes[p]?.childIds ?? [] : [])));
+  for (const nid of sibNodes) {
+    const sibId = ctx.state.familyNodes[nid]?.characterId;
+    const sib = sibId ? ctx.state.characters[sibId] : undefined;
+    const sp = sib && isAlive(sib) ? livingSpouse(ctx, sib) : undefined;
+    if (sp) names.add(sp.name);
+  }
+  return names;
+}
+
+/**
+ * ชื่อของคู่ครองที่ยังมีชีวิตของคนในตระกูล — คนนอกที่จะเข้ามาแต่งในภายหลังต้องไม่ใช้ชื่อซ้ำ (สะใภ้/เขยสองคนชื่อเดียวกัน
+ * อ่านไม่รู้เรื่อง) ใช้กับตอนสุ่มชื่อคนที่ผู้เล่นรู้จัก (spawnLocal) เพราะชื่อถูกเลือกตั้งแต่ก่อนแต่ง
+ */
+export function spouseNamesOfDynasty(ctx: Ctx, dynastyId: DynastyId | null): Set<string> {
+  const names = new Set<string>();
+  if (!dynastyId) return names;
+  for (const c of Object.values(ctx.state.characters)) {
+    if (c.dynastyId !== dynastyId || !isAlive(c)) continue;
+    const sp = livingSpouse(ctx, c);
+    if (sp) names.add(sp.name);
   }
   return names;
 }

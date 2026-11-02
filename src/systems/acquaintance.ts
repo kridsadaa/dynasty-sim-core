@@ -1,6 +1,6 @@
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, Distance, RelationKind, TradeDef } from '../core/types';
-import { livingSpouse, marriedShare, marriesThisYear, namesInUse, pickName, singleSpawnAge, spawnCharacter } from './factory';
+import { livingSpouse, marriedShare, marriesThisYear, namesInUse, pickName, singleSpawnAge, spawnCharacter, spouseNamesOfDynasty } from './factory';
 
 // ============================================================================
 // คนรู้จักนอกตระกูล — เพื่อนบ้าน คนต่างตำบล คนต่างเมืองที่พบในงานวัด
@@ -61,7 +61,7 @@ export function spawnLocal(ctx: Ctx, knower: Character, o: LocalOpts): Character
   const trade = o.trade ?? must(ctx.rng.weighted(ctx.content.trades, (t) => t.weight), 'trade');
   const year = yearOf(ctx, ctx.state.meta.day);
   // ชื่อไม่ซ้ำกับคนที่ผู้เล่นรู้จักอยู่แล้ว (รายชื่อในแผงอ่านไม่รู้เรื่อง) และเลี่ยงชื่อที่คนในตระกูลใช้อยู่
-  const avoid = new Set([knower.name, ...knownLocals(ctx, knower).map((c) => c.name), ...(o.avoid ?? [])]);
+  const avoid = new Set([knower.name, ...knownLocals(ctx, knower).map((c) => c.name), ...spouseNamesOfDynasty(ctx, knower.dynastyId), ...(o.avoid ?? [])]);
   const ch = spawnCharacter(ctx, {
     name: pickName(ctx, o.sex, trade.estate, avoid, namesInUse(ctx, knower.dynastyId, year)),
     sex: o.sex, birthYear: year - o.age, estate: trade.estate, dynastyId: null, householdId: null,

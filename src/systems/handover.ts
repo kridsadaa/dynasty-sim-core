@@ -7,6 +7,7 @@ import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from '.
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 import { applyCareer } from './career';
+import { unearthBuried } from './war';
 
 // ============================================================================
 // Generational Handover — เรียกเมื่อตัวละครผู้เล่นตาย
@@ -638,6 +639,8 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
       markDead(ctx, c, ev.tag);
       out.push(`${c.name}เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
     }
+    // กรุงแตกแล้ว — ไหทองที่ผู้เล่นฝังไว้ตอนเตรียมรับศึกขุดคืนเป็นเงินสด (ที่ซ่อนรอดจากการปล้นข้างบน)
+    if (ev.tag === 'history:fall_of_ayutthaya') out.push(...unearthBuried(ctx));
   }
   return out;
 }

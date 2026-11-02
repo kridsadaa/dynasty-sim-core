@@ -1088,10 +1088,12 @@ async function choose(ev: EventView, o: EventView['options'][number], name?: str
   modal.replaceChildren(el('p', '…'));
   try {
     const r = await engine.request({ type: 'choose', instanceId: ev.instanceId, optionId: o.id, name });
-    closeModal();
+    // ผู้เล่นตายเพราะผลของตัวเลือก (ไม่มีหน้าผล) → หน้าแจ้งการตายเปิดอยู่แล้ว อย่าปิดทับ
+    if (!deathNoticeOpen) closeModal();
     write(`→ ${o.text}`, 'choice');
     for (const l of r.lines) write(l, 'choice');
     await refresh();
+    if (deathNoticeOpen) return;
     if (r.result) return showResult(r.result); // เวลาหยุดรอจนกดรับทราบ
     await showPending(); // event ต่อเนื่อง (ถ้ามี) — ไม่มีแล้ว worker เดินเวลาต่อเอง
   } catch (e) {
@@ -1215,6 +1217,7 @@ async function showEnding() {
 
 /** แสดง event ที่ worker ยังรออยู่ (หลังโหลดเซฟ หรือหลังเลือกตัวเลือกไม่สำเร็จ) */
 async function showPending() {
+  if (deathNoticeOpen) return; // หน้าแจ้งการตายเปิดอยู่ — ปิดแล้วค่อยแสดง event ค้าง (showDeathNotice)
   try {
     const events = await engine.request({ type: 'viewPending' });
     if (events[0]) renderEvent(events[0]);

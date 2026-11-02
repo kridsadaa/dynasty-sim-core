@@ -12,6 +12,7 @@ import { heirCandidates, performHandover } from '../systems/handover';
 import { bootstrapScenario, END_YEAR, START_YEAR } from '../systems/scenario';
 import { describeTrait } from '../systems/traits';
 import { advanceDay } from '../systems/world';
+import { settlePlayerDeath } from './death';
 import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
@@ -124,6 +125,16 @@ function endOf(c: Ctx): EndReason | null {
   return c.state.meta.day >= endDayOf(c) ? 'era' : null;
 }
 
+/** ผู้เล่นตายนอกลูปเวลา (ผลพลาดของตัวเลือกเสี่ยงใน event) — แจ้งการตายและส่งต่อผู้สืบเหมือนตายตามวัย */
+function settleDeathNow(c: Ctx): void {
+  if (!awaitingHeir(c) || endReason) return;
+  if (settlePlayerDeath(c, [], push) === 'extinct') {
+    playing = false;
+    endReason = 'extinct';
+  }
+  pushClock();
+}
+
 /** เดินทีละวัน n วัน — หยุดก่อนครบถ้ามี event, ต้องเลือกผู้สืบ, สิ้นสาย หรือถึงปีจบ */
 function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir' | 'gameOver' | 'end' {
   for (let i = 0; i < days; i++) {
@@ -136,23 +147,7 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir'
         pending.set(sig.prepared.instance.id, sig.prepared);
         stop = 'event';
       } else {
-        const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
-        const cands = heirCandidates(c, dead);
-        if (!cands.length) {
-          lines.push({ kind: 'death', text: `${dead.name}สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
-          push({ type: 'playerDied', notice: deathNotice(c, dead, undefined, true) });
-          return 'gameOver';
-        }
-        if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
-        // มีผู้สืบได้หลายคน → หยุดให้ผู้เล่นเลือก (heirChoiceView); คนเดียวก็ไม่ต้องถาม
-        if (cands.length > 1) {
-          push({ type: 'playerDied', notice: deathNotice(c, dead, undefined, false) });
-          stop = 'heir';
-          continue;
-        }
-        push({ type: 'playerDied', notice: deathNotice(c, dead, cands[0]!.ch, false) });
-        const r = performHandover(c, dead.id);
-        push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
+        if (settlePlayerDeath(c, lines, push) === 'extinct') return 'gameOver';
         stop = 'heir'; // หยุดเวลารอผู้เล่นอ่านหน้าแจ้งการตาย — ปิดแล้วส่ง resume
       }
     }
@@ -256,6 +251,10 @@ async function handle(cmd: Command): Promise<unknown> {
       const c = makeCtx(saved.state, must(content, 'content'));
       ctx = c;
       endReason = endOf(c);
+      if (!endReason && awaitingHeir(c)) {
+        const dead = must(c.state.characters[c.state.meta.playerCharacterId], 'player');
+        if (heirCandidates(c, dead).length === 1) performHandover(c, dead.id);
+      }
       pending.clear();
       for (const s of saved.pending) {
         const p = restoreEvent(c, s);
@@ -320,6 +319,7 @@ async function handle(cmd: Command): Promise<unknown> {
       // เซฟทันทีหลังเลือก — ปิดแท็บก่อนเดินเวลาแล้วโหลด จะไม่เจอ event เดิมซ้ำ
       // (DB เปิดค้างไว้แล้วจาก autosave ตอนหยุดเพื่อ event จึงไม่มี choose อื่นแทรกระหว่างเซฟ)
       await save('autosave');
+      if (!result) settleDeathNow(c); // ไม่มีหน้าผลให้อ่าน → แจ้งการตายทันที
       // หยุดเพราะ event → ตัดสินใจครบแล้วเดินต่อเอง (มีหน้าผล → รอผู้เล่นปิดก่อน แล้ว UI ส่ง resume)
       if (!result && !pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
       return { lines, result } satisfies ReplyData['choose'];
@@ -329,6 +329,7 @@ async function handle(cmd: Command): Promise<unknown> {
       return clockState();
     case 'resume': {
       const c = need();
+      settleDeathNow(c); // ผู้เล่นตายเพราะผลของตัวเลือกเสี่ยง — อ่านหน้าผลแล้วจึงแจ้งการตาย
       if (!pending.size && !awaitingHeir(c) && resumeAfterEvent) play();
       return clockState();
     }

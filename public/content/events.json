@@ -14,6 +14,74 @@
         "effects": [ { "op": "wealth", "role": "actor", "delta": -1 }, { "op": "war", "role": "actor", "action": "prep", "delta": 1.5 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] }
     ]
   },
+  "war.levy": {
+    "id": "war.levy",
+    "textKey": "event.war_levy",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0, "ageRange": [18, 50], "requires": [ { "type": "sex", "is": "m" } ] },
+    "percepts": [],
+    "options": [
+      { "id": "pay", "textKey": "event.war_levy.pay", "conditions": [ { "type": "purse", "min": 8 } ],
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -8 }, { "op": "stress", "role": "actor", "delta": 0.02 } ] },
+      { "id": "serve", "textKey": "event.war_levy.serve",
+        "risk": {
+          "base": 0.22,
+          "factors": [
+            { "source": "skill", "skill": "combat", "weight": -0.25, "reasonKey": "combat" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_front",
+          "successKey": "outcome.levy.win",
+          "fail": {
+            "textKey": "outcome.levy.lose",
+            "effects": [ { "op": "kill", "role": "actor", "cause": "history:burmese_invasion", "allowKin": true } ]
+          }
+        },
+        "effects": [
+          { "op": "wound", "role": "actor", "part": { "tag": "body:torso" }, "kind": "cut", "severity": [0.1, 0.3] },
+          { "op": "merit", "role": "actor", "delta": 2 },
+          { "op": "prestige", "role": "actor", "delta": 2 },
+          { "op": "favor", "role": "actor", "delta": 0.25 },
+          { "op": "wealth", "role": "actor", "delta": 6 },
+          { "op": "skill", "role": "actor", "skill": "combat", "delta": 4 },
+          { "op": "war", "role": "actor", "action": "prep", "delta": 1 }
+        ] },
+      { "id": "dodge", "textKey": "event.war_levy.dodge",
+        "risk": {
+          "base": 0.4,
+          "hintKey": "risk.levy_dodge",
+          "successKey": "outcome.levy.hide",
+          "fail": {
+            "textKey": "outcome.levy.caught",
+            "effects": [
+              { "op": "wealth", "role": "actor", "delta": -10 },
+              { "op": "favor", "role": "actor", "delta": -0.3 },
+              { "op": "merit", "role": "actor", "delta": -1 },
+              { "op": "stress", "role": "actor", "delta": 0.05 }
+            ]
+          }
+        },
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.03 } ] }
+    ]
+  },
+  "war.prepare": {
+    "id": "war.prepare",
+    "textKey": "event.war_prepare",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "bury_most", "textKey": "event.war_prepare.bury_most",
+        "effects": [ { "op": "war", "role": "actor", "action": "bury", "fraction": 0.6 }, { "op": "war", "role": "actor", "action": "prep", "delta": 1 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] },
+      { "id": "bury_some", "textKey": "event.war_prepare.bury_some",
+        "effects": [ { "op": "war", "role": "actor", "action": "bury", "fraction": 0.25 }, { "op": "war", "role": "actor", "action": "prep", "delta": 0.5 } ] },
+      { "id": "rice", "textKey": "event.war_prepare.rice",
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -3 }, { "op": "war", "role": "actor", "action": "prep", "delta": 1.5 } ] },
+      { "id": "none", "textKey": "event.war_prepare.none", "effects": [] }
+    ]
+  },
   "war.west_falls": {
     "id": "war.west_falls",
     "textKey": "event.war_west_falls",

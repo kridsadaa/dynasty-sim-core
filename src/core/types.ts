@@ -591,6 +591,8 @@ export type Condition =
   | { type: 'sex'; is: 'm' | 'f'; role?: string }
   /** เงินพอจ่ายสินสอดที่ตกลงไว้ / ค่าน้ำนมที่ถูกทวง (เงินตัวเองหรือพ่อแม่ในเรือนเดียวกัน) */
   | { type: 'canPay'; what: 'sinsot' | 'elope' }
+  /** มีเงินที่ใช้ได้ (ตัวเอง + เรือน) อย่างน้อย min ตำลึง */
+  | { type: 'purse'; min: number }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
   | { type: 'office'; minRank?: number; maxRank?: number }
   /** ทักษะอย่างน้อย min (เช่น อ่านออกเขียนได้ literacy) */
@@ -656,7 +658,8 @@ export type Effect =
   /** role (ผู้ชาย) รับ with เป็นเมียน้อย — ดู systems/wives.ts */
   | { op: 'takeWife'; role: string; with: string }
   /** role ตาย (ลอบฆ่า) — เฉพาะคนนอกตระกูล คนในตระกูลต้องผ่านการแบ่งมรดก จึงไม่ใช้ op นี้ */
-  | { op: 'kill'; role: string; cause: TagId }
+  /** ปกติฆ่าได้เฉพาะคนนอกตระกูล (local) — allowKin ให้ตายได้ทุกคน รวมผู้เล่น (ผลพลาดของตัวเลือกเสี่ยง) */
+  | { op: 'kill'; role: string; cause: TagId; allowKin?: boolean }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
   | { op: 'divorce'; role: string; with: string }
   /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
@@ -665,7 +668,9 @@ export type Effect =
   | { op: 'nurse'; role: string; toward: string; neglected: boolean }
   | { op: 'prestige'; role: string; delta: number }
   /** ศึกพม่า 2308–2310 (docs/design-war-2308.md): prep = เตรียมตัวรับศึก (เก็บข้าว ของมีค่า) สะสมใน meta.war */
-  | { op: 'war'; role: string; action: 'prep'; delta: number };
+  | { op: 'war'; role: string; action: 'prep'; delta: number }
+  /** ย้ายเงินสด fraction ของเงินที่ใช้ได้ไปเป็นไหทองซ่อน (systems/war.ts) */
+  | { op: 'war'; role: string; action: 'bury'; fraction: Unit };
 
 /**
  * แรงต้านในใจตัวละครต่อตัวเลือก — บวกกันทุกข้อ (เฉพาะส่วนที่เป็นบวก)

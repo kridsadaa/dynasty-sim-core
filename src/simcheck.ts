@@ -10,7 +10,7 @@ import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type Prep
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
-import { applyMarriageStep } from './systems/marriage';
+import { applyMarriageStep, purse } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
@@ -23,6 +23,8 @@ import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, ski
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay } from './systems/world';
 import { eraConditions } from './engine/views';
+import { settlePlayerDeath } from './engine/death';
+import { buryValuables, unearthBuried } from './systems/war';
 import { riskChance } from './systems/will';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -794,6 +796,82 @@ balanceCheck();
   if (kidGot) problems.push(`ผู้เล่นอายุ 8 ได้ event ศึก ${kidGot} ครั้ง`);
   check('ศึกพม่า 2308', problems);
   if (failed === before) console.log('  ✓ badge ปี 2308–2310 · ข่าวตะนาวศรีและหัวเมืองตะวันตกแตกมาครั้งเดียวตามวัน · เก็บของ/ให้ที่พักมีผลจริง · เด็กไม่ได้');
+}
+
+// [5h2d] ศึกพม่า ขั้น 2: ฝังทรัพย์ (ไหรอดการปล้นและขุดคืนตอนกรุงแตก) และหมายเรียกพล (ตัวเลือกเสี่ยงที่ผู้เล่นตายได้)
+{
+  const before = failed;
+  console.log('เตรียมรับศึกและหมายเรียกพล:');
+  const ctx = makeCtx(emptyState(50), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day = yearStart(ctx, 2308) + 264;
+  hero.sex = 'm';
+  const problems: string[] = [];
+
+  // ฝังทรัพย์: เงินที่ใช้ได้ลด 60% และได้ไหทองซ่อนมูลค่าเท่าที่ฝัง
+  const purse0 = purse(ctx, hero);
+  chooseOption(ctx, prepareEvent(ctx, 'war.prepare', { actor: hero.id }), 'bury_most');
+  const jar = Object.values(S.items).find((i) => i.id.startsWith('itm_war'));
+  if (!jar?.hidden || jar.ownerCharacterId !== hero.id) problems.push('ฝังทรัพย์แล้วไม่ได้ไหทองซ่อนของผู้เล่น');
+  else if (Math.abs(jar.value - purse0 * 0.6) > 1) problems.push(`ไหทองมูลค่า ${jar.value} ไม่ตรง 60% ของ ${purse0}`);
+  if (Math.abs(purse(ctx, hero) - purse0 * 0.4) > 1) problems.push(`ฝังแล้วเงินที่ใช้ได้เหลือ ${purse(ctx, hero)} ควรราว ${purse0 * 0.4}`);
+
+  // ไหที่ซ่อนรอดการปล้นตอนกรุงแตก: ถ้าผู้เล่นยังอยู่ ขุดคืน (เจอหรือไม่เจอก็ลบไหออก) — เงินสดโดนริบ
+  S.meta.day = yearStart(ctx, 2310);
+  const lines = applyHistoricalShocks(ctx, 2310);
+  if (isAlive(hero) && !lines.some((l) => /ขุด(หา)?ไหทอง/.test(l))) problems.push('กรุงแตกแล้วไม่มีบรรทัดขุดไหทองที่ฝังไว้');
+  if (isAlive(hero) && Object.values(S.items).some((i) => i.id.startsWith('itm_war'))) problems.push('ขุดไหแล้วไหยังอยู่ในคลัง');
+
+  // โอกาสขุดเจอ ~80% (ตัวเลขของเกม) — ฝัง 30 ไหแล้วขุด
+  const ctx2 = makeCtx(emptyState(51), content);
+  const h2 = bootstrapScenario(ctx2);
+  h2.social.wealth = 3000;
+  for (let i = 0; i < 30; i++) buryValuables(ctx2, h2, 0.02);
+  const found = unearthBuried(ctx2).filter((l) => l.includes('ขุดไหทองที่ฝังไว้ขึ้นมา')).length;
+  if (found < 16 || found > 29) problems.push(`ขุดไหเจอ ${found}/30 (คาด ~24)`);
+
+  // หมายเรียกพล: ชายวัย 18–50 เท่านั้น; จ้างแทนต้องมีเงิน; ไปเองเสี่ยงตายและความสามารถรบลดความเสี่ยง
+  const lev = prepareEvent(ctx2, 'war.levy', { actor: h2.id });
+  const poor = spawnCharacter(ctx2, { name: 'ยาจก', sex: 'm', birthYear: 2280, estate: 'phrai_som', dynastyId: null, householdId: null, wealth: 3 });
+  if (prepareEvent(ctx2, 'war.levy', { actor: poor.id }).options.some((o) => o.id === 'pay')) problems.push('คนจนเห็นตัวเลือกจ้างคนแทนทั้งที่เงินไม่ถึง');
+  if (!lev.options.some((o) => o.id === 'pay')) problems.push('คนมีเงินไม่มีตัวเลือกจ้างคนแทน');
+  const serve = lev.options.find((o) => o.id === 'serve')!;
+  const who = (role: string) => ctx2.state.characters[lev.instance.bindings[role] ?? ('' as Character['id'])];
+  h2.skills['combat'] = 0;
+  const weak = riskChance(ctx2, h2, serve.risk!, who);
+  h2.skills['combat'] = 80;
+  const strong = riskChance(ctx2, h2, serve.risk!, who);
+  if (!(strong < weak) || weak > 0.3 || strong < 0.02) problems.push(`ความเสี่ยงไปรบ: ไม่มีทักษะ ${weak.toFixed(2)} ทักษะสูง ${strong.toFixed(2)}`);
+
+  // ตายจริงและส่งต่อผู้สืบ (settlePlayerDeath ใช้ทั้งตายตามวัยและตายเพราะผลของตัวเลือก)
+  h2.skills['combat'] = 0;
+  let died = false;
+  for (let i = 0; i < 300 && !died; i++) {
+    chooseOption(ctx2, prepareEvent(ctx2, 'war.levy', { actor: h2.id }), 'serve');
+    died = !isAlive(h2);
+  }
+  if (!died) problems.push('ไปรบ 300 ครั้งไม่เคยตายเลย');
+  else {
+    if (h2.deathCause !== 'history:burmese_invasion') problems.push(`ตายด้วย ${h2.deathCause} ไม่ใช่ศึกพม่า`);
+    const pushed: string[] = [];
+    const outcome = settlePlayerDeath(ctx2, [], (p) => pushed.push(p.type));
+    if (!pushed.includes('playerDied')) problems.push('ตายแล้วไม่แจ้งการตาย');
+    if (outcome === 'handed_over' && ctx2.state.meta.playerCharacterId === h2.id) problems.push('มีผู้สืบคนเดียวแต่ผู้เล่นยังเป็นคนตาย');
+    if (outcome === 'extinct') problems.push('ผู้เล่นในฉากเริ่มมีน้องแต่ตระกูลสิ้นสาย');
+  }
+
+  // ผู้หญิงไม่ถูกเรียกพล แต่เตรียมตัวได้
+  const ctx3 = makeCtx(emptyState(52), content);
+  const h3 = bootstrapScenario(ctx3);
+  h3.sex = 'f';
+  ctx3.state.meta.day = yearStart(ctx3, 2308) + 174;
+  const ids3: string[] = [];
+  for (let i = 0; i < 100; i++) for (const sig of advanceDay(ctx3)) if (sig.type === 'event') ids3.push(sig.prepared.def.id);
+  if (ids3.includes('war.levy')) problems.push('ผู้หญิงถูกเรียกพล');
+  if (!ids3.includes('war.prepare')) problems.push('ผู้หญิงไม่ได้ event เตรียมรับศึก');
+  check('เตรียมรับศึกและหมายเรียกพล', problems);
+  if (failed === before) console.log('  ✓ ฝังทรัพย์ได้ไหซ่อนและขุดคืน ~80% · หมายเรียกพลเฉพาะชายวัยฉกรรจ์ · ไปรบเสี่ยงตายจริงและส่งต่อผู้สืบได้ · ผู้หญิงไม่ถูกเรียก');
 }
 
 // [5h3] ข้อแลกเปลี่ยนใน event ที่เจอบ่อย: งานบุญและผลผูกมิตรต้องมีตัวเลือกที่เสียเงินกับตัวเลือกที่ไม่เสีย และเสียแล้วเงินลดจริง

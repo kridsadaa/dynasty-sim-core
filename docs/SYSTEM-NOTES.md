@@ -23,6 +23,7 @@
 | `world.ts` | `advanceDay` — 1 call = 1 วัน ส่ง signal (`log` `event` `habit` `playerDied`); ไม่รู้จัก DOM/Worker |
 | `events.ts` | เลือก/เตรียม/ตัดสิน event; ฉีดตัวเลือกจากปม/แผล (injection); ทอยตัวเลือกเสี่ยง |
 | `handover.ts` | ผู้เล่นตาย → ผู้สืบ มรดก ตำนาน ข้อห้ามตระกูล; `applyHistoricalShocks` (เหตุการณ์ประวัติศาสตร์) |
+| `war.ts` | เตรียมรับศึก 2308–2310: ฝังเงินเป็นไหทองซ่อน (`buryValuables`) และขุดคืนตอนกรุงแตก (`unearthBuried`) |
 | `historyEvents.ts` | ส่ง event ให้ผู้เล่นตามวันที่ของปีประวัติศาสตร์ (`rules.json` `historyEvents`) — ศึกพม่า 2308–2310 ดู [design-war-2308.md](design-war-2308.md) |
 | `mortality.ts` `mourning.ts` | ทอยตายรายปีตามอายุ ไข้ทรพิษ; event งานศพของญาติใกล้ชิด |
 | `career.ts` | ราชการ: ตำแหน่ง, `favor`, เลื่อนยศ/ถูกลงโทษ, รายได้ตามศักดินา; `careerSkill` = ขั้นวิชาในสายของกรม → `favor` รายปี |
@@ -40,6 +41,7 @@
 | `src/engine/engine.worker.ts` | Worker เจ้าของ state เพียงตัวเดียว รับ Command ส่ง view/push กลับ; ลูปเวลา (`step`/`runClock`) |
 | `src/engine/protocol.ts` | ชนิดข้อความ Command/Reply/Push และ view model (`CharacterView` ฯลฯ) |
 | `src/engine/views.ts` | แปลง state → view model (`playerView`, `eraConditions`, `deathNotice`, `heirChoiceView`) |
+| `src/engine/death.ts` | `settlePlayerDeath` — แจ้งการตายของผู้เล่นและส่งต่อผู้สืบ (ใช้ทั้งตายตามวัยในลูปเวลาและตายเพราะผลของตัวเลือกเสี่ยงใน event) |
 | `src/engine/persistence.ts` | IndexedDB เซฟ/โหลด |
 | `src/main.ts` | UI ฝั่ง main thread (modal, log, แผงตัวละคร); ไม่ถือ state |
 

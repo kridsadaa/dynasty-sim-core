@@ -464,7 +464,8 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
     }
     if (e.op === 'stress' && e.role === 'actor' && e.delta) parts.push(e.delta > 0 ? 'หนักใจขึ้น' : 'สบายใจขึ้น');
     if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
-    if (e.op === 'war' && e.delta > 0) parts.push('รับมือศึกได้ดีขึ้น');
+    if (e.op === 'war' && e.action === 'prep' && e.delta > 0) parts.push('รับมือศึกได้ดีขึ้น');
+    if (e.op === 'war' && e.action === 'bury') parts.push('ฝังเงินทองไว้ (ใช้ไม่ได้จนกว่าศึกจะผ่าน)');
     if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');
   }
   return parts.length ? [...new Set(parts)].join(' · ') : undefined;
