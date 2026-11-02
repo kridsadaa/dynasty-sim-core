@@ -50,7 +50,7 @@ npm run build      # lore:check + typecheck + test + static build → dist/
 npm run demo       # Monte Carlo + เรื่องเล่า 4 รุ่น ใน Node
 ```
 
-เอกสารอื่น: [WRITING.md](WRITING.md) แนวเขียนเนื้อเรื่อง · [ROADMAP.md](ROADMAP.md) แผนงาน · [PLAYTEST.md](PLAYTEST.md) คู่มือทดสอบเล่น · [art/README.md](art/README.md) ระบบภาพ
+เอกสารอื่น: [WRITING.md](WRITING.md) แนวเขียนเนื้อเรื่อง · [ROADMAP.md](ROADMAP.md) แผนงาน · [PLAYTEST.md](PLAYTEST.md) คู่มือทดสอบเล่น · [art/README.md](art/README.md) ระบบภาพ · [BACKLOG.md](BACKLOG.md) กล่องรับเรื่อง · [docs/PLAN.md](docs/PLAN.md) แผนที่คัดแล้ว · [docs/PARKED.md](docs/PARKED.md) พักไว้/ไม่ทำ · [docs/SYSTEM-NOTES.md](docs/SYSTEM-NOTES.md) บันทึกระบบ
 
 Deploy: push เข้า main แล้ว `.github/workflows/pages.yml` build และขึ้น GitHub Pages ให้เอง (build ใต้ `/dynasty-sim-core/` ด้วย `BASE_PATH`) · ยังใช้ Vercel ได้ด้วย `vercel.json` — ห้ามสร้างโฟลเดอร์ `api/` เพราะเกมต้องเป็น static ล้วน
 
