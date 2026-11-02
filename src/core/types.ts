@@ -680,7 +680,7 @@ export type Effect =
   /** ปักหลักอยู่ในกรุง */
   | { op: 'war'; role: string; action: 'stay' }
   /** ออกจากกรุง: ทิศ + พาใคร (all = ทั้งเรือน, nuclear = คู่ครองและลูกในเรือน, alone = ไปคนเดียว) */
-  | { op: 'war'; role: string; action: 'leave'; dir: 'east' | 'forest'; party: 'all' | 'nuclear' | 'alone' }
+  | { op: 'war'; role: string; action: 'leave'; dir: 'east' | 'forest' | 'camp'; party: 'all' | 'nuclear' | 'alone' }
   /** ตามพระยาตากฝ่าวงล้อมออกไปทางตะวันออกคนเดียว — ตระกูลนับเป็นฝ่ายพระเจ้าตากแต่เนิ่น (ได้ความโปรดปรานในราชการ 2311–2324) */
   | { op: 'war'; role: string; action: 'taksin' };
 
@@ -1368,7 +1368,7 @@ export interface GameState {
     /** เรื่องจบเมื่อถึง 1 ม.ค. ปีนี้ — ฉากเริ่มเป็นคนกำหนด (เซฟเก่าไม่มี → END_YEAR ใน scenario.ts) */
     endYear?: number;
     /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
-    war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest'; party?: CharacterId[]; taksin?: boolean };
+    war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;

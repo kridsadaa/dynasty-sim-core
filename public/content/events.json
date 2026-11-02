@@ -86,6 +86,12 @@
           { "op": "wealth", "role": "actor", "delta": -3 },
           { "op": "stress", "role": "actor", "delta": 0.04 }
         ] },
+      { "id": "surrender", "textKey": "event.war_rice_gone.surrender",
+        "effects": [
+          { "op": "war", "role": "actor", "action": "leave", "dir": "camp", "party": "nuclear" },
+          { "op": "favor", "role": "actor", "delta": -1 },
+          { "op": "stress", "role": "actor", "delta": 0.1 }
+        ] },
       { "id": "endure", "textKey": "event.war_rice_gone.endure",
         "effects": [ { "op": "stress", "role": "actor", "delta": 0.06 } ] }
     ]

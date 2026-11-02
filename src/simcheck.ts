@@ -918,7 +918,7 @@ balanceCheck();
   if (!warBadges(ctx).some((b) => b.label === 'ปักหลักอยู่ในกรุง')) problems.push('ไม่มีป้ายสถานะปักหลักในกรุง');
 
   // ตอนกรุงแตก: ที่อยู่ต่างกัน → ความเสี่ยงตายและเงินสดที่ถูกริบต่างกัน (ตัวคูณของเกม: ตะวันออก 0.3 · กรุง 1 · ป่า 1.3)
-  const outcome = (seed: number, where: 'city' | 'east' | 'forest', prep = 0) => {
+  const outcome = (seed: number, where: 'city' | 'east' | 'forest' | 'camp', prep = 0) => {
     const c = makeCtx(emptyState(seed), content);
     const h = bootstrapScenario(c);
     const folk = Array.from({ length: 1000 }, (_, i) => spawnCharacter(c, {
@@ -941,6 +941,12 @@ balanceCheck();
   // เป้าผู้ใช้ (design-war-2308 ข้อ 8.4): ผู้ปักหลักในกรุงที่เตรียมตัวบ้างรอดราว 40–60% และการเตรียมตัวต้องช่วยจริง
   const prepared = outcome(63, 'city', 3);
   const wellPrepared = outcome(64, 'city', 5);
+  // ยอมแพ้: ตายน้อยมากและเก็บเงินสดได้มากกว่า แต่ถูกกวาดต้อนบ่อย — ไม่ใช่ทางที่ดีกว่าทุกด้าน
+  const camp = outcome(65, 'camp');
+  if (!(camp.dead < city.dead * 0.3)) problems.push(`ยอมแพ้ตาย ${camp.dead}/1000 ไม่น้อยกว่ากรุง ${city.dead}/1000 พอ`);
+  if (!(camp.captured > prepared.captured)) problems.push(`ยอมแพ้ถูกกวาดต้อน ${camp.captured}/1000 ไม่มากกว่าปักหลักเตรียมตัว ${prepared.captured}/1000`);
+  if (!(camp.cash > city.cash + 10)) problems.push(`ยอมแพ้เงินสดเหลือ ${camp.cash.toFixed(0)} ไม่มากกว่าอยู่ในกรุง ${city.cash.toFixed(0)}`);
+  if (!(camp.survive < east.survive)) problems.push(`ยอมแพ้รอด ${(camp.survive * 100).toFixed(0)}% ไม่น้อยกว่าหนีตะวันออก ${(east.survive * 100).toFixed(0)}%`);
   if (!(prepared.survive >= 0.4 && prepared.survive <= 0.6)) problems.push(`ปักหลักเตรียมตัวบ้าง (prep 3) รอด ${(prepared.survive * 100).toFixed(0)}% ควรอยู่ในช่วง 40–60%`);
   if (!(wellPrepared.survive > city.survive + 0.1)) problems.push(`เตรียมตัวเต็มที่รอด ${(wellPrepared.survive * 100).toFixed(0)}% ไม่มากกว่าไม่เตรียม ${(city.survive * 100).toFixed(0)}% พอ`);
   if (!(east.survive > prepared.survive + 0.1)) problems.push(`หนีตะวันออกรอด ${(east.survive * 100).toFixed(0)}% ไม่มากกว่าปักหลักเตรียมตัว ${(prepared.survive * 100).toFixed(0)}% พอ — ทางหนีควรปลอดภัยกว่า`);
@@ -949,7 +955,7 @@ balanceCheck();
   if (!(city.captured > 0 && city.dead > 0)) problems.push('กรุงแตกแล้วไม่มีทั้งคนตายและคนถูกกวาดต้อน');
   if (!(east.cash > 70 && city.cash < 55)) problems.push(`เงินสดที่เหลือ: หนีตะวันออก ${east.cash.toFixed(0)} · อยู่ในกรุง ${city.cash.toFixed(0)} (ควร >70 และ <55)`);
   check('ออกจากกรุงหรืออยู่', problems);
-  if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ต่อพัน (ตาย/กวาดต้อน) กรุง ${city.dead}/${city.captured} ตะวันออก ${east.dead}/${east.captured} ป่า ${forest.dead}/${forest.captured} · รอด: กรุงไม่เตรียม ${(city.survive * 100).toFixed(0)}% prep3 ${(prepared.survive * 100).toFixed(0)}% prep5 ${(wellPrepared.survive * 100).toFixed(0)}% ตะวันออก ${(east.survive * 100).toFixed(0)}% ป่า ${(forest.survive * 100).toFixed(0)}% · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
+  if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ต่อพัน (ตาย/กวาดต้อน) กรุง ${city.dead}/${city.captured} ตะวันออก ${east.dead}/${east.captured} ป่า ${forest.dead}/${forest.captured} · รอด: กรุงไม่เตรียม ${(city.survive * 100).toFixed(0)}% prep3 ${(prepared.survive * 100).toFixed(0)}% prep5 ${(wellPrepared.survive * 100).toFixed(0)}% ตะวันออก ${(east.survive * 100).toFixed(0)}% ป่า ${(forest.survive * 100).toFixed(0)}% ยอมแพ้ ${(camp.survive * 100).toFixed(0)}% (ตาย/กวาดต้อน ${camp.dead}/${camp.captured}, เงินสด ${camp.cash.toFixed(0)}) · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
 }
 
 // [5h2f] ศึกพม่า ขั้น 4: ล้อมกรุง ข้าวหมด ฝ่าวงล้อมตามพระยาตาก — เฉพาะคนที่ยังอยู่ในกรุง; เงินสดและการเตรียมตัวมีประโยชน์จริง
@@ -985,12 +991,12 @@ balanceCheck();
   marry(ctx, hero, wife);
   const riceOptions = (actor: Character) => prepareEvent(ctx, 'war.rice_gone', { actor: actor.id }).options.map((o) => o.id).join();
   S.meta.war = { prep: 0 };
-  if (riceOptions(hero) !== 'buy,slip,endure') problems.push(`ไม่ได้เตรียมตัวแต่มีเงิน ได้ตัวเลือก ${riceOptions(hero)}`);
+  if (riceOptions(hero) !== 'buy,slip,surrender,endure') problems.push(`ไม่ได้เตรียมตัวแต่มีเงิน ได้ตัวเลือก ${riceOptions(hero)}`);
   S.meta.war = { prep: 3 };
-  if (riceOptions(hero) !== 'share,buy,slip,endure') problems.push(`เตรียมตัวไว้และมีเงิน ได้ตัวเลือก ${riceOptions(hero)}`);
+  if (riceOptions(hero) !== 'share,buy,slip,surrender,endure') problems.push(`เตรียมตัวไว้และมีเงิน ได้ตัวเลือก ${riceOptions(hero)}`);
   const poor = spawnCharacter(ctx, { name: 'ยาจก', sex: 'm', birthYear: 2280, estate: 'phrai_som', dynastyId: null, householdId: null, wealth: 3 });
   S.meta.war = { prep: 0 };
-  if (riceOptions(poor) !== 'slip,endure') problems.push(`ไม่มีทั้งข้าวและเงิน ได้ตัวเลือก ${riceOptions(poor)}`);
+  if (riceOptions(poor) !== 'slip,surrender,endure') problems.push(`ไม่มีทั้งข้าวและเงิน ได้ตัวเลือก ${riceOptions(poor)}`);
   // ฝังเงินไว้หมดแล้วซื้อข้าวไม่ได้
   hero.social.wealth = 0;
   const father = S.characters[S.households[hero.householdId!]!.headId]!;

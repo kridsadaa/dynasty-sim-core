@@ -469,7 +469,7 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
     if (e.op === 'war' && e.action === 'bury') parts.push('ฝังเงินทองไว้ (ใช้ไม่ได้จนกว่าศึกจะผ่าน)');
     if (e.op === 'war' && e.action === 'stay') parts.push('อยู่ในกรุง');
     if (e.op === 'war' && e.action === 'taksin') parts.push('ออกจากกรุงไปกับพระยาตาก');
-    if (e.op === 'war' && e.action === 'leave') parts.push(`${e.dir === 'east' ? 'ไปทางตะวันออก' : 'เข้าป่าทางตะวันตก'} · ${e.party === 'all' ? 'ทั้งเรือน' : e.party === 'nuclear' ? 'คนใกล้ชิด' : 'คนเดียว'}`);
+    if (e.op === 'war' && e.action === 'leave') parts.push(`${e.dir === 'east' ? 'ไปทางตะวันออก' : e.dir === 'camp' ? 'ยอมแพ้ที่ค่ายพม่า (รอดชีวิตง่ายแต่มักถูกกวาดต้อน)' : 'เข้าป่าทางตะวันตก'} · ${e.party === 'all' ? 'ทั้งเรือน' : e.party === 'nuclear' ? 'คนใกล้ชิด' : 'คนเดียว'}`);
     if (showCost && hasOffice && e.op === 'favor' && e.delta < 0) parts.push('ถูกมองว่าทิ้งราชการ');
     if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');
   }

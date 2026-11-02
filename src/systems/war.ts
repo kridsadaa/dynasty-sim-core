@@ -18,15 +18,16 @@ export const WAR_JAR_PREFIX = 'itm_war';
 /** โอกาสขุดไหทองเจอตอนศึกจบ */
 export const WAR_JAR_RECOVER = 0.8;
 
-export type WarWhere = 'city' | 'east' | 'forest';
+/** camp = ออกไปยอมแพ้ที่ค่ายพม่าก่อนกรุงแตก */
+export type WarWhere = 'city' | 'east' | 'forest' | 'camp';
 
 /**
  * ตัวคูณความเสี่ยงตายตอนกรุงแตกตามที่อยู่ — ตะวันออกปลอดภัยกว่าแต่ไม่แน่นอน (ผู้ใช้ตัดสิน 2026-11-02; ประวัติศาสตร์ไม่มีข้อมูลพลเรือน),
  * ป่าตะวันตก: ผลค้นว่าคนที่หนีเข้าป่าถูกตามล่า จึงเสี่ยงกว่าอยู่ในกรุงเล็กน้อย
  */
-export const WAR_DEATH_MULT: Record<WarWhere, number> = { city: 1, east: 0.3, forest: 1.3 };
+export const WAR_DEATH_MULT: Record<WarWhere, number> = { city: 1, east: 0.3, forest: 1.3, camp: 0.1 };
 /** สัดส่วนที่เงินสดถูกริบเทียบกับคนในกรุง — คนที่หนีพกเงินไปด้วย */
-export const WAR_CASH_LOSS_MULT: Record<WarWhere, number> = { city: 1, east: 0.3, forest: 0.3 };
+export const WAR_CASH_LOSS_MULT: Record<WarWhere, number> = { city: 1, east: 0.3, forest: 0.3, camp: 0.5 };
 
 /** ความเสี่ยงตายตอนกรุงแตกลดลงตามการเตรียมตัว (meta.war.prep) เฉพาะคนที่อยู่ในกรุง — สูงสุด 40% (ตัวเลขของเกม) */
 export const WAR_PREP_PER_POINT = 0.08;
@@ -35,7 +36,7 @@ export const WAR_PREP_MAX = 0.4;
 /** deathCause ของคนที่ถูกกวาดต้อนไปพม่า — หายจากเกม (เหมือนตาย) ข้อความบอกชัดว่าถูกกวาดต้อน; เส้นทางเชลยของผู้เล่นเลื่อนไว้ (BACKLOG) */
 export const CAPTIVE_TAG = 'history:captive_after_fall';
 /** ตัวคูณความเสี่ยงถูกกวาดต้อนตามที่อยู่ — ตะวันออกอยู่นอกวงทัพพม่า ป่าตะวันตกถูกตามล่าบ้าง (ตัวเลขของเกม) */
-export const WAR_CAPTURE_MULT: Record<WarWhere, number> = { city: 1, east: 0.1, forest: 0.9 };
+export const WAR_CAPTURE_MULT: Record<WarWhere, number> = { city: 1, east: 0.1, forest: 0.9, camp: 1.4 };
 
 const prepFactor = (ctx: Ctx, where: WarWhere) =>
   where === 'city' ? 1 - Math.min(WAR_PREP_MAX, Math.max(0, ctx.state.meta.war?.prep ?? 0) * WAR_PREP_PER_POINT) : 1;
@@ -96,7 +97,7 @@ export function stayInCity(ctx: Ctx, ch: Character): string[] {
  * ออกจากกรุง: all = ทุกคนที่มีชีวิตในเรือนของ ch · nuclear = คู่ครองและลูกที่อยู่เรือนเดียวกัน · alone = ไปคนเดียว
  * ผู้เล่นไปด้วยเสมอ
  */
-export function leaveCity(ctx: Ctx, ch: Character, dir: 'east' | 'forest', who: 'all' | 'nuclear' | 'alone'): string[] {
+export function leaveCity(ctx: Ctx, ch: Character, dir: 'east' | 'forest' | 'camp', who: 'all' | 'nuclear' | 'alone'): string[] {
   const hh = ch.householdId ? ctx.state.households[ch.householdId] : undefined;
   const sameHouse = (c: Character) => !!hh && c.householdId === hh.id;
   const members = who === 'all'
@@ -106,8 +107,8 @@ export function leaveCity(ctx: Ctx, ch: Character, dir: 'east' | 'forest', who: 
       : [];
   const party = [...new Set([ch.id, ...members.map((c) => c.id)])];
   ctx.state.meta.war = { prep: ctx.state.meta.war?.prep ?? 0, stance: 'leave', dir, party };
-  const where = dir === 'east' ? 'ทางตะวันออก' : 'เข้าป่าทางตะวันตก';
-  return [`${ch.name}พา${party.length > 1 ? `คนในครอบครัวอีก ${party.length - 1} คน` : 'ตัวคนเดียว'}ออกจากกรุงไป${where}`];
+  const where = dir === 'east' ? 'ทางตะวันออก' : dir === 'camp' ? 'ที่ค่ายพม่าเพื่อยอมแพ้' : 'เข้าป่าทางตะวันตก';
+  return [`${ch.name}พา${party.length > 1 ? `คนในครอบครัวอีก ${party.length - 1} คน` : 'ตัวคนเดียว'}${dir === 'camp' ? 'ไป' : 'ออกจากกรุงไป'}${where}`];
 }
 
 /** ฝ่าวงล้อมตามพระยาตากออกไปทางตะวันออกคนเดียว */
@@ -123,7 +124,7 @@ export function fallLeaverLines(ctx: Ctx): string[] {
   if (w?.stance !== 'leave' || !w.dir) return [];
   const alive = (w.party ?? []).map((id) => ctx.state.characters[id]).filter(isAlive);
   if (!alive.length) return [];
-  const where = w.dir === 'east' ? 'ทางตะวันออก' : 'ในป่าทางตะวันตก';
+  const where = w.dir === 'east' ? 'ทางตะวันออก' : w.dir === 'camp' ? 'ในค่ายพม่า' : 'ในป่าทางตะวันตก';
   return [`ขณะกรุงแตก ${alive.map((c) => c.name).slice(0, 3).join(' ')}${alive.length > 3 ? ` และอีก ${alive.length - 3} คน` : ''}อยู่${where} ไม่ได้อยู่ในเมืองตอนถูกปล้น`];
 }
 
@@ -133,5 +134,6 @@ export function warBadges(ctx: Ctx): Array<{ label: string; tone: 'info' | 'warn
   const year = yearOf(ctx, ctx.state.meta.day);
   if (!w?.stance || year > 2310) return [];
   if (w.stance === 'stay') return [{ label: 'ปักหลักอยู่ในกรุง', tone: 'warn' }];
+  if (w.dir === 'camp') return [{ label: 'ยอมแพ้ต่อพม่า', tone: 'warn' }];
   return [{ label: w.dir === 'east' ? 'หนีไปทางตะวันออก' : 'หนีเข้าป่าทางตะวันตก', tone: 'info' }];
 }
