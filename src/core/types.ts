@@ -945,6 +945,8 @@ export interface HistoricalEvent {
     deathRisk: Unit;
     /** ความเสี่ยงตายแยกเพศ (แทน deathRisk) — อหิวาต์ 2363 ผู้หญิงตายมากกว่า */
     deathRiskBySex?: { m: Unit; f: Unit };
+    /** ความเสี่ยงถูกกวาดต้อนไปเป็นเชลย (ทอยหลังทอยตายรอบเดียวกัน) — ผู้ถูกกวาดต้อนหายจากเกมด้วย deathCause history:captive_after_fall (เสียกรุง 2310) */
+    captureRisk?: Unit;
     /** โรคระบาด/ข้าวยาก: ตายได้ทุกคนในฉาก (คนนอกด้วย) ไม่ใช่แค่คนในตระกูล */
     everyone?: boolean;
     /** ฝักฝ่ายที่โดนริบราชบาดาล */

@@ -106,7 +106,8 @@ const constitutionAt = { young: [0, 0], old: [0, 0] };
 let hardToRaise = 0;
 // ตัวชี้วัดสมดุลฝั่งผู้เล่น (balanceCheck) — เก็บจากการเล่นอัตโนมัติ "เลือกตัวเลือกแรกเสมอ" แบบเดียวกับที่ BACKLOG ใช้วัด
 const bal = {
-  firstDeathAges: [] as number[], // อายุที่ตัวละครแรกของผู้เล่นตาย (seed ที่ยังไม่ตายจนจบไม่นับ)
+  firstDeathAges: [] as number[], // อายุที่ตัวละครแรกของผู้เล่นตาย (seed ที่ยังไม่ตายจนจบไม่นับ) — ไม่รวมตายตอนกรุงแตก
+  firstWarDeaths: 0, // ตัวละครแรกตายหรือถูกกวาดต้อนตอนกรุงแตก 2310 (ผู้เล่นอัตโนมัติไม่เตรียมตัว/หนี จึงเสียหนัก)
   takeoverAges: [] as number[], // อายุของผู้สืบตอนรับช่วงเป็นผู้เล่น
   stress: [0, 0], // [ผลรวม, จำนวน] ความหนักใจของผู้เล่นที่มีชีวิตทุก 1 ม.ค.
   senior: [0, 0], // [ขั้น 2 ขึ้นไป (ขุนขึ้นไป), จำนวน] ผู้เล่นที่มีชีวิต — รายงานเฉยๆ ใช้ดูผลของโหมด invest
@@ -207,7 +208,10 @@ for (let seed = 1; seed <= SEEDS; seed++) {
         }
       } else if (sig.type === 'playerDied') {
         const dead = S.characters[S.meta.playerCharacterId]!;
-        if (dead.id === heroId) bal.firstDeathAges.push(ageOf(ctx, dead, dead.deathDay ?? S.meta.day));
+        if (dead.id === heroId) {
+          if (dead.deathCause === 'history:fall_of_ayutthaya' || dead.deathCause === 'history:captive_after_fall') bal.firstWarDeaths++;
+          else bal.firstDeathAges.push(ageOf(ctx, dead, dead.deathDay ?? S.meta.day));
+        }
         if (!heirCandidates(ctx, dead).length) {
           over = true;
           break;
@@ -254,8 +258,10 @@ function balanceCheck(): void {
   const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)] ?? NaN;
   const ratio = ([n, d]: number[]) => (d ? n! / d! : NaN);
   const rows: Array<[string, number, number, number]> = [
-    // P0 (BACKLOG): ตัวละครแรกตายก่อนอายุ 30 บ่อยเกินไปเพราะเสียกรุง 2310 โดยไม่มีทางเลือก — วัดได้ราว 18% ตอนเขียนเทสต์นี้
-    ['ตัวละครแรกตายก่อนอายุ 30', bal.firstDeathAges.filter((a) => a < 30).length / SEEDS, 0, 0.35],
+    // ไม่รวมตายตอนกรุงแตก (แยกวัดด้านล่าง): ศึก 2308–2310 ตั้งใจให้เสี่ยงหนักสำหรับคนไม่เตรียมตัว (design-war-2308 ข้อ 8.4)
+    ['ตัวละครแรกตายก่อนอายุ 30 (ไม่นับกรุงแตก)', bal.firstDeathAges.filter((a) => a < 30).length / SEEDS, 0, 0.35],
+    // ผู้เล่นอัตโนมัติเลือกตัวเลือกแรก (ปักหลัก ไม่ฝังทรัพย์) = กรณีเลวร้ายที่สุดของคนในกรุง ~57%; เพดานกันศึกโหดเกินเป้า
+    ['ตัวละครแรกตายหรือถูกกวาดต้อนตอนกรุงแตก', bal.firstWarDeaths / SEEDS, 0, 0.7],
     ['ตระกูลสิ้นสายก่อนจบเรื่อง', extinct / SEEDS, 0, 0.25],
     ['อายุมัธยฐานของผู้สืบตอนรับช่วง', median(bal.takeoverAges), 25, 60],
     ['ความหนักใจเฉลี่ยของผู้เล่น', ratio(bal.stress), 0.05, 0.35],
@@ -912,25 +918,38 @@ balanceCheck();
   if (!warBadges(ctx).some((b) => b.label === 'ปักหลักอยู่ในกรุง')) problems.push('ไม่มีป้ายสถานะปักหลักในกรุง');
 
   // ตอนกรุงแตก: ที่อยู่ต่างกัน → ความเสี่ยงตายและเงินสดที่ถูกริบต่างกัน (ตัวคูณของเกม: ตะวันออก 0.3 · กรุง 1 · ป่า 1.3)
-  const outcome = (seed: number, where: 'city' | 'east' | 'forest') => {
+  const outcome = (seed: number, where: 'city' | 'east' | 'forest', prep = 0) => {
     const c = makeCtx(emptyState(seed), content);
     const h = bootstrapScenario(c);
     const folk = Array.from({ length: 1000 }, (_, i) => spawnCharacter(c, {
       name: `ชาวบ้าน${i}`, sex: 'm', birthYear: 2280, estate: 'noble', dynastyId: h.dynastyId, householdId: null, wealth: 100,
     }));
-    if (where !== 'city') c.state.meta.war = { prep: 0, stance: 'leave', dir: where, party: folk.map((f) => f.id) };
+    c.state.meta.war = where === 'city'
+      ? { prep, stance: 'stay' }
+      : { prep, stance: 'leave', dir: where, party: folk.map((f) => f.id) };
     applyHistoricalShocks(c, 2310);
     const alive = folk.filter((f) => isAlive(f));
-    return { dead: folk.length - alive.length, cash: alive.reduce((a, f) => a + f.social.wealth, 0) / Math.max(1, alive.length) };
+    const captured = folk.filter((f) => f.deathCause === 'history:captive_after_fall').length;
+    return {
+      dead: folk.length - alive.length - captured, captured, survive: alive.length / folk.length,
+      cash: alive.reduce((a, f) => a + f.social.wealth, 0) / Math.max(1, alive.length),
+    };
   };
   const city = outcome(60, 'city');
   const east = outcome(61, 'east');
   const forest = outcome(62, 'forest');
-  if (!(east.dead < city.dead * 0.6)) problems.push(`หนีตะวันออกตาย ${east.dead}/1000 ไม่น้อยกว่าอยู่ในกรุง ${city.dead}/1000 พอ`);
-  if (!(forest.dead > city.dead)) problems.push(`หนีเข้าป่าตาย ${forest.dead}/1000 ไม่มากกว่าอยู่ในกรุง ${city.dead}/1000`);
+  // เป้าผู้ใช้ (design-war-2308 ข้อ 8.4): ผู้ปักหลักในกรุงที่เตรียมตัวบ้างรอดราว 40–60% และการเตรียมตัวต้องช่วยจริง
+  const prepared = outcome(63, 'city', 3);
+  const wellPrepared = outcome(64, 'city', 5);
+  if (!(prepared.survive >= 0.4 && prepared.survive <= 0.6)) problems.push(`ปักหลักเตรียมตัวบ้าง (prep 3) รอด ${(prepared.survive * 100).toFixed(0)}% ควรอยู่ในช่วง 40–60%`);
+  if (!(wellPrepared.survive > city.survive + 0.1)) problems.push(`เตรียมตัวเต็มที่รอด ${(wellPrepared.survive * 100).toFixed(0)}% ไม่มากกว่าไม่เตรียม ${(city.survive * 100).toFixed(0)}% พอ`);
+  if (!(east.survive > prepared.survive + 0.1)) problems.push(`หนีตะวันออกรอด ${(east.survive * 100).toFixed(0)}% ไม่มากกว่าปักหลักเตรียมตัว ${(prepared.survive * 100).toFixed(0)}% พอ — ทางหนีควรปลอดภัยกว่า`);
+  if (!(east.survive < 0.97)) problems.push(`หนีตะวันออกรอด ${(east.survive * 100).toFixed(0)}% ปลอดภัยเกินไป — ควรยังไม่แน่นอน`);
+  if (!(forest.survive < prepared.survive)) problems.push(`หนีเข้าป่ารอด ${(forest.survive * 100).toFixed(0)}% ไม่น้อยกว่าปักหลักเตรียมตัว ${(prepared.survive * 100).toFixed(0)}%`);
+  if (!(city.captured > 0 && city.dead > 0)) problems.push('กรุงแตกแล้วไม่มีทั้งคนตายและคนถูกกวาดต้อน');
   if (!(east.cash > 70 && city.cash < 55)) problems.push(`เงินสดที่เหลือ: หนีตะวันออก ${east.cash.toFixed(0)} · อยู่ในกรุง ${city.cash.toFixed(0)} (ควร >70 และ <55)`);
   check('ออกจากกรุงหรืออยู่', problems);
-  if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ตายต่อพัน กรุง ${city.dead} ตะวันออก ${east.dead} ป่า ${forest.dead} · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
+  if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ต่อพัน (ตาย/กวาดต้อน) กรุง ${city.dead}/${city.captured} ตะวันออก ${east.dead}/${east.captured} ป่า ${forest.dead}/${forest.captured} · รอด: กรุงไม่เตรียม ${(city.survive * 100).toFixed(0)}% prep3 ${(prepared.survive * 100).toFixed(0)}% prep5 ${(wellPrepared.survive * 100).toFixed(0)}% ตะวันออก ${(east.survive * 100).toFixed(0)}% ป่า ${(forest.survive * 100).toFixed(0)}% · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
 }
 
 // [5h2f] ศึกพม่า ขั้น 4: ล้อมกรุง ข้าวหมด ฝ่าวงล้อมตามพระยาตาก — เฉพาะคนที่ยังอยู่ในกรุง; เงินสดและการเตรียมตัวมีประโยชน์จริง

@@ -32,10 +32,22 @@ export const WAR_CASH_LOSS_MULT: Record<WarWhere, number> = { city: 1, east: 0.3
 export const WAR_PREP_PER_POINT = 0.08;
 export const WAR_PREP_MAX = 0.4;
 
+/** deathCause ของคนที่ถูกกวาดต้อนไปพม่า — หายจากเกม (เหมือนตาย) ข้อความบอกชัดว่าถูกกวาดต้อน; เส้นทางเชลยของผู้เล่นเลื่อนไว้ (BACKLOG) */
+export const CAPTIVE_TAG = 'history:captive_after_fall';
+/** ตัวคูณความเสี่ยงถูกกวาดต้อนตามที่อยู่ — ตะวันออกอยู่นอกวงทัพพม่า ป่าตะวันตกถูกตามล่าบ้าง (ตัวเลขของเกม) */
+export const WAR_CAPTURE_MULT: Record<WarWhere, number> = { city: 1, east: 0.1, forest: 0.9 };
+
+const prepFactor = (ctx: Ctx, where: WarWhere) =>
+  where === 'city' ? 1 - Math.min(WAR_PREP_MAX, Math.max(0, ctx.state.meta.war?.prep ?? 0) * WAR_PREP_PER_POINT) : 1;
+
 export function warDeathMult(ctx: Ctx, id: CharacterId): number {
   const where = warWhere(ctx, id);
-  const prep = Math.max(0, ctx.state.meta.war?.prep ?? 0);
-  return WAR_DEATH_MULT[where] * (where === 'city' ? 1 - Math.min(WAR_PREP_MAX, prep * WAR_PREP_PER_POINT) : 1);
+  return WAR_DEATH_MULT[where] * prepFactor(ctx, where);
+}
+
+export function warCaptureMult(ctx: Ctx, id: CharacterId): number {
+  const where = warWhere(ctx, id);
+  return WAR_CAPTURE_MULT[where] * prepFactor(ctx, where);
 }
 
 export function warWhere(ctx: Ctx, id: CharacterId): WarWhere {

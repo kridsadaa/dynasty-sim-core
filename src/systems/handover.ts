@@ -7,7 +7,7 @@ import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from '.
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 import { applyCareer } from './career';
-import { fallLeaverLines, unearthBuried, WAR_CASH_LOSS_MULT, warDeathMult, warWhere } from './war';
+import { CAPTIVE_TAG, fallLeaverLines, unearthBuried, WAR_CASH_LOSS_MULT, warCaptureMult, warDeathMult, warWhere } from './war';
 
 // ============================================================================
 // Generational Handover — เรียกเมื่อตัวละครผู้เล่นตาย
@@ -641,6 +641,16 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
       if (!ctx.rng.chance((ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk) * whereMult)) continue;
       markDead(ctx, c, ev.tag);
       out.push(`${c.name}เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
+    }
+    // กรุงแตก: ผู้รอดตายอาจถูกกวาดต้อนไปพม่า — หายจากเกม (ไม่มีข้อมูลรายคน ตัวเลขของเกม)
+    if (ev.shock.captureRisk) {
+      for (const c of Object.values(ctx.state.characters)) {
+        if (!isAlive(c) || isGraced(ctx, c) || !c.dynastyId) continue;
+        if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
+        if (!ctx.rng.chance(ev.shock.captureRisk * warCaptureMult(ctx, c.id))) continue;
+        markDead(ctx, c, CAPTIVE_TAG);
+        out.push(`${c.name}ถูกกวาดต้อนไปพม่า — ไม่มีใครรู้ว่าจะได้กลับมาหรือไม่`);
+      }
     }
     // กรุงแตกแล้ว — ไหทองที่ผู้เล่นฝังไว้ตอนเตรียมรับศึกขุดคืนเป็นเงินสด (ที่ซ่อนรอดจากการปล้นข้างบน)
     if (ev.tag === 'history:fall_of_ayutthaya') out.push(...fallLeaverLines(ctx), ...unearthBuried(ctx));

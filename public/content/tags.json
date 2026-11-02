@@ -50,6 +50,7 @@
   { "id": "history:burmese_invasion", "parents": ["situation:war"], "label": { "th": "ศึกพม่า" } },
   { "id": "history:fall_of_ayutthaya", "parents": ["situation:war"], "label": { "th": "ศึกเสียกรุงครั้งที่สอง" }, "prestige": 0.9,
     "loreRefs": ["event.fall_of_ayutthaya_2310"] },
+  { "id": "history:captive_after_fall", "parents": ["situation:war"], "label": { "th": "ถูกกวาดต้อนไปพม่า" } },
   { "id": "history:thonburi_succession", "parents": ["situation:any"], "label": { "th": "การผลัดแผ่นดินกรุงธนบุรี" }, "loreRefs": ["event.thonburi_succession_2325"] },
   { "id": "history:famine_after_fall", "parents": ["situation:any"], "label": { "th": "ข้าวยากหมากแพงหลังเสียกรุง" }, "loreRefs": ["event.famine_2310_2313"] },
   { "id": "history:cholera_2363", "parents": ["situation:illness"], "label": { "th": "ไข้ป่วงใหญ่ปีมะโรง" }, "loreRefs": ["event.cholera_2363"] },

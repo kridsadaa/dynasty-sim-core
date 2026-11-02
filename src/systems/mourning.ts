@@ -1,6 +1,7 @@
 import { isAlive, type Ctx } from '../core/ctx';
 import type { Character, FamilyNode, TagId } from '../core/types';
 import { prepareEvent, type PreparedEvent } from './events';
+import { CAPTIVE_TAG } from './war';
 
 // ============================================================================
 // ญาติใกล้ชิดของผู้เล่นตาย → event งานศพ (ปีละหนึ่ง event คนที่ใกล้ที่สุด คนอื่นขึ้นแค่ใน log)
@@ -43,7 +44,8 @@ export function kinDeathEvent(ctx: Ctx): PreparedEvent | null {
   const me = S.characters[S.meta.playerCharacterId];
   if (!isAlive(me)) return null;
   const closest = Object.values(S.characters)
-    .filter((c) => c.deathDay === S.meta.day && c.id !== me.id)
+    // ผู้ถูกกวาดต้อนไม่มีศพให้ทำพิธี — log ตอนกรุงแตกบอกไว้แล้ว
+    .filter((c) => c.deathDay === S.meta.day && c.id !== me.id && c.deathCause !== CAPTIVE_TAG)
     .flatMap((c) => {
       const k = kinTie(ctx, me, c);
       return k ? [{ c, ...k }] : [];
