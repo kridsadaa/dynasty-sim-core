@@ -7,7 +7,7 @@ import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from '.
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 import { applyCareer } from './career';
-import { fallLeaverLines, unearthBuried, WAR_CASH_LOSS_MULT, WAR_DEATH_MULT, warWhere } from './war';
+import { fallLeaverLines, unearthBuried, WAR_CASH_LOSS_MULT, warDeathMult, warWhere } from './war';
 
 // ============================================================================
 // Generational Handover — เรียกเมื่อตัวละครผู้เล่นตาย
@@ -637,7 +637,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c) || isGraced(ctx, c) || (!ev.shock.everyone && !c.dynastyId)) continue;
       if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
-      const whereMult = ev.tag === 'history:fall_of_ayutthaya' ? WAR_DEATH_MULT[warWhere(ctx, c.id)] : 1;
+      const whereMult = ev.tag === 'history:fall_of_ayutthaya' ? warDeathMult(ctx, c.id) : 1;
       if (!ctx.rng.chance((ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk) * whereMult)) continue;
       markDead(ctx, c, ev.tag);
       out.push(`${c.name}เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);

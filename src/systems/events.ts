@@ -9,7 +9,7 @@ import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharact
 import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
 import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
-import { buryValuables, leaveCity, stayInCity } from './war';
+import { buryValuables, joinTaksin, leaveCity, stayInCity, warWhere } from './war';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { markDead } from './handover';
@@ -171,6 +171,10 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
     }
     case 'purse':
       return purse(ctx, ch) >= c.min;
+    case 'inCity':
+      return warWhere(ctx, ch.id) === 'city';
+    case 'warPrep':
+      return (ctx.state.meta.war?.prep ?? 0) >= c.min;
     case 'householdHead':
       return !!ch.householdId && ctx.state.households[ch.householdId]?.headId === ch.id;
     case 'canPay': {
@@ -496,6 +500,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         if (e.action === 'prep') ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };
         else if (e.action === 'bury') report.notes.push(...buryValuables(ctx, ch, e.fraction));
         else if (e.action === 'stay') report.notes.push(...stayInCity(ctx, ch));
+        else if (e.action === 'taksin') report.notes.push(...joinTaksin(ctx, ch));
         else report.notes.push(...leaveCity(ctx, ch, e.dir, e.party));
         break;
       case 'prestige': {

@@ -28,6 +28,16 @@ export const WAR_DEATH_MULT: Record<WarWhere, number> = { city: 1, east: 0.3, fo
 /** สัดส่วนที่เงินสดถูกริบเทียบกับคนในกรุง — คนที่หนีพกเงินไปด้วย */
 export const WAR_CASH_LOSS_MULT: Record<WarWhere, number> = { city: 1, east: 0.3, forest: 0.3 };
 
+/** ความเสี่ยงตายตอนกรุงแตกลดลงตามการเตรียมตัว (meta.war.prep) เฉพาะคนที่อยู่ในกรุง — สูงสุด 40% (ตัวเลขของเกม) */
+export const WAR_PREP_PER_POINT = 0.08;
+export const WAR_PREP_MAX = 0.4;
+
+export function warDeathMult(ctx: Ctx, id: CharacterId): number {
+  const where = warWhere(ctx, id);
+  const prep = Math.max(0, ctx.state.meta.war?.prep ?? 0);
+  return WAR_DEATH_MULT[where] * (where === 'city' ? 1 - Math.min(WAR_PREP_MAX, prep * WAR_PREP_PER_POINT) : 1);
+}
+
 export function warWhere(ctx: Ctx, id: CharacterId): WarWhere {
   const w = ctx.state.meta.war;
   return w?.stance === 'leave' && w.dir && w.party?.includes(id) ? w.dir : 'city';
@@ -86,6 +96,13 @@ export function leaveCity(ctx: Ctx, ch: Character, dir: 'east' | 'forest', who: 
   ctx.state.meta.war = { prep: ctx.state.meta.war?.prep ?? 0, stance: 'leave', dir, party };
   const where = dir === 'east' ? 'ทางตะวันออก' : 'เข้าป่าทางตะวันตก';
   return [`${ch.name}พา${party.length > 1 ? `คนในครอบครัวอีก ${party.length - 1} คน` : 'ตัวคนเดียว'}ออกจากกรุงไป${where}`];
+}
+
+/** ฝ่าวงล้อมตามพระยาตากออกไปทางตะวันออกคนเดียว */
+export function joinTaksin(ctx: Ctx, ch: Character): string[] {
+  const notes = leaveCity(ctx, ch, 'east', 'alone');
+  ctx.state.meta.war = { ...ctx.state.meta.war!, taksin: true };
+  return [`${ch.name}ตามพระยาตากตีฝ่าวงล้อมพม่าออกจากกรุงไปทางตะวันออก`, ...notes.slice(1)];
 }
 
 /** บรรทัดบันทึกตอนกรุงแตกของคนที่อยู่นอกกรุง (ผู้เล่นเห็นผลของการตัดสินใจ) */

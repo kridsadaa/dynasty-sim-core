@@ -24,7 +24,7 @@ import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './s
 import { advanceDay } from './systems/world';
 import { eraConditions } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
-import { buryValuables, unearthBuried, warBadges } from './systems/war';
+import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
 import { riskChance } from './systems/will';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -931,6 +931,122 @@ balanceCheck();
   if (!(east.cash > 70 && city.cash < 55)) problems.push(`เงินสดที่เหลือ: หนีตะวันออก ${east.cash.toFixed(0)} · อยู่ในกรุง ${city.cash.toFixed(0)} (ควร >70 และ <55)`);
   check('ออกจากกรุงหรืออยู่', problems);
   if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ตายต่อพัน กรุง ${city.dead} ตะวันออก ${east.dead} ป่า ${forest.dead} · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
+}
+
+// [5h2f] ศึกพม่า ขั้น 4: ล้อมกรุง ข้าวหมด ฝ่าวงล้อมตามพระยาตาก — เฉพาะคนที่ยังอยู่ในกรุง; เงินสดและการเตรียมตัวมีประโยชน์จริง
+{
+  const before = failed;
+  console.log('ล้อมกรุงและพระยาตาก:');
+  const problems: string[] = [];
+  const warEventsBetween = (c: Ctx, fromDay: number, days: number) => {
+    c.state.meta.day = fromDay;
+    const ids: string[] = [];
+    for (let i = 0; i < days; i++) for (const sig of advanceDay(c)) if (sig.type === 'event') ids.push(sig.prepared.def.id);
+    return ids.filter((id) => id.startsWith('war.'));
+  };
+
+  // คนที่ออกไปแล้วไม่ได้ event ล้อมกรุง คนที่ยังอยู่ได้
+  const stay = makeCtx(emptyState(54), content);
+  const hs = bootstrapScenario(stay);
+  hs.sex = 'm';
+  const gone = makeCtx(emptyState(54), content);
+  const hg = bootstrapScenario(gone);
+  hg.sex = 'm';
+  gone.state.meta.war = { prep: 0, stance: 'leave', dir: 'east', party: [hg.id] };
+  if (!warEventsBetween(stay, yearStart(stay, 2309) + 38, 6).includes('war.siege_begins')) problems.push('คนที่อยู่ในกรุงไม่ได้ event เริ่มล้อมกรุง');
+  if (warEventsBetween(gone, yearStart(gone, 2309) + 38, 6).includes('war.siege_begins')) problems.push('คนที่ออกจากกรุงแล้วได้ event ล้อมกรุง');
+
+  // ข้าวหมด: แบ่งข้าวต้องเตรียมตัวไว้ก่อน, ซื้อข้าวต้องมีเงินสด (ไหที่ฝังไว้ใช้ไม่ได้), ไม่มีทั้งสองอย่างเหลือแค่ลอบออกหรืออดทน
+  const ctx = makeCtx(emptyState(55), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day = yearStart(ctx, 2309) + 300;
+  hero.sex = 'm';
+  const wife = spawnCharacter(ctx, { name: 'ภรรยา', sex: 'f', birthYear: 2285, estate: 'noble', dynastyId: null, householdId: hero.householdId });
+  marry(ctx, hero, wife);
+  const riceOptions = (actor: Character) => prepareEvent(ctx, 'war.rice_gone', { actor: actor.id }).options.map((o) => o.id).join();
+  S.meta.war = { prep: 0 };
+  if (riceOptions(hero) !== 'buy,slip,endure') problems.push(`ไม่ได้เตรียมตัวแต่มีเงิน ได้ตัวเลือก ${riceOptions(hero)}`);
+  S.meta.war = { prep: 3 };
+  if (riceOptions(hero) !== 'share,buy,slip,endure') problems.push(`เตรียมตัวไว้และมีเงิน ได้ตัวเลือก ${riceOptions(hero)}`);
+  const poor = spawnCharacter(ctx, { name: 'ยาจก', sex: 'm', birthYear: 2280, estate: 'phrai_som', dynastyId: null, householdId: null, wealth: 3 });
+  S.meta.war = { prep: 0 };
+  if (riceOptions(poor) !== 'slip,endure') problems.push(`ไม่มีทั้งข้าวและเงิน ได้ตัวเลือก ${riceOptions(poor)}`);
+  // ฝังเงินไว้หมดแล้วซื้อข้าวไม่ได้
+  hero.social.wealth = 0;
+  const father = S.characters[S.households[hero.householdId!]!.headId]!;
+  const buried = purse(ctx, hero);
+  buryValuables(ctx, hero, 1);
+  if (purse(ctx, hero) > 1 || buried < 20) problems.push(`ฝังเงินจนหมดแล้วเงินที่ใช้ได้ยังเหลือ ${purse(ctx, hero)} (ก่อนฝัง ${buried}) ${father.name}`);
+  S.meta.war = { prep: 0 };
+  if (riceOptions(hero).includes('buy')) problems.push('เงินฝังไว้หมดแล้วยังซื้อข้าวได้');
+
+  // ลอบออกจากกรุง: สำเร็จ → ออกไปกับคนใกล้ชิด · พลาด → ยังอยู่ในกรุง; ผลทั้งสองแบบต้องเกิดได้
+  let slipped = 0;
+  let caught = 0;
+  for (let i = 0; i < 80 && !(slipped && caught); i++) {
+    hero.social.wealth = 100;
+    S.meta.war = { prep: 0, stance: 'stay' };
+    chooseOption(ctx, prepareEvent(ctx, 'war.rice_gone', { actor: hero.id }), 'slip');
+    if (S.meta.war?.stance === 'leave') {
+      slipped++;
+      const party = S.meta.war.party ?? [];
+      if (!party.includes(hero.id) || !party.includes(wife.id) || S.meta.war.dir !== 'east') problems.push('ลอบออกสำเร็จแต่รายชื่อ/ทิศไม่ถูก');
+    } else caught++;
+  }
+  if (!slipped || !caught) problems.push(`ลอบออก 80 ครั้ง สำเร็จ ${slipped} พลาด ${caught} — ต้องเกิดได้ทั้งสองแบบ`);
+
+  // การเตรียมตัวลดความเสี่ยงตายของคนในกรุง (สูงสุด 40%) ไม่มีผลกับคนที่ออกไปแล้ว
+  S.meta.war = { prep: 0 };
+  const m0 = warDeathMult(ctx, hero.id);
+  S.meta.war = { prep: 5 };
+  const m5 = warDeathMult(ctx, hero.id);
+  S.meta.war = { prep: 50 };
+  const mMax = warDeathMult(ctx, hero.id);
+  S.meta.war = { prep: 5, stance: 'leave', dir: 'east', party: [hero.id] };
+  const mEast = warDeathMult(ctx, hero.id);
+  if (Math.abs(m0 - 1) > 1e-9 || Math.abs(m5 - 0.6) > 1e-9 || Math.abs(mMax - 0.6) > 1e-9) problems.push(`ตัวคูณความเสี่ยงของคนในกรุง prep 0/5/50 = ${m0}/${m5}/${mMax} (ควร 1/0.6/0.6)`);
+  if (Math.abs(mEast - 0.3) > 1e-9) problems.push(`คนที่หนีตะวันออกได้ตัวคูณ ${mEast} ควร 0.3 (prep ไม่เกี่ยว)`);
+
+  // ฝ่าวงล้อมตามพระยาตาก: เฉพาะชายอายุ 18–45 ที่มีทักษะรบ ≥ 10 และยังอยู่ในกรุง
+  const bo = makeCtx(emptyState(56), content);
+  const hb = bootstrapScenario(bo);
+  hb.sex = 'm';
+  hb.skills['combat'] = 0;
+  if (warEventsBetween(bo, yearStart(bo, 2310) + 4, 6).includes('war.taksin_breakout')) problems.push('ไม่มีทักษะรบแต่ได้ event ตามพระยาตาก');
+  hb.skills['combat'] = 20;
+  if (!warEventsBetween(bo, yearStart(bo, 2310) + 4, 6).includes('war.taksin_breakout')) problems.push('ชายมีทักษะรบไม่ได้ event ตามพระยาตาก');
+  let ok = 0;
+  let dead = 0;
+  for (let i = 0; i < 200 && !(ok && dead); i++) {
+    bo.state.meta.war = { prep: 0, stance: 'stay' };
+    hb.deathDay = null;
+    hb.deathCause = null;
+    chooseOption(bo, prepareEvent(bo, 'war.taksin_breakout', { actor: hb.id }), 'follow');
+    if (!isAlive(hb)) dead++;
+    else if (bo.state.meta.war?.taksin && bo.state.meta.war.party?.length === 1 && bo.state.meta.war.dir === 'east') ok++;
+  }
+  if (!ok || !dead) problems.push(`ตามพระยาตาก 200 ครั้ง รอด ${ok} ตาย ${dead} — ต้องเกิดได้ทั้งสองแบบ`);
+
+  // ผู้ที่ตามพระยาตากได้ความโปรดปรานในราชการช่วง 2311–2324
+  const cr = makeCtx(emptyState(57), content);
+  const hc = bootstrapScenario(cr);
+  hc.sex = 'm';
+  hc.social.estate = 'noble';
+  delete hc.office;
+  applyCareer(cr, hc, 'enter_dept', 'patrol');
+  const favorAfterTick = (taksin: boolean) => {
+    cr.state.meta.day = yearStart(cr, 2312) + 100;
+    cr.state.meta.war = { prep: 0, ...(taksin ? { taksin: true } : {}) };
+    hc.office!.favor = 0;
+    careerYearTick(cr);
+    return hc.office!.favor;
+  };
+  const withTaksin = favorAfterTick(true);
+  const without = favorAfterTick(false);
+  if (!(withTaksin > without + 0.1)) problems.push(`ตามพระยาตากแล้วความโปรดปรานช่วง 2312 ไม่เพิ่ม (${without.toFixed(2)} → ${withTaksin.toFixed(2)})`);
+  check('ล้อมกรุงและพระยาตาก', problems);
+  if (failed === before) console.log('  ✓ คนที่ออกไปแล้วไม่ได้ event ล้อมกรุง · ข้าวหมด: แบ่งข้าว/ซื้อข้าว/ลอบออกต่างเงื่อนไข เงินที่ฝังซื้อข้าวไม่ได้ · เตรียมตัวลดความเสี่ยงสูงสุด 40% · ตามพระยาตากรอด/ตายได้ ได้ความโปรดปรานช่วงธนบุรี');
 }
 
 // [5h3] ข้อแลกเปลี่ยนใน event ที่เจอบ่อย: งานบุญและผลผูกมิตรต้องมีตัวเลือกที่เสียเงินกับตัวเลือกที่ไม่เสีย และเสียแล้วเงินลดจริง

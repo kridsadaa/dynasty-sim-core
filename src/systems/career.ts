@@ -255,6 +255,8 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     player.office.favor = Math.min(1, player.office.favor + skill.favor);
     lines.push(`ฝีมือด้าน${skill.track.name} (ขั้น ${skill.tier}) เป็นที่ประจักษ์ในกรม — ความโปรดปรานเพิ่ม`);
   }
+  // ตามพระยาตากฝ่าวงล้อมตั้งแต่ก่อนตั้งกรุง → เป็นคนเก่าของพระเจ้าตากในช่วงแผ่นดินธนบุรี (ตัวเลขของเกม)
+  if (S.meta.war?.taksin && year >= 2311 && year <= 2324) player.office.favor = Math.min(1, player.office.favor + 0.15);
   const favor = player.office.favor;
   const next = postAt(deptOf(ctx, player), post.rank + 1);
   // มหาดเล็กพ้นไปเข้ากรม → เลือกกรมก่อน (เลื่อนขั้นแรกไปพร้อมกัน)

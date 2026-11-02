@@ -14,6 +14,114 @@
         "effects": [ { "op": "wealth", "role": "actor", "delta": -1 }, { "op": "war", "role": "actor", "action": "prep", "delta": 1.5 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] }
     ]
   },
+  "war.siege_begins": {
+    "id": "war.siege_begins",
+    "textKey": "event.war_siege_begins",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0, "requires": [ { "type": "inCity" } ] },
+    "percepts": [],
+    "options": [
+      { "id": "home", "textKey": "event.war_siege_begins.home",
+        "effects": [ { "op": "war", "role": "actor", "action": "prep", "delta": 0.5 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] },
+      { "id": "fort", "textKey": "event.war_siege_begins.fort",
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -2 }, { "op": "merit", "role": "actor", "delta": 1 }, { "op": "war", "role": "actor", "action": "prep", "delta": 0.5 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] },
+      { "id": "wall", "textKey": "event.war_siege_begins.wall",
+        "conditions": [ { "type": "sex", "is": "m" }, { "type": "age", "min": 18, "max": 50 } ],
+        "risk": {
+          "base": 0.18,
+          "factors": [
+            { "source": "skill", "skill": "combat", "weight": -0.25, "reasonKey": "combat" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_wall",
+          "successKey": "outcome.wall.win",
+          "fail": {
+            "textKey": "outcome.wall.lose",
+            "effects": [ { "op": "kill", "role": "actor", "cause": "history:burmese_invasion", "allowKin": true } ]
+          }
+        },
+        "effects": [
+          { "op": "wound", "role": "actor", "part": { "tag": "body:torso" }, "kind": "cut", "severity": [0.1, 0.25] },
+          { "op": "merit", "role": "actor", "delta": 2 },
+          { "op": "prestige", "role": "actor", "delta": 2 },
+          { "op": "favor", "role": "actor", "delta": 0.3 },
+          { "op": "skill", "role": "actor", "skill": "combat", "delta": 3 },
+          { "op": "war", "role": "actor", "action": "prep", "delta": 0.5 }
+        ] }
+    ]
+  },
+  "war.rice_gone": {
+    "id": "war.rice_gone",
+    "textKey": "event.war_rice_gone",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0, "requires": [ { "type": "inCity" } ] },
+    "percepts": [],
+    "options": [
+      { "id": "share", "textKey": "event.war_rice_gone.share", "conditions": [ { "type": "warPrep", "min": 2 } ],
+        "effects": [ { "op": "war", "role": "actor", "action": "prep", "delta": -1.5 }, { "op": "merit", "role": "actor", "delta": 1 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] },
+      { "id": "buy", "textKey": "event.war_rice_gone.buy", "conditions": [ { "type": "purse", "min": 20 } ],
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -20 }, { "op": "war", "role": "actor", "action": "prep", "delta": 0.5 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] },
+      { "id": "slip", "textKey": "event.war_rice_gone.slip",
+        "risk": {
+          "base": 0.45,
+          "factors": [
+            { "source": "skill", "skill": "combat", "weight": -0.15, "reasonKey": "combat" },
+            { "source": "personality", "trait": "boldness", "weight": -0.15, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_slip",
+          "successKey": "outcome.slip.ok",
+          "fail": {
+            "textKey": "outcome.slip.caught",
+            "effects": [
+              { "op": "wound", "role": "actor", "part": { "tag": "body:torso" }, "kind": "stab", "severity": [0.3, 0.6] },
+              { "op": "wealth", "role": "actor", "delta": -10 },
+              { "op": "stress", "role": "actor", "delta": 0.08 }
+            ]
+          }
+        },
+        "effects": [
+          { "op": "war", "role": "actor", "action": "leave", "dir": "east", "party": "nuclear" },
+          { "op": "wealth", "role": "actor", "delta": -3 },
+          { "op": "stress", "role": "actor", "delta": 0.04 }
+        ] },
+      { "id": "endure", "textKey": "event.war_rice_gone.endure",
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.06 } ] }
+    ]
+  },
+  "war.taksin_breakout": {
+    "id": "war.taksin_breakout",
+    "textKey": "event.war_taksin_breakout",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0, "ageRange": [18, 45], "requires": [ { "type": "inCity" }, { "type": "sex", "is": "m" }, { "type": "skill", "skill": "combat", "min": 10 } ] },
+    "percepts": [],
+    "options": [
+      { "id": "watch", "textKey": "event.war_taksin_breakout.watch", "effects": [ { "op": "stress", "role": "actor", "delta": 0.02 } ] },
+      { "id": "follow", "textKey": "event.war_taksin_breakout.follow",
+        "risk": {
+          "base": 0.35,
+          "factors": [
+            { "source": "skill", "skill": "combat", "weight": -0.3, "reasonKey": "combat" },
+            { "source": "personality", "trait": "boldness", "weight": -0.1, "reasonKey": "bold" }
+          ],
+          "hintKey": "risk.war_breakout",
+          "successKey": "outcome.breakout.ok",
+          "fail": {
+            "textKey": "outcome.breakout.lose",
+            "effects": [ { "op": "kill", "role": "actor", "cause": "history:burmese_invasion", "allowKin": true } ]
+          }
+        },
+        "effects": [
+          { "op": "war", "role": "actor", "action": "taksin" },
+          { "op": "merit", "role": "actor", "delta": 3 },
+          { "op": "prestige", "role": "actor", "delta": 3 },
+          { "op": "skill", "role": "actor", "skill": "combat", "delta": 4 },
+          { "op": "stress", "role": "actor", "delta": 0.05 }
+        ] }
+    ]
+  },
   "war.decide_leave": {
     "id": "war.decide_leave",
     "textKey": "event.war_decide_leave",
