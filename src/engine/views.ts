@@ -412,7 +412,7 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
 function effectHint(
   ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>,
 ): string | undefined {
-  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars, p.def.id.startsWith('festival.') || p.def.id.startsWith('intent.'));
+  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars, ['festival.', 'intent.', 'war.'].some((prefix) => p.def.id.startsWith(prefix)));
   const parts: string[] = [];
   for (const e of effects) {
     if (e.op === 'followUp') {
@@ -464,6 +464,7 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
     }
     if (e.op === 'stress' && e.role === 'actor' && e.delta) parts.push(e.delta > 0 ? 'หนักใจขึ้น' : 'สบายใจขึ้น');
     if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
+    if (e.op === 'war' && e.delta > 0) parts.push('รับมือศึกได้ดีขึ้น');
     if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');
   }
   return parts.length ? [...new Set(parts)].join(' · ') : undefined;

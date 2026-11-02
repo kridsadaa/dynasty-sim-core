@@ -53,7 +53,13 @@
       "order": ["era_event", "place", "adversary", "target", "instrument", "supernatural"]
     }
   },
+  "historyEvents": [
+    { "year": 2308, "day": 40, "event": "war.news_tenasserim", "minAge": 12 },
+    { "year": 2308, "day": 140, "event": "war.west_falls", "minAge": 12 }
+  ],
   "history": [
+    { "tag": "history:burmese_invasion", "year": 2308, "kind": "war", "lasts": 3,
+      "shock": { "wealthLoss": [0.0, 0.0], "deathRisk": 0.0 } },
     { "tag": "history:fall_of_ayutthaya", "year": 2310, "kind": "war",
       "shock": { "wealthLoss": [0.5, 0.9], "deathRisk": 0.15, "endsOffices": true } },
     { "tag": "history:thonburi_succession", "year": 2325, "kind": "succession",

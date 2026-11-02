@@ -663,7 +663,9 @@ export type Effect =
   | { op: 'topknot'; role: string }
   /** role ดูแล toward ที่ป่วยหนักหรือไม่ — neglected = ไม่ได้รักษาไข้ */
   | { op: 'nurse'; role: string; toward: string; neglected: boolean }
-  | { op: 'prestige'; role: string; delta: number };
+  | { op: 'prestige'; role: string; delta: number }
+  /** ศึกพม่า 2308–2310 (docs/design-war-2308.md): prep = เตรียมตัวรับศึก (เก็บข้าว ของมีค่า) สะสมใน meta.war */
+  | { op: 'war'; role: string; action: 'prep'; delta: number };
 
 /**
  * แรงต้านในใจตัวละครต่อตัวเลือก — บวกกันทุกข้อ (เฉพาะส่วนที่เป็นบวก)
@@ -905,6 +907,14 @@ export interface TradeDef {
 // ============================================================================
 // History (Anti-snowball shocks)
 // ============================================================================
+
+/** วันที่ (นับจาก 1 ม.ค. = 0) ของปีหนึ่ง ที่ผู้เล่นอายุถึง minAge จะได้ event นี้ — ไม่ซ้ำเพราะวันตรงครั้งเดียวต่อปี */
+export interface HistoryEventSchedule {
+  year: number;
+  day: number;
+  event: EventDefId;
+  minAge?: number;
+}
 
 export interface HistoricalEvent {
   tag: TagId;
@@ -1306,6 +1316,8 @@ export interface ContentDB {
   injectionRules: InjectionRule[];
   claimTemplates: Record<string, ClaimTemplate>;
   history: HistoricalEvent[];
+  /** event ที่ส่งให้ผู้เล่นในวันที่กำหนดของปีประวัติศาสตร์ (ต่างจาก history ที่เป็น shock) */
+  historyEvents: HistoryEventSchedule[];
   intents: Record<IntentKindId, IntentDef>;
   trades: TradeDef[];
   offices: OfficesDef;
@@ -1336,6 +1348,8 @@ export interface GameState {
     customNames?: Array<{ name: string; sex: 'm' | 'f' }>;
     /** เรื่องจบเมื่อถึง 1 ม.ค. ปีนี้ — ฉากเริ่มเป็นคนกำหนด (เซฟเก่าไม่มี → END_YEAR ใน scenario.ts) */
     endYear?: number;
+    /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
+    war?: { prep: number };
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;

@@ -22,6 +22,7 @@ import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlav
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay } from './systems/world';
+import { eraConditions } from './engine/views';
 import { riskChance } from './systems/will';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -748,6 +749,51 @@ balanceCheck();
   }
   check('ขั้นยศเชิงภาพ', problems);
   if (failed === before) console.log('  ✓ มหาดเล็ก/หมื่น/ขุน/ขั้นสูง/เจ้ากรมของทุกกรมได้ขั้นยศถูกต้อง');
+}
+
+// [5h2c] ศึกพม่า 2308 (docs/design-war-2308.md ขั้น 1): badge ตลอด 2308–2310, event ข่าวมาตามวันที่นัดครั้งเดียวต่อปี, ตัวเลือกมีผลจริง
+{
+  const before = failed;
+  console.log('ศึกพม่า 2308:');
+  const ctx = makeCtx(emptyState(48), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  const problems: string[] = [];
+  const badge = (year: number) => { S.meta.day = yearStart(ctx, year) + 10; return eraConditions(ctx).some((b) => b.label === 'ศึกพม่า'); };
+  for (const [year, want] of [[2307, false], [2308, true], [2309, true], [2310, true], [2311, false]] as const) {
+    if (badge(year) !== want) problems.push(`badge ศึกพม่าปี ${year} ควร${want ? 'ขึ้น' : 'ไม่ขึ้น'}`);
+  }
+  S.meta.day = yearStart(ctx, 2308) + 38;
+  const seen: PreparedEvent[] = [];
+  while (S.meta.day < yearStart(ctx, 2308) + 150 && isAlive(S.characters[S.meta.playerCharacterId])) {
+    for (const sig of advanceDay(ctx)) if (sig.type === 'event' && sig.prepared.def.id.startsWith('war.')) seen.push(sig.prepared);
+  }
+  const ids = seen.map((p) => p.def.id);
+  if (ids.join() !== 'war.news_tenasserim,war.west_falls') problems.push(`event ศึกที่ได้ใน 2308: ${ids.join() || 'ไม่มี'}`);
+  const [news, west] = seen;
+  if (news && west) {
+    hero.social.wealth = 10;
+    const prep0 = S.meta.war?.prep ?? 0;
+    chooseOption(ctx, news, 'store');
+    if (Math.abs(hero.social.wealth - 9) > 0.001) problems.push(`เก็บของไว้แล้วเงินไม่ลด 1 ตำลึง (${hero.social.wealth})`);
+    if ((S.meta.war?.prep ?? 0) - prep0 !== 1.5) problems.push('เก็บของแล้วการเตรียมตัวไม่เพิ่ม 1.5');
+    const refugee = S.characters[west.instance.bindings.refugee!];
+    if (!refugee?.local || refugee.local.distance !== 'far') problems.push('คนหนีศึกไม่ใช่คนรู้จักต่างถิ่นที่สร้างใหม่');
+    chooseOption(ctx, west, 'shelter');
+    if (refugee && !Object.values(S.relations).some((r) => r.from === refugee.id && r.to === hero.id && r.kind === 'gratitude')) problems.push('ให้ที่พักแล้วคนหนีศึกไม่รู้สึกบุญคุณ');
+  }
+  // ผู้เล่นอายุไม่ถึง 12 ไม่ได้ event (ตัวละครใหม่ที่เป็นเด็กตอนนั้น)
+  const kid = makeCtx(emptyState(49), content);
+  const kidHero = bootstrapScenario(kid);
+  kid.state.meta.day = yearStart(kid, 2308) + 38;
+  kidHero.birthDay = kid.state.meta.day - yearsToDays(8);
+  let kidGot = 0;
+  while (kid.state.meta.day < yearStart(kid, 2308) + 150 && isAlive(kid.state.characters[kid.state.meta.playerCharacterId])) {
+    for (const sig of advanceDay(kid)) if (sig.type === 'event' && sig.prepared.def.id.startsWith('war.')) kidGot++;
+  }
+  if (kidGot) problems.push(`ผู้เล่นอายุ 8 ได้ event ศึก ${kidGot} ครั้ง`);
+  check('ศึกพม่า 2308', problems);
+  if (failed === before) console.log('  ✓ badge ปี 2308–2310 · ข่าวตะนาวศรีและหัวเมืองตะวันตกแตกมาครั้งเดียวตามวัน · เก็บของ/ให้ที่พักมีผลจริง · เด็กไม่ได้');
 }
 
 // [5h3] ข้อแลกเปลี่ยนใน event ที่เจอบ่อย: งานบุญและผลผูกมิตรต้องมีตัวเลือกที่เสียเงินกับตัวเลือกที่ไม่เสีย และเสียแล้วเงินลดจริง

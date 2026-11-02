@@ -10,6 +10,7 @@ import {
 } from './factory';
 import { applyHistoricalShocks, historyHeadline, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, deptOf, officeRank } from './career';
+import { historyEventsToday } from './historyEvents';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, jealousyEvent, livingWives, minorWifeEvent } from './wives';
@@ -179,6 +180,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (drifted) out.push({ type: 'log', kind: 'family', line: drifted });
   }
 
+  // event ตามปฏิทินประวัติศาสตร์ (ศึกพม่า 2308–2310 ฯลฯ — rules.json historyEvents)
+  for (const prepared of historyEventsToday(ctx)) out.push({ type: 'event', prepared });
   // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่ — ที่ทำจนเป็นนิสัยแล้วเลือกให้เอง
   for (const req of player ? tickFestivals(ctx, awayLabor(ctx, player)) : []) {
     const prepared = prepareEvent(ctx, req.event, req.bindings, req.vars);

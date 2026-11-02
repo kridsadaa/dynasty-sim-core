@@ -7,7 +7,7 @@ export function buildContentDB(raw: {
   anatomy: ContentDB['anatomies'];
   traitKinds: ContentDB['traitKinds'];
   events: ContentDB['events'];
-  rules: Pick<ContentDB, 'scarRules' | 'injectionRules' | 'claimTemplates' | 'history'>;
+  rules: Pick<ContentDB, 'scarRules' | 'injectionRules' | 'claimTemplates' | 'history' | 'historyEvents'>;
   intents: Pick<ContentDB, 'intents' | 'trades'>;
   offices: ContentDB['offices'];
   chores: ContentDB['chores'];
@@ -51,6 +51,7 @@ export function buildContentDB(raw: {
     injectionRules: raw.rules.injectionRules,
     claimTemplates: raw.rules.claimTemplates,
     history: raw.rules.history,
+    historyEvents: raw.rules.historyEvents ?? [],
     intents: raw.intents.intents,
     trades: raw.intents.trades,
     offices: raw.offices,

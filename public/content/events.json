@@ -1,4 +1,46 @@
 {
+  "war.news_tenasserim": {
+    "id": "war.news_tenasserim",
+    "textKey": "event.war_news_tenasserim",
+    "contextTags": [],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "ask", "textKey": "event.war_news_tenasserim.ask",
+        "effects": [ { "op": "war", "role": "actor", "action": "prep", "delta": 1 }, { "op": "stress", "role": "actor", "delta": 0.02 } ] },
+      { "id": "ignore", "textKey": "event.war_news_tenasserim.ignore", "effects": [] },
+      { "id": "store", "textKey": "event.war_news_tenasserim.store",
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -1 }, { "op": "war", "role": "actor", "action": "prep", "delta": 1.5 }, { "op": "stress", "role": "actor", "delta": 0.01 } ] }
+    ]
+  },
+  "war.west_falls": {
+    "id": "war.west_falls",
+    "textKey": "event.war_west_falls",
+    "contextTags": [],
+    "roles": { "actor": {}, "refugee": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "shelter", "textKey": "event.war_west_falls.shelter",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -2 },
+          { "op": "merit", "role": "actor", "delta": 1.5 },
+          { "op": "war", "role": "actor", "action": "prep", "delta": 0.5 },
+          { "op": "relation", "role": "actor", "toward": "refugee", "kind": "acquaintance", "atLeast": 0.5 },
+          { "op": "relation", "role": "refugee", "toward": "actor", "kind": "gratitude", "atLeast": 0.5 }
+        ] },
+      { "id": "meal", "textKey": "event.war_west_falls.meal",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.5 },
+          { "op": "merit", "role": "actor", "delta": 0.5 },
+          { "op": "relation", "role": "actor", "toward": "refugee", "kind": "acquaintance", "atLeast": 0.3 },
+          { "op": "relation", "role": "refugee", "toward": "actor", "kind": "gratitude", "atLeast": 0.2 }
+        ] },
+      { "id": "turn", "textKey": "event.war_west_falls.turn",
+        "effects": [ { "op": "merit", "role": "actor", "delta": -1 }, { "op": "stress", "role": "actor", "delta": 0.02 } ] }
+    ]
+  },
   "family.newborn": {
     "id": "family.newborn",
     "textKey": "event.newborn",

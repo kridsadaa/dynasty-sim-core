@@ -487,6 +487,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         report.named = { characterId: ch.id, name, byPlayer };
         break;
       }
+      case 'war':
+        ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };
+        break;
       case 'prestige': {
         const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
         // บารมีที่ได้จากการกระทำขึ้นกับบุญ ส่วนบารมีที่เสียไม่ลดตามบุญ
