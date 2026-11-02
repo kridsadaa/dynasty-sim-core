@@ -14,7 +14,7 @@ import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
-import { careerYearTick, officeRank } from './systems/career';
+import { applyCareer, careerYearTick, officeRank, officeStatus } from './systems/career';
 import { habitOption } from './systems/festivals';
 import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
@@ -678,6 +678,39 @@ balanceCheck();
   if (asked(hero)) problems.push('ไพร่ได้โอกาสฝากตัวเข้ากรม');
   check('ฝากตัวเข้ากรม', problems);
   if (failed === before) console.log('  ✓ ชายขุนนางผู้ใหญ่ฝากตัวเข้ากรมได้ ได้ขั้นแรก · ผู้หญิงและไพร่ไม่ได้');
+}
+
+// [5h2] วิชาช่วยเลื่อนยศ: ขั้นวิชาในสายของกรมเพิ่มความโปรดปรานรายปี และแผงตัวละครบอกผลให้เห็น
+{
+  const before = failed;
+  console.log('วิชากับความก้าวหน้าในราชการ:');
+  const ctx = makeCtx(emptyState(44), content);
+  const hero = bootstrapScenario(ctx);
+  ctx.state.meta.day += yearsToDays(25);
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  delete hero.office;
+  const problems: string[] = [];
+  applyCareer(ctx, hero, 'enter_dept', 'patrol');
+  const yearFavor = (perks: string[]) => {
+    hero.perks = perks;
+    hero.office!.favor = 0;
+    careerYearTick(ctx);
+    return hero.office!.favor;
+  };
+  const none = yearFavor([]);
+  const tier3 = yearFavor(['martial_1', 'martial_2', 'martial_3']);
+  const wrongTrack = yearFavor(['learning_1', 'learning_2', 'learning_3']);
+  const per = ctx.content.balance.career.skillFavorPerTier;
+  if (!(tier3 > none)) problems.push(`วิชาสายต่อสู้ 3 ขั้นไม่ช่วยความโปรดปรานในกรมกองกระเวน (${none.toFixed(3)} → ${tier3.toFixed(3)})`);
+  if (Math.abs(tier3 - none - 3 * per * ctx.content.balance.career.favorDecay) > 0.001) problems.push('ความโปรดปรานที่เพิ่มไม่ตรงขั้นวิชา × ค่าต่อขั้น');
+  if (Math.abs(wrongTrack - none) > 0.001) problems.push('วิชาสายอื่นที่ไม่เกี่ยวกับกรมกลับช่วยเลื่อนยศ');
+  hero.perks = [];
+  if (!officeStatus(ctx, hero)?.includes('ฝึกวิชา')) problems.push('แผงตัวละครไม่บอกว่าฝึกวิชาช่วยเลื่อนยศ');
+  hero.perks = ['martial_1', 'martial_2'];
+  if (!officeStatus(ctx, hero)?.includes('ขั้น 2')) problems.push('แผงตัวละครไม่บอกผลของวิชาที่ปลดล็อก');
+  check('วิชากับความก้าวหน้าในราชการ', problems);
+  if (failed === before) console.log('  ✓ วิชาสายของกรมเพิ่มความโปรดปรานตามขั้น · สายอื่นไม่ช่วย · แผงตัวละครบอกผล');
 }
 
 // [5i] ผู้เล่นรู้สึกหนักใจเอง: ญาติใกล้ชิดตาย (ยิ่งรักยิ่งหนัก) เมียที่ไม่รักแล้ว และเหตุการณ์บ้านเมือง

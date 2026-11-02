@@ -3,7 +3,7 @@ import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
 import { livingParents } from './factory';
 import { opinion } from './opinion';
-import { hasPerk, legacyLevel } from './skills';
+import { hasPerk, legacyLevel, SKILL_TRACKS } from './skills';
 
 // ============================================================================
 // Career — รับราชการ (บันไดจากทำเนียบศักดินาจริง ตำแหน่งนาพลเรือน)
@@ -160,6 +160,18 @@ export function adjustFavor(ch: Character, delta: number): void {
   ch.office.favor = Math.max(-1, Math.min(1, ch.office.favor + delta * mult));
 }
 
+/**
+ * วิชาที่ช่วยเลื่อนยศ: สายวิชาของกรม (มหาดเล็กยังไม่มีกรม → diplomacy) × ขั้นที่ปลดล็อก → ความโปรดปรานที่ได้เพิ่มทุกปี
+ * การจับคู่กรม→สายวิชาและตัวเลขเป็นของเกม (offices.json skillTrack, balance.career.skillFavorPerTier)
+ */
+export function careerSkill(ctx: Ctx, ch: Character) {
+  const post = postOf(ctx, ch);
+  const id = (post && post.rank > 0 ? deptOf(ctx, ch).skillTrack : undefined) ?? 'diplomacy';
+  const track = must(SKILL_TRACKS.find((t) => t.id === id), id);
+  const tier = track.perks.filter((p) => hasPerk(ch, p.id)).length;
+  return { track, tier, favor: tier * ctx.content.balance.career.skillFavorPerTier };
+}
+
 export interface CareerEventRequest {
   event: string;
   bindings: Record<string, CharacterId>;
@@ -228,6 +240,11 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     player.office.favor = Math.min(1, player.office.favor + C.patronFavor);
     lines.push(`${S.characters[patron.to]!.name}ช่วยพูดถึง${player.name}ให้เจ้ากรมฟัง`);
   }
+  const skill = careerSkill(ctx, player);
+  if (skill.favor > 0) {
+    player.office.favor = Math.min(1, player.office.favor + skill.favor);
+    lines.push(`ฝีมือด้าน${skill.track.name} (ขั้น ${skill.tier}) เป็นที่ประจักษ์ในกรม — ความโปรดปรานเพิ่ม`);
+  }
   const favor = player.office.favor;
   const next = postAt(deptOf(ctx, player), post.rank + 1);
   // มหาดเล็กพ้นไปเข้ากรม → เลือกกรมก่อน (เลื่อนขั้นแรกไปพร้อมกัน)
@@ -255,7 +272,11 @@ export function officeStatus(ctx: Ctx, ch: Character): string | null {
   const f = ch.office.favor;
   const mood = f >= 0.3 ? 'เป็นที่โปรดปราน' : f <= -0.3 ? 'กำลังถูกเพ่งเล็ง' : 'ทรงตัว';
   const where = post.rank === 0 ? 'ในวัง' : deptOf(ctx, ch).label.th;
-  return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood}`;
+  const skill = careerSkill(ctx, ch);
+  const help = skill.tier > 0
+    ? `วิชา${skill.track.name} ขั้น ${skill.tier} ช่วยให้เป็นที่โปรดปรานขึ้น ${+(skill.favor * 100).toFixed(1)}% ต่อปี`
+    : `ฝึกวิชา${skill.track.name}จะช่วยให้เลื่อนยศเร็วขึ้น`;
+  return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood} · ${help}`;
 }
 
 /** ข้อความใต้ตัวเลือก event ราชการ — ราคา/ผลที่ตามมาให้เห็นก่อนเลือก */

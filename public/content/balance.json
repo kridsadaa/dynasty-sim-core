@@ -109,6 +109,7 @@
     "uniqueVacancyChance": 0.07,
     "promotePrestige": 2,
     "patronFavor": 0.08,
+    "skillFavorPerTier": 0.025,
     "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }],
     "recallYears": [2311, 2313]
   },
