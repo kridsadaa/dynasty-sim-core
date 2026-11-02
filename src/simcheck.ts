@@ -724,6 +724,33 @@ balanceCheck();
   if (failed === before) console.log('  ✓ วิชาสายของกรมเพิ่มความโปรดปรานตามขั้น · สายอื่นไม่ช่วย · แผงตัวละครบอกผล');
 }
 
+// [5h3] ข้อแลกเปลี่ยนใน event ที่เจอบ่อย: งานบุญและผลผูกมิตรต้องมีตัวเลือกที่เสียเงินกับตัวเลือกที่ไม่เสีย และเสียแล้วเงินลดจริง
+{
+  const before = failed;
+  console.log('ข้อแลกเปลี่ยนใน event ที่เจอบ่อย:');
+  const ctx = makeCtx(emptyState(45), content);
+  const hero = bootstrapScenario(ctx);
+  ctx.state.meta.day += yearsToDays(12);
+  hero.sex = 'm';
+  const target = spawnLocal(ctx, hero, { sex: 'm', age: 20, distance: 'near' });
+  const problems: string[] = [];
+  const costOf = (o: { effects: Array<{ op: string; role?: string; delta?: number }> }) =>
+    -o.effects.filter((e) => e.op === 'wealth' && e.role === 'actor').reduce((a, e) => a + (e.delta ?? 0), 0);
+  for (const id of ['festival.holy_day', 'festival.temple_fair', 'festival.lanterns', 'intent.befriend.done', 'intent.befriend.failed']) {
+    const p = prepareEvent(ctx, id, { actor: hero.id, target: target.id });
+    const costs = p.options.map(costOf);
+    if (p.options.length < 2) problems.push(`${id} มีตัวเลือกเดียว ผู้เล่นไม่ได้ตัดสินใจ`);
+    if (!costs.some((c) => c > 0) || !costs.some((c) => c <= 0)) problems.push(`${id} ไม่มีทั้งตัวเลือกที่เสียเงินและไม่เสียเงิน`);
+  }
+  hero.social.wealth = 10;
+  setRelation(ctx, hero.id, target.id, 'acquaintance', 0.5);
+  const done = prepareEvent(ctx, 'intent.befriend.done', { actor: hero.id, target: target.id });
+  chooseOption(ctx, done, 'feast');
+  if (Math.abs(hero.social.wealth - 9) > 0.001) problems.push(`เลี้ยงฉลองเพื่อนแล้วเงินไม่ลด 1 ตำลึง (${hero.social.wealth})`);
+  check('ข้อแลกเปลี่ยนใน event ที่เจอบ่อย', problems);
+  if (failed === before) console.log('  ✓ งานบุญและผลผูกมิตรมีทั้งตัวเลือกเสียเงินและไม่เสีย · เสียแล้วเงินลดจริง');
+}
+
 // [5i] ผู้เล่นรู้สึกหนักใจเอง: ญาติใกล้ชิดตาย (ยิ่งรักยิ่งหนัก) เมียที่ไม่รักแล้ว และเหตุการณ์บ้านเมือง
 {
   const before = failed;

@@ -277,6 +277,14 @@
           { "op": "relation", "role": "actor", "toward": "target", "kind": "friend", "atLeast": 0.6 },
           { "op": "relation", "role": "target", "toward": "actor", "kind": "friend", "atLeast": 0.6 },
           { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "atLeast": 0.8 }
+        ] },
+      { "id": "feast", "textKey": "event.befriend_done.feast",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -1 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "friend", "atLeast": 0.75 },
+          { "op": "relation", "role": "target", "toward": "actor", "kind": "friend", "atLeast": 0.75 },
+          { "op": "relation", "role": "target", "toward": "actor", "kind": "gratitude", "atLeast": 0.3 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "atLeast": 0.9 }
         ] }
     ]
   },
@@ -288,7 +296,14 @@
     "trigger": { "weight": 0 },
     "percepts": [],
     "options": [
-      { "id": "ok", "textKey": "event.befriend_failed.ok", "effects": [ { "op": "stress", "role": "actor", "delta": 0.03 } ] }
+      { "id": "ok", "textKey": "event.befriend_failed.ok", "effects": [ { "op": "stress", "role": "actor", "delta": 0.03 } ] },
+      { "id": "gift", "textKey": "event.befriend_failed.gift",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.5 },
+          { "op": "stress", "role": "actor", "delta": 0.01 },
+          { "op": "relation", "role": "actor", "toward": "target", "kind": "acquaintance", "atLeast": 0.4 },
+          { "op": "relation", "role": "target", "toward": "actor", "kind": "acquaintance", "atLeast": 0.35 }
+        ] }
     ]
   },
   "intent.befriend.mischief": {
@@ -2042,6 +2057,7 @@
         "id": "temple",
         "textKey": "event.holy_day.temple",
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.3 },
           {
             "op": "merit",
             "role": "actor",
@@ -2171,6 +2187,7 @@
         "id": "offer",
         "textKey": "event.temple_fair.offer",
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -1.5 },
           {
             "op": "merit",
             "role": "actor",
@@ -2182,6 +2199,7 @@
         "id": "lakhon",
         "textKey": "event.temple_fair.lakhon",
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.3 },
           {
             "op": "stress",
             "role": "actor",
@@ -2436,6 +2454,7 @@
           }
         ],
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.5 },
           {
             "op": "skill",
             "role": "actor",

@@ -412,7 +412,7 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
 function effectHint(
   ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>,
 ): string | undefined {
-  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars);
+  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars, p.def.id.startsWith('festival.') || p.def.id.startsWith('intent.'));
   const parts: string[] = [];
   for (const e of effects) {
     if (e.op === 'followUp') {
@@ -430,9 +430,11 @@ function effectHint(
   return parts.length ? parts.join(' · ') : undefined;
 }
 
-function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>): string | undefined {
+/** showCost: บอกเงินที่เสียด้วย (งานบุญ/ผูกมิตร ราคาไม่อยู่ในข้อความตัวเลือก) */
+function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>, showCost = false): string | undefined {
   const parts: string[] = [];
   for (const e of effects) {
+    if (showCost && e.op === 'wealth' && e.role === 'actor' && (e.delta ?? 0) < 0) parts.push(`เสียเงิน ${+Math.abs(e.delta!).toFixed(1)} ตำลึง`);
     if (e.op === 'bond' && e.role === 'actor') {
       const to = vars[e.toward] ?? e.toward;
       if (e.affection) parts.push(e.affection > 0 ? `สนิทกับ${to}ขึ้น` : `ห่างเหิน${to}`);
