@@ -27,6 +27,7 @@
   { "id": "place:battlefield", "parents": ["place:any"], "label": { "th": "สนามรบ" }, "prestige": 0.8 },
   { "id": "place:duel_ground", "parents": ["place:any"], "label": { "th": "ลานประลอง" }, "prestige": 0.6 },
   { "id": "place:court", "parents": ["place:any"], "label": { "th": "ในวัง" }, "prestige": 0.5 },
+  { "id": "place:market", "parents": ["place:any"], "label": { "th": "ตลาด" } },
   { "id": "person:any", "parents": [], "label": { "th": "ผู้คน" }, "generalizeStop": true },
   { "id": "person:kin", "parents": ["person:any"], "label": { "th": "ญาติ" } },
   { "id": "person:mother", "parents": ["person:kin"], "label": { "th": "แม่" }, "salience": 0.4 },

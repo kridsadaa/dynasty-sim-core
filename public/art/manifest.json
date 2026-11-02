@@ -960,6 +960,106 @@
       "alt": "หญิงตระกูลขุนนางกำลังตั้งครรภ์ ห่มผ้าขาวพาดสองไหล่",
       "width": 1024,
       "height": 572
+    },
+    {
+      "id": "scene.war_news",
+      "file": "art/scene.war_news.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.news_tenasserim",
+        "place:market"
+      ],
+      "alt": "ข่าวศึกที่ท่าน้ำและตลาด",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_refugees",
+      "file": "art/scene.war_refugees.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.west_falls"
+      ],
+      "alt": "ผู้คนหนีภัยสงครามจากหัวเมืองตะวันตกเดินทางมาถึงท่าน้ำริมกรุง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_levy",
+      "file": "art/scene.war_levy.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.levy"
+      ],
+      "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_bury",
+      "file": "art/scene.war_bury.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.prepare"
+      ],
+      "alt": "ฝังเงินทองและของมีค่าใต้ถุนเรือนตอนกลางคืน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_leave",
+      "file": "art/scene.war_leave.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.decide_leave"
+      ],
+      "alt": "ครอบครัวขนของลงเรือออกจากพระนครยามเช้ามืด",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_siege",
+      "file": "art/scene.war_siege.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.siege_begins"
+      ],
+      "alt": "การตั้งรับการล้อมกรุงบนกำแพงเมืองอยุธยา",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_hunger",
+      "file": "art/scene.war_hunger.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.rice_gone"
+      ],
+      "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.war_breakout",
+      "file": "art/scene.war_breakout.webp",
+      "style": "reality",
+      "tags": [
+        "event:war.taksin_breakout"
+      ],
+      "alt": "ขบวนคนถือคบเพลิงฝ่าช่องกำแพงที่ไฟลุกออกไปกลางคืน",
+      "width": 1024,
+      "height": 541
+    },
+    {
+      "id": "scene.war_captives",
+      "file": "art/scene.war_captives.webp",
+      "style": "reality",
+      "tags": [
+        "history:captive_after_fall"
+      ],
+      "alt": "ขบวนผู้ถูกกวาดต้อนถูกผูกเชือกเดินตามถนนแห้ง มีควันไฟจากกรุงอยู่ไกลๆ",
+      "width": 1024,
+      "height": 572
     }
   ]
 }

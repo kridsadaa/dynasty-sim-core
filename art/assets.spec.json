@@ -6,603 +6,1239 @@
       "replaces": "art/approved/reality-stilt-house.jpg",
       "why": "สร้างด้วย style block v0.2 แต่ style.json ตรึง reality ที่ v0.3 — สร้างใหม่ด้วย v0.3 ให้ชุด regression เป็นสไตล์เดียวกัน",
       "subject": "Wide view of a small Siamese commoner house by a canal: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of seasonal floods, reached by a hanging bamboo ladder tied with ropes; open muddy bank sloping down to the water with banana trees and coconut palms, a small dugout boat tied to a post; river behind, rainy-season sky. No enclosed perimeter fence, no people in the foreground.",
-      "loreRefs": ["material.houses_1680s"]
+      "loreRefs": [
+        "material.houses_1680s"
+      ]
     },
     {
       "id": "baseline.meal_tray",
       "replaces": "art/approved/reality-meal-tray.jpg",
       "why": "สร้างด้วย style block v0.2 — รอบ 01 ได้ปลาทั้งตัว (lore: อาหารหั่นเป็นชิ้นมาแล้ว)",
       "subject": "Top-down still life on a reed mat: a round footless lacquered wooden tray holding a mound of rice, dried salted fish already cut into small pieces, a small bowl of fermented shrimp paste with garlic, spring onions and fresh herbs, coconut-shell and earthenware bowls, a bamboo water tube; no whole fish, no spoons, forks or chopsticks.",
-      "loreRefs": ["material.food_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.food_1680s",
+        "material.household_objects_1680s"
+      ]
     }
   ],
   "images": [
     {
       "id": "scene.compound",
       "style": "reality",
-      "tags": ["group:family", "event:family.legend_truth", "place:domestic"],
+      "tags": [
+        "group:family",
+        "event:family.legend_truth",
+        "place:domestic"
+      ],
       "alt": "เรือนหมู่ไม้จริงของขุนนางผู้น้อย มีชานแล่น โรงครัว เรือนบ่าวไพร่ในรั้วไผ่ริมคลองตะเคียน",
       "subject": "Wide view of a minor Siamese official's compound (ruean mu) by a canal: a main cluster of raised teak-wood pavilions with traditional recessed-panelled timber walls (fa pakon), open sitting hall (ho nang), and a separate semi-open kitchen house at the back, all linked by a broad raised wooden deck (chan laen) on stout timber posts; inside the surrounding bamboo compound fence stand two smaller woven-bamboo houses for minor wives and household slaves; shaded by betel-nut palms, banana clusters, and a large takian tree by a wooden canal landing with a moored boat; earthenware water jars, servants pound rice and carry water under the high stilts, an elderly woman seated on the veranda, a child with a topknot playing in the yard; morning light.",
-      "loreRefs": ["material.houses_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.houses_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.village",
       "style": "reality",
-      "tags": ["group:intent", "event:intent.befriend.done", "event:intent.befriend.failed", "event:intent.befriend.mischief", "event:intent.called_home"],
+      "tags": [
+        "group:intent",
+        "event:intent.befriend.done",
+        "event:intent.befriend.failed",
+        "event:intent.befriend.mischief",
+        "event:intent.called_home"
+      ],
       "alt": "เรือนไผ่ยกสูงของชาวบ้านริมน้ำ",
       "subject": "Wide view of a small Siamese commoner house by a canal: walls, floor and roof of woven split-bamboo panels, raised about four metres on six tall bamboo piles because of seasonal floods, reached by a hanging bamboo ladder tied with ropes; open muddy bank sloping down to the water with banana trees and coconut palms, a small dugout boat tied to a post; river behind, rainy-season sky. No enclosed perimeter fence, no people in the foreground.",
-      "loreRefs": ["material.houses_1680s"]
+      "loreRefs": [
+        "material.houses_1680s"
+      ]
     },
     {
       "id": "scene.kitchen_yard",
       "style": "reality",
-      "tags": ["place:kitchen", "situation:kitchen_work", "group:chore", "group:childhood", "chore:kitchen", "event:childhood.kitchen_cut", "event:chore.learn_chop"],
+      "tags": [
+        "place:kitchen",
+        "situation:kitchen_work",
+        "group:chore",
+        "group:childhood",
+        "chore:kitchen",
+        "event:childhood.kitchen_cut",
+        "event:chore.learn_chop"
+      ],
       "alt": "ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว",
       "subject": "Medium-wide view of an outdoor kitchen in a house yard seen from the side: a small wood fire on the ground with an earthenware pot, a grating board and split coconuts, garlic and shallots on a flat basket, dried fish hanging from a pole, bamboo water tubes; a woman squatting by the fire with her back half turned, a child in a lower cloth watching; stilt house behind.",
-      "loreRefs": ["material.houses_1680s", "material.kitchen_tasks", "material.food_1680s"]
+      "loreRefs": [
+        "material.houses_1680s",
+        "material.kitchen_tasks",
+        "material.food_1680s"
+      ]
     },
     {
       "id": "scene.chore_housework",
       "style": "reality",
-      "tags": ["chore:housework"],
+      "tags": [
+        "chore:housework"
+      ],
       "alt": "เด็กช่วยงานบ้าน กวาดชาน ขัดพื้นกระดาน และหาบน้ำขึ้นเรือน",
       "subject": "Medium-wide view of a timber house platform and yard in the morning: a girl of about eight kneeling on the plank floor of the open veranda, rubbing the boards with half a coconut shell, a woven palm-rib broom and a bamboo water bucket beside her; below in the yard a boy of about ten carrying two bamboo water tubes on a shoulder pole toward the house and a small bundle of firewood stacked by a post; an older woman watching from the doorway.",
-      "loreRefs": ["material.floor_polishing", "material.houses_1680s", "material.household_objects_1680s", "kinship.child_chores_by_strength"]
+      "loreRefs": [
+        "material.floor_polishing",
+        "material.houses_1680s",
+        "material.household_objects_1680s",
+        "kinship.child_chores_by_strength"
+      ]
     },
     {
       "id": "scene.chore_craft",
       "style": "reality",
-      "tags": ["chore:craft"],
+      "tags": [
+        "chore:craft"
+      ],
       "alt": "หญิงชรานั่งสานเสื่อบนชานเรือน เด็กหญิงนั่งหัดเย็บปักผ้าอยู่ข้างๆ",
       "subject": "Medium view of a shaded veranda of a house: an old woman seated on the floor plaiting a reed mat, strips of dried reed fanned out around her and a half-finished mat across her lap; beside her a girl of about ten, head bent, sewing a small piece of cotton cloth with a needle and thread, a flat basket of thread and cloth between them; afternoon light, a younger child playing in the shade under the house below.",
-      "loreRefs": ["material.crafts_1680s", "kinship.child_chores_by_strength", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.crafts_1680s",
+        "kinship.child_chores_by_strength",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.chore_flowers",
       "style": "reality",
-      "tags": ["chore:flowers"],
+      "tags": [
+        "chore:flowers"
+      ],
       "alt": "เด็กหญิงนั่งร้อยดอกไม้เป็นพวงกับผู้ใหญ่ มีดอกบัวกองอยู่บนกระด้ง",
       "subject": "Medium view of women and a girl seated on a reed mat on a veranda, threading small white and yellow flowers onto long strings to make simple hanging strands, a flat round winnowing basket heaped with loose blossoms and a few pink lotus buds with folded-back petals, a bowl of water to keep the flowers fresh, a canal with a small boat visible beyond the house posts. Simple strands of flowers only. Avoid: elaborate modern garlands, ribbons, tassels.",
-      "loreRefs": ["material.flower_stringing", "material.boats_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.flower_stringing",
+        "material.boats_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.chore_merit",
       "style": "reality",
-      "tags": ["chore:merit"],
+      "tags": [
+        "chore:merit"
+      ],
       "alt": "พระยืนเงียบที่หน้าประตูเรือนยามเช้า ผู้หญิงกับเด็กใส่ข้าวลงบาตร",
       "subject": "Early morning in front of a house gate: a Buddhist monk in an ochre robe standing silently with his alms bowl held at his waist, eyes lowered; a woman and a child of about eight kneeling on a mat at the gate, the child lifting a spoonful of cooked rice from a covered bowl into the monk's bowl, a tray with bananas and small leaf-wrapped food beside them; misty light, bamboo fence, other houses in the background.",
-      "loreRefs": ["ritual.alms_round_1680s", "attire.monks_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "ritual.alms_round_1680s",
+        "attire.monks_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.meal",
       "style": "reality",
-      "tags": ["situation:feast"],
+      "tags": [
+        "situation:feast"
+      ],
       "alt": "สำรับข้าวกับปลาแห้งบนถาดไม่มีขา",
       "subject": "Top-down still life on a reed mat: a round footless lacquered wooden tray holding a mound of rice, dried salted fish already cut into small pieces, a small bowl of fermented shrimp paste with garlic, spring onions and fresh herbs, coconut-shell and earthenware bowls, a bamboo water tube; no whole fish, no spoons, forks or chopsticks.",
-      "loreRefs": ["material.food_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.food_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.court_feast",
       "style": "reality",
-      "tags": ["event:adult.court_feast"],
+      "tags": [
+        "event:adult.court_feast"
+      ],
       "alt": "แขกนั่งล้อมถาดอาหารบนเสื่อในงานเลี้ยงของขุนนาง",
       "subject": "Medium-wide view inside a timber house during a household feast: adult men seated cross-legged on reed mats in small groups around round footless trays of rice and dishes, lacquered betel boxes beside them, eating with their right hands, a servant kneeling to bring a water jar; lamplight in the evening.",
-      "loreRefs": ["material.household_objects_1680s", "material.food_1680s"]
+      "loreRefs": [
+        "material.household_objects_1680s",
+        "material.food_1680s"
+      ]
     },
     {
       "id": "scene.newborn",
       "style": "reality",
-      "tags": ["event:family.newborn", "event:family.grandchild_naming", "situation:childbirth"],
+      "tags": [
+        "event:family.newborn",
+        "event:family.grandchild_naming",
+        "situation:childbirth"
+      ],
       "alt": "แม่ลูกอ่อนนอนอยู่ไฟ ทารกนอนบนเสื่อข้างตัว",
       "subject": "Interior of a house at dusk: a young mother wrapped in a lower cloth and a shawl lying on a reed mat beside a low glowing fire, a swaddled newborn on a cloth beside her, an older woman fanning the fire with a woven fan; seen from the side at a respectful distance.",
-      "loreRefs": ["ritual.yu_fai_placenta"]
+      "loreRefs": [
+        "ritual.yu_fai_placenta"
+      ]
     },
     {
       "id": "scene.sickbed",
       "style": "reality",
-      "tags": ["event:family.parent_illness", "event:family.hard_to_raise", "situation:illness"],
+      "tags": [
+        "event:family.parent_illness",
+        "event:family.hard_to_raise",
+        "situation:illness"
+      ],
       "alt": "ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย",
       "subject": "Interior of a house in dim daylight: an old man lying ill on a reed mat under a thin cotton cloth, a grown son kneeling beside him holding an earthenware bowl of herbal medicine, a bundle of dried roots and leaves on a tray; quiet, worried mood.",
-      "loreRefs": ["material.household_objects_1680s"]
+      "loreRefs": [
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.funeral_home",
       "style": "reality",
-      "tags": ["event:family.death", "event:family.death_bad"],
+      "tags": [
+        "event:family.death",
+        "event:family.death_bad"
+      ],
       "alt": "ศพห่อผ้าขาวในเรือน ญาตินั่งล้อม พระสวด",
       "subject": "Interior of a house: a body wrapped entirely in white cloth lying on a mat, only the outline visible, relatives seated on the floor around it with heads bowed, three monks in yellow patched robes seated in a row holding palm-leaf fans in front of their faces while chanting, candles burning; sombre evening light. No visible face or wound on the body.",
-      "loreRefs": ["ritual.funeral_cremation", "attire.monks_1680s"]
+      "loreRefs": [
+        "ritual.funeral_cremation",
+        "attire.monks_1680s"
+      ]
     },
     {
       "id": "scene.betrothal",
       "style": "reality",
-      "tags": ["group:marriage", "event:family.arranged_match", "event:intent.court.accepted_formal", "event:marriage.refused", "event:marriage.refused_f", "event:marriage.milk_claim", "event:marriage.milk_claim_f"],
+      "tags": [
+        "group:marriage",
+        "event:family.arranged_match",
+        "event:intent.court.accepted_formal",
+        "event:marriage.refused",
+        "event:marriage.refused_f",
+        "event:marriage.milk_claim",
+        "event:marriage.milk_claim_f"
+      ],
       "alt": "ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง",
       "subject": "Interior of a timber house: two groups of middle-aged adults seated on reed mats facing each other, between them three bowls of betel nut and betel leaves on footed trays, the elders talking seriously; a young woman half-hidden behind a doorway listening.",
-      "loreRefs": ["kinship.betrothal_khanmak_three_seals", "material.household_objects_1680s"]
+      "loreRefs": [
+        "kinship.betrothal_khanmak_three_seals",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.wedding",
       "style": "reality",
-      "tags": ["event:marriage.wedding", "event:marriage.wedding_f", "event:marriage.minor_wife", "event:family.child_wedding"],
+      "tags": [
+        "event:marriage.wedding",
+        "event:marriage.wedding_f",
+        "event:marriage.minor_wife",
+        "event:family.child_wedding"
+      ],
       "alt": "พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่",
       "subject": "Interior of a Siamese timber bridal house: a young bride and groom seated side by side on a reed mat with palms pressed together in respectful greeting, wearing white sacred cotton thread rings (mongkhonแฝด) linked between their heads; the bride wears a black wrap skirt and a white muslin chest wrap horizontally across her chest with both ends thrown back over both shoulders, the groom wears a fine patterned lower cloth; an elderly couple in front of them pouring lustral water from a white conch shell over the couple's joined hands over a brass bowl of flowers, footed trays of betel nut and offerings nearby, relatives watching warmly. Avoid: one-shoulder diagonal sash, modern bridal costume.",
-      "loreRefs": ["kinship.betrothal_khanmak_three_seals", "attire.women_1680s", "material.houses_1680s"]
+      "loreRefs": [
+        "kinship.betrothal_khanmak_three_seals",
+        "attire.women_1680s",
+        "material.houses_1680s"
+      ]
     },
     {
       "id": "scene.courtship",
       "style": "reality",
-      "tags": ["event:intent.court.trial", "event:intent.court.gossip", "event:intent.court.accepted", "event:intent.court.rejected", "event:intent.court.meet", "event:marriage.divorce"],
+      "tags": [
+        "event:intent.court.trial",
+        "event:intent.court.gossip",
+        "event:intent.court.accepted",
+        "event:intent.court.rejected",
+        "event:intent.court.meet",
+        "event:marriage.divorce"
+      ],
       "alt": "หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ",
       "subject": "A wooden landing on a canal in late afternoon: a young woman wearing a lower cloth and a breast-cloth wrapped around her chest covering both breasts, ends thrown back over both shoulders, holding an earthenware water jar on her hip, and a young man standing a few steps away speaking to her; other villagers bathing far off in the water.",
-      "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s"]
+      "loreRefs": [
+        "kinship.courtship_liberty_1680s",
+        "attire.women_1680s"
+      ]
     },
     {
       "id": "scene.lotus_pond",
       "style": "reality",
-      "tags": ["group:outing", "event:outing.lotus_f", "event:outing.lotus_m", "event:outing.lotus_fall_f", "event:outing.lotus_fall_m"],
+      "tags": [
+        "group:outing",
+        "event:outing.lotus_f",
+        "event:outing.lotus_m",
+        "event:outing.lotus_fall_f",
+        "event:outing.lotus_fall_m"
+      ],
       "alt": "เรือลำเล็กกลางบึงบัว",
       "subject": "Wide view of a lotus pond in the morning: two teenagers in a small narrow wooden dugout boat among lotus leaves and pink blossoms, one paddling, one reaching out to pick a flower, the boat tilting slightly; seen from a distance.",
-      "loreRefs": ["kinship.lotus_boat_meeting"]
+      "loreRefs": [
+        "kinship.lotus_boat_meeting"
+      ]
     },
     {
       "id": "scene.palace_pages",
       "style": "reality",
-      "tags": ["group:career", "place:court", "event:career.page_duty", "event:career.page_mistake", "event:career.page_found_out", "event:career.punished_page", "event:career.present_page", "event:career.assign_department"],
+      "tags": [
+        "group:career",
+        "place:court",
+        "event:career.page_duty",
+        "event:career.page_mistake",
+        "event:career.page_found_out",
+        "event:career.punished_page",
+        "event:career.present_page",
+        "event:career.assign_department"
+      ],
       "alt": "มหาดเล็กหนุ่มนั่งเรียงรอรับใช้ในลานพระราชวัง",
       "subject": "A paved palace courtyard beside a pavilion with tiered roofs: a row of young royal pages under twenty-five in white muslin over-shirts and silk lower cloths kneeling and sitting in order, one holding a lacquered betel box, an older official in a tall white conical hat with gold bands watching them. No king or royal figure visible.",
-      "loreRefs": ["social.royal_pages_1680s", "attire.officials_1680s"]
+      "loreRefs": [
+        "social.royal_pages_1680s",
+        "attire.officials_1680s"
+      ]
     },
     {
       "id": "scene.audience_hall",
       "style": "reality",
-      "tags": ["event:career.audience_late", "event:career.promotion", "event:career.punished", "event:career.gift_offered", "event:career.rival_accuses", "event:career.reported", "event:career.recall"],
+      "tags": [
+        "event:career.audience_late",
+        "event:career.promotion",
+        "event:career.punished",
+        "event:career.gift_offered",
+        "event:career.rival_accuses",
+        "event:career.reported",
+        "event:career.recall"
+      ],
       "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
       "subject": "Interior of a palace audience hall seen from behind the officials: rows of Siamese officials in open-front white muslin over-shirts and tall white conical hats with gold bands prostrating on the floor in strict order, betel boxes beside them, tall red columns; the throne area is off-frame. No king or royal figure visible.",
-      "loreRefs": ["attire.officials_1680s", "social.court_attendance_rules"]
+      "loreRefs": [
+        "attire.officials_1680s",
+        "social.court_attendance_rules"
+      ]
     },
     {
       "id": "scene.night_patrol",
       "style": "reality",
-      "tags": ["event:career.patrol_thief", "situation:combat"],
+      "tags": [
+        "event:career.patrol_thief",
+        "situation:combat"
+      ],
       "alt": "กองตระเวนถือคบไฟจับขโมยควายริมคลอง",
       "subject": "Night by a canal bank: three patrol men, bare-chested, in lower cloths, carrying burning torches and wooden staves, surrounding a man crouching beside a water buffalo; firelight on the water, stilt houses dark in the background.",
-      "loreRefs": ["social.patrol_department_ladder", "attire.commoner_men_1680s"]
+      "loreRefs": [
+        "social.patrol_department_ladder",
+        "attire.commoner_men_1680s"
+      ]
     },
     {
       "id": "scene.temple_holy_day",
       "style": "reality",
-      "tags": ["group:festival", "group:ritual", "event:festival.holy_day", "event:ritual.elder_precepts", "group:temple"],
+      "tags": [
+        "group:festival",
+        "group:ritual",
+        "event:festival.holy_day",
+        "event:ritual.elder_precepts",
+        "group:temple"
+      ],
       "alt": "ชาวบ้านนำของไปถวายพระที่วัดในวันพระ",
       "subject": "A temple compound on a holy day: villagers in clean lower cloths carrying fruit, cloth and rice in baskets toward a monastery hall, older people in white sitting on mats listening to a monk preaching from a raised seat while holding a palm-leaf fan, candles lit; whitewashed brick hall with a tiled roof, bodhi tree.",
-      "loreRefs": ["ritual.holy_days_1680s", "ritual.alms_round_1680s", "attire.monks_1680s"]
+      "loreRefs": [
+        "ritual.holy_days_1680s",
+        "ritual.alms_round_1680s",
+        "attire.monks_1680s"
+      ]
     },
     {
       "id": "scene.temple_fair",
       "style": "reality",
-      "tags": ["event:festival.temple_fair"],
+      "tags": [
+        "event:festival.temple_fair"
+      ],
       "alt": "งานวัด คนมาในผ้าใหม่ มีชกมวยพันเชือก",
       "subject": "A crowded temple festival: people in new bright lower cloths walking around the temple grounds, in the middle a ring of spectators watching two boxers whose hands are wrapped with cord, a man releasing small birds from a bamboo cage, stalls with food in coconut shells.",
-      "loreRefs": ["ritual.temple_festival_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "ritual.temple_festival_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.lanterns",
       "style": "reality",
-      "tags": ["event:festival.lanterns"],
+      "tags": [
+        "event:festival.lanterns"
+      ],
       "alt": "ลำน้ำเต็มไปด้วยโคมกระดาษลอยตามน้ำยามค่ำ",
       "subject": "Night on a wide river as the floodwater begins to fall: the water covered with many small painted paper lanterns of different sizes floating with the current, their flames reflected, people on the bank and in small boats setting more lanterns on the water.",
-      "loreRefs": ["ritual.floating_lanterns_1680s"]
+      "loreRefs": [
+        "ritual.floating_lanterns_1680s"
+      ]
     },
     {
       "id": "scene.bathing_elders",
       "style": "reality",
-      "tags": ["event:festival.bathing"],
+      "tags": [
+        "event:festival.bathing"
+      ],
       "alt": "ลูกหลานรดน้ำพ่อแม่ในวันเพ็ญเดือนห้า",
       "subject": "Bright hot-season day in a house yard: an elderly couple seated on a low bench while their grown sons and daughters pour scented water from small bowls over their hands and shoulders, grandchildren in lower cloths waiting with more bowls, flowers floating in the water jar.",
-      "loreRefs": ["ritual.fifth_month_bathing_1680s"]
+      "loreRefs": [
+        "ritual.fifth_month_bathing_1680s"
+      ]
     },
     {
       "id": "scene.ordination",
       "style": "reality",
-      "tags": ["event:ritual.ordination"],
+      "tags": [
+        "event:ritual.ordination"
+      ],
       "alt": "แห่นาคไปวัดพร้อมร่มและดนตรี",
       "subject": "A procession toward a temple: a young man of about twenty-one with a shaved head, dressed in white, walking under a tall ceremonial umbrella held by a relative, family members carrying folded yellow robes and an alms bowl, a drummer and a reed-pipe player in front.",
-      "loreRefs": ["ritual.ordination", "attire.monks_1680s"]
+      "loreRefs": [
+        "ritual.ordination",
+        "attire.monks_1680s"
+      ]
     },
     {
       "id": "scene.topknot",
       "style": "reality",
-      "tags": ["event:ritual.topknot"],
+      "tags": [
+        "event:ritual.topknot"
+      ],
       "alt": "เด็กนั่งให้ผู้ใหญ่ตัดจุก",
       "subject": "Interior of a house: a child of about eleven, bare-chested and wearing a lower cloth, seated on a mat with head bowed, the small topknot on the crown about to be cut by an elderly man with a pair of shears, a monk seated nearby holding a palm-leaf fan, relatives watching with bowls of water and flowers.",
-      "loreRefs": ["ritual.topknot_cutting", "attire.monks_1680s"]
+      "loreRefs": [
+        "ritual.topknot_cutting",
+        "attire.monks_1680s"
+      ]
     },
     {
       "id": "scene.muay_sparring",
       "style": "reality",
-      "tags": ["event:skill.muay_sparring"],
+      "tags": [
+        "event:skill.muay_sparring"
+      ],
       "alt": "ชายหนุ่มสองคนพันเชือกที่มือซ้อมมวยกันที่ลานใต้ต้นไม้ มีเพื่อนบ้านยืนดู",
       "subject": "Late afternoon in a shaded house yard under a large tree: two bare-chested young Siamese men in knee-length lower cloths tucked at the back, their hands wrapped with rope cord, sparring with raised fists and a knee strike, bare feet in packed dirt; a few neighbours and boys watching from the edge, an older man with arms folded judging, a stilt house behind.",
-      "loreRefs": ["ritual.temple_festival_1680s", "attire.commoner_men_1680s"]
+      "loreRefs": [
+        "ritual.temple_festival_1680s",
+        "attire.commoner_men_1680s"
+      ]
     },
     {
       "id": "scene.night_assassin",
       "style": "reality",
-      "tags": ["event:scheme.assassin"],
+      "tags": [
+        "event:scheme.assassin"
+      ],
       "alt": "ชายคลุมผ้าสีเข้มนั่งยองใต้ถุนเรือนยามค่ำ ถือมีดมองขึ้นไปที่แสงตะเกียงชั้นบน",
       "subject": "Night inside the dark ground level under a raised timber house: a cloaked man in a dark lower cloth crouching between the tall posts, a short knife held low, looking up toward the lit floor planks above where a faint lamp glows through the gaps; moonlight on a canal in the far background, no faces clearly lit, tense mood. No blood, no victim shown.",
-      "loreRefs": ["material.houses_1680s"]
+      "loreRefs": [
+        "material.houses_1680s"
+      ]
     },
     {
       "id": "scene.wife_jealousy",
       "style": "reality",
-      "tags": ["event:marriage.wife_jealousy", "event:marriage.wife_jealousy_slave"],
+      "tags": [
+        "event:marriage.wife_jealousy",
+        "event:marriage.wife_jealousy_slave"
+      ],
       "alt": "เมียหลวงนั่งนิ่งเย็นชา เมียน้อยหมอบยกพานหมากถวายอยู่อีกฟากของห้อง",
       "subject": "Interior of a timber house in the evening: a wife of the household in her thirties sitting upright on a reed mat beside a lacquered betel box, turned slightly away with a cold expression and lowered eyes, while a younger woman, the minor wife, kneels respectfully at the far side of the room with her head bowed, offering a small tray of betel; both wear a black wrap skirt and a white breast-cloth wrapped around the chest covering both breasts with both ends thrown back over both shoulders; the tension is only in posture and gaze, a single oil lamp between them.",
-      "loreRefs": ["attire.women_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "attire.women_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.elder_visit",
       "style": "reality",
-      "tags": ["event:temple.elder", "event:temple.elder_visit"],
+      "tags": [
+        "event:temple.elder",
+        "event:temple.elder_visit"
+      ],
       "alt": "สามีภรรยากราบพระเถระชราที่นั่งถือตาลปัตร มีพานดอกไม้เทียนวางตรงหน้า",
       "subject": "Interior of a modest monastery residence in the morning: an elderly Siamese Buddhist monk in his sixties with a shaved head and shaved eyebrows, in a patched ochre robe leaving the right shoulder bare, seated on a raised mat holding a palm-leaf fan; in front of him a layman and his wife kneeling low with palms pressed together, a tray of flowers, candles and betel offerings between them; timber walls, light falling through a small window.",
-      "loreRefs": ["attire.monks_1680s", "ritual.alms_round_1680s"]
+      "loreRefs": [
+        "attire.monks_1680s",
+        "ritual.alms_round_1680s"
+      ]
     },
     {
       "id": "scene.heavy_heart",
       "style": "reality",
-      "tags": ["event:adult.heavy_heart"],
+      "tags": [
+        "event:adult.heavy_heart"
+      ],
       "alt": "ชายวัยกลางคนนั่งเงียบคนเดียวบนชานเรือนยามพลบค่ำ มองไปทางลำคลอง",
       "subject": "Dusk on the veranda of a timber house: a Siamese man in his thirties seated alone, bare-chested, in a knee-length lower cloth, one forearm resting on his knee and his head slightly bowed, looking out toward a canal and fading sky; an untouched lacquered betel box beside him, a small oil lamp not yet lit, the rest of the household quiet and out of sight; still, melancholy mood.",
-      "loreRefs": ["attire.commoner_men_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "attire.commoner_men_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.court_boat",
       "style": "reality",
-      "tags": ["event:intent.court.boat"],
+      "tags": [
+        "event:intent.court.boat"
+      ],
       "alt": "หนุ่มสาวสองคนในเรือขุดลำเล็กพายเลียบคลองยามเย็น ห่างตาผู้ใหญ่",
       "subject": "Early evening on a narrow canal: a young Siamese man and a young woman in a small narrow wooden dugout boat, he paddling at the stern, she seated in front with her hands in her lap; she wears a lower cloth and a breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders; stilt houses and banana trees along the bank, no other people near, golden low light on the water, shy quiet mood, seen from a distance.",
-      "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s"]
+      "loreRefs": [
+        "kinship.courtship_liberty_1680s",
+        "attire.women_1680s"
+      ]
     },
     {
       "id": "scene.bedside_first",
       "style": "reality",
-      "tags": ["event:marriage.visit_first"],
+      "tags": [
+        "event:marriage.visit_first"
+      ],
       "alt": "ชายหญิงนั่งเคียงกันบนแท่นนอนในห้องเล็ก ชายจับมือหญิง ตะเกียงดวงเดียว",
       "subject": "Interior of a small timber bedchamber at night, lit by a single small oil lamp standing on the floor: a Siamese man in his thirties and a young woman in her twenties sit side by side on the edge of a low raised wooden sleeping platform covered with a thin cotton mattress and a woven mat, a rolled triangular pillow and a mosquito net tied up above; he gently holds her hand in both of his, she looks shyly down at their hands and then up toward his face; she wears a dark wrap skirt and a single white muslin breast-cloth wrapped horizontally around her chest covering both breasts with both ends clearly thrown back over BOTH shoulders; he is bare-chested in a knee-length lower cloth; modest and tender, both fully clothed, seen from the side at a respectful distance.",
-      "loreRefs": ["material.houses_1680s", "attire.women_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.houses_1680s",
+        "attire.women_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.bedside_pregnant",
       "style": "reality",
-      "tags": ["event:marriage.visit_pregnant"],
+      "tags": [
+        "event:marriage.visit_pregnant"
+      ],
       "alt": "หญิงท้องแก่พิงหมอนบนแท่นนอน ชายนั่งจับมือนางอยู่ข้างๆ",
       "subject": "Interior of a small timber bedchamber at night, lit by a single small oil lamp on the floor: a visibly pregnant Siamese woman in her twenties sits propped against a rolled pillow on a low raised wooden sleeping platform with a thin cotton mattress and woven mat, her rounded belly under a dark wrap skirt, wearing a white muslin breast-cloth wrapped horizontally around her chest covering both breasts with both ends thrown back over BOTH shoulders; a Siamese man in his thirties, bare-chested in a lower cloth, sits beside her holding her hand in one hand with his other hand resting gently on the mat near her belly, both looking into each other's eyes with tired warm smiles; mosquito net tied up above; modest, fully clothed, seen from the side.",
-      "loreRefs": ["material.houses_1680s", "attire.women_1680s", "ritual.yu_fai_placenta"]
+      "loreRefs": [
+        "material.houses_1680s",
+        "attire.women_1680s",
+        "ritual.yu_fai_placenta"
+      ]
     },
     {
       "id": "scene.bedside_cold",
       "style": "reality",
-      "tags": ["event:marriage.visit_cold"],
+      "tags": [
+        "event:marriage.visit_cold"
+      ],
       "alt": "หญิงนั่งกอดเข่าหันข้างอยู่ปลายแท่นนอน ชายถือของฝากนั่งมองนางอย่างลังเล",
       "subject": "Interior of a small timber bedchamber at night, lit by a single small oil lamp on the floor: a young Siamese woman in her twenties sits at the far end of a low raised wooden sleeping platform, turned half away with her arms wrapped around her drawn-up knees and her eyes lowered, wearing a dark wrap skirt and a white muslin breast-cloth wrapped horizontally around her chest covering both breasts with both ends thrown back over BOTH shoulders; a Siamese man in his thirties, bare-chested in a lower cloth, sits near the other end holding a small cloth-wrapped gift in both hands, looking at her with a hesitant, apologetic expression; an untouched lacquered tray of rice and a bowl on the floor beside the platform; silent, tense mood, both fully clothed.",
-      "loreRefs": ["material.houses_1680s", "attire.women_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "material.houses_1680s",
+        "attire.women_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "scene.court_minor",
       "style": "reality",
-      "tags": ["event:intent.court.minor"],
+      "tags": [
+        "event:intent.court.minor"
+      ],
       "alt": "ชายยืนที่โคนบันไดยื่นพานหมากขึ้นไป หญิงยืนกอดอกบนชาน พ่อแม่นั่งฟังอยู่ในประตู",
       "subject": "Dusk at the foot of a small bamboo stilt house: a Siamese man in his thirties, bare-chested in a knee-length lower cloth, stands at the bottom of the hanging bamboo ladder holding up a small footed tray of betel leaves and areca nuts; at the top of the ladder on the veranda a young woman in a dark wrap skirt and a white breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders looks down at him with arms folded, guarded and thoughtful; her father and mother sit in the doorway behind her, the mother holding a palm-leaf fan, listening quietly; banana trees, a canal glimpsed behind, warm evening light.",
-      "loreRefs": ["kinship.courtship_liberty_1680s", "attire.women_1680s", "material.houses_1680s"]
+      "loreRefs": [
+        "kinship.courtship_liberty_1680s",
+        "attire.women_1680s",
+        "material.houses_1680s"
+      ]
     },
     {
       "id": "scene.river_rescue",
       "style": "reality",
-      "tags": ["event:life.drowning"],
+      "tags": [
+        "event:life.drowning"
+      ],
       "alt": "ชายยืนในน้ำถึงเอวอุ้มเด็กไว้จุกขึ้นฝั่ง ชาวบ้านวิ่งมา",
       "subject": "A muddy canal landing just after rain: a bare-chested Siamese man in a knee-length lower cloth, waist-deep in brown water, lifting a coughing child of about seven with a shaved head, a small topknot and a small wet lower cloth toward the muddy bank, a bamboo pole floating nearby and a small dugout boat tipped against a post; in the background two or three villagers running down the bank, one reaching out a hand; wet, urgent but not violent, overcast light.",
-      "loreRefs": ["material.houses_1680s", "material.boats_1680s"]
+      "loreRefs": [
+        "material.houses_1680s",
+        "material.boats_1680s"
+      ]
     },
     {
       "id": "legend.battle",
       "style": "chronicle",
-      "tags": ["legend:any", "place:battlefield", "situation:combat", "situation:war"],
+      "tags": [
+        "legend:any",
+        "place:battlefield",
+        "situation:combat",
+        "situation:war"
+      ],
       "alt": "ภาพจิตรกรรม: นักรบฟันข้าศึก",
       "subject": "A lone warrior with a sword cutting down several enemy soldiers in a battle scene, celestial beings watching from above with hands joined, decorative trees, rocks and water framing the battlefield.",
-      "loreRefs": ["attire.wat_ko_kaeo_reference"],
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference"
+      ],
       "source": "art/approved/chronicle-legend-warrior.jpg"
     },
     {
       "id": "legend.duel",
       "style": "chronicle",
-      "tags": ["place:duel_ground"],
+      "tags": [
+        "place:duel_ground"
+      ],
       "alt": "ภาพจิตรกรรม: สองคนประลองดาบต่อหน้าผู้คน",
       "subject": "Two men dueling with swords and shields on an open ground, a crowd of onlookers seated in rows around them, one fighter leaping in a heroic pose, decorative trees and rocks.",
-      "loreRefs": ["attire.wat_ko_kaeo_reference"]
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference"
+      ]
     },
     {
       "id": "legend.court",
       "style": "chronicle",
-      "tags": ["place:court"],
+      "tags": [
+        "place:court"
+      ],
       "alt": "ภาพจิตรกรรม: ขุนนางหมอบรับความชอบในวัง",
       "subject": "A palace scene: an official in a tall pointed hat prostrating to receive a reward of cloth and a sword on a tray, other officials kneeling in rows, a pavilion with tiered roofs; the ruler is not shown, only an empty raised seat behind a curtain.",
-      "loreRefs": ["attire.wat_ko_kaeo_reference", "attire.officials_1680s"]
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference",
+        "attire.officials_1680s"
+      ]
     },
     {
       "id": "legend.spirit",
       "style": "chronicle",
-      "tags": ["supernatural:guardian_spirit", "supernatural:phi"],
+      "tags": [
+        "supernatural:guardian_spirit",
+        "supernatural:phi"
+      ],
       "alt": "ภาพจิตรกรรม: ผีบรรพบุรุษคุ้มครองลูกหลาน",
       "subject": "An ancestral spirit drawn as a pale floating figure above a house, shielding a sleeping family below from dark demonic figures at the edge of the scene.",
-      "loreRefs": ["attire.wat_ko_kaeo_reference", "belief.spirits_1680s"]
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference",
+        "belief.spirits_1680s"
+      ]
     },
     {
       "id": "legend.omen",
       "style": "chronicle",
-      "tags": ["supernatural:omen"],
+      "tags": [
+        "supernatural:omen"
+      ],
       "alt": "ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า",
       "subject": "A strange omen in the sky: a comet and a ring around the sun above a town wall, small figures below pointing upward in alarm.",
-      "loreRefs": ["attire.wat_ko_kaeo_reference", "belief.chronicle_omens"]
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference",
+        "belief.chronicle_omens"
+      ]
     },
     {
       "id": "history.fall_of_ayutthaya",
       "style": "chronicle",
-      "tags": ["history:fall_of_ayutthaya"],
+      "tags": [
+        "history:fall_of_ayutthaya"
+      ],
       "alt": "ภาพจิตรกรรม: กรุงถูกไฟไหม้ ข้าศึกบุกเข้าประตูเมือง ผู้คนหนีลงเรือ",
       "subject": "A walled royal city burning at night: flames rising from tiered-roof pavilions and temple spires inside the city walls, invading soldiers with spears and shields climbing the walls and streaming through a gate, townspeople fleeing along the riverbank carrying bundles, boats crowded on the river, smoke curling in stylized patterns; no gore, no close-up of wounds.",
-      "loreRefs": ["event.fall_of_ayutthaya_2310", "attire.wat_ko_kaeo_reference"]
+      "loreRefs": [
+        "event.fall_of_ayutthaya_2310",
+        "attire.wat_ko_kaeo_reference"
+      ]
     },
     {
       "id": "history.famine",
       "style": "chronicle",
-      "tags": ["history:famine_after_fall", "historykind:famine"],
+      "tags": [
+        "history:famine_after_fall",
+        "historykind:famine"
+      ],
       "alt": "ภาพจิตรกรรม: ชาวบ้านผอมโซเข้าแถวรับข้าวที่หน้าวัด",
       "subject": "A village in time of famine: thin villagers in plain lower cloths sitting and standing in a line before a monastery gate where monks and a few officials distribute small portions of rice from large pots, an elderly woman and a child receiving rice into a coconut-shell bowl, empty rice barns on stilts and dry cracked fields in the background, a thin dog, decorative trees; sombre but dignified, no corpses.",
-      "loreRefs": ["event.famine_2310_2313", "attire.wat_ko_kaeo_reference"]
+      "loreRefs": [
+        "event.famine_2310_2313",
+        "attire.wat_ko_kaeo_reference"
+      ]
     },
     {
       "id": "history.plague",
       "style": "chronicle",
-      "tags": ["historykind:plague"],
+      "tags": [
+        "historykind:plague"
+      ],
       "alt": "ภาพจิตรกรรม: คนป่วยนอนบนเสื่อริมท่า พระสวด ศพห่อผ้าขาวถูกหามไปวัด",
       "subject": "A river landing during an epidemic: sick people lying on mats under a shelter on the bank, relatives wiping their faces with cloths, monks in a row seated chanting with palm-leaf fans in front of their faces, a few bodies wrapped entirely in white cloth being carried on poles toward a temple compound, boats moored, decorative trees and water patterns; no visible faces or wounds on the bodies.",
-      "loreRefs": ["event.cholera_2363", "attire.wat_ko_kaeo_reference", "attire.monks_1680s"]
+      "loreRefs": [
+        "event.cholera_2363",
+        "attire.wat_ko_kaeo_reference",
+        "attire.monks_1680s"
+      ]
     },
     {
       "id": "history.war",
       "style": "chronicle",
-      "tags": ["historykind:war"],
+      "tags": [
+        "historykind:war"
+      ],
       "alt": "ภาพจิตรกรรม: กองทัพเคลื่อนพลตามช้างศึก ธงและกลองนำหน้า",
       "subject": "An army marching to war: a column of soldiers with spears, swords and shields following a war elephant with a mahout and a howdah, standard-bearers carrying tall banners, drummers and a conch blower at the front, officials on horseback, villagers watching from the roadside with palms pressed together, decorative trees and rocks; stylized, no fighting shown.",
-      "loreRefs": ["event.nine_armies_2328", "attire.wat_ko_kaeo_reference"]
+      "loreRefs": [
+        "event.nine_armies_2328",
+        "attire.wat_ko_kaeo_reference"
+      ]
     },
     {
       "id": "portrait.m.child.commoner",
       "style": "portrait",
-      "tags": ["sex:m", "age:child", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:m",
+        "age:child",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "เด็กชายชาวบ้านหัวโกนไว้จุก",
       "subject": "Medium portrait from the waist up: a young Siamese commoner boy of about eight years old with warm olive-brown skin, broad cheekbones, calm dark eyes, and a straight nose; shaved head with a small topknot left on the crown, bare-chested, no shirt, wearing a plain knee-length woven cotton lower cloth, standing in a bamboo yard.",
-      "loreRefs": ["ritual.month_old_tham_khwan", "ritual.topknot_cutting", "attire.commoner_men_1680s"]
+      "loreRefs": [
+        "ritual.month_old_tham_khwan",
+        "ritual.topknot_cutting",
+        "attire.commoner_men_1680s"
+      ]
     },
     {
       "id": "portrait.m.child.noble",
       "style": "portrait",
-      "tags": ["sex:m", "age:child", "estate:noble", "estate:merchant", "estate:royal"],
+      "tags": [
+        "sex:m",
+        "age:child",
+        "estate:noble",
+        "estate:merchant",
+        "estate:royal"
+      ],
       "alt": "เด็กชายลูกขุนนางหัวโกนไว้จุก สวมกำไลทอง",
       "subject": "Medium portrait from the waist up: a young well-born Siamese boy of about eight years old with warm olive-brown skin, broad cheekbones, calm dark eyes, and a straight nose; shaved head with a neat topknot on the crown fastened with a small gold pin, bare-chested, no shirt, wearing gold bracelets at the wrists and a patterned Indian chintz lower cloth, on the timber veranda of a house.",
-      "loreRefs": ["attire.children_1680s", "ritual.topknot_cutting", "attire.indian_chintz_royal"]
+      "loreRefs": [
+        "attire.children_1680s",
+        "ritual.topknot_cutting",
+        "attire.indian_chintz_royal"
+      ]
     },
     {
       "id": "portrait.m.youth.commoner",
       "style": "portrait",
-      "tags": ["sex:m", "age:youth", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "ชายหนุ่มชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง",
       "subject": "Medium portrait from the waist up: a Siamese commoner young man of about eighteen with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a knee-length painted-cotton lower cloth, standing beside a bamboo fence.",
-      "loreRefs": ["attire.commoner_men_1680s", "attire.hair_1680s"],
+      "loreRefs": [
+        "attire.commoner_men_1680s",
+        "attire.hair_1680s"
+      ],
       "source": "art/approved/reality-commoner-man.jpg"
     },
     {
       "id": "portrait.m.youth.noble",
       "style": "portrait",
-      "tags": ["sex:m", "age:youth", "estate:noble", "estate:merchant"],
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "estate:noble",
+        "estate:merchant"
+      ],
       "alt": "ชายหนุ่มลูกขุนนางในเรือนไม้",
       "subject": "Medium portrait from the waist up: a well-born Siamese young man of about eighteen years old with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned Indian chintz lower cloth with a betel pouch at the waist, seated on a reed mat inside a timber house.",
-      "loreRefs": ["attire.hair_1680s", "attire.indian_chintz_royal"]
+      "loreRefs": [
+        "attire.hair_1680s",
+        "attire.indian_chintz_royal"
+      ]
     },
     {
       "id": "portrait.m.youth.page",
       "style": "portrait",
-      "tags": ["sex:m", "age:youth", "age:adult", "estate:noble", "role:page"],
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "age:adult",
+        "estate:noble",
+        "role:page"
+      ],
       "alt": "มหาดเล็กหนุ่มสวมเสื้อมัสลินขาวผ่าหน้า หมอบรับใช้ในวัง",
       "subject": "Medium portrait: a young Siamese royal page of about nineteen with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; black hair cropped level with the top of the ears and shaved close below, bare-headed without a hat, wearing an open-front collarless white muslin over-shirt with wide long sleeves over a patterned silk lower cloth, kneeling respectfully beside a lacquered betel box in a palace pavilion.",
-      "loreRefs": ["social.royal_pages_1680s", "attire.officials_1680s", "attire.hair_1680s"]
+      "loreRefs": [
+        "social.royal_pages_1680s",
+        "attire.officials_1680s",
+        "attire.hair_1680s"
+      ]
     },
     {
       "id": "portrait.m.youth.monk",
       "style": "portrait",
-      "tags": ["sex:m", "age:youth", "age:adult", "estate:monk", "role:monk"],
+      "tags": [
+        "sex:m",
+        "age:youth",
+        "age:adult",
+        "estate:monk",
+        "role:monk"
+      ],
       "alt": "พระภิกษุหนุ่มครองจีวรเหลือง",
       "subject": "Medium portrait from the waist up: a young Siamese Buddhist monk in his early twenties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; completely shaved head and shaved eyebrows, wearing a patched ochre-yellow robe leaving the right shoulder bare and a yellow waist sash, holding an iron alms bowl in a cloth sling inside a quiet monastery hall.",
-      "loreRefs": ["attire.monks_1680s", "ritual.ordination"]
+      "loreRefs": [
+        "attire.monks_1680s",
+        "ritual.ordination"
+      ]
     },
     {
       "id": "portrait.m.adult.commoner",
       "style": "portrait",
-      "tags": ["sex:m", "age:adult", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "ชายผู้ใหญ่ชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง",
       "subject": "Medium portrait from the waist up: a Siamese commoner man in his thirties with a sun-weathered face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a knee-length cotton lower cloth tucked at the back, standing in front of a bamboo stilt house.",
-      "loreRefs": ["attire.commoner_men_1680s", "attire.hair_1680s"],
+      "loreRefs": [
+        "attire.commoner_men_1680s",
+        "attire.hair_1680s"
+      ],
       "source": "art/approved/reality-commoner-man.jpg"
     },
     {
       "id": "portrait.m.adult.noble",
       "style": "portrait",
-      "tags": ["sex:m", "age:adult", "estate:noble", "estate:merchant"],
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant"
+      ],
       "alt": "ชายผู้ใหญ่เจ้าเรือนผู้มีฐานะ นั่งข้างเชี่ยนหมาก",
       "subject": "Medium portrait: a well-to-do Siamese household head in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; black hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned silk lower cloth, seated cross-legged on a reed mat beside a lacquered betel box inside a timber house.",
-      "loreRefs": ["attire.hair_1680s", "attire.indian_chintz_royal", "material.household_objects_1680s"]
+      "loreRefs": [
+        "attire.hair_1680s",
+        "attire.indian_chintz_royal",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "portrait.m.adult.official_patrol",
       "style": "portrait",
-      "tags": ["sex:m", "age:adult", "estate:noble", "role:official", "role:official_patrol"],
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol"
+      ],
       "alt": "ขุนนางกรมกองกระเวนสวมเสื้อมัสลินและลอมพอก",
       "subject": "Medium portrait: a Siamese patrol-department official in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, and a tall brimless white conical cloth hat (lomphok) with thin gold bands near the base and a chin cord; a sheathed sword resting on a stand beside him inside a timber hall. Avoid: hat brim, wide-brimmed hat.",
-      "loreRefs": ["attire.officials_1680s", "social.patrol_department_ladder"],
+      "loreRefs": [
+        "attire.officials_1680s",
+        "social.patrol_department_ladder"
+      ],
       "source": "art/approved/reality-official-lomphok.jpg"
     },
     {
       "id": "portrait.m.adult.official_palace",
       "style": "portrait",
-      "tags": ["sex:m", "age:adult", "estate:noble", "role:official", "role:official_palace"],
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace"
+      ],
       "alt": "ขุนนางกรมชาวที่สวมลอมพอก ข้างพานเครื่องทอง",
       "subject": "Medium portrait: a Siamese palace-chamber official in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; seated cross-legged on a reed mat in a palace hall, wearing an open-front collarless white muslin over-shirt with wide sleeves over a rich patterned silk lower cloth, and a tall brimless white conical cloth hat (lomphok) with gold bands and chin cord, a footed brass tray and betel box beside him. Avoid: hat brim, wide-brimmed hat.",
-      "loreRefs": ["attire.officials_1680s", "social.royal_chamber_department_ladder"],
+      "loreRefs": [
+        "attire.officials_1680s",
+        "social.royal_chamber_department_ladder"
+      ],
       "source": "art/approved/reality-official-lomphok.jpg"
     },
     {
       "id": "portrait.m.adult.official_scholar",
       "style": "portrait",
-      "tags": ["sex:m", "age:adult", "estate:noble", "role:official", "role:official_scholar"],
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar"
+      ],
       "alt": "ขุนนางกรมราชบัณฑิตยสวมลอมพอก ข้างสมุดไทยดำ",
       "subject": "Medium portrait: a Siamese royal-scholar official in his thirties with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a silk lower cloth, and a tall brimless white conical cloth hat (lomphok) with gold bands and chin cord, an accordion-folded black khoi-paper manuscript (samut thai dam) and white steatite stylus on a low tray before him. Avoid: hat brim, wide-brimmed hat.",
-      "loreRefs": ["attire.officials_1680s", "social.royal_scholars_department_ladder"],
+      "loreRefs": [
+        "attire.officials_1680s",
+        "social.royal_scholars_department_ladder"
+      ],
       "source": "art/approved/reality-official-lomphok.jpg"
     },
     {
       "id": "portrait.m.elder.commoner",
       "style": "portrait",
-      "tags": ["sex:m", "age:elder", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "ชายชราชาวบ้านผมหงอก เปลือยท่อนบน",
       "subject": "Medium portrait from the waist up: an elderly Siamese commoner man in his sixties with a deeply lined weathered face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; grey hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a plain cotton lower cloth, seated on the veranda of a bamboo stilt house.",
-      "loreRefs": ["attire.commoner_men_1680s", "attire.hair_1680s"]
+      "loreRefs": [
+        "attire.commoner_men_1680s",
+        "attire.hair_1680s"
+      ]
     },
     {
       "id": "portrait.m.elder.noble",
       "style": "portrait",
-      "tags": ["sex:m", "age:elder", "estate:noble", "estate:merchant"],
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "estate:merchant"
+      ],
       "alt": "ชายชราเจ้าเรือนผู้มีฐานะ ผมหงอก นั่งข้างเชี่ยนหมาก",
       "subject": "Medium portrait: an elderly well-to-do Siamese household patriarch in his sixties with a lined dignified face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, teeth blackened from chewing betel; grey hair cropped level with the top of the ears and shaved close below, bare-chested, no shirt, wearing a fine patterned silk lower cloth, seated on a reed mat beside a lacquered betel set inside a timber house.",
-      "loreRefs": ["attire.hair_1680s", "material.household_objects_1680s"]
+      "loreRefs": [
+        "attire.hair_1680s",
+        "material.household_objects_1680s"
+      ]
     },
     {
       "id": "portrait.m.elder.official",
       "style": "portrait",
-      "tags": ["sex:m", "age:elder", "estate:noble", "role:official", "role:official_patrol", "role:official_palace", "role:official_scholar"],
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "role:official_palace",
+        "role:official_scholar"
+      ],
       "alt": "ขุนนางอาวุโสวัยชราสวมเสื้อมัสลินและลอมพอก",
       "subject": "Medium portrait: an elderly senior Siamese official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated on a reed mat inside a timber hall. Avoid: hat brim, wide-brimmed hat.",
-      "loreRefs": ["attire.officials_1680s", "attire.hair_1680s"]
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.hair_1680s"
+      ]
     },
     {
       "id": "portrait.m.elder.monk",
       "style": "portrait",
-      "tags": ["sex:m", "age:elder", "estate:monk", "role:monk"],
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:monk",
+        "role:monk"
+      ],
       "alt": "พระเถระชราครองจีวรเหลือง ถือตาลปัตร",
       "subject": "Medium portrait: an elderly Siamese Buddhist monk in his sixties with a serene deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, and a straight nose; completely shaved head and shaved eyebrows, wearing a patched ochre-yellow robe leaving the right shoulder bare, seated on a mat holding a palm-leaf fan inside a temple hall.",
-      "loreRefs": ["attire.monks_1680s"]
+      "loreRefs": [
+        "attire.monks_1680s"
+      ]
     },
     {
       "id": "portrait.f.child.commoner",
       "style": "portrait",
-      "tags": ["sex:f", "age:child", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:f",
+        "age:child",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "เด็กหญิงชาวบ้านหัวโกนไว้จุก",
       "subject": "Medium portrait from the waist up: a young Siamese commoner girl of about eight years old with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; shaved head with a small topknot of hair left on the crown, bare-chested, wearing a plain woven cotton wrap skirt at the waist, standing in a house yard.",
-      "loreRefs": ["ritual.month_old_tham_khwan", "ritual.topknot_cutting", "attire.children_1680s"]
+      "loreRefs": [
+        "ritual.month_old_tham_khwan",
+        "ritual.topknot_cutting",
+        "attire.children_1680s"
+      ]
     },
     {
       "id": "portrait.f.child.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:child", "estate:noble", "estate:merchant", "estate:royal"],
+      "tags": [
+        "sex:f",
+        "age:child",
+        "estate:noble",
+        "estate:merchant",
+        "estate:royal"
+      ],
       "alt": "เด็กหญิงลูกขุนนางหัวโกนไว้จุก สวมกำไลและต่างหูทอง",
       "subject": "Medium portrait from the waist up: a young well-born Siamese girl of about eight years old with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; shaved head with a neat topknot on the crown adorned with a small flower garland and gold pin, small gold earrings and gold wrist bangles, bare-chested, wearing a patterned silk wrap skirt at the waist, on a timber veranda.",
-      "loreRefs": ["attire.children_1680s", "ritual.topknot_cutting", "attire.women_1680s"]
+      "loreRefs": [
+        "attire.children_1680s",
+        "ritual.topknot_cutting",
+        "attire.women_1680s"
+      ]
     },
     {
       "id": "portrait.f.youth.commoner",
       "style": "portrait",
-      "tags": ["sex:f", "age:youth", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "หญิงสาวชาวบ้านตัดผมสั้นระดับใบหู",
       "subject": "Portrait cropped from the upper shoulders up in three-quarter view: a young Siamese village woman of about eighteen with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears, shaved close below and combed up off the forehead; soft daylight against a woven bamboo wall.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s"]
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s"
+      ]
     },
     {
       "id": "portrait.f.youth.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:youth", "estate:noble", "estate:merchant"],
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "estate:noble",
+        "estate:merchant"
+      ],
       "alt": "หญิงสาวตระกูลขุนนางห่มผ้าขาวพาดสองไหล่",
       "subject": "Medium portrait: a young well-to-do Siamese woman of about eighteen with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt and a single white muslin breast-cloth wrapped horizontally around her chest covering both breasts with its two ends thrown back over both shoulders, pear-shaped gold earrings, seated on a mat in a timber house. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s"],
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s"
+      ],
       "source": "art/approved/reality-wellborn-woman.jpg"
     },
     {
       "id": "portrait.f.adult.commoner",
       "style": "portrait",
-      "tags": ["sex:f", "age:adult", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:f",
+        "age:adult",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "หญิงผู้ใหญ่ชาวบ้านตัดผมสั้น ฟันดำจากหมาก",
       "subject": "Portrait cropped from the upper shoulders up in three-quarter view: an adult Siamese commoner woman in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and a faint smile showing teeth blackened from chewing betel; black hair cropped level with the top of the ears and lifted off the forehead; bamboo house background.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s"]
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s"
+      ]
     },
     {
       "id": "portrait.f.adult.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:adult", "estate:noble", "estate:merchant"],
+      "tags": [
+        "sex:f",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant"
+      ],
       "alt": "ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก",
       "subject": "Medium portrait: a well-to-do Siamese noble wife in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and teeth blackened from chewing betel; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt and a single white muslin breast-cloth wrapped around her chest covering both breasts with its two loose ends draped back over both shoulders, pear-shaped gold earrings and gold rings on her last three fingers, a lacquered betel box beside her. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s"],
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s"
+      ],
       "source": "art/approved/reality-wellborn-woman.jpg"
     },
     {
       "id": "portrait.f.adult.minor_wife",
       "style": "portrait",
-      "tags": ["sex:f", "age:youth", "age:adult", "estate:noble", "estate:phrai_luang", "estate:phrai_som", "role:minor_wife"],
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "age:adult",
+        "estate:noble",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "role:minor_wife"
+      ],
       "alt": "เมียกลางนอกห่มผ้าพาดสองไหล่ นั่งพับเพียบสำรวม",
       "subject": "Medium portrait: a young Siamese minor wife in her twenties with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, seated modestly on a reed mat with legs folded to one side in a small bamboo-and-timber house, wearing a dark wrap skirt and a soft off-white cotton breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders, small gold earrings. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s"]
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s"
+      ]
     },
     {
       "id": "portrait.f.adult.head",
       "style": "portrait",
-      "tags": ["sex:f", "age:adult", "estate:noble", "estate:merchant", "role:household_head"],
+      "tags": [
+        "sex:f",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant",
+        "role:household_head"
+      ],
       "alt": "เจ้าเรือนหญิงผู้นำตระกูล นั่งข้างหีบไม้และเชี่ยนหมาก",
       "subject": "Medium portrait: a dignified Siamese female household head in her thirties with warm olive-brown skin, gentle oval face, high cheekbones, calm dark eyes, and teeth blackened from chewing betel; black hair cropped level with the top of the ears, wearing a fine black wrap skirt and a white muslin breast-cloth wrapped around her chest covering both breasts with both ends draped over both shoulders, pear-shaped gold earrings and gold finger rings, seated upright beside a wooden chest and betel set inside a timber house. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s", "material.household_objects_1680s"],
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s",
+        "material.household_objects_1680s"
+      ],
       "source": "art/approved/reality-wellborn-woman.jpg"
     },
     {
       "id": "portrait.f.elder.commoner",
       "style": "portrait",
-      "tags": ["sex:f", "age:elder", "estate:phrai_luang", "estate:phrai_som", "estate:that"],
+      "tags": [
+        "sex:f",
+        "age:elder",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that"
+      ],
       "alt": "หญิงชราชาวบ้านผมหงอก ฟันดำ",
       "subject": "Portrait from the shoulders up: an elderly Siamese village woman in her sixties with a deeply lined sun-weathered oval face, warm olive-brown skin, high cheekbones, calm dark eyes, grey hair cropped level with the top of the ears and lifted off the forehead, smiling slightly to show teeth blackened from chewing betel; plain background of a bamboo wall.",
-      "loreRefs": ["attire.hair_1680s", "attire.women_1680s"],
+      "loreRefs": [
+        "attire.hair_1680s",
+        "attire.women_1680s"
+      ],
       "source": "art/approved/reality-elder-woman-portrait.jpg"
     },
     {
       "id": "portrait.f.elder.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:elder", "estate:noble", "estate:merchant"],
+      "tags": [
+        "sex:f",
+        "age:elder",
+        "estate:noble",
+        "estate:merchant"
+      ],
       "alt": "แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่",
       "subject": "Medium portrait: an elderly well-to-do Siamese matriarch in her sixties with a lined dignified oval face, warm olive-brown skin, high cheekbones, calm dark eyes, grey hair cropped level with the top of the ears and lifted off the forehead, teeth blackened from chewing betel; wearing a black wrap skirt, a white muslin breast-cloth wrapped around her chest covering both breasts with both ends thrown back over both shoulders, and gold pear-shaped earrings, seated on a reed mat inside a timber house. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s"],
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s"
+      ],
       "source": "art/approved/reality-elder-woman-portrait.jpg"
     },
     {
       "id": "portrait.f.pregnant.commoner",
       "style": "portrait",
-      "tags": ["sex:f", "age:youth", "age:adult", "estate:phrai_luang", "estate:phrai_som", "estate:that", "role:pregnant"],
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "age:adult",
+        "estate:phrai_luang",
+        "estate:phrai_som",
+        "estate:that",
+        "role:pregnant"
+      ],
       "alt": "หญิงชาวบ้านกำลังตั้งครรภ์",
       "subject": "Medium portrait in three-quarter profile: a visibly pregnant Siamese village woman in her twenties with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, wearing a plain cotton breast-cloth wrapped horizontally across the chest and a woven wrap skirt over her rounded pregnant belly, one hand resting gently on her abdomen, standing on the veranda of a bamboo stilt house. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s", "ritual.yu_fai_placenta"]
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s",
+        "ritual.yu_fai_placenta"
+      ]
     },
     {
       "id": "portrait.f.pregnant.noble",
       "style": "portrait",
-      "tags": ["sex:f", "age:youth", "age:adult", "estate:noble", "estate:merchant", "role:pregnant"],
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "age:adult",
+        "estate:noble",
+        "estate:merchant",
+        "role:pregnant"
+      ],
       "alt": "หญิงตระกูลขุนนางกำลังตั้งครรภ์ ห่มผ้าขาวพาดสองไหล่",
       "subject": "Medium portrait: a visibly pregnant well-to-do Siamese woman in her twenties with warm olive-brown skin, gentle oval face, high cheekbones, and calm dark eyes; black hair cropped level with the top of the ears and lifted off the forehead, wearing a black wrap skirt over her rounded pregnant belly and a single white muslin breast-cloth wrapped horizontally around her chest covering both breasts with its two ends thrown back over both shoulders, pear-shaped gold earrings, seated on a reed mat with one hand resting gently on her abdomen inside a timber house. Avoid: one-shoulder diagonal sash.",
-      "loreRefs": ["attire.women_1680s", "attire.hair_1680s", "ritual.yu_fai_placenta"]
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s",
+        "ritual.yu_fai_placenta"
+      ]
+    },
+    {
+      "id": "scene.war_news",
+      "style": "reality",
+      "tags": [
+        "event:war.news_tenasserim",
+        "place:market"
+      ],
+      "alt": "ข่าวศึกที่ท่าน้ำและตลาด",
+      "subject": "A busy river landing and market at midday: a travelling boatman, still standing in his boat, speaking urgently to a small crowd of merchants, porters and women who have stopped their trading; baskets of fruit and fish forgotten on the ground, one old man with a hand over his mouth, a child holding a woman's lower cloth; covered boats and a canal lined with raised houses behind. The mood is uneasy murmuring, not panic."
+    },
+    {
+      "id": "scene.war_refugees",
+      "style": "reality",
+      "tags": [
+        "event:war.west_falls"
+      ],
+      "alt": "ผู้คนหนีภัยสงครามจากหัวเมืองตะวันตกเดินทางมาถึงท่าน้ำริมกรุง",
+      "subject": "Late afternoon at a canal landing on the edge of a city: a long low boat just touching the bank, crowded with exhausted families from the west carrying cloth bundles, cooking pots, a rolled mat and a caged chicken; a mother lifting a thin child ashore, an old man leaning on a staff, locals standing on the bank offering a water jar and a bowl of rice; dust-covered clothes, dull tired faces."
+    },
+    {
+      "id": "scene.war_levy",
+      "style": "reality",
+      "tags": [
+        "event:war.levy"
+      ],
+      "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
+      "subject": "Morning in the open yard of a pillared hall at a district office: a row of village men in plain lower cloths and head cloths standing in line, bare-chested, some with spears or long knives; a clerk seated on a mat writing names in a palm-leaf register with a stylus, an officer in a plain white lower cloth and a simple sash standing over him pointing along the line; wives and mothers watching quietly from beyond a bamboo fence. No crowns, no gold regalia."
+    },
+    {
+      "id": "scene.war_bury",
+      "style": "reality",
+      "tags": [
+        "event:war.prepare"
+      ],
+      "alt": "ฝังเงินทองและของมีค่าใต้ถุนเรือนตอนกลางคืน",
+      "subject": "Night under a raised timber house: by the light of a single clay oil lamp held by a woman, a man digging in the packed earth between the house posts with a short hoe, a sealed clay jar with a wax-and-cloth cover beside the hole, sacks of rice stacked against a post; shadows large on the underside of the floorboards, a child asleep on a mat in the background. Quiet, secretive mood, small intimate scene."
+    },
+    {
+      "id": "scene.war_leave",
+      "style": "reality",
+      "tags": [
+        "event:war.decide_leave"
+      ],
+      "alt": "ครอบครัวขนของลงเรือออกจากพระนครยามเช้ามืด",
+      "subject": "Grey dawn at the family landing below a raised house: a family loading a long covered boat — a man handing bundles and a rolled mat to a boatman, a woman with a baby on her hip, two children with shaved heads and small topknots in small lower cloths, a sack of rice and a few pots; behind them the house door left half-open and the bamboo ladder hanging; mist on the water, a neighbour watching from his veranda."
+    },
+    {
+      "id": "scene.war_siege",
+      "style": "reality",
+      "tags": [
+        "event:war.siege_begins"
+      ],
+      "alt": "การตั้งรับการล้อมกรุงบนกำแพงเมืองอยุธยา",
+      "subject": "A brick city wall of Ayutthaya seen from inside the city on an overcast day: men standing and kneeling along the top of the wall behind low battlements with spears, bows and a few old cannons; women and boys below carrying baskets of bricks and jars of water up a ramp; thin columns of smoke rising beyond the wall in the distance, a bare-chested officer shouting an order. The figures are small, the wall large.",
+      "loreRefs": [
+        "event.fall_of_ayutthaya_2310"
+      ]
+    },
+    {
+      "id": "scene.war_hunger",
+      "style": "reality",
+      "tags": [
+        "event:war.rice_gone"
+      ],
+      "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
+      "subject": "Inside a house at evening: an empty woven rice bin standing open on the floor, a woman kneeling and scraping the last few grains from the bottom into a clay pot with her hand, a man sitting with his head lowered beside her, two thin children with shaved heads and topknots, in small lower cloths, waiting quietly; a single small fish on a footless tray. Dim warm light from the doorway, bare and quiet, no melodrama."
+    },
+    {
+      "id": "scene.war_breakout",
+      "style": "reality",
+      "tags": [
+        "event:war.taksin_breakout"
+      ],
+      "alt": "ขบวนคนถือคบเพลิงฝ่าช่องกำแพงที่ไฟลุกออกไปกลางคืน",
+      "subject": "Night: a gap in a burning-edged city wall seen from a distance, a long column of small figures — mounted men and men on foot with spears, a few torches — streaming out through the opening into the dark countryside, fires glowing behind the wall and reflected on a river; the figures are tiny, no faces visible.",
+      "loreRefs": [
+        "event.fall_of_ayutthaya_2310"
+      ]
+    },
+    {
+      "id": "scene.war_captives",
+      "style": "reality",
+      "tags": [
+        "history:captive_after_fall"
+      ],
+      "alt": "ขบวนผู้ถูกกวาดต้อนถูกผูกเชือกเดินตามถนนแห้ง มีควันไฟจากกรุงอยู่ไกลๆ",
+      "subject": "A long line of roped-together civilians — men, women and children, thin and dust-covered, carrying small bundles — walked along a dusty dry-season road by a few armed guards at the edge of the frame; the burning city a dark smudge of smoke on the horizon.",
+      "loreRefs": [
+        "event.fall_of_ayutthaya_2310"
+      ]
     }
   ]
 }
