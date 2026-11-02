@@ -13,6 +13,7 @@ const manifest: ArtManifest = {
     img('legend.battle', 'chronicle', ['legend:any', 'place:battlefield']),
     img('portrait.m.adult.noble', 'portrait', ['sex:m', 'age:adult', 'estate:noble']),
     img('portrait.m.adult.official_patrol', 'portrait', ['sex:m', 'age:adult', 'estate:noble', 'role:official', 'role:official_patrol']),
+    img('portrait.m.adult.official_patrol.head', 'portrait', ['sex:m', 'age:adult', 'estate:noble', 'role:official', 'role:official_patrol', 'rank:head']),
     img('portrait.f.adult.noble', 'portrait', ['sex:f', 'age:adult', 'estate:noble', 'role:principal_wife']),
     img('portrait.m.youth.page', 'portrait', ['sex:m', 'age:youth', 'age:adult', 'estate:noble', 'role:page']),
     img('portrait.f.adult.commoner', 'portrait', ['sex:f', 'age:adult', 'estate:phrai_som']),
@@ -45,6 +46,17 @@ test('ภาพตัวละครเลือกตรงเพศ ช่ว�
   assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'f', age: 8, estate: 'noble' })), null);
 });
 
+test('ภาพที่ติดขั้นยศใช้เฉพาะคนที่ยศขั้นนั้น ขั้นอื่นถอยไปใช้ภาพบทบาทเดียวกันที่ไม่ติดขั้น', () => {
+  const pick = (rank?: Parameters<typeof portraitArtTags>[0]['rank']) =>
+    pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble', roles: ['official', 'official_patrol'], rank }))?.id;
+  assert.equal(pick('head'), 'portrait.m.adult.official_patrol.head');
+  assert.equal(pick('mid'), 'portrait.m.adult.official_patrol');
+  assert.equal(pick('page'), 'portrait.m.adult.official_patrol');
+  assert.equal(pick(), 'portrait.m.adult.official_patrol');
+  // คนไม่มียศไม่ได้ภาพที่ติดขั้นยศ แม้เป็นชายขุนนางวัยเดียวกัน
+  assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble' }))?.id, 'portrait.m.adult.noble');
+});
+
 test('ภาพที่ติดบทบาทใช้เฉพาะคนที่มีบทบาทนั้น และชนชั้นต้องตรง', () => {
   // ขุนนางไม่มีตำแหน่งไม่ได้ภาพมหาดเล็ก แม้ภาพมหาดเล็กจะติดอายุผู้ใหญ่ไว้ด้วย
   assert.equal(pickArt(manifest, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble' }))?.id, 'portrait.m.adult.noble');
@@ -72,6 +84,12 @@ test('คลังภาพจริง: ทุกเพศ วัย ชนช�
     for (const p of ['sex:', 'age:', 'estate:']) assert.ok(!kind(p).length || kind(p).some((t) => want.has(t)), label);
     assert.ok(!kind('role:').length || kind('role:').some((t) => want.has(t)), label);
   }
+  // ขั้นยศ: ภาพที่ติดขั้นยศต้องตรงกับขั้นที่ขอเสมอ (ตอนนี้ยังไม่มีภาพติดขั้นยศ — เทสต์นี้กันภาพผิดขั้นเมื่อสร้างภาพขั้นยศมาเพิ่ม)
+  for (const rank of ['page', 'low', 'mid', 'high', 'head'] as const) {
+    const got = pickArt(real, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble', roles: ['official', 'official_patrol'], rank }));
+    const ranks = got?.tags.filter((t) => t.startsWith('rank:')) ?? [];
+    assert.ok(!ranks.length || ranks.includes(`rank:${rank}`), `rank ${rank} → ${got?.id}`);
+  }
   assert.equal(pickArt(real, 'portrait', portraitArtTags({ sex: 'f', age: 30, estate: 'noble' }))?.id, 'portrait.f.adult.noble', 'หญิงขุนนางยังไม่มีผัวก็มีภาพ');
 });
 
@@ -80,6 +98,7 @@ const PORTRAIT_TAGS = new Set([
   'age:child', 'age:youth', 'age:adult', 'age:elder',
   'role:page', 'role:official', 'role:official_patrol', 'role:official_palace', 'role:official_scholar',
   'role:monk', 'role:principal_wife', 'role:minor_wife', 'role:household_head', 'role:pregnant',
+  'rank:page', 'rank:low', 'rank:mid', 'rank:high', 'rank:head',
 ]);
 
 test('ทุกภาพใน assets.spec.json มี tag ที่มีอยู่จริงใน tags.json หรือเป็น event/หมวด/ตัวละครที่มีจริง', () => {

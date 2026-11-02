@@ -24,6 +24,7 @@ export interface ArtManifest {
 const weightOf = (tag: string) =>
   tag === 'role:pregnant' ? 8
     : tag.startsWith('role:') ? 6
+      : tag.startsWith('rank:') ? 5
       : tag.startsWith('event:') || tag.startsWith('age:') ? 4
         : tag.startsWith('estate:') ? 3
           : tag.startsWith('group:') ? 1
@@ -42,6 +43,9 @@ export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: r
     if (wantSex && img.tags.some((t) => t.startsWith('sex:')) && !img.tags.includes(wantSex)) continue;
     if (wantAge && img.tags.some((t) => t.startsWith('age:')) && !img.tags.includes(wantAge)) continue;
     if (style === 'portrait' && !portraitFits(img, want)) continue;
+    // ภาพที่ติดขั้นยศใช้เฉพาะคนที่ยศขั้นนั้น — ไม่มีภาพขั้นนั้นก็ถอยไปใช้ภาพของบทบาทเดียวกันที่ไม่ติดขั้นยศ
+    const imgRanks = img.tags.filter((t) => t.startsWith('rank:'));
+    if (imgRanks.length && !imgRanks.some((t) => want.has(t))) continue;
     const score = img.tags.reduce((s, t) => s + (want.has(t) ? weightOf(t) : 0), 0);
     if (score > bestScore) [best, bestScore] = [img, score];
   }
@@ -64,12 +68,17 @@ export function eventArtTags(defId: string, contextTags: Iterable<string>): stri
   return [`event:${defId}`, `group:${defId.split('.')[0]}`, ...contextTags];
 }
 
+/** ขั้นยศเชิงภาพ: มหาดเล็ก → หมื่น (low) → ขุน (mid) → ขั้นระหว่างขุนกับเจ้ากรม (high) → เจ้ากรม (head) */
+export type OfficeTier = 'page' | 'low' | 'mid' | 'high' | 'head';
+
 export interface PortraitSpec {
   sex: 'm' | 'f';
   age: number;
   topknotCut?: boolean;
   estate: string;
   roles?: readonly string[];
+  /** ขั้นยศของคนมีตำแหน่ง (career.officeTier) — ไม่ระบุ = ไม่มีตำแหน่ง */
+  rank?: OfficeTier;
 }
 
 /** tag ภาพตัวละคร: เพศ + ช่วงวัย + ชนชั้น + บทบาท (มหาดเล็ก/ขุนนางแต่ละกรม/พระ/เมียเอก/เมียน้อย/เจ้าเรือน) */
@@ -77,5 +86,5 @@ export function portraitArtTags(p: PortraitSpec): string[] {
   const ageTag = p.age < 13 && !p.topknotCut ? 'age:child' : p.age < 25 ? 'age:youth' : p.age < 50 ? 'age:adult' : 'age:elder';
   // ยังไม่มีภาพเจ้านาย — ใช้ภาพขุนนางซึ่งแต่งกายใกล้ที่สุด
   const estate = p.estate === 'royal' ? 'noble' : p.estate;
-  return [`sex:${p.sex}`, ageTag, `estate:${estate}`, ...(p.roles ?? []).map((r) => `role:${r}`)];
+  return [`sex:${p.sex}`, ageTag, `estate:${estate}`, ...(p.roles ?? []).map((r) => `role:${r}`), ...(p.rank ? [`rank:${p.rank}`] : [])];
 }

@@ -6,7 +6,7 @@ import { capability } from '../systems/body';
 import type { EventReport, PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
-import { careerHint, officeRank, officeStatus } from '../systems/career';
+import { careerHint, officeRank, officeStatus, officeTier } from '../systems/career';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
@@ -215,7 +215,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     craftSkills: choreSkills(ctx, ch),
     portraitTags: portraitArtTags({
       sex: ch.sex, age, topknotCut: ch.topknotCutYear !== undefined,
-      estate: ch.social.estate, roles: characterRoles(ctx, ch, node),
+      estate: ch.social.estate, roles: characterRoles(ctx, ch, node), rank: officeTier(ctx, ch),
     }),
   };
 }
@@ -816,7 +816,7 @@ export function inspectView(ctx: Ctx, nodeId: string, text: TextTable): InspectV
     ...(isAlive(ch) && ch.id !== S.meta.playerCharacterId ? { characterId: ch.id } : {}),
     portraitTags: portraitArtTags({
       sex: ch.sex, age: charAge, topknotCut: ch.topknotCutYear !== undefined,
-      estate: ch.social.estate, roles: characterRoles(ctx, ch, node),
+      estate: ch.social.estate, roles: characterRoles(ctx, ch, node), rank: officeTier(ctx, ch),
     }),
   };
 }

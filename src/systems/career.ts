@@ -1,6 +1,7 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
+import type { OfficeTier } from '../art/select';
 import { livingParents } from './factory';
 import { opinion } from './opinion';
 import { hasPerk, legacyLevel, SKILL_TRACKS } from './skills';
@@ -34,6 +35,15 @@ export function postOf(ctx: Ctx, ch: Character): OfficePostDef | undefined {
 }
 
 const postAt = (dept: DepartmentDef, rank: number) => dept.posts.find((p) => p.rank === rank);
+
+/** ขั้นยศเชิงภาพของตำแหน่งปัจจุบัน (ใช้เลือกภาพตัวละคร) — ไม่มีตำแหน่ง = undefined; ขั้นบนสุดของกรมคือ head */
+export function officeTier(ctx: Ctx, ch: Character): OfficeTier | undefined {
+  const post = postOf(ctx, ch);
+  if (!post) return undefined;
+  if (post.rank === 0) return 'page';
+  const top = deptOf(ctx, ch).posts.reduce((m, p) => Math.max(m, p.rank), 0);
+  return post.rank === top ? 'head' : post.rank === 1 ? 'low' : post.rank === 2 ? 'mid' : 'high';
+}
 
 export const officeRank = (ctx: Ctx, ch: Character): number | undefined => postOf(ctx, ch)?.rank;
 

@@ -39,7 +39,7 @@
 - [ ] ข้อความมรดกตอนนี้แสดง "สิทธิ์ X% = ได้จริง Y%" แล้ว แต่ยังไม่มีคำอธิบายในเกมว่าสิทธิ์มาจากสถานะแม่
 
 ## ภาพประกอบ
-- [x] ภาพ `scene.village` / `scene.meal` สร้างใหม่ด้วย style v0.3 แล้ว (2026-11-01) — `art/approved/reality-stilt-house.jpg` และ `reality-meal-tray.jpg` ยังใช้เป็น baseline regression ได้ แต่ควรเทียบกับภาพใหม่ใน `art/generated/`; ภาพ `chore_craft` (หญิงชราเปลือยอกระยะกลาง) และ `wife_jealousy` (ผ้าห่มยังเป็นแบบพันเฉียง) ควรสร้างซ้ำคัดใหม่
+- [x] ภาพ `scene.village` / `scene.meal` สร้างใหม่ด้วย style v0.3 แล้ว (2026-11-01) — `art/approved/reality-stilt-house.jpg` และ `reality-meal-tray.jpg` ยังใช้เป็น baseline regression ได้ แต่ควรเทียบกับภาพใหม่ใน `art/generated/`; ภาพ `chore_craft` และ `wife_jealousy` สร้างซ้ำคัดใหม่แล้ว (commit c810e7c)
 
 ## ทดสอบ
 หมายเหตุปรับปรุง 2026-11-02: `sim:check` มี balance regression ของผู้เล่นแล้ว และ `npm test` รัน 30 seed — ที่ยังไม่มีคือเทสต์ worker/UI

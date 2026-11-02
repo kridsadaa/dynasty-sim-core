@@ -14,7 +14,7 @@ import { applyMarriageStep } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
-import { applyCareer, careerSkill, careerYearTick, officeRank, officeStatus } from './systems/career';
+import { applyCareer, careerSkill, careerYearTick, officeRank, officeStatus, officeTier } from './systems/career';
 import { habitOption } from './systems/festivals';
 import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
@@ -722,6 +722,32 @@ balanceCheck();
   if (!officeStatus(ctx, hero)?.includes('ขั้น 2')) problems.push('แผงตัวละครไม่บอกผลของวิชาที่ปลดล็อก');
   check('วิชากับความก้าวหน้าในราชการ', problems);
   if (failed === before) console.log('  ✓ วิชาสายของกรมเพิ่มความโปรดปรานตามขั้น · สายอื่นไม่ช่วย · แผงตัวละครบอกผล');
+}
+
+// [5h2b] ขั้นยศเชิงภาพ (ใช้เลือกภาพตัวละคร): มหาดเล็ก = page, ขั้นบนสุดของกรม = head, ขั้นที่ 1 = low, ขั้นที่ 2 = mid, ที่เหลือ = high
+{
+  const before = failed;
+  console.log('ขั้นยศเชิงภาพ:');
+  const ctx = makeCtx(emptyState(46), content);
+  const hero = bootstrapScenario(ctx);
+  ctx.state.meta.day += yearsToDays(25);
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  delete hero.office;
+  const problems: string[] = [];
+  if (officeTier(ctx, hero) !== undefined) problems.push('ไม่มีตำแหน่งแต่มีขั้นยศ');
+  for (const dept of content.offices.departments) {
+    const top = Math.max(...dept.posts.map((p) => p.rank));
+    for (const post of dept.posts.filter((p) => p.rank > 0)) {
+      hero.office = { postId: post.id, deptId: dept.id, sinceDay: ctx.state.meta.day, favor: 0 };
+      const want = post.rank === top ? 'head' : post.rank === 1 ? 'low' : post.rank === 2 ? 'mid' : 'high';
+      if (officeTier(ctx, hero) !== want) problems.push(`${dept.id}/${post.id} ได้ ${officeTier(ctx, hero)} ควรเป็น ${want}`);
+    }
+    hero.office = { postId: 'page', sinceDay: ctx.state.meta.day, favor: 0 };
+    if (officeTier(ctx, hero) !== 'page') problems.push('มหาดเล็กไม่ได้ขั้น page');
+  }
+  check('ขั้นยศเชิงภาพ', problems);
+  if (failed === before) console.log('  ✓ มหาดเล็ก/หมื่น/ขุน/ขั้นสูง/เจ้ากรมของทุกกรมได้ขั้นยศถูกต้อง');
 }
 
 // [5h3] ข้อแลกเปลี่ยนใน event ที่เจอบ่อย: งานบุญและผลผูกมิตรต้องมีตัวเลือกที่เสียเงินกับตัวเลือกที่ไม่เสีย และเสียแล้วเงินลดจริง
