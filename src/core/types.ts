@@ -908,6 +908,8 @@ export interface HistoricalEvent {
   tag: TagId;
   year: number;
   kind: 'war' | 'plague' | 'succession' | 'famine';
+  /** กี่ปีที่ป้าย "สภาวะบ้านเมือง" ค้างบน UI นับจาก year (ไม่ระบุ = 1 ปี) — ไม่มีผลต่อ shock */
+  lasts?: number;
   shock: {
     /** สัดส่วนทรัพย์ที่ไม่ได้ซ่อนซึ่งสูญเสีย */
     wealthLoss: [Unit, Unit];

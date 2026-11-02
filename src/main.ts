@@ -1,6 +1,6 @@
 import { EngineClient, requestPersistentStorage } from './engine/client';
 import type {
-  CharacterView, ChoiceResult, ClockState, DynastyView, HouseholdView, InteractionView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
+  CharacterView, ChoiceResult, ClockState, DeathNotice, DynastyView, HouseholdView, InteractionView, MatchView, EndingView, EventView, InspectView, IntentPlanView, KnownPersonView, LogKind, SaveSlotInfo,
   SkillsView, StatusBadge, TreeView,
 } from './engine/protocol';
 import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
@@ -471,6 +471,7 @@ function renderPlayer(v: CharacterView) {
   const who = el('div');
   who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
   box.append(who, ...statusPills(v.statuses));
+  if (v.conditions.length) box.append(el('div', 'บ้านเมืองตอนนี้', 'muted'), ...statusPills(v.conditions));
   box.append(el('div', `ชนชั้น: ${v.estate} · ${v.purse > v.wealth ? `เงินใช้ในเรือน ${v.purse} ตำลึง (ของตัวเอง ${v.wealth})` : `ทรัพย์ ${v.wealth} ตำลึง`}`));
   if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));
   if (v.household) {
@@ -1155,6 +1156,32 @@ function renderEvent(ev: EventView) {
   openModal(...head, ...buttons); // worker หยุดเวลาไว้แล้ว — ต้องตัดสินใจก่อนจึงเดินต่อ
 }
 
+// ---------------- หน้าแจ้งการตายของผู้เล่น ----------------
+let deathNoticeOpen = false;
+
+function showDeathNotice(n: DeathNotice) {
+  deathNoticeOpen = true;
+  const next = n.extinct
+    ? 'ตระกูลสิ้นสาย — ไม่มีผู้สืบ'
+    : n.heir ? `${n.heir} สืบตระกูลต่อ` : 'ญาติพี่น้องรอเลือกผู้สืบตระกูล';
+  const ok = button('รับทราบ', async () => {
+    deathNoticeOpen = false;
+    closeModal();
+    if (clock.ended) return void showEnding();
+    await engine.request({ type: 'resume' }).catch(() => {}); // ต้องเลือกผู้สืบก่อน → worker ไม่เดินต่อเอง
+    await showPending();
+  });
+  ok.classList.add('opt');
+  openModal(
+    el('h2', `${n.name}สิ้นชีวิต`),
+    el('p', `พ.ศ. ${n.year} อายุ ${n.age} ปี`, 'muted'),
+    el('p', `สาเหตุ: ${n.cause}`),
+    el('p', next),
+    ok,
+  );
+  queueMicrotask(() => ok.focus());
+}
+
 // ---------------- หน้าสรุปตอนจบ: ถึงปีจบของเรื่อง หรือตระกูลสิ้นสาย ----------------
 let endingShown = false;
 
@@ -1221,7 +1248,11 @@ engine.onPush((p) => {
       }
       break;
     case 'pendingEvent':
-      renderEvent(p.event);
+      // หน้าแจ้งการตายยังเปิดอยู่ → รอผู้เล่นรับทราบก่อน แล้วค่อยดึง event ค้างมาแสดง (showPending)
+      if (!deathNoticeOpen) renderEvent(p.event);
+      break;
+    case 'playerDied':
+      showDeathNotice(p.notice);
       break;
     case 'handover':
       write(`สิ้น${p.deceased} — ${p.heir} สืบทอดตระกูล`, 'inherit', 'handover-head');
@@ -1242,6 +1273,7 @@ async function start(from: 'new' | string, heroName?: string) {
     closeModal();
     closeInspect();
     endingShown = false;
+    deathNoticeOpen = false;
     collapsed.clear();
     startYear(v.year);
     write(from === 'new' ? `เริ่มชีวิตใหม่ในฐานะ${v.name}` : `โหลดเซฟ "${from}": ${v.name}`, 'system');

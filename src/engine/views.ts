@@ -27,7 +27,7 @@ import type {
   HouseholdView,
   MatchView,
   ChoiceResult,
-  CharacterView, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
+  CharacterView, DeathNotice, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
   OddsFactorView, SkillsView, StatusBadge, TreeView,
 } from './protocol';
 
@@ -171,6 +171,19 @@ function characterRoles(ctx: Ctx, ch: Character, node?: FamilyNode): string[] {
   return roles;
 }
 
+/** เหตุการณ์ประวัติศาสตร์ที่ยังมีผลอยู่ในปีนี้ → ป้ายค้างบน UI (ปีที่เกิด ถึง year + lasts) */
+export function eraConditions(ctx: Ctx): StatusBadge[] {
+  const now = yearOf(ctx, ctx.state.meta.day);
+  const seen = new Set<string>();
+  const out: StatusBadge[] = [];
+  for (const ev of ctx.content.history) {
+    if (now < ev.year || now >= ev.year + (ev.lasts ?? 1) || seen.has(ev.tag)) continue;
+    seen.add(ev.tag);
+    out.push({ label: ctx.tags.label(ev.tag), tone: ev.kind === 'succession' ? 'warn' : 'bad' });
+  }
+  return out;
+}
+
 /** UI ไม่ควรเห็นคีย์ภายใน ("noble", "finger.index.l", "manipulation.fine") — แปลงเป็นคำไทยที่นี่ */
 export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
   const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
@@ -188,6 +201,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     wealth: Math.round(ch.social.wealth),
     purse: Math.round(purse(ctx, ch)),
     statuses: statusBadges(ctx, ch, text),
+    conditions: eraConditions(ctx),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: scarLines(ctx, ch, text),
     wounds: woundLines(ctx, ch, text),
@@ -853,6 +867,17 @@ export function heirChoiceView(ctx: Ctx): EventView | null {
       };
     }),
     triggered: [],
+  };
+}
+
+export function deathNotice(ctx: Ctx, dead: Character, heir: Character | undefined, extinct: boolean): DeathNotice {
+  return {
+    name: dead.name,
+    age: ageOf(ctx, dead, dead.deathDay ?? ctx.state.meta.day),
+    year: yearOf(ctx, dead.deathDay ?? ctx.state.meta.day),
+    cause: ctx.tags.label(dead.deathCause ?? 'situation:old_age'),
+    ...(heir ? { heir: heir.name } : {}),
+    extinct,
   };
 }
 

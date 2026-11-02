@@ -132,6 +132,19 @@ export interface ClockState {
 
 export type EndReason = 'era' | 'extinct';
 
+/** หน้าแจ้งการตายของตัวละครผู้เล่น */
+export interface DeathNotice {
+  name: string;
+  age: number;
+  year: number;
+  /** ป้ายสาเหตุ เช่น "ไข้ทรพิษ" "ชราภาพ" */
+  cause: string;
+  /** ผู้สืบที่จะรับช่วงต่อโดยไม่ต้องเลือก (มีผู้สืบคนเดียว) */
+  heir?: string;
+  /** ตระกูลสิ้นสาย */
+  extinct: boolean;
+}
+
 /** หน้าสรุปตอนจบ */
 export interface EndingView {
   reason: EndReason;
@@ -155,6 +168,8 @@ export type Push =
   | { type: 'progress'; day: number; year: number; solar: string; lunar: string }
   | { type: 'clock'; clock: ClockState }
   | { type: 'pendingEvent'; event: EventView }
+  /** ผู้เล่นตาย — หน้าแจ้งสาเหตุขึ้นก่อนเลือกผู้สืบ (เวลาหยุดรอจนผู้เล่นรับทราบ) */
+  | { type: 'playerDied'; notice: DeathNotice }
   | { type: 'handover'; deceased: string; heir: string; lines: string[] }
   | { type: 'error'; message: string }; // ผิดพลาดที่ไม่ผูกกับ request ใด (เช่น โหลด content ไม่ได้, worker พัง)
 
@@ -243,6 +258,8 @@ export interface CharacterView {
   household?: HouseholdView;
   skills: SkillsView;
   statuses: StatusBadge[];
+  /** สภาวะบ้านเมืองที่กำลังดำเนินอยู่ (ศึก ข้าวยาก โรคระบาด) — คำนวณจากปีปัจจุบัน ไม่เก็บใน state */
+  conditions: StatusBadge[];
   traits: string[];
   scars: string[];
   wounds: string[];

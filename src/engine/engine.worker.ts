@@ -16,7 +16,7 @@ import { deleteSlot, listSlots, loadState, saveState } from './persistence';
 import type { ClockState, Command, EndReason, LogLine, Push, ReplyData, Request, WorkerMessage } from './protocol';
 import { abandonIntent, startIntent } from '../systems/intent';
 import {
-  dynastyView, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView, choiceSnapshot, choiceResult, matchView, interactionView,
+  dynastyView, deathNotice, endingView, eventView, HEIR_CHOICE_ID, heirChoiceView, inspectView, intentPlanView, knownView, habitLines, outcomeLine, playerView, choiceSnapshot, choiceResult, matchView, interactionView,
   treeView,
   type TextTable,
 } from './views';
@@ -140,16 +140,20 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir'
         const cands = heirCandidates(c, dead);
         if (!cands.length) {
           lines.push({ kind: 'death', text: `${dead.name}สิ้นชีวิตโดยไม่มีทายาท — ตระกูลสิ้นสาย` });
+          push({ type: 'playerDied', notice: deathNotice(c, dead, undefined, true) });
           return 'gameOver';
         }
         if (lines.length) push({ type: 'log', year: yearOf(c, c.state.meta.day), lines: lines.splice(0) });
         // มีผู้สืบได้หลายคน → หยุดให้ผู้เล่นเลือก (heirChoiceView); คนเดียวก็ไม่ต้องถาม
         if (cands.length > 1) {
+          push({ type: 'playerDied', notice: deathNotice(c, dead, undefined, false) });
           stop = 'heir';
           continue;
         }
+        push({ type: 'playerDied', notice: deathNotice(c, dead, cands[0]!.ch, false) });
         const r = performHandover(c, dead.id);
         push({ type: 'handover', deceased: r.deceased, heir: r.heir, lines: r.log });
+        stop = 'heir'; // หยุดเวลารอผู้เล่นอ่านหน้าแจ้งการตาย — ปิดแล้วส่ง resume
       }
     }
     if (stop !== 'done') return stop;
