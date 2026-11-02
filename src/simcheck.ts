@@ -100,6 +100,15 @@ let extinct = 0; // seed ที่ตระกูลสิ้นสายก่�
 // ร่างกายแต่กำเนิดของคนตาย แยกตามอายุที่ตาย [ผลรวม, จำนวน] — คนตายเด็กควรต่ำกว่าคนที่อยู่ถึงแก่
 const constitutionAt = { young: [0, 0], old: [0, 0] };
 let hardToRaise = 0;
+// ตัวชี้วัดสมดุลฝั่งผู้เล่น (balanceCheck) — เก็บจากการเล่นอัตโนมัติ "เลือกตัวเลือกแรกเสมอ" แบบเดียวกับที่ BACKLOG ใช้วัด
+const bal = {
+  firstDeathAges: [] as number[], // อายุที่ตัวละครแรกของผู้เล่นตาย (seed ที่ยังไม่ตายจนจบไม่นับ)
+  takeoverAges: [] as number[], // อายุของผู้สืบตอนรับช่วงเป็นผู้เล่น
+  stress: [0, 0], // [ผลรวม, จำนวน] ความหนักใจของผู้เล่นที่มีชีวิตทุก 1 ม.ค.
+  office: [0, 0], // [มีตำแหน่ง, จำนวน] ผู้เล่นที่มีชีวิตทุก 1 ม.ค. ตั้งแต่ OFFICE_FROM_YEAR
+  wealthPerHead: [] as number[], // เงินเฉลี่ยต่อคนของคนในตระกูลที่ยังมีชีวิตตอนจบ (seed ที่ไม่สิ้นสาย)
+};
+const OFFICE_FROM_YEAR = 2370;
 
 /** คนในตระกูลที่ตายวันนี้ — คนที่ตายแล้วถูก prune ทิ้งในวันเดียวกันก็นับ (เก็บ object ไว้เอง) */
 function trackDemography(ctx: Ctx, tracked: Map<string, Character>): void {
@@ -163,6 +172,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   const tracked = new Map<string, Character>();
   trackDemography(ctx, tracked);
   let over = false;
+  const heroId = S.meta.playerCharacterId;
   // เล่นจนถึงปีจบของเรื่อง (meta.endYear) แบบเดียวกับ worker — ถึงวันนั้นยังเดินรอบประจำปีครบ
   const endDay = yearStart(ctx, S.meta.endYear!);
   while (S.meta.day < endDay && !over) {
@@ -186,16 +196,31 @@ for (let seed = 1; seed <= SEEDS; seed++) {
         }
       } else if (sig.type === 'playerDied') {
         const dead = S.characters[S.meta.playerCharacterId]!;
+        if (dead.id === heroId) bal.firstDeathAges.push(ageOf(ctx, dead, dead.deathDay ?? S.meta.day));
         if (!heirCandidates(ctx, dead).length) {
           over = true;
           break;
         }
         performHandover(ctx, dead.id);
+        bal.takeoverAges.push(ageOf(ctx, S.characters[S.meta.playerCharacterId]!));
       }
     }
     trackDemography(ctx, tracked);
+    const me = S.characters[S.meta.playerCharacterId];
+    if (dayOfYear(ctx, S.meta.day) === 0 && isAlive(me)) {
+      bal.stress[0]! += me.stress;
+      bal.stress[1]!++;
+      if (yearOf(ctx, S.meta.day) >= OFFICE_FROM_YEAR) {
+        bal.office[0]! += me.office ? 1 : 0;
+        bal.office[1]!++;
+      }
+    }
   }
   if (over) extinct++;
+  else {
+    const family = Object.values(S.characters).filter((c) => c.dynastyId === S.meta.playerDynastyId && isAlive(c));
+    if (family.length) bal.wealthPerHead.push(family.reduce((a, c) => a + c.social.wealth, 0) / family.length);
+  }
   const before = failed;
   console.log(`seed ${seed}: ถึงปี ${yearOf(ctx, S.meta.day)}${over ? ' (สิ้นสาย)' : ''}`
     + ` · ตัวละคร ${Object.keys(S.characters).length} · node ${Object.keys(S.familyNodes).length}`
@@ -205,6 +230,36 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   if (failed === before) console.log(over ? '  ✓ invariant ครบ (ข้ามข้อมรดกเพราะเกมจบ)' : '  ✓ invariant ครบ');
 }
 demographyReport();
+
+/**
+ * ตัวเลขสมดุลของผู้เล่น — ช่วงกว้างพอที่ความสุ่มของ 30 seed ไม่ทำให้ล้ม แต่จับการเปลี่ยนที่เกินปกติเมื่อปรับ rules/balance.json
+ * (ช่วงตั้งจากค่าที่วัดได้ ณ 2026-11-02 — ปรับช่วงได้เมื่อตั้งใจเปลี่ยนสมดุล แล้วจดเหตุผลใน BACKLOG)
+ * ตัวอย่างน้อย (SEEDS < BALANCE_MIN_SEEDS) แสดงเป็นรายงานเฉยๆ ไม่นับเป็นข้อผิด
+ */
+const BALANCE_MIN_SEEDS = 20;
+function balanceCheck(): void {
+  const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)] ?? NaN;
+  const ratio = ([n, d]: number[]) => (d ? n! / d! : NaN);
+  const rows: Array<[string, number, number, number]> = [
+    // P0 (BACKLOG): ตัวละครแรกตายก่อนอายุ 30 บ่อยเกินไปเพราะเสียกรุง 2310 โดยไม่มีทางเลือก — วัดได้ราว 18% ตอนเขียนเทสต์นี้
+    ['ตัวละครแรกตายก่อนอายุ 30', bal.firstDeathAges.filter((a) => a < 30).length / SEEDS, 0, 0.35],
+    ['ตระกูลสิ้นสายก่อนจบเรื่อง', extinct / SEEDS, 0, 0.25],
+    ['อายุมัธยฐานของผู้สืบตอนรับช่วง', median(bal.takeoverAges), 25, 60],
+    ['ความหนักใจเฉลี่ยของผู้เล่น', ratio(bal.stress), 0.05, 0.35],
+    [`ผู้เล่นมีตำแหน่งราชการ (ตั้งแต่ พ.ศ. ${OFFICE_FROM_YEAR})`, ratio(bal.office), 0.15, 0.6],
+    ['เงินเฉลี่ยต่อคนในตระกูลตอนจบ (ตำลึง)', median(bal.wealthPerHead), 10, 150],
+  ];
+  const enforce = SEEDS >= BALANCE_MIN_SEEDS;
+  console.log(`สมดุลของผู้เล่น (${SEEDS} seed${enforce ? '' : ` — น้อยกว่า ${BALANCE_MIN_SEEDS} จึงเป็นรายงานเฉยๆ`}):`);
+  const bad: string[] = [];
+  for (const [label, v, lo, hi] of rows) {
+    const ok = v >= lo && v <= hi; // NaN = ไม่มีข้อมูล ถือว่าไม่ผ่าน
+    console.log(`  ${ok ? '✓' : enforce ? '✗' : '⚠'} ${label} ${+v.toFixed(3)} (ช่วงที่ยอมรับ ${lo}–${hi})`);
+    if (!ok) bad.push(`${label} ${+v.toFixed(3)}`);
+  }
+  if (enforce) check('สมดุลของผู้เล่นหลุดช่วง', bad);
+}
+balanceCheck();
 
 // [2] ผู้เล่นตายก่อนผู้นำตระกูล (บิดา) → ผู้นำ หัวเรือน และกฎในเรือนของบิดาต้องไม่เปลี่ยน
 {
