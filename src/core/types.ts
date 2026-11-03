@@ -933,10 +933,22 @@ export interface HistoryEventSchedule {
   minAge?: number;
 }
 
+/** เหตุการณ์ในสำรับเรื่องสมมติหลัง 2400 (rules.json › fiction.deck) — เหมือน HistoricalEvent แต่ไม่ผูกปี และมีบรรทัดเล่าเรื่อง */
+export type FictionEntry = Omit<HistoricalEvent, 'year'> & { note?: string };
+
+export interface FictionRules {
+  /** ปีแรกที่เข้าสู่ยุคสมมติ */
+  startYear: number;
+  /** จั่วเหตุการณ์ทุกกี่ปี (สุ่มในช่วงนี้) */
+  gap: [number, number];
+  deck: FictionEntry[];
+}
+
 export interface HistoricalEvent {
   tag: TagId;
   year: number;
-  kind: 'war' | 'plague' | 'succession' | 'famine';
+  /** boon = ปีดี (ทรัพย์เพิ่ม ใจเบาลง) — มีเฉพาะเหตุการณ์สมมติหลัง 2400 */
+  kind: 'war' | 'plague' | 'succession' | 'famine' | 'boon';
   /** กี่ปีที่ป้าย "สภาวะบ้านเมือง" ค้างบน UI นับจาก year (ไม่ระบุ = 1 ปี) — ไม่มีผลต่อ shock */
   lasts?: number;
   shock: {
@@ -1204,7 +1216,7 @@ export interface Balance {
     /** ผู้เล่นหนักใจจากคนตายน้อยกว่าญาติคนอื่นตามส่วนนี้ (ผู้เล่นมีงานศพให้เลือกรับมือ และเกมต้องเล่นต่อได้) */
     playerGriefFactor: Unit;
     /** เหตุการณ์บ้านเมืองทำคนในตระกูลหนักใจ ตามชนิด × (0.5 + neuroticism) */
-    historyStress: Record<'war' | 'plague' | 'famine' | 'succession', Unit>;
+    historyStress: Record<'war' | 'plague' | 'famine' | 'succession' | 'boon', Unit>;
   };
   /** บวชเรียน (lore: ritual.ordination) — ตัวเลขเป็นของเกม */
   ordination: {
@@ -1337,6 +1349,8 @@ export interface ContentDB {
   history: HistoricalEvent[];
   /** event ที่ส่งให้ผู้เล่นในวันที่กำหนดของปีประวัติศาสตร์ (ต่างจาก history ที่เป็น shock) */
   historyEvents: HistoryEventSchedule[];
+  /** สำรับเหตุการณ์สมมติหลังปีจบของเรื่อง (ไม่มี = ไม่มีโหมดเล่นต่อ) */
+  fiction?: FictionRules;
   intents: Record<IntentKindId, IntentDef>;
   trades: TradeDef[];
   offices: OfficesDef;
@@ -1367,6 +1381,8 @@ export interface GameState {
     customNames?: Array<{ name: string; sex: 'm' | 'f' }>;
     /** เรื่องจบเมื่อถึง 1 ม.ค. ปีนี้ — ฉากเริ่มเป็นคนกำหนด (เซฟเก่าไม่มี → END_YEAR ใน scenario.ts) */
     endYear?: number;
+    /** โหมดเล่นต่อหลัง 2400: ปีนัดจั่วเหตุการณ์ถัดไป สำรับที่เหลือ และที่จั่วไปล่าสุด (เซฟเก่าไม่มี) */
+    fiction?: { next: number; bag: string[]; recent: Array<{ tag: string; year: number }> };
     /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };
   };

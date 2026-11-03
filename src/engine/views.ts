@@ -8,6 +8,7 @@ import { displayName, livingChildren, livingParents, livingSpouse, singleLabel }
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, officeRank, officeStatus, officeTier } from '../systems/career';
 import { warBadges } from '../systems/war';
+import { activeFiction, isFictionYear } from '../systems/fiction';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
 import { choreSkills } from '../systems/chores';
@@ -177,11 +178,12 @@ export function eraConditions(ctx: Ctx): StatusBadge[] {
   const now = yearOf(ctx, ctx.state.meta.day);
   const seen = new Set<string>();
   const out: StatusBadge[] = [];
-  for (const ev of ctx.content.history) {
+  for (const ev of [...ctx.content.history, ...activeFiction(ctx, now)]) {
     if (now < ev.year || now >= ev.year + (ev.lasts ?? 1) || seen.has(ev.tag)) continue;
     seen.add(ev.tag);
-    out.push({ label: ctx.tags.label(ev.tag), tone: ev.kind === 'succession' ? 'warn' : 'bad' });
+    out.push({ label: ctx.tags.label(ev.tag), tone: ev.kind === 'succession' ? 'warn' : ev.kind === 'boon' ? 'good' : 'bad' });
   }
+  if (isFictionYear(ctx, now)) out.push({ label: 'ยุคสมมติ — ไม่อิงประวัติศาสตร์จริง', tone: 'info' });
   return out;
 }
 

@@ -8,6 +8,7 @@ import {
   createHousehold, inLawNames, joinHousehold, livingChildren, livingParents, livingSpouse, marriesThisYear, namesInUse, newbornAvoid,
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
+import { fictionEventsOfYear } from './fiction';
 import { applyHistoricalShocks, historyHeadline, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, deptOf, officeRank } from './career';
 import { historyEventsToday } from './historyEvents';
@@ -98,8 +99,9 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
 
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
   if (dayOfYear(ctx, S.meta.day) === 0) {
-    const events = ctx.content.history.filter((h) => h.year === year);
-    for (const line of applyHistoricalShocks(ctx, year)) {
+    const shocks = applyHistoricalShocks(ctx, year);
+    const events = [...ctx.content.history.filter((h) => h.year === year), ...fictionEventsOfYear(ctx, year)];
+    for (const line of shocks) {
       const ev = events.find((e) => line === historyHeadline(ctx, e));
       out.push({ type: 'log', kind: 'history', line, ...(ev ? { art: [ev.tag, `historykind:${ev.kind}`] } : {}) });
     }

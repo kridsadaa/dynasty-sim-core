@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
-import { ageOf, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
+import { ageOf, commitRng, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB } from './core/types';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
@@ -26,6 +26,7 @@ import { eraConditions } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
 import { riskChance } from './systems/will';
+import { activeFiction, drawFictionEvents, isFictionYear } from './systems/fiction';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
 const content: ContentDB = buildContentDB({
@@ -42,6 +43,10 @@ const content: ContentDB = buildContentDB({
 });
 const SEEDS = Number(process.argv[2] ?? 5);
 const INVEST = process.argv[3] === 'invest';
+/** โหมด long (npm run sim:check -- 10 long): เล่นต่อหลัง 2400 ถึง 2600 แบบกดเล่นต่อ — รายงานเงิน/สิ้นสาย/ขนาดเซฟรายศตวรรษ ไม่นับ balanceCheck */
+const LONG = process.argv[3] === 'long';
+const LONG_END_YEAR = 2600;
+const longSamples: Record<number, { wealth: number[]; family: number[]; alive: number }> = { 2400: { wealth: [], family: [], alive: 0 }, 2500: { wealth: [], family: [], alive: 0 }, 2590: { wealth: [], family: [], alive: 0 } };
 let failed = 0;
 
 function check(label: string, problems: string[]) {
@@ -179,6 +184,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   trackDemography(ctx, tracked);
   let over = false;
   const heroId = S.meta.playerCharacterId;
+  if (LONG) S.meta.endYear = LONG_END_YEAR;
   // เล่นจนถึงปีจบของเรื่อง (meta.endYear) แบบเดียวกับ worker — ถึงวันนั้นยังเดินรอบประจำปีครบ
   const endDay = yearStart(ctx, S.meta.endYear!);
   while (S.meta.day < endDay && !over) {
@@ -196,6 +202,15 @@ for (let seed = 1; seed <= SEEDS; seed++) {
       const track = careerSkill(ctx, player).track.id;
       if (player.focus !== track) setSkillFocus(ctx, player, track);
       try { unlockNextPerk(player, track); } catch { /* แต้มยังไม่ครบหรือครบทุกขั้นแล้ว */ }
+    }
+    if (LONG && dayOfYear(ctx, S.meta.day) === 0 && longSamples[yearOf(ctx, S.meta.day)]) {
+      const sample = longSamples[yearOf(ctx, S.meta.day)]!;
+      const family = Object.values(S.characters).filter((c) => c.dynastyId === S.meta.playerDynastyId && isAlive(c));
+      if (family.length) {
+        sample.wealth.push(family.reduce((a, c) => a + c.social.wealth, 0) / family.length);
+        sample.family.push(family.length);
+        sample.alive++;
+      }
     }
     const signals = advanceDay(ctx);
     // event ที่ส่งถึงผู้เล่นต้องอ้างถึงตัวละครที่ยังอยู่ในโลก — ไม่งั้นข้อความขึ้นชื่อ role ดิบ (เช่น "แต่งกับspouse")
@@ -276,7 +291,7 @@ function balanceCheck(): void {
     [`ผู้เล่นมีตำแหน่งราชการ (ตั้งแต่ พ.ศ. ${OFFICE_FROM_YEAR})`, ratio(bal.office), 0.15, 0.6],
     ['เงินเฉลี่ยต่อคนในตระกูลตอนจบ (ตำลึง)', median(bal.wealthPerHead), 10, 150],
   ];
-  const enforce = SEEDS >= BALANCE_MIN_SEEDS && !INVEST; // โหมด invest เป็นการทดลอง ไม่นับเป็นข้อผิด
+  const enforce = SEEDS >= BALANCE_MIN_SEEDS && !INVEST && !LONG; // โหมด invest เป็นการทดลอง ไม่นับเป็นข้อผิด
   console.log(`สมดุลของผู้เล่น (${SEEDS} seed${enforce ? '' : INVEST ? ' — โหมด invest เป็นรายงานเฉยๆ' : ` — น้อยกว่า ${BALANCE_MIN_SEEDS} จึงเป็นรายงานเฉยๆ`}):`);
   const bad: string[] = [];
   for (const [label, v, lo, hi] of rows) {
@@ -288,6 +303,13 @@ function balanceCheck(): void {
   if (enforce) check('สมดุลของผู้เล่นหลุดช่วง', bad);
 }
 balanceCheck();
+if (LONG) {
+  console.log(`รายงานเล่นยาวถึง ${LONG_END_YEAR} (${SEEDS} seed):`);
+  for (const [year, v] of Object.entries(longSamples)) {
+    const med = (a: number[]) => (a.length ? +[...a].sort((x, y) => x - y)[Math.floor(a.length / 2)]!.toFixed(1) : NaN);
+    console.log(`  พ.ศ. ${year}: ตระกูลยังอยู่ ${v.alive}/${SEEDS} · เงินต่อคน มัธยฐาน ${med(v.wealth)} สูงสุด ${v.wealth.length ? Math.round(Math.max(...v.wealth)) : NaN} · คนในตระกูล มัธยฐาน ${med(v.family)}`);
+  }
+}
 
 // [2] ผู้เล่นตายก่อนผู้นำตระกูล (บิดา) → ผู้นำ หัวเรือน และกฎในเรือนของบิดาต้องไม่เปลี่ยน
 {
@@ -964,6 +986,74 @@ balanceCheck();
   if (!(east.cash > 70 && city.cash < 55)) problems.push(`เงินสดที่เหลือ: หนีตะวันออก ${east.cash.toFixed(0)} · อยู่ในกรุง ${city.cash.toFixed(0)} (ควร >70 และ <55)`);
   check('ออกจากกรุงหรืออยู่', problems);
   if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ต่อพัน (ตาย/กวาดต้อน) กรุง ${city.dead}/${city.captured} ตะวันออก ${east.dead}/${east.captured} ป่า ${forest.dead}/${forest.captured} · รอด: กรุงไม่เตรียม ${(city.survive * 100).toFixed(0)}% prep3 ${(prepared.survive * 100).toFixed(0)}% prep5 ${(wellPrepared.survive * 100).toFixed(0)}% ตะวันออก ${(east.survive * 100).toFixed(0)}% ป่า ${(forest.survive * 100).toFixed(0)}% ยอมแพ้ ${(camp.survive * 100).toFixed(0)}% (ตาย/กวาดต้อน ${camp.dead}/${camp.captured}, เงินสด ${camp.cash.toFixed(0)}) · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
+}
+
+// [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้
+{
+  const before = failed;
+  console.log('เล่นต่อหลัง 2400 (เรื่องสมมติ):');
+  const problems: string[] = [];
+  const F = content.fiction;
+  if (!F) problems.push('rules.json ไม่มี fiction');
+  else {
+    const run = (seed: number, from: number, to: number) => {
+      const c = makeCtx(emptyState(seed), content);
+      bootstrapScenario(c);
+      const drawn: Array<{ year: number; tag: string }> = [];
+      const rngBefore = c.rng.state;
+      for (let y = from; y <= to; y++) for (const d of drawFictionEvents(c, y)) drawn.push({ year: y, tag: d.ev.tag });
+      return { c, drawn, rngBefore };
+    };
+    const early = run(70, 2300, 2399);
+    if (early.drawn.length || early.c.rng.state !== early.rngBefore || early.c.state.meta.fiction) problems.push('ก่อน 2400 จั่วเหตุการณ์สมมติหรือใช้ rng');
+    const a = run(71, 2400, 2800);
+    const b = run(71, 2400, 2800);
+    if (JSON.stringify(a.drawn) !== JSON.stringify(b.drawn)) problems.push('seed เดียวกันจั่วไม่เหมือนกัน');
+    const gaps = a.drawn.slice(1).map((d, i) => d.year - a.drawn[i]!.year);
+    if (a.drawn.length < 20 || gaps.some((g) => g < F.gap[0] - 1 || g > F.gap[1] + 1)) problems.push(`ช่วงห่างจั่วผิดปกติ: ${a.drawn.length} ครั้ง ห่าง ${Math.min(...gaps)}–${Math.max(...gaps)} ปี`);
+    for (let i = 0; i + F.deck.length <= a.drawn.length; i += F.deck.length) {
+      const round = new Set(a.drawn.slice(i, i + F.deck.length).map((d) => d.tag));
+      if (round.size !== F.deck.length) { problems.push(`รอบสำรับที่ ${i / F.deck.length + 1} มีใบซ้ำ`); break; }
+    }
+    // ป้าย "สภาวะ" ของที่เพิ่งจั่วต้องขึ้น แล้วหมดตาม lasts
+    const first = a.drawn[a.drawn.length - 1]!;
+    const def = F.deck.find((d) => d.tag === first.tag)!;
+    if (!activeFiction(a.c, first.year).some((e) => e.tag === first.tag)) problems.push('ป้ายเหตุการณ์สมมติไม่ขึ้นในปีที่จั่ว');
+    if (activeFiction(a.c, first.year + (def.lasts ?? 1) + 7).some((e) => e.tag === first.tag && e.year === first.year)) problems.push('ป้ายเหตุการณ์สมมติไม่หมดอายุ');
+    if (!isFictionYear(a.c, 2400) || isFictionYear(a.c, 2399)) problems.push('isFictionYear ผิด');
+    // เซฟ/โหลด: คัดลอก state กลางทางแล้วจั่วต่อต้องได้ผลเหมือนเดิม
+    const mid = run(72, 2400, 2450);
+    commitRng(mid.c);
+    const clone = makeCtx(JSON.parse(JSON.stringify(mid.c.state)), content);
+    const rest1: string[] = [];
+    const rest2: string[] = [];
+    for (let y = 2451; y <= 2600; y++) {
+      rest1.push(...drawFictionEvents(mid.c, y).map((d) => `${y}${d.ev.tag}`));
+      rest2.push(...drawFictionEvents(clone, y).map((d) => `${y}${d.ev.tag}`));
+    }
+    if (JSON.stringify(rest1) !== JSON.stringify(rest2)) problems.push('เซฟแล้วโหลดกลางทาง จั่วต่อไม่เหมือนเดิม');
+    // ปีดี (boon) ต้องเพิ่มทรัพย์ ส่วนปีร้ายต้องไม่เพิ่ม; ทุกใบมีป้ายชื่อและบรรทัดเล่า
+    for (const d of F.deck) {
+      if (!content.tags[d.tag]) problems.push(`ไม่มี tag ${d.tag}`);
+      if (!d.note) problems.push(`${d.tag} ไม่มีบรรทัดเล่า`);
+    }
+    const shockOf = (tag: string) => {
+      const c = makeCtx(emptyState(73), content);
+      const h = bootstrapScenario(c);
+      h.social.wealth = 100;
+      c.state.meta.fiction = { next: 2401, bag: [tag], recent: [] };
+      applyHistoricalShocks(c, 2401);
+      return { wealth: h.social.wealth, stress: h.stress };
+    };
+    const good = shockOf('fiction:good_harvest');
+    const flood = shockOf('fiction:great_flood');
+    if (!(good.wealth > 100)) problems.push(`ปีข้าวดีแล้วทรัพย์ไม่เพิ่ม (${good.wealth.toFixed(1)})`);
+    if (!(flood.wealth < 100)) problems.push(`น้ำท่วมใหญ่แล้วทรัพย์ไม่ลด (${flood.wealth.toFixed(1)})`);
+    if (good.stress < 0 || good.stress > 1) problems.push('ความหนักใจหลุดช่วง 0–1 หลังปีดี');
+    check('เล่นต่อหลัง 2400', problems);
+    if (failed === before) console.log(`  ✓ ไม่จั่วก่อน 2400 · จั่ว ${a.drawn.length} ครั้งใน 400 ปี ห่าง ${Math.min(...gaps)}–${Math.max(...gaps)} ปี ไม่ซ้ำภายในรอบสำรับ · deterministic และเซฟกลางทางได้ · ปีข้าวดีทรัพย์ 100→${good.wealth.toFixed(0)} · น้ำท่วมใหญ่ →${flood.wealth.toFixed(0)}`);
+  }
+  if (!F) check('เล่นต่อหลัง 2400', problems);
 }
 
 // [5h2f] ศึกพม่า ขั้น 4: ล้อมกรุง ข้าวหมด ฝ่าวงล้อมตามพระยาตาก — เฉพาะคนที่ยังอยู่ในกรุง; เงินสดและการเตรียมตัวมีประโยชน์จริง

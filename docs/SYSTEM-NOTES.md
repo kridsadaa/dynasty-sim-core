@@ -24,6 +24,7 @@
 | `events.ts` | เลือก/เตรียม/ตัดสิน event; ฉีดตัวเลือกจากปม/แผล (injection); ทอยตัวเลือกเสี่ยง |
 | `handover.ts` | ผู้เล่นตาย → ผู้สืบ มรดก ตำนาน ข้อห้ามตระกูล; `applyHistoricalShocks` (เหตุการณ์ประวัติศาสตร์) |
 | `war.ts` | ศึกพม่า 2308–2310: ฝังเงินเป็นไหทองซ่อน (`buryValuables`/`unearthBuried`), ตัดสินใจอยู่/หนี (`stayInCity`/`leaveCity` เก็บใน `meta.war`), ที่อยู่รายคน (`warWhere`) และตัวคูณผลตอนกรุงแตก (`warDeathMult` = ที่อยู่ × การเตรียมตัว, `WAR_CASH_LOSS_MULT`), ถูกกวาดต้อนตอนกรุงแตก (`shock.captureRisk`, `WAR_CAPTURE_MULT`, `CAPTIVE_TAG` — หายจากเกมเหมือนตาย ไม่มีงานศพ), ตามพระยาตาก (`joinTaksin`) — event ล้อมกรุงใช้เงื่อนไข `inCity` |
+| `fiction.ts` | เล่นต่อหลัง 2400 (เรื่องสมมติ): สำรับเหตุการณ์ `rules.json` › `fiction.deck` 12 ใบ (โรคห่า น้ำท่วม แล้ง ไฟไหม้ ศึกชายแดน/ศึกใหญ่ โจรชุม ราชสำนักผันผวน ส่วยหนัก + ปีดี 3 ใบ `kind: boon` ทรัพย์เพิ่ม ใจเบาลง) จั่วแบบ shuffle bag ทุก 8–15 ปี เก็บใน `meta.fiction`; ใช้ shock เดิมผ่าน `applyHistoricalShocks`; ก่อน 2400 ไม่เรียก rng จึงไม่กระทบเรื่องจริง |
 | `historyEvents.ts` | ส่ง event ให้ผู้เล่นตามวันที่ของปีประวัติศาสตร์ (`rules.json` `historyEvents`) — ศึกพม่า 2308–2310 ดู [design-war-2308.md](design-war-2308.md) |
 | `mortality.ts` `mourning.ts` | ทอยตายรายปีตามอายุ ไข้ทรพิษ; event งานศพของญาติใกล้ชิด |
 | `career.ts` | ราชการ: ตำแหน่ง, `favor`, เลื่อนยศ/ถูกลงโทษ, รายได้ตามศักดินา; `careerSkill` = ขั้นวิชาในสายของกรม → `favor` รายปี |

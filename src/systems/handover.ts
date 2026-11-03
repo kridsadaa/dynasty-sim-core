@@ -7,6 +7,7 @@ import { renderLegend, retellLegend, seedLegendsFromLife, type DriftOp } from '.
 import { pruneState, type PruneReport } from './prune';
 import { addOrReinforceTrait } from './traits';
 import { applyCareer } from './career';
+import { drawFictionEvents } from './fiction';
 import { CAPTIVE_TAG, fallLeaverLines, unearthBuried, WAR_CASH_LOSS_MULT, warCaptureMult, warDeathMult, warWhere } from './war';
 
 // ============================================================================
@@ -596,8 +597,11 @@ export const historyHeadline = (ctx: Ctx, ev: HistoricalEvent) => `== ${ctx.tags
 
 export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
   const out: string[] = [];
-  for (const ev of ctx.content.history.filter((h) => h.year === year)) {
+  const drawn = drawFictionEvents(ctx, year);
+  for (const ev of [...ctx.content.history.filter((h) => h.year === year), ...drawn.map((d) => d.ev)]) {
     out.push(historyHeadline(ctx, ev));
+    const note = drawn.find((d) => d.ev === ev)?.note;
+    if (note) out.push(note);
     for (const dyn of Object.values(ctx.state.dynasties)) {
       const members = Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c));
       const purged = !!dyn.faction && (ev.shock.purgeFactions ?? []).includes(dyn.faction) && ctx.rng.chance(ev.shock.purgeChance ?? 1);
@@ -606,7 +610,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
         // กรุงแตก: คนที่หนีออกไปพกเงินสดไปด้วย ถูกริบน้อยกว่าคนในกรุง (war.ts)
         const cashLoss = ev.tag === 'history:fall_of_ayutthaya' ? loss * WAR_CASH_LOSS_MULT[warWhere(ctx, m.id)] : loss;
         m.social.wealth *= 1 - (purged ? Math.max(loss, 0.8) : cashLoss);
-        m.stress = Math.min(1, m.stress + ctx.content.balance.life.historyStress[ev.kind] * (0.5 + m.personality.neuroticism));
+        m.stress = clamp01(m.stress + ctx.content.balance.life.historyStress[ev.kind] * (0.5 + m.personality.neuroticism));
         if (purged && m.social.title) {
           out.push(`${m.name}ถูกริบราชบาตร ถอดจาก${m.social.title}`);
           m.social.title = null;

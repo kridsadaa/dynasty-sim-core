@@ -95,7 +95,7 @@
   "wives": { "age": [25, 50], "minWealth": 60, "chance": 0.08, "wifeAge": [16, 24], "divorceAt": 0, "divorceChance": 0.3, "wealthShare": 0.2 },
   "life": { "topknotAges": [11, 13], "adultAge": 16, "illnessAge": 60, "illnessChance": 0.15, "elderAge": 55, "preceptsChance": 0.12, "drownChance": 0.05, "drownAge": 12,
     "meritPerYear": 1, "elderMeritFactor": 2, "stressRecovery": 0.3, "stressRest": 0.15, "griefStress": 0.15, "playerGriefFactor": 0.67,
-    "coldWifeStress": 0.015, "historyStress": { "war": 0.05, "plague": 0.12, "famine": 0.1, "succession": 0.02 } },
+    "coldWifeStress": 0.015, "historyStress": { "war": 0.05, "plague": 0.12, "famine": 0.1, "succession": 0.02, "boon": -0.04 } },
   "ordination": { "age": [18, 21], "playerChance": 0.5, "npcChance": 0.6, "literacy": 40 },
   "career": {
     "entryAge": [13, 20], "lateEntryAge": [21, 55], "lateEntryChance": 0.15,

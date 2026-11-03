@@ -1211,9 +1211,35 @@ async function showEnding() {
       closeModal();
       showTab('tree');
     }),
+    ...(v.continueTo ? [button(`เล่นต่อ (เรื่องสมมติถึง พ.ศ. ${v.continueTo})`, () => confirmContinue(v, parts, row))] : []),
     button('เริ่มใหม่', () => void $('new').click()),
   );
   openModal(...parts, row);
+}
+
+/** ยืนยันก่อนเล่นต่อหลังปีจบ — บอกชัดว่าจากนี้ไม่ใช่ประวัติศาสตร์จริง */
+function confirmContinue(v: EndingView, parts: Node[], row: HTMLElement) {
+  const go = button('เล่นต่อ', async () => {
+    try {
+      await engine.request({ type: 'continueEra' });
+      endingShown = false;
+      closeModal();
+      status.textContent = 'เข้าสู่ยุคสมมติ — กด ▶ เพื่อเล่นต่อ';
+    } catch (e) {
+      status.textContent = errorText(e);
+    }
+  });
+  go.classList.add('opt');
+  const back = button('กลับไปหน้าสรุป', () => openModal(...parts, row));
+  openModal(
+    el('h2', 'เล่นต่อหลังจบเรื่อง'),
+    el('p', `ตระกูลของคุณจะอยู่ต่อไปถึง พ.ศ. ${v.continueTo}`),
+    el('p', 'จากนี้ไปเป็นเรื่องสมมติ ไม่อิงเหตุการณ์จริงอีกแล้ว: เหตุการณ์ใหญ่ (โรคระบาด น้ำท่วม ศึก ปีข้าวดี ฯลฯ) จะสุ่มมาเองทุกๆ ไม่กี่ปี ตระกูลที่บริหารดีอาจรุ่งเรืองและร่ำรวยได้ แต่ก็ล่มได้เช่นกัน'),
+    el('p', 'ถึงปีนั้นจะมีหน้าสรุปอีกครั้งให้เลือกว่าจะเล่นต่ออีกไหม', 'notice-fine'),
+    go,
+    back,
+  );
+  queueMicrotask(() => go.focus());
 }
 
 /** แสดง event ที่ worker ยังรออยู่ (หลังโหลดเซฟ หรือหลังเลือกตัวเลือกไม่สำเร็จ) */

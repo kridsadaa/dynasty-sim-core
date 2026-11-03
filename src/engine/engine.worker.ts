@@ -113,6 +113,8 @@ function clockState(): ClockState {
 const pushClock = () => push({ type: 'clock', clock: clockState() });
 
 /** วันที่เรื่องจบ (1 ม.ค. ของปีจบ) — วันนั้นยังเดินรอบประจำปีครบ แล้วจึงหยุด */
+/** กดเล่นต่อหลังปีจบ: ต่อให้อีกกี่ปี (ถึงปีนั้นจะมีหน้าจบอีกครั้งให้เลือกต่อ) */
+const CONTINUE_YEARS = 200;
 const endDayOf = (c: Ctx) => yearStart(c, c.state.meta.endYear ?? END_YEAR);
 
 /** ผู้เล่นตายแล้วแต่ยังไม่ได้เลือกผู้สืบ (เซฟไว้ระหว่างเลือกก็โหลดกลับมาที่จุดนี้) */
@@ -270,7 +272,19 @@ async function handle(cmd: Command): Promise<unknown> {
     case 'viewEnding': {
       const c = need();
       const dyn = c.state.dynasties[c.state.meta.playerDynastyId];
-      return endingView(c, must(endReason, 'เกมยังไม่จบ'), dyn?.headHistory?.[0]?.fromYear ?? START_YEAR) satisfies ReplyData['viewEnding'];
+      const view = endingView(c, must(endReason, 'เกมยังไม่จบ'), dyn?.headHistory?.[0]?.fromYear ?? START_YEAR);
+      if (endReason === 'era' && c.content.fiction) view.continueTo = (c.state.meta.endYear ?? END_YEAR) + CONTINUE_YEARS;
+      return view satisfies ReplyData['viewEnding'];
+    }
+    case 'continueEra': {
+      const c = need();
+      if (endReason !== 'era') throw new Error('เรื่องยังไม่ถึงปีจบ');
+      if (!c.content.fiction) throw new Error('เนื้อหานี้ไม่มีโหมดเล่นต่อ');
+      c.state.meta.endYear = (c.state.meta.endYear ?? END_YEAR) + CONTINUE_YEARS;
+      endReason = null;
+      await save('autosave');
+      pushClock();
+      return clockState();
     }
     case 'save':
       return save(cmd.slot);

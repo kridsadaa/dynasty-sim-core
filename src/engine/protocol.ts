@@ -27,6 +27,8 @@ export type Command =
   | { type: 'viewTree' }
   | { type: 'viewCharacter'; nodeId: string }
   | { type: 'viewEnding' }
+  /** หน้าจบ (ถึงปีจบของเรื่อง): เล่นต่อเป็นเรื่องสมมติอีก CONTINUE_YEARS ปี */
+  | { type: 'continueEra' }
   | { type: 'viewKnown' }
   | { type: 'planIntent'; targetId: string; kind: string }
   | { type: 'startIntent'; targetId: string; kind: string; approach: string }
@@ -73,6 +75,7 @@ export interface ReplyData {
   viewTree: TreeView;
   viewCharacter: InspectView;
   viewEnding: EndingView;
+  continueEra: ClockState;
   viewKnown: KnownPersonView[];
   planIntent: IntentPlanView;
   startIntent: { lines: string[] };
@@ -151,6 +154,8 @@ export interface DeathNotice {
 /** หน้าสรุปตอนจบ */
 export interface EndingView {
   reason: EndReason;
+  /** ถึงปีจบแล้วเล่นต่อได้ (มีสำรับเหตุการณ์สมมติ) — ปีที่จะไปถึงถ้ากดเล่นต่อ */
+  continueTo?: number;
   title: string;
   text: string;
   facts: Array<[string, string]>;

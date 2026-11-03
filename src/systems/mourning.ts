@@ -15,7 +15,7 @@ import { CAPTIVE_TAG } from './war';
 const BAD_HISTORY_KINDS = new Set(['plague', 'war', 'succession']);
 const isBadDeath = (ctx: Ctx, cause: TagId | null) =>
   cause === 'situation:childbirth' || cause === 'situation:smallpox'
-  || ctx.content.history.some((h) => h.tag === cause && BAD_HISTORY_KINDS.has(h.kind));
+  || [...ctx.content.history, ...(ctx.content.fiction?.deck ?? [])].some((h) => h.tag === cause && BAD_HISTORY_KINDS.has(h.kind));
 
 /** ความเป็นญาติของ dead มองจาก me (ใช้ node จึงใช้กับคนที่ตายแล้วได้) — เรียงจากใกล้ไปไกล ไม่ใช่ญาติใกล้ = undefined */
 function kinTie(ctx: Ctx, me: Character, dead: Character): { tie: TagId; rank: number } | undefined {
