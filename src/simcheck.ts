@@ -730,6 +730,34 @@ if (LONG) {
   if (failed === before) console.log('  ✓ ชายขุนนางผู้ใหญ่ฝากตัวเข้ากรมได้ ได้ขั้นแรก · ผู้หญิงและไพร่ไม่ได้');
 }
 
+// [5i] ถูกถอดเพราะความผิด → ฝากตัวเข้ากรมเองไม่ได้จนกว่าจะครบปี/ผลัดแผ่นดิน (ไม่ใช่ยื่นสุ่มปีละ 15% ทันที)
+{
+  const before = failed;
+  console.log('ถูกถอดเพราะความผิด:');
+  const ctx = makeCtx(emptyState(44), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(25);
+  delete hero.office;
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  const now = yearOf(ctx, S.meta.day);
+  const problems: string[] = [];
+  const asked = () => {
+    for (let i = 0; i < 60; i++) if (careerYearTick(ctx).events.some((e) => e.event === 'career.petition' && e.bindings.actor === hero.id)) return true;
+    return false;
+  };
+  hero.disgrace = { year: now };
+  if (asked()) problems.push('เพิ่งถูกถอดแต่ฝากตัวเข้ากรมได้ทันที');
+  if (!hero.disgrace) problems.push('ความผิดหายไปทั้งที่เพิ่งถูกถอด');
+  hero.disgrace = { year: now - ctx.content.balance.career.disgraceYears };
+  careerYearTick(ctx);
+  if (hero.disgrace) problems.push('ครบกำหนดแล้วยังไม่พ้นความผิด');
+  if (!asked()) problems.push('พ้นความผิดแล้วยังฝากตัวเข้ากรมไม่ได้');
+  check('ถูกถอดเพราะความผิด', problems);
+  if (failed === before) console.log('  ✓ ถูกถอดแล้วฝากตัวเองไม่ได้ · ครบกำหนดแล้วจึงยื่นได้อีก');
+}
+
 // [5h2] วิชาช่วยเลื่อนยศ: ขั้นวิชาในสายของกรมเพิ่มความโปรดปรานรายปี และแผงตัวละครบอกผลให้เห็น
 {
   const before = failed;

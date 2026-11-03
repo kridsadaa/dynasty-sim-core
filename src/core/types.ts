@@ -244,6 +244,8 @@ export interface Character {
   /** deptId: กรมที่สังกัด — ไม่มี = ยังเป็นมหาดเล็ก (หรือเซฟเก่า = กรมแรก) */
   office?: { postId: string; deptId?: string; name?: string; sinceDay: Day; favor: Signed };
   /** ตำแหน่งที่หมดไปเพราะราชสำนักล่ม (เสียกรุง 2310) — แผ่นดินใหม่อาจให้คงยศเดิม (career.recall) */
+  /** ถูกลดจนหลุดจากราชการเพราะความผิด — ไม่ฝากตัวเข้ากรมเองได้จนกว่าจะได้รับอภัย/ผลัดแผ่นดิน/ครบ disgraceYears (career.ts) */
+  disgrace?: { year: number; deptId?: string };
   formerOffice?: { postId: string; deptId?: string; name?: string; title: string | null };
   /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
   ordainedYear?: number;
@@ -1261,6 +1263,8 @@ export interface Balance {
     factionByEra: Array<{ from: number; to: number; faction: string }>;
     /** หลังราชสำนักล่ม: ผู้ที่เคยมีตำแหน่งถูกเรียกเข้ารับราชการคงยศเดิมในปีช่วงนี้ (lore: event.fall_of_ayutthaya_2310) */
     recallYears: [number, number];
+    /** ถูกถอดเพราะความผิดแล้ว: ต้องรอครบกี่ปีจึงยื่นเข้ารับราชการเองได้อีก; มีผู้ใหญ่ที่ฝากตัวไว้ช่วยกราบทูลขออภัยโทษปีละ pardonChance (ตัวเลขของเกม ไม่มีหลักฐานใน lore — invented) */
+    disgraceYears: number; pardonChance: Unit;
   };
   /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
   marriage: {

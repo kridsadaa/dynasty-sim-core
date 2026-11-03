@@ -150,7 +150,10 @@ export function applyCareer(
       if (!post) return [];
       // ตกจากตำแหน่งไม่ถือเป็นความอัปยศ (lore: social.court_punishments_1680s) — แต่บารมีตระกูลยังลด
       addPrestige(ctx, ch, -C.promotePrestige * post.rank * 0.5);
-      if (!prev) return applyCareer(ctx, ch, 'dismiss');
+      if (!prev) {
+        ch.disgrace = { year: yearOf(ctx, ctx.state.meta.day), ...(ch.office?.deptId ? { deptId: ch.office.deptId } : {}) };
+        return applyCareer(ctx, ch, 'dismiss');
+      }
       setPost(ctx, ch, prev);
       return [`${ch.name}ถูกลดลงเป็น${ch.social.title ?? prev.label.th} ศักดินา ${prev.sakdina}`];
     }
@@ -212,6 +215,21 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     // ราชสำนักใหม่เรียกผู้ที่เคยมีตำแหน่ง — ผ่านช่วงปีไปแล้วก็หมดโอกาส
     if (year >= C.recallYears[0] && year <= C.recallYears[1]) events.push({ event: 'career.recall', bindings: bind });
     else if (year > C.recallYears[1]) delete player.formerOffice;
+    return { lines, events };
+  }
+  if (!player.office && player.disgrace) {
+    // ถูกถอดเพราะความผิด (lore: social.court_punishments_1680s) — กลับเข้าได้เมื่อมีผู้ใหญ่กราบทูลขออภัย ผลัดแผ่นดิน หรือเวลาผ่านไปนาน
+    const d = player.disgrace;
+    const patron = Object.values(S.relations).find((r) => r.from === player.id && r.kind === 'patron' && r.strength >= 0.6
+      && isAlive(S.characters[r.to]) && opinion(ctx, r.to, player.id) > 0);
+    if (patron && ctx.rng.chance(C.pardonChance)) {
+      delete player.disgrace;
+      lines.push(`${S.characters[patron.to]!.name}กราบทูลขออภัยโทษให้${player.name}`);
+      lines.push(...applyCareer(ctx, player, d.deptId ? 'enter_dept' : 'enter', d.deptId));
+    } else if (ctx.content.history.some((h) => h.kind === 'succession' && h.year === year) || year - d.year >= C.disgraceYears) {
+      delete player.disgrace;
+      lines.push(`ความผิดเก่าของ${player.name}ถูกลืมเลือนไปแล้ว`);
+    }
     return { lines, events };
   }
   if (!player.office) {

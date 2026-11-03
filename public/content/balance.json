@@ -111,6 +111,8 @@
     "patronFavor": 0.08,
     "skillFavorPerTier": 0.025,
     "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }],
+    "disgraceYears": 20,
+    "pardonChance": 0.25,
     "recallYears": [2311, 2313]
   },
   "marriage": {
