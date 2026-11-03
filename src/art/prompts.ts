@@ -10,7 +10,7 @@ const root = process.cwd();
 const style = JSON.parse(readFileSync(join(root, 'art', 'style.json'), 'utf8')) as {
   version: string;
   output: { aspectRatio: string };
-  styles: Record<'reality' | 'chronicle', { prompt: string }>;
+  styles: Record<'reality' | 'chronicle', { prompt: string }> & { reality_late?: { prompt: string } };
   subjectRules: Array<{ id: string; rule: string }>;
 };
 const spec = loadSpec(root);
@@ -20,15 +20,19 @@ for (const f of readdirSync(join(root, 'lore', 'entries')).filter((f) => f.endsW
 }
 
 const errors: string[] = [];
-const loreLine = (refs: string[], at: string) =>
+const loreLine = (refs: string[] = [], at: string) =>
   refs.map((id) => {
     const e = lore.get(id);
     if (!e) errors.push(`${at}: ไม่มี lore ${id}`);
     return `\`${id}\`${e ? ` (${e.status}${e.verified ? ', verified' : ''})` : ' ❌'}`;
   }).join(', ');
 
-const block = (styleId: 'reality' | 'chronicle' | 'portrait', subject: string) =>
-  `${style.styles[styleId === 'portrait' ? 'reality' : styleId].prompt}\n\n${subject}`;
+const block = (styleId: 'reality' | 'chronicle' | 'portrait', subject: string, era?: 'late') => {
+  const key = styleId === 'portrait' ? 'reality' : styleId;
+  const late = era === 'late' && key === 'reality' ? style.styles.reality_late : undefined;
+  if (era === 'late' && key === 'reality' && !late) errors.push('มีภาพ era: late แต่ style.json ไม่มี reality_late');
+  return `${(late ?? style.styles[key]).prompt}\n\n${subject}`;
+};
 
 const out: string[] = [
   '# Prompt ภาพประกอบ (สร้างจาก `npm run art:prompts` — ห้ามแก้มือ)',
@@ -60,7 +64,7 @@ for (const [title, styleId] of [
       `### ${img.id} — ${img.alt}`, '',
       `${status(img)} · tag: ${img.tags.map((t) => `\`${t}\``).join(' ')}`, '',
       `lore: ${loreLine(img.loreRefs, img.id)}`, '',
-      '```', block(styleId, img.subject), '```', '',
+      '```', block(styleId, img.subject, img.era), '```', '',
     );
   }
 }

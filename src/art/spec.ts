@@ -10,6 +10,8 @@ export interface SpecImage {
   alt: string;
   subject: string;
   loreRefs: string[];
+  /** ช่วงเวลาของฉาก — ไม่ระบุ = 2295–2315 (style reality); 'late' = ราว 2373–2400 (style reality_late) */
+  era?: 'late';
   /** ภาพชั่วคราว (เช่น จาก art/approved) ใช้จนกว่าจะมี art/generated/<id>.* */
   source?: string;
 }

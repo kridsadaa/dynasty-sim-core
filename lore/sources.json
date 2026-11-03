@@ -901,5 +901,79 @@
     "reliability": 4,
     "url": "https://th.wikisource.org/wiki/ประชุมพงศาวดาร/ภาคที่_1/เรื่องที่_2",
     "notes": "คำนำลงศักราชตามต้นฉบับ (จ.ศ. 1042); พ.ศ. ในวงเล็บบรรณาธิการเติมตอนพิมพ์ 2457; เนื้อความเริ่ม จ.ศ. 686 (พ.ศ. 1867) — ปลายช่วง 2223 คือปีที่เขียนคำนำ"
+  },
+  {
+    "id": "src.laloubere_1691_plates",
+    "title": "Du Royaume de Siam (ปารีส 1691) — ภาพแกะประกอบ 25 แผ่น",
+    "author": "Simon de La Loubère (ผู้เขียนข้อความ); F. Ertinger (ช่างแกะ)",
+    "kind": "visual",
+    "composedYear": 2234,
+    "describesPeriod": [
+      2230,
+      2231
+    ],
+    "reliability": 3,
+    "url": "https://gallica.bnf.fr/ark:/12148/btv1b23000685",
+    "license": "สมบัติสาธารณะ (ภาพแกะ ค.ศ. 1691) — ภาพสแกน BnF/Gallica ผ่าน Wikimedia Commons ระบุ Public domain; ป้อนเครื่องมือสร้างภาพได้ (input-ok)",
+    "notes": "ช่างแกะชาวยุโรปวาดจากร่างของคณะทูต ไม่ใช่คนสยามวาด — สัดส่วนและท่าทางอาจถูกจัดแบบยุโรป ใช้เป็นหลักฐานรูปทรงเครื่องนุ่งห่มได้ แต่ลวดลาย/สีไม่ได้. ดูครบ 25 แผ่นแล้ว (2026-11-03): ภาพคนแต่งกายมีแค่แผ่น 10 (Mandarin Siamois) และ 16 (Pagayeurs) ส่วนแผ่น 15, 17 (เรือ) มีคนตัวเล็ก; ไม่มีภาพผู้หญิง; แผ่น 24 เป็นผังวัด (Couvent de Talapoins) ใช้กับฉากวัดได้; แผ่น 18–23, 25 เป็นดนตรี เครื่องดนตรี เงินตรา ห้องเข้าเฝ้า พระพุทธรูป"
+  },
+  {
+    "id": "src.boxer_codex_1590",
+    "title": "Boxer Codex — ภาพคู่ชายหญิงสยามในมะนิลา (f.100)",
+    "author": "ไม่ทราบชื่อ (ต้นฉบับสเปน ราว ค.ศ. 1590)",
+    "kind": "visual",
+    "composedYear": 2133,
+    "describesPeriod": [
+      2133,
+      2133
+    ],
+    "reliability": 2,
+    "url": "https://commons.wikimedia.org/wiki/File:Pre-colonial_Native_3.jpg",
+    "license": "สมบัติสาธารณะ (Wikimedia Commons ระบุ Public domain)",
+    "notes": "ศิลปินสเปนวาดชาวสยามที่พบในฟิลิปปินส์ ห่างยุคของเกมราว 120–180 ปี หน้าตาผู้ชายดูไม่เหมือนคนสยาม — ใช้ดูได้เฉพาะท่าห่มผ้า ไม่ใช่ทรงผมหรือหน้าตา"
+  },
+  {
+    "id": "src.traiphum_ayutthaya_no6_no8_1999",
+    "title": "สมุดภาพไตรภูมิ ฉบับกรุงศรีอยุธยา – ฉบับกรุงธนบุรี เล่ม ๑ (เลขที่ ๖ และ ๘ สมัยอยุธยา)",
+    "author": "คณะกรรมการฝ่ายประมวลเอกสารและจดหมายเหตุ สำนักเลขาธิการนายกรัฐมนตรี (พิมพ์ พ.ศ. 2542); ต้นฉบับหอสมุดแห่งชาติ",
+    "kind": "visual",
+    "describesPeriod": [
+      2200,
+      2310
+    ],
+    "reliability": 3,
+    "url": "http://digital.nlt.go.th/dlib/files/original/58d3843e1b2a6d1cd614ebf44d217a5d.pdf",
+    "license": "หนังสือพิมพ์เผยแพร่ของรัฐ (2542) ยังไม่ตรวจสิทธิ์ภาพถ่ายต้นฉบับ — ใช้เป็น reference-only (ดูแล้วจดเป็น visual study ได้ ห้ามป้อนเครื่องมือสร้างภาพ) จนกว่าจะยืนยัน",
+    "notes": "เล่ม ๑ รวมฉบับอยุธยา 2 ฉบับ (เลขที่ ๖ หน้า ~25–116 และเลขที่ ๘ หน้า ~117–219 ของ PDF) ส่วนฉบับธนบุรี (เลขที่ ๑๐, ๑๐/ก ลง 2319) อยู่เล่ม ๒ ไม่ใช่เล่มนี้. ไม่ทราบปีเขียนชัด: เลขที่ ๖ \"ควรเป็นฝีมือสมัยอยุธยา\" แต่อาจเป็นฉบับคัดลอกใหม่; เลขที่ ๘ ระบุแค่ว่าสมัยอยุธยา (ทายาท พระจักรพรรดิพงษ์ ถวายหอสมุด 2451). ภาพส่วนใหญ่เป็นจักรวาลวิทยา เทพ นรก ชาดก; ภาพชาวบ้านเป็นฉากเล็ก ๆ — ตัวอย่างหน้าที่น่าดู (เลขหน้า PDF): 183 (เรือนยกพื้น 6 หลังมีคนโผล่หน้าต่าง), 213 (ชายขุดดินนุ่งผ้าสั้นถึงเข่า), 216, 198, 110, 114. ยังไม่ได้ทำ visual study อย่างเป็นระบบ; PDF เป็นสแกนไม่มีข้อความ (ค้น OCR ไม่ได้)"
+  },
+  {
+    "id": "src.thomson_1865_siamese_woman",
+    "title": "Siamese woman, Bangkok (ภาพถ่าย John Thomson ค.ศ. 1865) — Wellcome Collection L0056627",
+    "author": "John Thomson (ช่างภาพ); Wellcome Collection",
+    "kind": "visual",
+    "composedYear": 2408,
+    "describesPeriod": [
+      2408,
+      2408
+    ],
+    "reliability": 3,
+    "url": "https://commons.wikimedia.org/wiki/File:Siamese_woman_Bangkok._Wellcome_L0056627.jpg",
+    "license": "CC BY 4.0 (Wellcome Collection ผ่าน Wikimedia Commons) — ต้องให้เครดิต John Thomson / Wellcome Collection; ป้อนเครื่องมือสร้างภาพได้ (input-ok)",
+    "notes": "ภาพสตูดิโอ แต่งตัวถ่ายรูป ไม่ใช่ชีวิตประจำวัน; ถ่ายหลังช่วงเกม (สิ้น 2400) ราว 8 ปี จึงใช้เป็นกายภาพ/แบบแผนทรงผมเท่านั้น (art/README.md ข้อ 5.3); ไม่จดลักษณะใบหน้า"
+  },
+  {
+    "id": "src.thomson_1865_siamese_men",
+    "title": "ภาพถ่ายชายสยาม John Thomson ค.ศ. 1865–66 (Wellcome Collection: Siamese boatman L0055805 / L0016867; Siamese youth L0056625) และ Muay Thai match in Siam 1865",
+    "author": "John Thomson (ช่างภาพ); Wellcome Collection",
+    "kind": "visual",
+    "composedYear": 2408,
+    "describesPeriod": [
+      2408,
+      2409
+    ],
+    "reliability": 3,
+    "url": "https://commons.wikimedia.org/wiki/Category:Photographs_of_Thailand_by_John_Thomson",
+    "license": "Siamese boatman / Siamese youth: CC BY 4.0 (Wellcome Collection ผ่าน Wikimedia Commons) ต้องให้เครดิตป้อนเครื่องมือได้ (input-ok); Muay Thai match 1865: Public domain",
+    "notes": "ภาพชายพายเรือนี้คือภาพเดียวกับภาพซ้ายที่ผู้ใช้ส่งมาจากบทความ Silpa-mag (ผู้ใช้ส่งภาพมา 2026-11-03; ผมระบุที่มาจากการเทียบภาพกับ Commons). ถ่ายหลังสิ้นช่วงเกม (2400) ราว 8 ปี ใช้เป็นกายภาพ/แบบแผนทรงผม (art/README.md ข้อ 5.3); ภาพสตูดิโอ/จัดท่า; ไม่จดลักษณะใบหน้า"
   }
 ]
