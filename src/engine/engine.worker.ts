@@ -128,8 +128,13 @@ function endOf(c: Ctx): EndReason | null {
 }
 
 /** ผู้เล่นตายนอกลูปเวลา (ผลพลาดของตัวเลือกเสี่ยงใน event) — แจ้งการตายและส่งต่อผู้สืบเหมือนตายตามวัย */
+/** ตัวละครผู้เล่นที่แจ้งการตายไปแล้ว — กันแจ้งซ้ำตอน resume (ตายตามวัยในลูปเวลาแจ้งไปแล้วตอน step) */
+let deathNotifiedFor: string | null = null;
+
 function settleDeathNow(c: Ctx): void {
   if (!awaitingHeir(c) || endReason) return;
+  if (deathNotifiedFor === c.state.meta.playerCharacterId) return;
+  deathNotifiedFor = c.state.meta.playerCharacterId;
   if (settlePlayerDeath(c, [], push) === 'extinct') {
     playing = false;
     endReason = 'extinct';
@@ -149,6 +154,7 @@ function step(c: Ctx, days: number, lines: LogLine[]): 'done' | 'event' | 'heir'
         pending.set(sig.prepared.instance.id, sig.prepared);
         stop = 'event';
       } else {
+        deathNotifiedFor = c.state.meta.playerCharacterId;
         if (settlePlayerDeath(c, lines, push) === 'extinct') return 'gameOver';
         stop = 'heir'; // หยุดเวลารอผู้เล่นอ่านหน้าแจ้งการตาย — ปิดแล้วส่ง resume
       }
@@ -244,6 +250,7 @@ async function handle(cmd: Command): Promise<unknown> {
       const hero = bootstrapScenario(ctx, heroName);
       if (heroName) rememberCustomName(ctx, heroName, hero.sex);
       pending.clear();
+      deathNotifiedFor = null;
       return playerView(ctx, text);
     }
     case 'load': {
@@ -258,6 +265,7 @@ async function handle(cmd: Command): Promise<unknown> {
         if (heirCandidates(c, dead).length === 1) performHandover(c, dead.id);
       }
       pending.clear();
+      deathNotifiedFor = null;
       for (const s of saved.pending) {
         const p = restoreEvent(c, s);
         if (p) pending.set(p.instance.id, p);
