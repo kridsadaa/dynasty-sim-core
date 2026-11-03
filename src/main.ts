@@ -62,18 +62,55 @@ let lastYear = 0;
 let hasGame = false;
 let clock: ClockState = { playing: false, speed: 2, maxSpeed: 5, ended: false, resumeAfter: false };
 
-// ---------------- แท็บ: บันทึก / คนที่รู้จัก / เรือน / วิชา / ผังตระกูล / เซฟ ----------------
-type Tab = 'log' | 'known' | 'house' | 'skills' | 'tree' | 'saves';
+// ---------------- แท็บ: บันทึก / ตัวละคร (มือถือ) / คนที่รู้จัก / เรือน / วิชา / ผังตระกูล / เซฟ ----------------
+type Tab = 'log' | 'player' | 'known' | 'house' | 'skills' | 'tree' | 'saves';
 let tab: Tab = 'saves';
 
 function showTab(next: Tab) {
   tab = next;
+  document.querySelector('main')!.dataset.tab = next;
   for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === next));
   for (const t of ['log', 'known', 'house', 'skills', 'tree', 'saves'] as const) $(`tab-${t}`).hidden = t !== next;
   if (next === 'tree' && hasGame) void refreshTree();
   if (next === 'saves') void refreshSlots();
 }
 for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.onclick = () => showTab(b.dataset.tab as Tab);
+window.addEventListener('resize', () => {
+  if (tab === 'player' && window.innerWidth > 800) showTab('log');
+});
+
+/** สร้างช่องข้อความที่จองความกว้างเท่าคำที่ยาวที่สุด (data-max) ไม่ให้ดิ้นหรือทับกัน */
+function dSlot(text: string, maxText: string, cls?: string): HTMLElement {
+  const sp = el('span', text, cls ? `d-slot ${cls}` : 'd-slot');
+  sp.dataset.max = maxText;
+  return sp;
+}
+
+/** แยกวันที่เป็นช่องความกว้างคงที่ตามคำที่ยาวที่สุดของแต่ละส่วน ไม่ให้ตัวหนังสือดิ้นไปมาระหว่างเวลาเดิน */
+function renderDates(solar: string, lunar: string) {
+  const sBox = $('date');
+  const sParts = solar.split(' ');
+  sBox.replaceChildren(
+    dSlot(sParts[0] ?? '', '31', 'r'),
+    dSlot(sParts[1] ?? '', 'เม.ย.', 'c'),
+    dSlot(sParts[2] ? `พ.ศ. ${sParts[2]}` : '', 'พ.ศ. 2499'),
+  );
+  const lBox = $('lunar');
+  const m = lunar.match(/^(\S+)\s+(ขึ้น|แรม)\s+(\d+)\s+ค่ำ\s+(เดือน(?:\s+\d+(?:\s+หลัง)?|\S+))\s+(ปี\S+)\s+(จ\.ศ\.\s*\d+)$/);
+  if (m) {
+    const phase = el('span', undefined, 'l-phase');
+    phase.append(dSlot(m[2]!, 'แรม'), dSlot(m[3]!, '15', 'r'), el('span', 'ค่ำ'));
+    lBox.replaceChildren(
+      dSlot(m[1]!, 'วันพฤหัสบดี'),
+      phase,
+      dSlot(m[4]!, 'เดือน 8 หลัง'),
+      dSlot(m[5]!, 'ปีมะเมีย'),
+      dSlot(m[6]!, 'จ.ศ. 1299', 'l-cs'),
+    );
+  } else {
+    lBox.textContent = lunar;
+  }
+}
 
 /** หลอดยุคสมัย: ความกว้างตามจำนวนปี ยุคที่ยังไม่ถึงไม่บอกชื่อ */
 function eraBarEl(segs: CharacterView['eraBar'], year: number): HTMLElement {
@@ -194,7 +231,7 @@ function renderClock() {
   // มีหน้าต่าง event: เวลาหยุดรออยู่แล้ว ปุ่มนี้สั่งว่าตัดสินใจเสร็จแล้วจะให้เดินต่อเองหรือหยุดค้างไว้
   const waiting = modalOpen() && !clock.playing;
   const running = clock.playing || (waiting && clock.resumeAfter);
-  play.textContent = running ? (waiting ? '⏸ หยุดหลังเลือก' : '⏸ หยุด') : '▶ เดิน';
+  play.textContent = running ? '⏸ หยุด' : '▶ เดิน';
   play.classList.toggle('playing', running);
   play.disabled = !hasGame || clock.ended;
   $<HTMLButtonElement>('slower').disabled = !hasGame || clock.speed <= 1;
@@ -480,6 +517,7 @@ function renderSkillsAndLegacies() {
 }
 
 function renderPlayer(v: CharacterView) {
+  $('tabBtnPlayer').textContent = `ตัวละคร (${v.name})`;
   const box = $('player');
   box.replaceChildren(el('h2', 'ตัวละคร'), ...artFigure('portrait', v.portraitTags));
   const who = el('div');
@@ -1278,8 +1316,7 @@ engine.onPush((p) => {
       for (const l of p.lines) write(l.text, l.kind, undefined, l.artTags);
       break;
     case 'progress':
-      $('date').textContent = p.solar;
-      $('lunar').textContent = p.lunar;
+      renderDates(p.solar, p.lunar);
       refreshSoon();
       break;
     case 'clock':
@@ -1324,8 +1361,7 @@ async function start(from: 'new' | string, heroName?: string) {
     renderPlayer(v);
     renderKnown(await engine.request({ type: 'viewKnown' }));
     renderDynasty(await engine.request({ type: 'viewDynasty' }));
-    $('date').textContent = v.solar;
-    $('lunar').textContent = v.lunar;
+    renderDates(v.solar, v.lunar);
     hasGame = true;
     clock = await engine.request({ type: 'pause' }); // เริ่ม/โหลดแล้วเวลาหยุดรอ ผู้เล่นกดเดินเอง
     renderClock();
