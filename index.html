@@ -58,6 +58,11 @@
 
       /* ป้ายสถานะตัวละคร (ป่วย ท้อง แผลลึก ใจหนัก) */
       .statuses { display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 4px 0; }
+      .era-bar { display: flex; gap: 2px; margin: 6px 0; font-size: 11px; }
+      .era-seg { padding: 2px 4px; border: 1px solid var(--line); border-radius: 4px; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; color: var(--muted); }
+      .era-seg.past { background: var(--bg); }
+      .era-seg.now { border-color: var(--accent); color: var(--fg); font-weight: 600; }
+      .era-seg.future { border-style: dashed; }
       .pill { display: inline-block; font-size: 12px; line-height: 1.3; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); }
       .pill.bad { border-color: var(--accent); color: var(--accent); font-weight: 600; }
       .pill.warn { border-color: var(--muted); color: var(--fg); }

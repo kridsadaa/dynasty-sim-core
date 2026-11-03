@@ -30,7 +30,7 @@ import type {
   MatchView,
   ChoiceResult,
   CharacterView, DeathNotice, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
-  OddsFactorView, SkillsView, StatusBadge, TreeView,
+  EraSegment, OddsFactorView, SkillsView, StatusBadge, TreeView,
 } from './protocol';
 
 // แปลง state → view model (plain data) ก่อนส่งข้ามเธรด
@@ -187,6 +187,24 @@ export function eraConditions(ctx: Ctx): StatusBadge[] {
   return out;
 }
 
+/** ช่วงยุคสำหรับหลอดยุคสมัย — ขอบยุคเป็นการแบ่งของเกม (ตรงกับเหตุการณ์ใน history ของ rules.json) */
+const ERAS: ReadonlyArray<{ name: string; from: number; to: number }> = [
+  { name: 'ปลายกรุงศรีอยุธยา', from: 2288, to: 2308 },
+  { name: 'ศึกพม่าและเสียกรุง', from: 2308, to: 2313 },
+  { name: 'กรุงธนบุรี', from: 2313, to: 2325 },
+  { name: 'รัชกาลที่ 1', from: 2325, to: 2352 },
+  { name: 'รัชกาลที่ 2–3', from: 2352, to: 2394 },
+  { name: 'รัชกาลที่ 4', from: 2394, to: 2400 },
+];
+
+export function eraBar(ctx: Ctx): EraSegment[] {
+  const now = yearOf(ctx, ctx.state.meta.day);
+  return ERAS.map((e) => {
+    const state = now >= e.to ? 'past' : now >= e.from ? 'now' : 'future';
+    return { name: state === 'future' ? null : e.name, from: e.from, to: e.to, state };
+  });
+}
+
 /** UI ไม่ควรเห็นคีย์ภายใน ("noble", "finger.index.l", "manipulation.fine") — แปลงเป็นคำไทยที่นี่ */
 export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
   const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
@@ -205,6 +223,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     purse: Math.round(purse(ctx, ch)),
     statuses: statusBadges(ctx, ch, text),
     conditions: [...eraConditions(ctx), ...warBadges(ctx)],
+    eraBar: eraBar(ctx),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: scarLines(ctx, ch, text),
     wounds: woundLines(ctx, ch, text),

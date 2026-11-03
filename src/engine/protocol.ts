@@ -250,6 +250,14 @@ export interface StatusBadge {
   tone: 'bad' | 'warn' | 'good' | 'info';
 }
 
+export interface EraSegment {
+  /** ชื่อยุค; ยุคที่ยังไม่ถึงเป็น null */
+  name: string | null;
+  from: number;
+  to: number;
+  state: 'past' | 'now' | 'future';
+}
+
 export interface CharacterView {
   name: string;
   nodeId: string; // เปิดหน้าดูตัวละคร/ผังตระกูลจากชื่อผู้เล่น
@@ -268,6 +276,8 @@ export interface CharacterView {
   statuses: StatusBadge[];
   /** สภาวะบ้านเมืองที่กำลังดำเนินอยู่ (ศึก ข้าวยาก โรคระบาด) — คำนวณจากปีปัจจุบัน ไม่เก็บใน state */
   conditions: StatusBadge[];
+  /** หลอดยุคสมัย 2288–2400 — ยุคที่ยังไม่ถึงซ่อนชื่อไว้ (ไม่สปอยล์) คำนวณจากปี ไม่เก็บใน state */
+  eraBar: EraSegment[];
   traits: string[];
   scars: string[];
   wounds: string[];

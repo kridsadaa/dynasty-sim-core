@@ -75,6 +75,19 @@ function showTab(next: Tab) {
 }
 for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.onclick = () => showTab(b.dataset.tab as Tab);
 
+/** หลอดยุคสมัย: ความกว้างตามจำนวนปี ยุคที่ยังไม่ถึงไม่บอกชื่อ */
+function eraBarEl(segs: CharacterView['eraBar'], year: number): HTMLElement {
+  const bar = el('div', '', 'era-bar');
+  for (const g of segs) {
+    const seg = el('div', g.name ?? '?', 'era-seg ' + g.state);
+    seg.style.flex = String(g.to - g.from);
+    seg.title = g.name ? g.name + ' (พ.ศ. ' + g.from + '–' + g.to + ')' : 'ยุคที่ยังมาไม่ถึง';
+    if (g.state === 'now') seg.style.setProperty('--pos', String(Math.round(((year - g.from) / (g.to - g.from)) * 100)) + '%');
+    bar.append(seg);
+  }
+  return bar;
+}
+
 function statusPills(badges: readonly StatusBadge[] | undefined): HTMLElement[] {
   if (!badges?.length) return [];
   const wrap = el('div', undefined, 'statuses');
@@ -472,6 +485,7 @@ function renderPlayer(v: CharacterView) {
   const who = el('div');
   who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
   box.append(who, ...statusPills(v.statuses));
+  box.append(eraBarEl(v.eraBar, v.year));
   if (v.conditions.length) box.append(el('div', 'บ้านเมืองตอนนี้', 'muted'), ...statusPills(v.conditions));
   box.append(el('div', `ชนชั้น: ${v.estate} · ${v.purse > v.wealth ? `เงินใช้ในเรือน ${v.purse} ตำลึง (ของตัวเอง ${v.wealth})` : `ทรัพย์ ${v.wealth} ตำลึง`}`));
   if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));
