@@ -1242,6 +1242,34 @@
       "loreRefs": [
         "event.fall_of_ayutthaya_2310"
       ]
+    },
+    {
+      "id": "scene.plague_news",
+      "style": "reality",
+      "era": "late",
+      "tags": [
+        "event:plague.news"
+      ],
+      "alt": "ท่าน้ำริมคลองบางกอก พ่อค้าเรือเล่าข่าวไข้ป่วงใหญ่ ชาวบ้านมุงฟังหน้าเครียด บางเรือนขนของลงเรือ",
+      "subject": "Set in early Bangkok (about 1820 to 1850), not Ayutthaya. A wooden landing on a Bangkok canal at morning: a trader standing in his long boat moored at the steps, telling news and pointing back downriver; a small crowd of townspeople on the landing listening with worried faces, a woman pulling a child close, two men whispering to each other; behind them a few market stalls on the bank half empty, baskets covered; further along the canal one family loading rolled mats, pots and bundles into a small boat as if to leave. Overcast hot-season light, uneasy quiet mood. No sick or dead people shown, no bodies.",
+      "loreRefs": [
+        "event.cholera_2363",
+        "event.plague_response_options"
+      ]
+    },
+    {
+      "id": "scene.inoculation",
+      "style": "reality",
+      "era": "late",
+      "tags": [
+        "event:health.inoculation"
+      ],
+      "alt": "ศาลาโล่งในหมู่บ้าน พ่อแม่อุ้มลูกเล็กนั่งรอหมอหลวงที่มาปลูกฝี เด็กบางคนกอดแม่แน่นอย่างกลัว",
+      "subject": "Set in early Bangkok times (about 1840), not Ayutthaya. An open-sided wooden sala with a thatched roof at the edge of a village, dry-season daylight: an older man of some standing, the royal physician, seated cross-legged on a mat at the far end with a closed cloth bundle beside him, speaking calmly to a father; in the foreground several mothers and fathers sitting on the floor waiting their turn with small children on their laps, one child clinging to his mother's neck in fear, another looking curiously toward the physician; villagers watching from outside. The procedure itself is not shown: no blades, no wounds, no needles.",
+      "loreRefs": [
+        "health.smallpox_endemic",
+        "health.inoculation_choice"
+      ]
     }
   ]
 }

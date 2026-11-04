@@ -1,5 +1,5 @@
 {
-  "styleVersion": "0.1",
+  "styleVersion": "0.8",
   "images": [
     {
       "id": "scene.compound",
@@ -1061,6 +1061,28 @@
         "history:captive_after_fall"
       ],
       "alt": "ขบวนผู้ถูกกวาดต้อนถูกผูกเชือกเดินตามถนนแห้ง มีควันไฟจากกรุงอยู่ไกลๆ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.plague_news",
+      "file": "art/scene.plague_news.webp",
+      "style": "reality",
+      "tags": [
+        "event:plague.news"
+      ],
+      "alt": "ท่าน้ำริมคลองบางกอก พ่อค้าเรือเล่าข่าวไข้ป่วงใหญ่ ชาวบ้านมุงฟังหน้าเครียด บางเรือนขนของลงเรือ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.inoculation",
+      "file": "art/scene.inoculation.webp",
+      "style": "reality",
+      "tags": [
+        "event:health.inoculation"
+      ],
+      "alt": "ศาลาโล่งในหมู่บ้าน พ่อแม่อุ้มลูกเล็กนั่งรอหมอหลวงที่มาปลูกฝี เด็กบางคนกอดแม่แน่นอย่างกลัว",
       "width": 1024,
       "height": 572
     }

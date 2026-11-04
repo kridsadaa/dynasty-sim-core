@@ -152,8 +152,8 @@ test('ภาพคะแนนเท่ากันสลับตาม seed �
   for (let i = 0; i < 20; i++) assert.equal(pickArt(twins, 'reality', tags, `ev${i}`)?.id, pickArt(twins, 'reality', tags, `ev${i}`)?.id);
 });
 
-// event ที่ยังรอภาพใหม่ (ขั้น 1 ของแผนภาพ) — สร้างภาพแล้วให้ลบออกจากรายการนี้
-const AWAITING_ART = new Set(['plague.news', 'health.inoculation']);
+// event ที่ยังรอภาพใหม่ — สร้างภาพแล้วให้ลบออกจากรายการนี้ (ว่างได้)
+const AWAITING_ART = new Set<string>([]);
 
 test('ทุก event มีภาพฉาก ยกเว้นที่จดไว้ว่ารอภาพ — event ใหม่ต้องวางภาพไว้ด้วย', () => {
   const real = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as ArtManifest;
