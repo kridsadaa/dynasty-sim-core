@@ -284,5 +284,20 @@
       "checked": "ข้อความที่ยกมาตรงต้นฉบับ 1/1; ตำแหน่งถูก 2/2; เทียบกับ https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-i-of-the-country-of-siam/chap-iii-concerning-the-history-and-origine-of-the-siameses · https://vajirayana.org/v2/asia/a-new-historical-relation-of-the-kingdom-of-siam/part-ii-of-the-manners-of-the-siameses-in-general/chap-vii",
       "notes": "nursing / birthOrder / stagnant / birthsPerWoman / gameMapping: not checked (other sources). Note: La Loubere says the country is thinly peopled (\"very little inhabited\"); he does not say the population is not growing."
     }
+  },
+  {
+    "id": "health.inoculation_choice",
+    "domain": "health",
+    "title": "ผู้เล่นเลือกปลูกฝีให้ลูกหรือไม่ (กลไกเกม)",
+    "period": [2382, 2400],
+    "claim": {
+      "basis": "health.smallpox_endemic: 2381–82 รัชกาลที่ 3 ให้หมอหลวงเรียนปลูกฝีแบบเอาหนองคน (variolation) มีคนปลูกหลายพัน; ไข้ทรพิษเป็นตัวฆ่าเด็กหลักในทุกแหล่ง",
+      "gameRule": "ตั้งแต่ 2382 ผู้เล่นถูกถามครั้งเดียวต่อลูกที่ยังไม่เคยเป็นไข้ทรพิษ: ปลูก (เสีย 6 ตำลึง; พลาด 12% แล้วเด็กไข้หนักตาย 15% ของที่พลาด ≈ 1.8%) หรือไม่ปลูก; ปลูกแล้วไม่เป็นไข้ทรพิษอีก"
+    },
+    "summary": "การปลูกฝีและความกลัวผลข้างเคียงมีหลักฐาน แต่ไม่มีตัวเลขอัตราตายจากการปลูกและผลป้องกัน ตัวเลขทั้งหมดเป็นของเกม (ผลป้องกัน = ไม่เป็นไข้ทรพิษอีก ซึ่งง่ายกว่าความจริง)",
+    "status": "invented",
+    "rationale": "อิงเหตุการณ์ที่มีจริงใน lore (หมอหลวงเริ่มปลูกฝี 2381–82) แต่ขนาดความเสี่ยงและผลเป็นการออกแบบเพื่อให้การตัดสินใจเรื่องลูกมีน้ำหนัก (docs/design-choice-risk.md 2c) ไม่ใช่ข้อเท็จจริง; ยังไม่ได้เปิดอ่านงาน Terwiel 1988 เต็มฉบับเพื่อเทียบอัตราจริง",
+    "citations": [],
+    "verified": false
   }
 ]

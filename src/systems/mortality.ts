@@ -1,4 +1,4 @@
-import { ageOf, isAlive, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, yearOf, type Ctx } from '../core/ctx';
 import type { Character, PartDefId, TagId } from '../core/types';
 import { addScar } from './body';
 import { prepareEvent, type PreparedEvent } from './events';
@@ -84,4 +84,17 @@ export function hardToRaiseEvent(ctx: Ctx): PreparedEvent | null {
   if (!kid) return null;
   kid.hardToRaise = true;
   return prepareEvent(ctx, 'family.hard_to_raise', { actor: player.id, child: kid.id });
+}
+
+/**
+ * ปลูกฝี (ตั้งแต่ balance.mortality.inoculationFrom): เสนอให้ผู้เล่นตัดสินใจปีละไม่เกินหนึ่งครั้ง สำหรับลูกที่ยังไม่เคยเป็นไข้ทรพิษ อายุ 1–14
+ * เสนอครั้งเดียวต่อเด็ก (inoculationOffered) — เรียกทุก 1 ม.ค. หลัง mortalityYearTick
+ */
+export function inoculationEvent(ctx: Ctx): PreparedEvent | null {
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  if (!isAlive(player) || yearOf(ctx, ctx.state.meta.day) < ctx.content.balance.mortality.inoculationFrom) return null;
+  const kid = livingChildren(ctx, player).find((k) => !k.hadSmallpox && !k.inoculationOffered && ageOf(ctx, k) >= 1 && ageOf(ctx, k) < 15);
+  if (!kid) return null;
+  kid.inoculationOffered = true;
+  return prepareEvent(ctx, 'health.inoculation', { actor: player.id, child: kid.id });
 }

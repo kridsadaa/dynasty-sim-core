@@ -23,7 +23,7 @@ import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
-import { frailty, hardToRaiseEvent, mortalityYearTick } from './mortality';
+import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick } from './mortality';
 import { kinDeathEvent } from './mourning';
 
 // ============================================================================
@@ -122,6 +122,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const line of skillsYearTick(ctx)) out.push({ type: 'log', kind: 'household', line });
     const frail = hardToRaiseEvent(ctx);
     if (frail) out.push({ type: 'event', prepared: frail });
+    const inoc = inoculationEvent(ctx);
+    if (inoc) out.push({ type: 'event', prepared: inoc });
     for (const hh of Object.values(S.households)) {
       const logs = [...householdYearTick(ctx, hh.id), ...servantsYearTick(ctx, hh.id)];
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', kind: 'household', line });

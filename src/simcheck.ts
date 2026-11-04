@@ -7,7 +7,7 @@ import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, sol
 import { ageOf, commitRng, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB, GameEventDef } from './core/types';
 import { inflictWound, selectPart, tickWounds } from './systems/body';
-import { mortalityYearTick } from './systems/mortality';
+import { inoculationEvent, mortalityYearTick } from './systems/mortality';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
@@ -1534,6 +1534,56 @@ if (LONG) {
   }
   check('เตรียมรับโรคระบาด', problems.slice(0, 4));
   if (failed === before) console.log(`  ✓ คนในเรือนตาย: ไม่เตรียม ${(none.rate * 100).toFixed(0)}% · หนี ${(flee.rate * 100).toFixed(0)}% · ปิดเรือน ${(home.rate * 100).toFixed(0)}% · ทำบุญ ${(merit.rate * 100).toFixed(0)}% · คนนอกเรือนไม่ได้อานิสงส์ · ข่าว 2362/2391 อยู่ในตาราง`);
+}
+
+// [5m] ชั้น 2c: ปลูกฝีให้ลูก (ตั้งแต่ 2382) — เสนอครั้งเดียวต่อเด็กที่ยังไม่เคยเป็นไข้ทรพิษ; ปลูกแล้วภูมิคุ้มกัน; เสี่ยงตายต่ำ
+{
+  const before = failed;
+  console.log('ปลูกฝี:');
+  const problems: string[] = [];
+  /** ผู้เล่น + ภรรยา + ลูกอายุ 5 ขวบ ณ ปี year (ฉากเริ่มผู้เล่นอายุ 7 ไม่มีลูก) */
+  const family = (seed: number, year: number) => {
+    const c = makeCtx(emptyState(seed), content);
+    const h = bootstrapScenario(c);
+    const wife = spawnCharacter(c, { name: 'ภรรยา', sex: 'f', birthYear: 2290, estate: 'noble', dynastyId: null, householdId: null });
+    marry(c, h, wife);
+    const kid = spawnCharacter(c, { name: 'ลูกทดสอบ', sex: 'f', birthYear: 2285, estate: 'noble', father: h, mother: wife });
+    c.state.meta.day = yearStart(c, year);
+    kid.birthDay = c.state.meta.day - 5 * 365;
+    kid.hadSmallpox = false;
+    return { c, h, kid };
+  };
+  const early = family(31, 2381);
+  if (inoculationEvent(early.c)) problems.push('ออก event ปลูกฝีก่อน 2382');
+  const f1 = family(32, 2390);
+  const first = inoculationEvent(f1.c);
+  if (first?.def.id !== 'health.inoculation') problems.push('หลัง 2382 ไม่เสนอปลูกฝีให้ลูกที่ยังไม่เคยเป็นไข้ทรพิษ');
+  if (inoculationEvent(f1.c)) problems.push('เสนอซ้ำให้เด็กที่ถูกเสนอแล้ว');
+  const f2 = family(33, 2390);
+  f2.kid.hadSmallpox = true;
+  if (inoculationEvent(f2.c)) problems.push('เสนอให้เด็กที่เคยเป็นไข้ทรพิษแล้ว');
+  const f3 = family(34, 2390);
+  f3.kid.birthDay = f3.c.state.meta.day - 16 * 365;
+  if (inoculationEvent(f3.c)) problems.push('เสนอให้คนอายุเกิน 14');
+
+  let dead = 0;
+  let immune = 0;
+  let declinedDead = 0;
+  const N = 1200;
+  for (let i = 0; i < N; i++) {
+    const t = family(9000 + i, 2390);
+    chooseOption(t.c, prepareEvent(t.c, 'health.inoculation', { actor: t.h.id, child: t.kid.id }), 'inoculate');
+    if (!isAlive(t.kid)) dead++;
+    else if (t.kid.hadSmallpox) immune++;
+    const u = family(19000 + i, 2390);
+    chooseOption(u.c, prepareEvent(u.c, 'health.inoculation', { actor: u.h.id, child: u.kid.id }), 'decline');
+    if (!isAlive(u.kid)) declinedDead++;
+  }
+  if (immune + dead < N * 0.97) problems.push(`ปลูกแล้วไม่ได้ภูมิ: ${immune} รอด + ${dead} ตาย จาก ${N}`);
+  if (dead < N * 0.005 || dead > N * 0.04) problems.push(`ปลูกฝีตาย ${dead}/${N} (คาดราว 1.8% ≈ ${Math.round(N * 0.018)})`);
+  if (declinedDead) problems.push(`ไม่ปลูกแล้วเด็กตายทันที ${declinedDead}`);
+  check('ปลูกฝี', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ ไม่ออกก่อน 2382 · เสนอครั้งเดียวต่อเด็กที่ยังไม่เคยเป็นไข้ทรพิษอายุ 1–14 · ปลูกแล้วได้ภูมิ ตาย ${dead}/${N} (${(100 * dead / N).toFixed(1)}%) · ไม่ปลูกไม่มีใครตาย`);
 }
 
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

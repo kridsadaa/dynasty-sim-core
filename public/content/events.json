@@ -5408,5 +5408,59 @@
         "effects": []
       }
     ]
+  },
+  "health.inoculation": {
+    "id": "health.inoculation",
+    "textKey": "event.inoculation",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "child": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "inoculate",
+        "textKey": "event.inoculation.inoculate",
+        "risk": {
+          "base": 0.12,
+          "factors": [],
+          "hintKey": "risk.inoculation",
+          "successKey": "outcome.inoculation.ok",
+          "fail": {
+            "textKey": "outcome.inoculation.bad",
+            "effects": [
+              { "op": "wealth", "role": "actor", "delta": -6 },
+              { "op": "inoculate", "role": "child" },
+              { "op": "stress", "role": "actor", "delta": 0.12 },
+              { "op": "kill", "role": "child", "cause": "situation:smallpox", "allowKin": true, "chance": 0.15 }
+            ]
+          }
+        },
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -6 },
+          { "op": "inoculate", "role": "child" }
+        ]
+      },
+      {
+        "id": "merit",
+        "textKey": "event.inoculation.merit",
+        "replyKey": "reply.inoculation.merit",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -1 },
+          { "op": "merit", "role": "actor", "delta": 1 },
+          { "op": "stress", "role": "actor", "delta": -0.03 }
+        ]
+      },
+      {
+        "id": "decline",
+        "textKey": "event.inoculation.decline",
+        "replyKey": "reply.inoculation.decline",
+        "effects": []
+      }
+    ]
   }
 }

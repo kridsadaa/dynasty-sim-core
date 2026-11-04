@@ -218,6 +218,8 @@ export interface Character {
   hardToRaise?: true;
   /** เคยเป็นไข้ทรพิษแล้วรอด — ไม่เป็นซ้ำ (lore: health.smallpox_endemic) */
   hadSmallpox?: boolean;
+  /** ถูกเสนอให้ปลูกฝีแล้ว (health.inoculation) — เสนอครั้งเดียวต่อเด็ก */
+  inoculationOffered?: boolean;
   /** ก่อนวันนี้ไม่ตายด้วยโรค/ความชรา/โรคระบาด — ใช้กับตัวละครแรกของผู้เล่น (ความสะดวกของเกม ไม่ใช่ประวัติศาสตร์) */
   deathGraceUntil?: Day;
   /** วันที่คู่นี้จะแยกเรือนออกจากบ้านพ่อแม่ (ยกเว้นลูกที่อยู่ดูแลพ่อแม่) */
@@ -673,6 +675,8 @@ export type Effect =
   | { op: 'kill'; role: string; cause: TagId; allowKin?: boolean; chance?: Unit }
   /** รักษาแผลที่กำลังอักเสบ (infected/festering) ของ role — quality สูงสุดที่เคยได้ใช้; ดู body.wound_infected */
   | { op: 'treat'; role: string; quality: Unit }
+  /** ปลูกฝีให้ role: ไม่เป็นไข้ทรพิษอีก (hadSmallpox) โดยไม่มีแผลเป็น — ดู health.inoculation */
+  | { op: 'inoculate'; role: string }
   /** เตรียมรับโรคระบาดที่จะมาปีหน้า (plague.news): ผลต่อโอกาสตายของคนในเรือนของ role ตอน applyHistoricalShocks (balance.plague.deathMult) */
   | { op: 'plague'; role: string; kind: 'flee' | 'home' | 'merit' }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
@@ -1076,6 +1080,8 @@ export interface Balance {
     oldDoublingYears: number;
     /** ตัวคูณลูกเต๋ารายปีของผู้เล่นอายุ 15 ขึ้นไป — ชดเชยความเสี่ยงที่ผูกกับตัวเลือก (docs/design-choice-risk.md ข้อ 5); 1 = ไม่ปรับ */
     playerAdultScale: number;
+    /** ปีแรกที่มีการปลูกฝีให้ราษฎร (lore health.smallpox_endemic: 2381–82 หมอหลวงเรียนปลูกฝี) */
+    inoculationFrom: number;
     /** ความหนักใจของผู้เล่นเกินค่านี้เพิ่มความเสี่ยงตายรายปี ×(1 + stressSlope × ส่วนที่เกิน) */
     stressFrom: Unit;
     stressSlope: number;

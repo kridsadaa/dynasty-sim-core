@@ -421,6 +421,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'plague':
         ctx.state.meta.plague = { year: yearOf(ctx, ctx.state.meta.day) + 1, kind: e.kind, householdId: ch.householdId ?? null };
         break;
+      case 'inoculate':
+        ch.hadSmallpox = true;
+        break;
       case 'treat': {
         for (const wid of ch.woundIds) {
           const w = ctx.state.wounds[wid];
