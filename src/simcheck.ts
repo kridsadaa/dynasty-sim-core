@@ -1488,6 +1488,50 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ จมน้ำ/ปราบโจรมี kill chance · แผลเน่าตาย ไม่รักษา ${untreated}/300 รักษาดี ${treated}/300 NPC 0 · event แผลอักเสบครั้งเดียว · ความหนักใจสูงตายมากขึ้น (${calm}→${tense}/3000)`);
 }
 
+// [5l] ชั้น 2b: เตรียมรับโรคระบาด (ไข้ป่วงใหญ่ 2363/2392) — ข่าวปีก่อน ผู้เล่นเลือกหนี/ปิดเรือน/ทำบุญ ผลต่อคนในเรือนเท่านั้น
+{
+  const before = failed;
+  console.log('เตรียมรับโรคระบาด:');
+  const problems: string[] = [];
+  for (const y of [2362, 2391]) {
+    if (!content.historyEvents.some((s) => s.year === y && s.event === 'plague.news')) problems.push(`ไม่มีข่าวโรคระบาดตามตาราง ${y}`);
+  }
+  const trial = (kind: string | null, n: number) => {
+    let members = 0;
+    let dead = 0;
+    let outsiders = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(6000 + i), content);
+      const h = bootstrapScenario(c);
+      c.state.meta.day = yearStart(c, 2362) + 300;
+      if (kind) chooseOption(c, prepareEvent(c, 'plague.news', { actor: h.id }), kind);
+      const house = Object.values(c.state.characters).filter((x) => isAlive(x) && x.householdId && x.householdId === h.householdId);
+      const others = Object.values(c.state.characters).filter((x) => isAlive(x) && !house.includes(x));
+      applyHistoricalShocks(c, 2363);
+      members += house.length;
+      dead += house.filter((x) => !isAlive(x)).length;
+      outsiders += others.filter((x) => !isAlive(x)).length;
+      if (c.state.meta.plague) problems.push('meta.plague ไม่ถูกลบหลังใช้');
+    }
+    return { members, dead, rate: dead / members, outsiders };
+  };
+  const none = trial(null, 250);
+  const flee = trial('flee', 250);
+  const home = trial('home', 250);
+  const merit = trial('merit', 250);
+  if (none.rate < 0.12 || none.rate > 0.28) problems.push(`ไม่เตรียมตัว คนในเรือนตาย ${(none.rate * 100).toFixed(0)}% (คาดราว 20%)`);
+  if (!(flee.rate < none.rate * 0.7)) problems.push(`หนี ${(flee.rate * 100).toFixed(0)}% ไม่ต่ำกว่าไม่เตรียมตัว ${(none.rate * 100).toFixed(0)}% ชัดเจน`);
+  if (!(home.rate < none.rate * 0.88)) problems.push(`ปิดเรือน ${(home.rate * 100).toFixed(0)}% ไม่ต่ำกว่าไม่เตรียมตัว`);
+  if (merit.rate > none.rate * 1.08) problems.push(`ทำบุญ ${(merit.rate * 100).toFixed(0)}% แย่กว่าไม่เตรียมตัว`);
+  // คนนอกเรือนไม่ได้อานิสงส์ (ตายใกล้เคียงกัน ในสัดส่วนเดียวกัน)
+  const base = none.outsiders / 250;
+  for (const [label, t] of [['หนี', flee], ['ปิดเรือน', home], ['ทำบุญ', merit]] as const) {
+    if (Math.abs(t.outsiders / 250 - base) > base * 0.25) problems.push(`คนนอกเรือนตายต่างกันเมื่อ${label} (${(t.outsiders / 250).toFixed(1)} vs ${base.toFixed(1)})`);
+  }
+  check('เตรียมรับโรคระบาด', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ คนในเรือนตาย: ไม่เตรียม ${(none.rate * 100).toFixed(0)}% · หนี ${(flee.rate * 100).toFixed(0)}% · ปิดเรือน ${(home.rate * 100).toFixed(0)}% · ทำบุญ ${(merit.rate * 100).toFixed(0)}% · คนนอกเรือนไม่ได้อานิสงส์ · ข่าว 2362/2391 อยู่ในตาราง`);
+}
+
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
 {
   const before = failed;

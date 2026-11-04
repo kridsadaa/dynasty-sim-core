@@ -24,8 +24,8 @@ const POLICIES = ALL_POLICIES.filter((p) => !process.argv[3] || p === process.ar
 type Policy = (typeof ALL_POLICIES)[number];
 
 const WAR_CHOICE: Record<'careful' | 'reckless', Record<string, string>> = {
-  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store' },
-  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore' },
+  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee' },
+  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none' },
 };
 const NATURAL = /old_age|illness|smallpox|childbirth/;
 

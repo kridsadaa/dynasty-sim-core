@@ -673,6 +673,8 @@ export type Effect =
   | { op: 'kill'; role: string; cause: TagId; allowKin?: boolean; chance?: Unit }
   /** รักษาแผลที่กำลังอักเสบ (infected/festering) ของ role — quality สูงสุดที่เคยได้ใช้; ดู body.wound_infected */
   | { op: 'treat'; role: string; quality: Unit }
+  /** เตรียมรับโรคระบาดที่จะมาปีหน้า (plague.news): ผลต่อโอกาสตายของคนในเรือนของ role ตอน applyHistoricalShocks (balance.plague.deathMult) */
+  | { op: 'plague'; role: string; kind: 'flee' | 'home' | 'merit' }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
   | { op: 'divorce'; role: string; with: string }
   /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
@@ -1008,6 +1010,8 @@ export interface Balance {
     aweBase: Unit;
     aweFromHarshness: Unit;
   };
+  /** ตัวคูณโอกาสตายจากโรคระบาดของคนในเรือนผู้เล่น ตามที่เตรียมตัว (ของเกม ไม่ใช่ข้อมูลประวัติศาสตร์) */
+  plague: { deathMult: Record<'flee' | 'home' | 'merit', Unit> };
   wound: {
     infection: Record<WoundKind, Unit>;
     scarChance: Record<WoundKind, Unit>;
@@ -1401,6 +1405,8 @@ export interface GameState {
     /** โหมดเล่นต่อหลัง 2400: ปีนัดจั่วเหตุการณ์ถัดไป สำรับที่เหลือ และที่จั่วไปล่าสุด (เซฟเก่าไม่มี) */
     fiction?: { next: number; bag: string[]; recent: Array<{ tag: string; year: number }> };
     /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
+    /** การเตรียมรับโรคระบาดปี year (ตั้งโดย op plague ปีก่อน) — ใช้ครั้งเดียวแล้วลบ */
+    plague?: { year: number; kind: 'flee' | 'home' | 'merit'; householdId: Character['householdId'] };
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };
   };
   characters: Table<Character>;

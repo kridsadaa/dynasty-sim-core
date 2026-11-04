@@ -5357,5 +5357,56 @@
         ]
       }
     ]
+  },
+  "plague.news": {
+    "id": "plague.news",
+    "textKey": "event.plague_news",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "flee",
+        "textKey": "event.plague_news.flee",
+        "replyKey": "reply.plague_news.flee",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -8 },
+          { "op": "stress", "role": "actor", "delta": 0.05 },
+          { "op": "favor", "role": "actor", "delta": -0.1 },
+          { "op": "plague", "role": "actor", "kind": "flee" }
+        ]
+      },
+      {
+        "id": "home",
+        "textKey": "event.plague_news.home",
+        "replyKey": "reply.plague_news.home",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -3 },
+          { "op": "plague", "role": "actor", "kind": "home" }
+        ]
+      },
+      {
+        "id": "merit",
+        "textKey": "event.plague_news.merit",
+        "replyKey": "reply.plague_news.merit",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -5 },
+          { "op": "merit", "role": "actor", "delta": 2 },
+          { "op": "stress", "role": "actor", "delta": -0.06 },
+          { "op": "plague", "role": "actor", "kind": "merit" }
+        ]
+      },
+      {
+        "id": "none",
+        "textKey": "event.plague_news.none",
+        "replyKey": "reply.plague_news.none",
+        "effects": []
+      }
+    ]
   }
 }

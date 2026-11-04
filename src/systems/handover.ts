@@ -595,6 +595,15 @@ function crystallizeTaboos(
 
 export const historyHeadline = (ctx: Ctx, ev: HistoricalEvent) => `== ${ctx.tags.label(ev.tag)} (${ev.year}) ==`;
 
+/** ตัวคูณความเสี่ยงตายจากโรคระบาดของคนในเรือนที่ผู้เล่นเตรียมรับไว้ (op plague) — 1 = ไม่ได้เตรียมหรือไม่ใช่คนในเรือนนั้น */
+export function plagueDeathMult(ctx: Ctx, c: Character, year: number): number {
+  const p = ctx.state.meta.plague;
+  if (!p || p.year !== year || !p.householdId || c.householdId !== p.householdId) return 1;
+  return ctx.content.balance.plague.deathMult[p.kind];
+}
+
+const PLAGUE_PREP_TH = { flee: 'หนีไปอยู่ไกลจากกรุง', home: 'ปิดเรืออยู่กับบ้าน', merit: 'ทำบุญสะเดาะเคราะห์' } as const;
+
 export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
   const out: string[] = [];
   const drawn = drawFictionEvents(ctx, year);
@@ -638,13 +647,21 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
     // คนตาย: คนในตระกูล หรือทุกคนในฉากเมื่อเป็นโรคระบาด/ข้าวยาก (lore: event.cholera_*, event.famine_2310_2313)
     // ศึกหลังเสียกรุงเสี่ยงเฉพาะคนวัยถูกเกณฑ์ (ages) — ตัวเลขของเกม พงศาวดารไม่มียอดตายฝ่ายไทย
     const how = ev.kind === 'plague' ? 'ด้วย' : 'ใน';
+    let plagueHouseLost = 0;
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c) || isGraced(ctx, c) || (!ev.shock.everyone && !c.dynastyId)) continue;
       if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
-      const whereMult = ev.tag === 'history:fall_of_ayutthaya' ? warDeathMult(ctx, c.id) : 1;
+      const whereMult = (ev.tag === 'history:fall_of_ayutthaya' ? warDeathMult(ctx, c.id) : 1) * (ev.kind === 'plague' ? plagueDeathMult(ctx, c, ev.year) : 1);
       if (!ctx.rng.chance((ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk) * whereMult)) continue;
       markDead(ctx, c, ev.tag);
       out.push(`${c.name}เสียชีวิต${how}${ctx.tags.label(ev.tag)}`);
+      if (c.householdId && c.householdId === ctx.state.meta.plague?.householdId) plagueHouseLost++;
+    }
+    // ผู้เล่นเตรียมรับโรคระบาดไว้ → สรุปผลให้เห็นว่าที่เลือกไปได้ผลแค่ไหน (ใช้ครั้งเดียว)
+    const prep = ctx.state.meta.plague;
+    if (ev.kind === 'plague' && prep && prep.year === ev.year) {
+      out.push(plagueHouseLost ? `เรือนที่${PLAGUE_PREP_TH[prep.kind]} — ไข้ป่วงใหญ่พรากคนในเรือนไป ${plagueHouseLost} คน` : `เรือนที่${PLAGUE_PREP_TH[prep.kind]} — คนในเรือนรอดพ้นไข้ป่วงใหญ่ทุกคน`);
+      delete ctx.state.meta.plague;
     }
     // กรุงแตก: ผู้รอดตายอาจถูกกวาดต้อนไปพม่า — หายจากเกม (ไม่มีข้อมูลรายคน ตัวเลขของเกม)
     if (ev.shock.captureRisk) {
