@@ -256,7 +256,7 @@
   "outcome.accused_explain.ok": "{actor}ชี้แจงได้ชัด เจ้ากรมเชื่อ {rival}หน้าเสีย",
   "outcome.accused_explain.bad": "{actor}พูดวกวน เจ้ากรมยังไม่เชื่อ {rival}ยิ้มเยาะอยู่ข้างหลัง",
   "outcome.accused_counter.ok": "{actor}ยกความผิดของ{rival}ขึ้นมาได้ทันท่วงที เจ้ากรมหันไปเพ่งเล็ง{rival}แทน",
-  "outcome.accused_counter.bad": "เจ้ากรมว่า{actor}ใส่ความกันไปมาไม่รู้จบ ดุทั้งสองคน แต่ดุ{actor}หนักกว่า",
+  "outcome.accused_counter.bad": "เจ้ากรมว่า{actor}ใส่ความกันไปมาไม่รู้จบ ดุทั้งสองคน แต่ดุ{actor}หนักกว่า และถูกสั่งโบยให้หลาบจำ",
   "event.reported.title": "ความแตก",
   "event.reported": "มีคนฟ้องว่า{actor}รับเงินแล้วปล่อยขโมยควาย",
   "event.reported.admit": "ยอมรับผิด",

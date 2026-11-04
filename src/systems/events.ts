@@ -413,7 +413,10 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       }
       case 'kill': {
         if ((!ch.local && !e.allowKin) || !isAlive(ch)) break;
-        if (e.chance !== undefined && !ctx.rng.chance(e.chance)) break;
+        if (e.chance !== undefined && !ctx.rng.chance(e.chance)) {
+          ch.closeCalls = (ch.closeCalls ?? 0) + 1;
+          break;
+        }
         markDead(ctx, ch, e.cause);
         report.notes.push(`${ch.name}ตายแล้ว`);
         break;
@@ -426,6 +429,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         ctx.state.meta.feuds = [...(ctx.state.meta.feuds ?? []), { actorId: ch.id, dueDay: day + Math.round(ctx.rng.range(365, 1095)) }];
         break;
       }
+      case 'ill':
+        ch.illYear = yearOf(ctx, ctx.state.meta.day);
+        break;
       case 'inoculate':
         ch.hadSmallpox = true;
         break;

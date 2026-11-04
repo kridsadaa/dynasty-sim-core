@@ -1602,6 +1602,18 @@
                 "toward": "actor",
                 "kind": "grudge",
                 "delta": 0.4
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.15,
+                  0.35
+                ]
               }
             ]
           }
@@ -3632,6 +3644,10 @@
                 "op": "wealth",
                 "role": "actor",
                 "delta": -2
+              },
+              {
+                "op": "ill",
+                "role": "actor"
               }
             ]
           }

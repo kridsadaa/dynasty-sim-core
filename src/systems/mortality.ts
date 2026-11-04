@@ -62,7 +62,7 @@ export function mortalityYearTick(ctx: Ctx): string[] {
     }
     // ผู้เล่น: ลูกเต๋าฐานลดลง (playerAdultScale) และความหนักใจสูงเพิ่มความเสี่ยง — ดู docs/design-choice-risk.md
     const playerMult = isPlayer && age >= 15
-      ? M.playerAdultScale * (1 + M.stressSlope * Math.max(0, ch.stress - M.stressFrom)) : 1;
+      ? M.playerAdultScale * (1 + M.stressSlope * Math.max(0, ch.stress - M.stressFrom)) * (ch.illYear === yearOf(ctx, day - 1) ? M.illMult : 1) : 1;
     if (isGraced(ctx, ch) || !ctx.rng.chance(Math.min(1, yearlyDeathRisk(ctx, age, frail) * playerMult))) continue;
     const cause: TagId = age >= M.oldAgeCause ? 'situation:old_age' : 'situation:illness';
     markDead(ctx, ch, cause);

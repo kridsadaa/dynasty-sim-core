@@ -279,6 +279,8 @@ export interface Character {
   topknotCutYear?: number;
   /** ปีที่ป่วยหนักล่าสุด (event family.parent_illness) — ไม่ถามซ้ำในปีเดียวกัน */
   illYear?: number;
+  /** จำนวนครั้งที่รอดตายมาได้ (ทอยตายจากตัวเลือก/แผลเน่าแล้วรอด) — แสดงเป็นป้ายให้ผู้เล่น */
+  closeCalls?: number;
   /** ลูกที่ไม่ได้รักษาไข้คนนี้ — ไม่ได้ส่วนมรดกจากคนนี้ (lore: social.nursing_cremation_condition) */
   neglectedBy?: CharacterId[];
   /**
@@ -679,6 +681,8 @@ export type Effect =
   | { op: 'inoculate'; role: string }
   /** role สั่งลอบฆ่าสำเร็จ → ญาติเหยื่อสืบรู้และตามล้างแค้น 1–3 ปีต่อมา (event feud.revenge, ผ่าน meta.feuds) */
   | { op: 'feud'; role: string }
+  /** role ล้มป่วยหนักปีนี้ (illYear) — ผู้เล่นที่ป่วยหนักเสี่ยงตายตอนทอยรายปีสูงขึ้น (balance.mortality.illMult) */
+  | { op: 'ill'; role: string }
   /** เตรียมรับโรคระบาดที่จะมาปีหน้า (plague.news): ผลต่อโอกาสตายของคนในเรือนของ role ตอน applyHistoricalShocks (balance.plague.deathMult) */
   | { op: 'plague'; role: string; kind: 'flee' | 'home' | 'merit' }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
@@ -1087,6 +1091,8 @@ export interface Balance {
     playerAdultScale: number;
     /** ปีแรกที่มีการปลูกฝีให้ราษฎร (lore health.smallpox_endemic: 2381–82 หมอหลวงเรียนปลูกฝี) */
     inoculationFrom: number;
+    /** ผู้เล่นที่ป่วยหนัก (illYear) ในปีที่ผ่านไป: ตัวคูณความเสี่ยงตายรายปี */
+    illMult: number;
     /** ความหนักใจของผู้เล่นเกินค่านี้เพิ่มความเสี่ยงตายรายปี ×(1 + stressSlope × ส่วนที่เกิน) */
     stressFrom: Unit;
     stressSlope: number;

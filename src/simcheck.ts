@@ -25,7 +25,7 @@ import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlav
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay } from './systems/world';
-import { eraConditions } from './engine/views';
+import { eraConditions, playerView } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
 import { riskChance } from './systems/will';
@@ -1425,6 +1425,20 @@ if (LONG) {
   const textTh = load('text.th.json') as Record<string, string>;
   const untitled = Object.values(content.events).filter((e) => !textTh[`${e.textKey}.title`]).map((e) => e.id);
   if (untitled.length) problems.push(`event ไม่มีชื่อหัวข้อ: ${untitled.slice(0, 4).join(', ')}`);
+  // ทุกข้อความของ event ต้องมี text และ {ชื่อบทบาท} ต้องมีอยู่จริงใน roles/variables (ไม่งั้นผู้เล่นเห็น "{avenger}" ดิบ) — family.legend_truth ใช้ตัวแปร {told}/{truth} ที่เติมนอก event
+  const badText: string[] = [];
+  for (const e of Object.values(content.events)) {
+    if (e.id === 'family.legend_truth') continue;
+    const keys = new Set<string>([e.textKey]);
+    for (const o of e.options) { keys.add(o.textKey); if (o.replyKey) keys.add(o.replyKey); if (o.risk) { if (o.risk.successKey) keys.add(o.risk.successKey); keys.add(o.risk.fail.textKey); } }
+    const names = new Set<string>([...Object.keys(e.roles), ...Object.keys(e.variables ?? {})]);
+    for (const k of keys) {
+      const t = textTh[k];
+      if (t === undefined) { badText.push(`${e.id}: ไม่มีข้อความ ${k}`); continue; }
+      for (const m of t.matchAll(/{([a-zA-Z_]+)}/g)) if (!names.has(m[1]!)) badText.push(`${e.id} ${k}: {${m[1]}} ไม่ใช่บทบาท`);
+    }
+  }
+  if (badText.length) problems.push(...badText.slice(0, 3));
   const lethalOpt = (evId: string, optId: string) => {
     const o = content.events[evId]!.options.find((x) => x.id === optId)!;
     return o.risk?.fail.effects.some((f) => f.op === 'kill' && f.chance !== undefined && f.allowKin) ?? false;
@@ -1682,6 +1696,54 @@ if (LONG) {
   }
   check('ผลชดเชยการตายอย่างกล้า', problems.slice(0, 4));
   if (failed === before) console.log(`  ✓ ${B.heroicDeathCauses.join(', ')} → บารมีตระกูล +${B.heroicDeathPrestige} และผู้สืบเห็นข้อความ · ตายแบบอื่นไม่ได้`);
+}
+
+// [5p] งานเล็กของชุดความเสี่ยง: โหมงานจนป่วยหนัก (เสี่ยงตายรายปีสูงขึ้น) · ใส่ความคู่แข่งพลาดแล้วถูกโบย · ป้าย "รอดตายมาแล้ว N ครั้ง"
+{
+  const before = failed;
+  console.log('งานเล็กชุดความเสี่ยง:');
+  const problems: string[] = [];
+  const failFx = (evId: string, optId: string) => content.events[evId]!.options.find((o) => o.id === optId)!.risk!.fail.effects;
+  if (!failFx('adult.heavy_heart', 'work').some((f) => f.op === 'ill')) problems.push('โหมงานพลาดแล้วไม่ป่วยหนัก');
+  if (!failFx('career.rival_accuses', 'counter').some((f) => f.op === 'wound')) problems.push('ใส่ความพลาดแล้วไม่ถูกโบย');
+
+  // ป่วยหนักปีที่ผ่านมา → ความเสี่ยงตายรายปีของผู้เล่นเพิ่ม ×illMult (ไม่เพิ่มให้ NPC)
+  const yearDeaths = (ill: boolean, n: number) => {
+    let dead = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(15000 + i), content);
+      const h = bootstrapScenario(c);
+      c.state.meta.day = yearStart(c, 2330);
+      h.birthDay = c.state.meta.day - 45 * 365;
+      h.stress = 0;
+      if (ill) h.illYear = 2329;
+      mortalityYearTick(c);
+      if (!isAlive(h)) dead++;
+    }
+    return dead;
+  };
+  const well = yearDeaths(false, 4000);
+  const sick = yearDeaths(true, 4000);
+  if (!(sick > well * 1.25)) problems.push(`ป่วยหนักตาย ${sick}/4000 ไม่มากกว่าปกติ ${well}/4000 ชัดเจน (คาด ×${content.balance.mortality.illMult})`);
+
+  // รอดตายแล้วนับ closeCalls และขึ้นป้าย
+  const c = makeCtx(emptyState(66), content);
+  const h = bootstrapScenario(c);
+  h.closeCalls = 2;
+  const badges = playerView(c).statuses.map((b) => b.label);
+  if (!badges.includes('รอดตายมาแล้ว 2 ครั้ง')) problems.push(`ไม่มีป้ายรอดตาย (มี: ${badges.join(', ')})`);
+  let survived = 0;
+  for (let i = 0; i < 300; i++) {
+    const cc = makeCtx(emptyState(16000 + i), content);
+    const hh = bootstrapScenario(cc);
+    hh.birthDay = cc.state.meta.day - 25 * 365;
+    const a = spawnLocal(cc, hh, { sex: 'm', age: 35, distance: 'far' });
+    chooseOption(cc, prepareEvent(cc, 'feud.revenge', { actor: hh.id, avenger: a.id }), 'ignore');
+    if (isAlive(hh) && hh.woundIds.length && (hh.closeCalls ?? 0) > 0) survived++;
+  }
+  if (survived === 0) problems.push('รอดการลอบทำร้ายแล้ว closeCalls ไม่เพิ่ม');
+  check('งานเล็กชุดความเสี่ยง', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ โหมงานพลาด→ป่วยหนัก (ตายรายปี ${well}→${sick}/4000) · ใส่ความพลาด→ถูกโบย · ป้ายรอดตาย + นับเมื่อรอดจริง (${survived}/300)`);
 }
 
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

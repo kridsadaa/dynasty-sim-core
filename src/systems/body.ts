@@ -170,6 +170,7 @@ export function tickWounds(ctx: Ctx, ch: Character): WoundOutcome[] {
           outcomes.push({ woundId: w.id, partDefId: w.partDefId, result: 'fatal', scar: null, integrityAfter: 0 });
           break;
         }
+        if (ch.id === ctx.state.meta.playerCharacterId) ch.closeCalls = (ch.closeCalls ?? 0) + 1; // แผลเน่าผ่านมาได้โดยไม่ตาย
         if (ctx.rng.chance(B.festerLossChance)) {
           outcomes.push(finalizeWound(ctx, ch, w, true));
           break;

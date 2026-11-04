@@ -80,6 +80,7 @@ function statusBadges(ctx: Ctx, ch: Character, text: TextTable): StatusBadge[] {
   const year = yearOf(ctx, S.meta.day);
 
   if (ch.illYear === year) out.push({ label: 'ป่วยหนัก', tone: 'bad' });
+  if ((ch.closeCalls ?? 0) > 0) out.push({ label: `รอดตายมาแล้ว ${ch.closeCalls} ครั้ง`, tone: 'info' });
   for (const wid of ch.woundIds) {
     const w = S.wounds[wid];
     if (!w) continue;
