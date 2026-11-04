@@ -55,6 +55,7 @@
 | `public/content/` อื่นๆ | `offices` `chores` `intents` `tags` `names` `anatomy` `traitKinds` และข้อความไทย (`text.th.json`) |
 | `lore/` | คลังข้อมูลประวัติศาสตร์พร้อมแหล่งอ้างอิง (`entries/`), `system-implications.md` (D3–D7 ของมรดก) |
 | `src/simcheck.ts` | `npm run sim:check` — เล่นหลาย seed ตรวจ invariant + ตารางชีพ + `balanceCheck` ของผู้เล่น |
+| `src/simpolicy.ts` | `npm run sim:policy` — ผู้เล่นอัตโนมัติ 4 แบบ (รอบคอบ/ประมาท/สุ่ม/ตัวเลือกแรก) วัดว่าการเลือกมีผลต่อการรอดของตัวละครแรกแค่ไหน (รายงานเฉยๆ) — ดู `docs/design-choice-risk.md` |
 | `src/demo.ts` | `npm run demo` — เล่นสั้นๆ ดูผลใน terminal |
 
 ### วิธีต่อยอดที่ใช้บ่อย

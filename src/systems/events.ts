@@ -413,6 +413,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       }
       case 'kill': {
         if ((!ch.local && !e.allowKin) || !isAlive(ch)) break;
+        if (e.chance !== undefined && !ctx.rng.chance(e.chance)) break;
         markDead(ctx, ch, e.cause);
         report.notes.push(`${ch.name}ตายแล้ว`);
         break;

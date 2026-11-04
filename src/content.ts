@@ -1,4 +1,4 @@
-import type { ContentDB, TagDef, TagId } from './core/types';
+import type { ContentDB, Effect, TagDef, TagId } from './core/types';
 
 /** ประกอบ ContentDB จากไฟล์ JSON ดิบ — บนเว็บใช้ fetch, ใน Node ใช้ fs; logic ไม่ต้องรู้ */
 export function buildContentDB(raw: {
@@ -28,6 +28,19 @@ export function buildContentDB(raw: {
     for (const p of ev.percepts) known(`event ${ev.id} percept`, p.tag);
     for (const v of Object.values(ev.variables ?? {})) for (const tag of v.oneOf) known(`event ${ev.id} variable`, tag);
     for (const o of ev.options) for (const tag of o.tags ?? []) known(`event ${ev.id} option ${o.id}`, tag);
+  }
+  // ตัวเลือกที่ทำให้ผู้เล่นตายได้ต้องเตือนก่อน (risk.hintKey) ตายผ่าน risk.fail หรือมี chance เท่านั้น และ event ต้องมีตัวเลือกที่ไม่เสี่ยงตาย
+  const lethal = (effects: Effect[]) => effects.filter((f) => f.op === 'kill' && f.allowKin);
+  for (const ev of Object.values(raw.events)) {
+    for (const o of ev.options) {
+      const direct = lethal(o.effects).filter((f) => f.op === 'kill' && f.chance === undefined);
+      if (direct.length) throw new Error(`event ${ev.id} option ${o.id}: kill allowKin ตายตรงๆ ใน effects — ต้องอยู่ใน risk.fail หรือใส่ chance`);
+      if ((lethal(o.risk?.fail.effects ?? []).length || lethal(o.effects).length) && !o.risk?.hintKey) {
+        throw new Error(`event ${ev.id} option ${o.id}: ตัวเลือกที่ตายได้ต้องมี risk.hintKey เตือนผู้เล่น`);
+      }
+    }
+    const lethalIds = ev.options.filter((o) => lethal(o.risk?.fail.effects ?? []).length || lethal(o.effects).length);
+    if (lethalIds.length && lethalIds.length === ev.options.length) throw new Error(`event ${ev.id}: ทุกตัวเลือกตายได้ — ต้องมีทางปลอดภัยอย่างน้อย 1 ตัว`);
   }
   for (const d of raw.chores.domains) {
     known(`chore ${d.id}`, d.tag);

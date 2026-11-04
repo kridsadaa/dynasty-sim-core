@@ -13,6 +13,7 @@
     "lore:check": "tsx src/lore/validate.ts",
     "lore:compile": "tsx src/lore/compile.ts",
     "sim:check": "tsx src/simcheck.ts",
+    "sim:policy": "tsx src/simpolicy.ts",
     "art:prompts": "tsx src/art/prompts.ts",
     "art:ingest": "tsx src/art/ingest.ts",
     "test": "tsx --test src/engine/persistence.test.ts src/art/select.test.ts src/release.test.ts && npm run sim:check -- 30"

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
 import { ageOf, commitRng, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
-import type { Character, ContentDB } from './core/types';
+import type { Character, ContentDB, GameEventDef } from './core/types';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
@@ -1354,6 +1354,63 @@ if (LONG) {
 
   check('จัดการเรือน วิชา และมรดกตระกูล', problems);
   if (failed === before) console.log('  ✓ ขยายเรือน/ซื้อที่นา/ไถ่-ปล่อยทาส · ฝึกวิชาและปลดล็อกขั้นวิชา · ซ้อมมวยและนำทีมปราบโจร · จารึกมรดกตระกูล');
+}
+
+// [5j] ความเสี่ยงถึงชีวิตจากตัวเลือก: kill + chance ใน risk.fail (docs/design-choice-risk.md ขั้น 1) — ยังไม่มี event จริงใช้ ทดสอบด้วย event สมมติ
+{
+  const before = failed;
+  console.log('ความเสี่ยงถึงชีวิตจากตัวเลือก:');
+  const problems: string[] = [];
+  const mkEvent = (id: string, kill: Record<string, unknown> | null, opts: { hint?: string; safe?: boolean; inEffects?: boolean } = {}): GameEventDef => {
+    const k = kill ? [{ op: 'kill', role: 'actor', cause: 'situation:drowning', allowKin: true, ...kill }] : [];
+    const risky = {
+      id: 'risky', textKey: `event.${id}.risky`,
+      effects: opts.inEffects ? k : [],
+      ...(!opts.inEffects && kill ? { risk: { base: 1, hintKey: opts.hint ?? 'risk.test', fail: { textKey: `event.${id}.fail`, effects: k } } } : {}),
+    };
+    return {
+      id, textKey: `event.${id}`, contextTags: [], roles: { actor: {} }, trigger: { weight: 0 }, percepts: [],
+      options: opts.safe === false ? [risky] : [risky, { id: 'safe', textKey: `event.${id}.safe`, effects: [] }],
+    } as unknown as GameEventDef;
+  };
+  const raw = (extra: Record<string, GameEventDef>) => buildContentDB({
+    names: load('names.json'), tags: load('tags.json'), anatomy: load('anatomy.json'), traitKinds: load('traitKinds.json'),
+    events: { ...load('events.json'), ...extra }, rules: load('rules.json'), intents: load('intents.json'),
+    offices: load('offices.json'), chores: load('chores.json'), balance: load('balance.json'),
+  });
+  const rejects = (label: string, ev: GameEventDef) => {
+    try { raw({ [ev.id]: ev }); problems.push(`ตรวจเนื้อหาไม่ปฏิเสธ: ${label}`); } catch { /* ถูกต้อง */ }
+  };
+  rejects('ตายตรงๆ ใน effects', mkEvent('t_direct', {}, { inEffects: true }));
+  rejects('ตายได้แต่ไม่มี hintKey', mkEvent('t_nohint', { chance: 0.1 }, { hint: '' }));
+  rejects('ทุกตัวเลือกตายได้', mkEvent('t_alllethal', { chance: 0.1 }, { safe: false }));
+  try { raw({ t_ok: mkEvent('t_ok', { chance: 0.1 }) }); } catch (e) { problems.push(`เนื้อหาที่ถูกกลับถูกปฏิเสธ: ${(e as Error).message}`); }
+
+  // ทอยจริง: chance 0 ไม่ตาย, chance 1 ตายและแจ้งการตาย, chance 0.3 ตายราว 30%
+  const trial = (chance: number | undefined, n: number) => {
+    let dead = 0;
+    for (let i = 0; i < n; i++) {
+      const ev = mkEvent('t_roll', chance === undefined ? {} : { chance });
+      const db = raw({ t_roll: ev });
+      const c = makeCtx(emptyState(9000 + i), db);
+      const h = bootstrapScenario(c);
+      chooseOption(c, prepareEvent(c, 't_roll', { actor: h.id }), 'risky');
+      if (!isAlive(h)) {
+        dead++;
+        if (h.deathCause !== 'situation:drowning') problems.push(`ตายด้วย ${h.deathCause}`);
+        if (i === 0 && !advanceDay(c).some((s) => s.type === 'playerDied')) problems.push('ผู้เล่นตายจากตัวเลือกแล้วไม่มีสัญญาณ playerDied');
+      }
+    }
+    return dead;
+  };
+  if (trial(0, 60) !== 0) problems.push('chance 0 แต่ตาย');
+  // risk.base 1 ถูกบีบเหลือ 0.95 (riskChance) → พลาดแล้วตายแน่ราว 95% ของครั้ง
+  const d1 = trial(1, 40);
+  if (d1 < 34) problems.push(`chance 1 ตาย ${d1}/40 (คาดราว 38)`);
+  const d30 = trial(0.3, 200);
+  if (d30 < 35 || d30 > 85) problems.push(`chance 0.3 ตาย ${d30}/200 (คาดราว 60)`);
+  check('ความเสี่ยงถึงชีวิตจากตัวเลือก', problems.slice(0, 4));
+  if (failed === before) console.log('  ✓ ตรวจเนื้อหา 4 กรณี · chance 0/1/0.3 ตายตามโอกาสและแจ้ง playerDied');
 }
 
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

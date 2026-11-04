@@ -667,7 +667,8 @@ export type Effect =
   | { op: 'takeWife'; role: string; with: string }
   /** role ตาย (ลอบฆ่า) — เฉพาะคนนอกตระกูล คนในตระกูลต้องผ่านการแบ่งมรดก จึงไม่ใช้ op นี้ */
   /** ปกติฆ่าได้เฉพาะคนนอกตระกูล (local) — allowKin ให้ตายได้ทุกคน รวมผู้เล่น (ผลพลาดของตัวเลือกเสี่ยง) */
-  | { op: 'kill'; role: string; cause: TagId; allowKin?: boolean }
+  /** chance = โอกาสตายเมื่อ effect นี้ทำงาน (ไม่ใส่ = ตายแน่) — ใช้คู่ allowKin ใน risk.fail ของตัวเลือกเสี่ยง (ดู docs/design-choice-risk.md) */
+  | { op: 'kill'; role: string; cause: TagId; allowKin?: boolean; chance?: Unit }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
   | { op: 'divorce'; role: string; with: string }
   /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
