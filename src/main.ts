@@ -13,8 +13,8 @@ const engine = new EngineClient();
 // คลังภาพ (public/art/manifest.json จาก npm run art:ingest) — โหลดไม่ได้ก็เล่นได้ตามปกติ แค่ไม่มีภาพ
 let artManifest: ArtManifest | null = null;
 void fetch('art/manifest.json').then((r) => (r.ok ? r.json() : null)).then((m: ArtManifest | null) => (artManifest = m)).catch(() => {});
-function artFigure(style: ArtStyle, tags: readonly string[] | undefined): HTMLElement[] {
-  const a = tags ? pickArt(artManifest, style, tags) : null;
+function artFigure(style: ArtStyle, tags: readonly string[] | undefined, seed?: string): HTMLElement[] {
+  const a = tags ? pickArt(artManifest, style, tags, seed) : null;
   if (!a) return [];
   const img = el('img') as HTMLImageElement;
   Object.assign(img, { src: a.file, alt: a.alt, width: a.width, height: a.height, decoding: 'async' });
@@ -1207,7 +1207,7 @@ function showResult(r: ChoiceResult) {
 }
 
 function renderEvent(ev: EventView) {
-  const head = [el('h2', ev.title), ...artFigure('reality', ev.artTags), el('p', ev.text)];
+  const head = [el('h2', ev.title), ...artFigure('reality', ev.artTags, ev.instanceId), el('p', ev.text)];
   if (ev.triggered.length) head.push(el('p', `ใจสั่นขึ้นมา… (${ev.triggered.join(', ')})`, 'triggered'));
   const buttons = ev.options.map((o) => {
     const b = el('button', o.locked ? `🔒 ${o.text}` : o.text, `opt${o.injected ? ' injected' : ''}${o.note && !o.locked ? ' strained' : ''}`) as HTMLButtonElement;

@@ -142,3 +142,32 @@ test('เหตุการณ์ประวัติศาสตร์ที�
   assert.equal(pickArt(all, 'chronicle', ['history:fall_of_ayutthaya', 'historykind:war'])?.id, 'history.fall_of_ayutthaya');
   assert.equal(pickArt(all, 'chronicle', ['history:cholera_2363', 'historykind:plague'])?.id, 'history.plague');
 });
+
+test('ภาพคะแนนเท่ากันสลับตาม seed แต่คงที่ต่อ seed — ไม่ส่ง seed ได้ภาพแรกเสมอ', () => {
+  const twins: ArtManifest = { styleVersion: 'test', images: [img('scene.a', 'reality', ['event:x.y']), img('scene.b', 'reality', ['event:x.y'])] };
+  const tags = eventArtTags('x.y', []);
+  assert.equal(pickArt(twins, 'reality', tags)?.id, 'scene.a');
+  const picks = new Set(Array.from({ length: 20 }, (_, i) => pickArt(twins, 'reality', tags, `ev${i}`)?.id));
+  assert.deepEqual([...picks].sort(), ['scene.a', 'scene.b']);
+  for (let i = 0; i < 20; i++) assert.equal(pickArt(twins, 'reality', tags, `ev${i}`)?.id, pickArt(twins, 'reality', tags, `ev${i}`)?.id);
+});
+
+// event ที่ยังรอภาพใหม่ (ขั้น 1 ของแผนภาพ) — สร้างภาพแล้วให้ลบออกจากรายการนี้
+const AWAITING_ART = new Set(['plague.news', 'health.inoculation']);
+
+test('ทุก event มีภาพฉาก ยกเว้นที่จดไว้ว่ารอภาพ — event ใหม่ต้องวางภาพไว้ด้วย', () => {
+  const real = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as ArtManifest;
+  const events = Object.values(JSON.parse(readFileSync('public/content/events.json', 'utf8')) as Record<string, { id: string; contextTags?: string[] }>);
+  const missing = events.filter((e) => !pickArt(real, 'reality', eventArtTags(e.id, e.contextTags ?? []))).map((e) => e.id);
+  assert.deepEqual(missing.filter((id) => !AWAITING_ART.has(id)), [], 'event ไม่มีภาพ: เติม tag event:<id> ให้ภาพที่เข้ากันใน art/assets.spec.json และ public/art/manifest.json');
+  for (const id of AWAITING_ART) assert.ok(missing.includes(id), `${id} มีภาพแล้ว — ลบออกจาก AWAITING_ART`);
+});
+
+test('tag ของภาพใน manifest ที่เกมโหลดตรงกับ assets.spec.json', () => {
+  const real = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as ArtManifest;
+  const spec = JSON.parse(readFileSync('art/assets.spec.json', 'utf8')) as { images: Array<{ id: string; tags: string[] }> };
+  for (const s of spec.images) {
+    const m = real.images.find((i) => i.id === s.id);
+    if (m) assert.deepEqual(m.tags, s.tags, s.id);
+  }
+});

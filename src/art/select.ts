@@ -30,12 +30,13 @@ const weightOf = (tag: string) =>
           : tag.startsWith('group:') ? 1
             : 2;
 
-export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: readonly string[]): ArtImage | null {
+/** seed: ใช้สลับภาพที่คะแนนเท่ากัน เช่น instanceId ของ event (portrait ไม่ส่ง → คนเดิมได้ภาพเดิมเสมอ) */
+export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: readonly string[], seed?: string): ArtImage | null {
   if (!manifest || !wanted.length) return null;
   const want = new Set(wanted);
   const wantSex = wanted.find((t) => t.startsWith('sex:'));
   const wantAge = wanted.find((t) => t.startsWith('age:'));
-  let best: ArtImage | null = null;
+  let best: ArtImage[] = [];
   let bestScore = 0;
   for (const img of manifest.images) {
     if (img.style !== style) continue;
@@ -47,9 +48,18 @@ export function pickArt(manifest: ArtManifest | null, style: ArtStyle, wanted: r
     const imgRanks = img.tags.filter((t) => t.startsWith('rank:'));
     if (imgRanks.length && !imgRanks.some((t) => want.has(t))) continue;
     const score = img.tags.reduce((s, t) => s + (want.has(t) ? weightOf(t) : 0), 0);
-    if (score > bestScore) [best, bestScore] = [img, score];
+    if (score > bestScore) [best, bestScore] = [[img], score];
+    else if (score && score === bestScore) best.push(img);
   }
-  return best;
+  // หลายภาพคะแนนเท่ากัน (ภาพแบบที่สองของฉากเดียวกัน) → สลับตาม seed แต่คงที่ต่อ seed; ไม่มี seed ใช้ภาพแรกเสมอ
+  return best.length ? best[seed === undefined ? 0 : hashSeed(seed) % best.length]! : null;
+}
+
+/** FNV-1a 32 บิต — ไม่ใช้ RNG ของเกม เพราะการเลือกภาพต้องไม่กระทบผลจำลอง */
+function hashSeed(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193);
+  return h >>> 0;
 }
 
 /**

@@ -131,6 +131,8 @@
       "style": "reality",
       "tags": [
         "event:family.parent_illness",
+        "event:body.grave_illness",
+        "event:body.wound_infected",
         "event:family.hard_to_raise",
         "situation:illness"
       ],
@@ -345,7 +347,8 @@
       "file": "art/scene.night_assassin.webp",
       "style": "reality",
       "tags": [
-        "event:scheme.assassin"
+        "event:scheme.assassin",
+        "event:feud.revenge"
       ],
       "alt": "ชายคลุมผ้าสีเข้มนั่งยองใต้ถุนเรือนยามค่ำ ถือมีดมองขึ้นไปที่แสงตะเกียงชั้นบน",
       "width": 1024,

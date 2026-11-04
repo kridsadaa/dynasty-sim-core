@@ -175,6 +175,8 @@
       "style": "reality",
       "tags": [
         "event:family.parent_illness",
+        "event:body.grave_illness",
+        "event:body.wound_infected",
         "event:family.hard_to_raise",
         "situation:illness"
       ],
@@ -419,7 +421,8 @@
       "id": "scene.night_assassin",
       "style": "reality",
       "tags": [
-        "event:scheme.assassin"
+        "event:scheme.assassin",
+        "event:feud.revenge"
       ],
       "alt": "ชายคลุมผ้าสีเข้มนั่งยองใต้ถุนเรือนยามค่ำ ถือมีดมองขึ้นไปที่แสงตะเกียงชั้นบน",
       "subject": "Night inside the dark ground level under a raised timber house: a cloaked man in a dark lower cloth crouching between the tall posts, a short knife held low, looking up toward the lit floor planks above where a faint lamp glows through the gaps; moonlight on a canal in the far background, no faces clearly lit, tense mood. No blood, no victim shown.",
