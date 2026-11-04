@@ -26,7 +26,7 @@ import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlav
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay } from './systems/world';
-import { eraConditions, playerView } from './engine/views';
+import { eraConditions, eventView, playerView } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
 import { riskChance } from './systems/will';
@@ -1316,6 +1316,51 @@ if (LONG) {
   if (men.some((m) => !isAlive(m))) problems.push('คนในเรือนที่ถูกเกณฑ์ท่าดินแดงถูกสุ่มตายตอน shock');
   check('ศึกท่าดินแดง', problems);
   if (failed === before) console.log(`  ✓ หมายเกณฑ์วันที่ 300 ของ 2329 · แยก campaigns ของเก้าทัพ · แนวหน้า ${f.toFixed(2)} (เก้าทัพ ${nf.toFixed(2)}) คำสั่ง ${o.toFixed(2)} · ข่าวชัยวันที่ 54 ของ 2330 · เรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตาย`);
+}
+
+// [5h2k] ศึกเก้าทัพ/ท่าดินแดง: ข้อความของทุก event และตัวเลือกครบ ชื่อคนในตัวเลือกส่งแทนถูกแทนที่ ไม่มี {ตัวแปร} ค้าง
+{
+  const before = failed;
+  console.log('ข้อความศึกเก้าทัพ:');
+  const problems: string[] = [];
+  const text = load('text.th.json') as Record<string, string>;
+  const ctx = makeCtx(emptyState(90), content);
+  const hero = bootstrapScenario(ctx);
+  hero.sex = 'm';
+  ctx.state.households[hero.householdId!]!.headId = hero.id;
+  ctx.state.meta.day = yearStart(ctx, 2328) + 335;
+  hero.social.wealth = 500;
+  ctx.state.households[hero.householdId!]!.retainers = { that: 2, phrai: 0, loyalty: 0.5 };
+  spawnCharacter(ctx, { name: 'ลูกชายคนโต', sex: 'm', birthYear: 2308, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+  spawnCharacter(ctx, { name: 'น้องชายพ่อ', sex: 'm', birthYear: 2295, estate: 'noble', dynastyId: hero.dynastyId, householdId: hero.householdId });
+  ctx.state.meta.campaigns = { nine_armies: { mode: 'self', soldier: hero.id, stocked: true }, tha_din_daeng: { mode: 'self', soldier: hero.id } };
+  const ids = Object.keys(content.events).filter((id) => /^war23(28|30)./.test(id));
+  if (ids.length !== 10) problems.push(`event ศึกเก้าทัพ/ท่าดินแดงควรมี 10 ตัว มี ${ids.length}`);
+  let rendered = 0;
+  for (const id of ids) {
+    const p = prepareEvent(ctx, id, { actor: hero.id, ...campaignBindings(ctx, hero, ['son', 'kin']) });
+    const v = eventView(ctx, p, text);
+    if (v.title === id) problems.push(`${id}: ไม่มีชื่อ event`);
+    if (!v.text || v.text === p.def.textKey || /[{}]/.test(v.text)) problems.push(`${id}: ข้อความหลักไม่ครบ/มีตัวแปรค้าง: ${v.text.slice(0, 60)}`);
+    for (const o of v.options) {
+      if (!o.text || o.text.startsWith('event.') || /[{}]/.test(o.text)) problems.push(`${id}.${o.id}: ข้อความตัวเลือกไม่ครบ: ${o.text}`);
+    }
+    if (v.options.length === 0) problems.push(`${id}: ไม่มีตัวเลือก`);
+    rendered++;
+    // คำเตือนความเสี่ยงต้องตรงความหมายของตัวเลือก (เคยมี regex ทำให้ "หลบ" ขึ้นคำเตือนของ "ขอผ่อนผัน")
+    for (const [opt, word] of [['dodge', 'จับได้'], ['plead', 'ปฏิเสธ']] as const) {
+      const o = v.options.find((x) => x.id === opt);
+      if (o && !o.hint?.includes(word)) problems.push(`${id}.${opt}: คำเตือนควรมีคำว่า "${word}" ได้ "${o.hint}"`);
+    }
+    if (id === 'war2328.levy') {
+      const send = v.options.find((o) => o.id === 'send_son');
+      if (!send?.text.includes('ลูกชายคนโต')) problems.push(`ตัวเลือกส่งลูกไม่ใส่ชื่อลูก: ${send?.text}`);
+      const kin = v.options.find((o) => o.id === 'send_kin');
+      if (!kin?.text.includes('น้องชายพ่อ')) problems.push(`ตัวเลือกส่งญาติไม่ใส่ชื่อ: ${kin?.text}`);
+    }
+  }
+  check('ข้อความศึกเก้าทัพ', problems);
+  if (failed === before) console.log(`  ✓ ครบ ${rendered} event ชื่อ/ข้อความ/ตัวเลือกไม่มีตัวแปรค้าง · ตัวเลือกส่งแทนใส่ชื่อคนที่ส่ง`);
 }
 
 // [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้

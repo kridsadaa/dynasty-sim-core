@@ -6025,7 +6025,7 @@
         "textKey": "event.war2328_levy.dodge",
         "risk": {
           "base": 0.45,
-          "hintKey": "risk.levy_plead",
+          "hintKey": "risk.levy_dodge",
           "successKey": "outcome.levy2328.hide",
           "fail": {
             "textKey": "outcome.levy2328.caught",
@@ -7029,7 +7029,7 @@
         "textKey": "event.war2330_levy.dodge",
         "risk": {
           "base": 0.45,
-          "hintKey": "risk.levy_plead",
+          "hintKey": "risk.levy_dodge",
           "successKey": "outcome.levy2328.hide",
           "fail": {
             "textKey": "outcome.levy2328.caught",

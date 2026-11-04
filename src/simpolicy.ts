@@ -30,12 +30,15 @@ const POLICIES = ALL_POLICIES.filter((p) => !args[1] || p === args[1]);
 type Policy = (typeof ALL_POLICIES)[number];
 
 const FIXED_CHOICE: Record<'careful' | 'reckless', Record<string, string>> = {
-  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate', 'feud.revenge': 'move', 'body.grave_illness': 'physician', 'scheme.assassin': 'cancel' },
-  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore', 'body.grave_illness': 'endure' },
+  careful: { 'war2328.news': 'store', 'war2328.levy': 'pay', 'war2328.levy_f': 'pay', 'war2328.levy_old': 'pay', 'war2328.front': 'orders', 'war2328.rice_dear': 'stock',
+    'war2330.levy': 'pay', 'war2330.levy_f': 'pay', 'war2330.levy_old': 'pay', 'war2330.front': 'orders', 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate', 'feud.revenge': 'move', 'body.grave_illness': 'physician', 'scheme.assassin': 'cancel' },
+  reckless: { 'war2328.news': 'ignore', 'war2328.levy': 'serve', 'war2328.levy_f': 'plead', 'war2328.levy_old': 'plead', 'war2328.front': 'front', 'war2328.rice_dear': 'wait',
+    'war2330.levy': 'serve', 'war2330.levy_f': 'plead', 'war2330.levy_old': 'plead', 'war2330.front': 'front', 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore', 'body.grave_illness': 'endure' },
 };
 /** โอกาสต่อปีที่ผู้เล่นกดปุ่ม "จ้างคนลอบฆ่า" กับคนที่รู้จัก (ข้อสมมุติของนโยบาย: ประมาท 35%, สุ่ม 5%, อื่น ๆ ไม่กด) */
 const ASSASSIN_PER_YEAR: Record<Policy, number> = { careful: 0, reckless: 0.35, random: 0.05, first: 0 };
 const NATURAL = /old_age|illness|smallpox|childbirth/;
+const CAMPAIGN_DEATH = /history:(nine_armies|tha_din_daeng)/;
 const WAR_HISTORY = /fall_of_ayutthaya|captive_after_fall|burmese_invasion|nine_armies|tha_din_daeng|famine_after_fall/;
 /** natural = ลูกเต๋าตามวัย/โรค, history = ศึก/โรคระบาด/ข้าวยากตามประวัติศาสตร์, choice = ผลของตัวเลือกที่ผู้เล่นเลือก (จมน้ำ รบ แผลเน่า ล้างแค้น) */
 const category = (cause: string) => (cause.startsWith('history:') ? 'history' : NATURAL.test(cause) ? 'natural' : 'choice');
@@ -103,6 +106,8 @@ for (const r of rows) {
   console.log(`         ทุกชีวิตของผู้เล่น ${r.lives.length} ชีวิต (ผู้ใหญ่ ${ad.length}): ตายตามวัย/โรค ${pct(by('natural'), ad.length)} · ประวัติศาสตร์ ${pct(by('history'), ad.length)} · จากตัวเลือก ${pct(by('choice'), ad.length)} · อายุตายเฉลี่ย ${meanAge(ad).toFixed(1)}`);
   const causes: Record<string, number> = {};
   for (const l of ad) if (category(l.cause) === 'choice') { const k = l.cause.replace('situation:', ''); causes[k] = (causes[k] ?? 0) + 1; }
+  const campaign = ad.filter((l) => CAMPAIGN_DEATH.test(l.cause)).length;
+  console.log(`         ตายในศึกเก้าทัพ/ท่าดินแดง (ผู้เล่นเอง): ${campaign} จาก ${ad.length} ชีวิตผู้ใหญ่ (${pct(campaign, ad.length)})`);
   if (Object.keys(causes).length) console.log(`         เหตุจากตัวเลือก: ${Object.entries(causes).map(([k, v]) => `${k}:${v}`).join(' ')}`);
   summary[r.policy] = { choiceShare: ad.length ? by('choice') / ad.length : 0, meanNonWar: meanAge(ad.filter((l) => !WAR_HISTORY.test(l.cause))) };
 }
