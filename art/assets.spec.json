@@ -1204,9 +1204,11 @@
       "tags": [
         "event:war.siege_begins"
       ],
-      "alt": "การตั้งรับการล้อมกรุงบนกำแพงเมืองอยุธยา",
-      "subject": "A brick city wall of Ayutthaya seen from inside the city on an overcast day: men standing and kneeling along the top of the wall behind low battlements with spears, bows and a few old cannons; women and boys below carrying baskets of bricks and jars of water up a ramp; thin columns of smoke rising beyond the wall in the distance, a bare-chested officer shouting an order. The figures are small, the wall large.",
+      "alt": "ชาวกรุงตั้งรับการล้อมบนกำแพงเมืองฉาบปูน ผู้หญิงและเด็กขนดินและน้ำขึ้นเนินดินด้านในกำแพง",
+      "subject": "Inside the walled city of Ayutthaya on an overcast day during the long siege of 1766–67, seen from a distance so that the wall dominates and the people are small. The city wall is about eight metres high, its brick faced with weathered off-white lime plaster, stained and cracked, with patches of brick showing where the plaster has fallen; along the top runs a plain plastered parapet with simple battlements. Against the inner face of the wall a broad sloping bank of packed earth rises from the ground up to the top of the wall, and on its flat top sits one old iron cannon on a wooden carriage. Men of the city stand along the wall top behind the parapet holding spears and bows; up the earthen slope women and boys climb upward toward the defenders carrying baskets of earth on their heads and clay water jars; a bare-chested officer standing on the earthen bank points and calls out an order. Beyond the wall thin columns of grey smoke rise into the sky. The wall is a plain city rampart: no European castle crenellations, no square stone towers, no drawbridge, no gatehouse, no brick-built ramp or staircase, no bare red brick wall.",
       "loreRefs": [
+        "place.ayutthaya_city_wall_1690",
+        "place.ayutthaya_city_wall_look",
         "event.fall_of_ayutthaya_2310"
       ]
     },

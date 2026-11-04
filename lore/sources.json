@@ -975,5 +975,34 @@
     "url": "https://commons.wikimedia.org/wiki/Category:Photographs_of_Thailand_by_John_Thomson",
     "license": "Siamese boatman / Siamese youth: CC BY 4.0 (Wellcome Collection ผ่าน Wikimedia Commons) ต้องให้เครดิตป้อนเครื่องมือได้ (input-ok); Muay Thai match 1865: Public domain",
     "notes": "ภาพชายพายเรือนี้คือภาพเดียวกับภาพซ้ายที่ผู้ใช้ส่งมาจากบทความ Silpa-mag (ผู้ใช้ส่งภาพมา 2026-11-03; ผมระบุที่มาจากการเทียบภาพกับ Commons). ถ่ายหลังสิ้นช่วงเกม (2400) ราว 8 ปี ใช้เป็นกายภาพ/แบบแผนทรงผม (art/README.md ข้อ 5.3); ภาพสตูดิโอ/จัดท่า; ไม่จดลักษณะใบหน้า"
+  },
+  {
+    "id": "src.kaempfer_1727",
+    "title": "The History of Japan, together with a Description of the Kingdom of Siam, 1690–92 (ฉบับแปลอังกฤษ Scheuchzer 1727; พิมพ์ซ้ำ Glasgow 1906)",
+    "author": "Engelbert Kaempfer",
+    "kind": "primary",
+    "composedYear": 2270,
+    "describesPeriod": [
+      2233,
+      2233
+    ],
+    "reliability": 4,
+    "url": "https://archive.org/details/historyofjapanto01kaem",
+    "notes": "แพทย์ของบริษัท VOC แวะกรุงศรีอยุธยา ค.ศ. 1690 (2233) ระหว่างทางไปญี่ปุ่น เห็นเอง; เขียนต้นฉบับภาษาเยอรมันราว 1690s พิมพ์ครั้งแรกเป็นภาษาอังกฤษ 1727 (2270); เลขหน้าอ้างตามฉบับพิมพ์ซ้ำ 1906 เล่ม 1"
+  },
+  {
+    "id": "src.vingboons_1662",
+    "title": "Gezicht op Iudea (Ayutthaya), de hoofdstad van Siam — ภาพสีน้ำมัน Rijksmuseum SK-A-4477",
+    "author": "Johannes Vingboons (ระบุโดยพิพิธภัณฑ์)",
+    "kind": "visual",
+    "composedYear": 2205,
+    "describesPeriod": [
+      2205,
+      2206
+    ],
+    "reliability": 2,
+    "url": "https://commons.wikimedia.org/wiki/File:Gezicht_op_Iudea_(Ayutthaya),_de_hoofdstad_van_Siam_Rijksmuseum_SK-A-4477.jpg",
+    "license": "สมบัติสาธารณะ (ภาพเขียน ค.ศ. 1662–63; Wikimedia Commons ระบุ Public domain) — ป้อนเครื่องมือสร้างภาพได้ (input-ok)",
+    "notes": "วาดที่อัมสเตอร์ดัมสำหรับ VOC จากภาพร่าง/แผนที่ ไม่ได้วาดในที่ — มีภูเขาฉากหลังที่ไม่มีจริง ใช้ได้เฉพาะลักษณะใหญ่ๆ (สีและแนวกำแพง ป้อม เรือนริมน้ำ) ไม่ใช่รายละเอียด; ภาพเล็กเกินจะเห็นรูปทรงใบกำแพง"
   }
 ]

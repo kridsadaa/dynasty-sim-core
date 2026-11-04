@@ -533,16 +533,16 @@ Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th c
 Grey dawn at the family landing below a raised house: a family loading a long covered boat — a man handing bundles and a rolled mat to a boatman, a woman with a baby on her hip, two children with shaved heads and small topknots in small lower cloths, a sack of rice and a few pots; behind them the house door left half-open and the bamboo ladder hanging; mist on the water, a neighbour watching from his veranda.
 ```
 
-### scene.war_siege — การตั้งรับการล้อมกรุงบนกำแพงเมืองอยุธยา
+### scene.war_siege — ชาวกรุงตั้งรับการล้อมบนกำแพงเมืองฉาบปูน ผู้หญิงและเด็กขนดินและน้ำขึ้นเนินดินด้านในกำแพง
 
 ✅ มีภาพแล้ว · tag: `event:war.siege_begins`
 
-lore: `event.fall_of_ayutthaya_2310` (attested, verified)
+lore: `place.ayutthaya_city_wall_1690` (attested, verified), `place.ayutthaya_city_wall_look` (inferred), `event.fall_of_ayutthaya_2310` (attested, verified)
 
 ```
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-A brick city wall of Ayutthaya seen from inside the city on an overcast day: men standing and kneeling along the top of the wall behind low battlements with spears, bows and a few old cannons; women and boys below carrying baskets of bricks and jars of water up a ramp; thin columns of smoke rising beyond the wall in the distance, a bare-chested officer shouting an order. The figures are small, the wall large.
+Inside the walled city of Ayutthaya on an overcast day during the long siege of 1766–67, seen from a distance so that the wall dominates and the people are small. The city wall is about eight metres high, its brick faced with weathered off-white lime plaster, stained and cracked, with patches of brick showing where the plaster has fallen; along the top runs a plain plastered parapet with simple battlements. Against the inner face of the wall a broad sloping bank of packed earth rises from the ground up to the top of the wall, and on its flat top sits one old iron cannon on a wooden carriage. Men of the city stand along the wall top behind the parapet holding spears and bows; up the earthen slope women and boys climb upward toward the defenders carrying baskets of earth on their heads and clay water jars; a bare-chested officer standing on the earthen bank points and calls out an order. Beyond the wall thin columns of grey smoke rise into the sky. The wall is a plain city rampart: no European castle crenellations, no square stone towers, no drawbridge, no gatehouse, no brick-built ramp or staircase, no bare red brick wall.
 ```
 
 ### scene.war_hunger — ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ
@@ -583,7 +583,7 @@ A long line of roped-together civilians — men, women and children, thin and du
 
 ### scene.plague_news — ท่าน้ำริมคลองบางกอก พ่อค้าเรือเล่าข่าวไข้ป่วงใหญ่ ชาวบ้านมุงฟังหน้าเครียด บางเรือนขนของลงเรือ
 
-⬜ ยังไม่มีภาพ · tag: `event:plague.news`
+✅ มีภาพแล้ว · tag: `event:plague.news`
 
 lore: `event.cholera_2363` (attested, verified), `event.plague_response_options` (invented)
 
@@ -595,7 +595,7 @@ Set in early Bangkok (about 1820 to 1850), not Ayutthaya. A wooden landing on a 
 
 ### scene.inoculation — ศาลาโล่งในหมู่บ้าน พ่อแม่อุ้มลูกเล็กนั่งรอหมอหลวงที่มาปลูกฝี เด็กบางคนกอดแม่แน่นอย่างกลัว
 
-⬜ ยังไม่มีภาพ · tag: `event:health.inoculation`
+✅ มีภาพแล้ว · tag: `event:health.inoculation`
 
 lore: `health.smallpox_endemic` (attested, verified), `health.inoculation_choice` (invented)
 
