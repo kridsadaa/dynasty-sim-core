@@ -1237,6 +1237,32 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ event สนามรบเฉพาะผู้ไปเอง · แนวหน้าตาย ${t1.died}/200 คำสั่ง ${t2.died}/200 ถอย 0/100 · ผู้ถูกส่งแทนตาย ${lost}/300 · ข่าวชัยวันที่ 47`);
 }
 
+// [5h2i] ศึกเก้าทัพ ขั้น 5: ข้าวแพงจากน้ำมาก (ทางบ้าน) — ได้ทุกคนวัย 16 ขึ้นไป ตัวเลือกตามเงินและตามที่ตุนไว้
+{
+  const before = failed;
+  console.log('ข้าวแพง 2328:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(74), content);
+  const hero = bootstrapScenario(ctx);
+  hero.sex = 'f';
+  ctx.state.meta.day = yearStart(ctx, 2328) + 344;
+  const got = advanceDay(ctx).flatMap((sig) => (sig.type === 'event' ? [sig.prepared.def.id] : []));
+  if (!got.includes('war2328.rice_dear')) problems.push(`ข้าวแพงไม่มาวันที่ 345 (หญิงอายุ ${ageOf(ctx, hero)}): ${got}`);
+  const ids = () => prepareEvent(ctx, 'war2328.rice_dear', { actor: hero.id }).options.map((o) => o.id);
+  hero.social.wealth = 1;
+  for (const c of Object.values(ctx.state.characters)) if (c.id !== hero.id) c.social.wealth = 0;
+  if (ids().join() !== 'wait') problems.push(`คนจนไม่ตุนข้าวควรเหลือแค่รอข้าวฉาง ได้ ${ids()}`);
+  hero.social.wealth = 500;
+  if (ids().includes('stock')) problems.push('ไม่ได้ตุนข้าวไว้แต่เห็นตัวเลือกเปิดยุ้ง');
+  chooseOption(ctx, prepareEvent(ctx, 'war2328.news', { actor: hero.id }), 'store');
+  if (!ids().includes('stock') || !ids().includes('buy') || !ids().includes('share')) problems.push(`ตุนข้าวแล้วตัวเลือกไม่ครบ: ${ids()}`);
+  const w0 = purse(ctx, hero);
+  chooseOption(ctx, prepareEvent(ctx, 'war2328.rice_dear', { actor: hero.id }), 'buy');
+  if (Math.abs(w0 - purse(ctx, hero) - 15) > 0.6) problems.push('ซื้อข้าวแพงควรหัก 15 ตำลึง');
+  check('ข้าวแพง 2328', problems);
+  if (failed === before) console.log('  ✓ ข้าวแพงวันที่ 345 ได้ทุกคนวัย 16+ · คนจนเหลือรอข้าวฉาง · ตุนข้าวไว้ถึงเปิดยุ้งได้ · ซื้อหัก 15 ตำลึง');
+}
+
 // [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้
 {
   const before = failed;

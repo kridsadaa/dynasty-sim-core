@@ -6750,5 +6750,111 @@
         ]
       }
     ]
+  },
+  "war2328.rice_dear": {
+    "id": "war2328.rice_dear",
+    "textKey": "event.war2328_rice_dear",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "stock",
+        "textKey": "event.war2328_rice_dear.stock",
+        "conditions": [
+          {
+            "type": "campaign",
+            "key": "nine_armies",
+            "is": "stocked"
+          }
+        ],
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.02
+          }
+        ]
+      },
+      {
+        "id": "buy",
+        "textKey": "event.war2328_rice_dear.buy",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 15
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -15
+          }
+        ]
+      },
+      {
+        "id": "share",
+        "textKey": "event.war2328_rice_dear.share",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 6
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -6
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 2
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "textKey": "event.war2328_rice_dear.wait",
+        "risk": {
+          "base": 0.1,
+          "hintKey": "risk.rice_wait",
+          "successKey": "outcome.rice.wait_ok",
+          "fail": {
+            "textKey": "outcome.rice.wait_ill",
+            "effects": [
+              {
+                "op": "ill",
+                "role": "actor"
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.06
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          }
+        ]
+      }
+    ]
   }
 }

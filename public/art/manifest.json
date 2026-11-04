@@ -1041,7 +1041,8 @@
       "file": "art/scene.war_hunger.webp",
       "style": "reality",
       "tags": [
-        "event:war.rice_gone"
+        "event:war.rice_gone",
+        "event:war2328.rice_dear"
       ],
       "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
       "width": 1024,
