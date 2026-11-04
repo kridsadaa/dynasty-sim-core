@@ -8,6 +8,7 @@ import { ageOf, commitRng, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type 
 import type { Character, ContentDB, GameEventDef } from './core/types';
 import { inflictWound, selectPart, tickWounds } from './systems/body';
 import { inoculationEvent, mortalityYearTick } from './systems/mortality';
+import { feudEvent } from './systems/feud';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
@@ -1584,6 +1585,70 @@ if (LONG) {
   if (declinedDead) problems.push(`ไม่ปลูกแล้วเด็กตายทันที ${declinedDead}`);
   check('ปลูกฝี', problems.slice(0, 4));
   if (failed === before) console.log(`  ✓ ไม่ออกก่อน 2382 · เสนอครั้งเดียวต่อเด็กที่ยังไม่เคยเป็นไข้ทรพิษอายุ 1–14 · ปลูกแล้วได้ภูมิ ตาย ${dead}/${N} (${(100 * dead / N).toFixed(1)}%) · ไม่ปลูกไม่มีใครตาย`);
+}
+
+// [5n] ชั้น 2a: ลอบฆ่าสำเร็จ → ญาติล้างแค้น; พลาดแล้วถูกโบย — เฉพาะผู้เล่นที่สั่งฆ่า
+{
+  const before = failed;
+  console.log('ล้างแค้น:');
+  const problems: string[] = [];
+  // 1) ลอบฆ่าสำเร็จ → มีเรื่องรอ; พลาด → ถูกโบยเป็นบาดแผล
+  let success = 0;
+  let caught = 0;
+  let caughtWound = 0;
+  for (let i = 0; i < 80; i++) {
+    const c = makeCtx(emptyState(11000 + i), content);
+    const h = bootstrapScenario(c);
+    h.birthDay = c.state.meta.day - 25 * 365;
+    const victim = spawnLocal(c, h, { sex: 'm', age: 30, distance: 'near' });
+    const r = chooseOption(c, prepareEvent(c, 'scheme.assassin', { actor: h.id, target: victim.id }), 'cheap');
+    if (r.outcome?.failed) { caught++; if (h.woundIds.length) caughtWound++; }
+    else if (c.state.meta.feuds?.some((f) => f.actorId === h.id && f.dueDay > c.state.meta.day)) success++;
+  }
+  if (success === 0) problems.push('ลอบฆ่าสำเร็จแล้วไม่มีเรื่องล้างแค้นรอ');
+  if (caught === 0 || caughtWound !== caught) problems.push(`พลาดถูกจับ ${caught} ครั้ง แต่ถูกโบยเป็นแผล ${caughtWound}`);
+
+  // 2) เรื่องถึงกำหนด → event ออกครั้งเดียวให้ผู้สั่งฆ่า; ผู้สั่งตายแล้วเรื่องจบ ไม่ตกถึงผู้สืบ
+  const c2 = makeCtx(emptyState(41), content);
+  const h2 = bootstrapScenario(c2);
+  h2.birthDay = c2.state.meta.day - 25 * 365;
+  c2.state.meta.feuds = [{ actorId: h2.id, dueDay: c2.state.meta.day + 10 }];
+  if (feudEvent(c2)) problems.push('ล้างแค้นออกก่อนถึงกำหนด');
+  c2.state.meta.day += 20;
+  const ev = feudEvent(c2);
+  if (ev?.def.id !== 'feud.revenge') problems.push('ถึงกำหนดแล้วไม่มี event ล้างแค้น');
+  if (feudEvent(c2)) problems.push('ล้างแค้นออกซ้ำ');
+  const c3 = makeCtx(emptyState(42), content);
+  const h3 = bootstrapScenario(c3);
+  h3.birthDay = c3.state.meta.day - 25 * 365;
+  c3.state.meta.feuds = [{ actorId: h3.id, dueDay: c3.state.meta.day - 1 }];
+  markDead(c3, h3, 'situation:old_age');
+  if (feudEvent(c3) || c3.state.meta.feuds) problems.push('ผู้สั่งฆ่าตายแล้วเรื่องล้างแค้นยังค้างอยู่');
+
+  // 3) ผลของตัวเลือก: ไกล่เกลี่ย/ย้ายไม่มีใครตาย; คุ้มกันตาย ~2.5%; เพิกเฉยตาย ~12%
+  const rate = (opt: string, n: number) => {
+    let dead = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(13000 + i), content);
+      const h = bootstrapScenario(c);
+      h.birthDay = c.state.meta.day - 25 * 365;
+      h.skills['combat'] = 0;
+      const a = spawnLocal(c, h, { sex: 'm', age: 35, distance: 'far' });
+      chooseOption(c, prepareEvent(c, 'feud.revenge', { actor: h.id, avenger: a.id }), opt);
+      if (!isAlive(h)) dead++;
+    }
+    return dead / n;
+  };
+  const settle = rate('settle', 300);
+  const move = rate('move', 300);
+  const guards = rate('guards', 1500);
+  const ignore = rate('ignore', 800);
+  if (settle !== 0 || move !== 0) problems.push(`ไกล่เกลี่ย/ย้ายไม่ควรมีคนตาย (${settle}, ${move})`);
+  if (guards < 0.005 || guards > 0.06) problems.push(`จ้างคนคุ้มกัน ตาย ${(guards * 100).toFixed(1)}% (คาดราว 2.5%)`);
+  if (ignore < 0.06 || ignore > 0.2) problems.push(`เพิกเฉย ตาย ${(ignore * 100).toFixed(1)}% (คาดราว 12%)`);
+  if (!(ignore > guards * 2)) problems.push('เพิกเฉยควรอันตรายกว่าจ้างคนคุ้มกันชัดเจน');
+  check('ล้างแค้น', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ ฆ่าสำเร็จมีเรื่องรอ (${success}/80) · พลาดถูกโบยเป็นแผลทุกครั้ง (${caught}) · event ออกครั้งเดียวและไม่ตกถึงผู้สืบ · ตาย: ไกล่เกลี่ย/ย้าย 0 · คุ้มกัน ${(guards * 100).toFixed(1)}% · เพิกเฉย ${(ignore * 100).toFixed(1)}%`);
 }
 
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

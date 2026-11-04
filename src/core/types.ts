@@ -677,6 +677,8 @@ export type Effect =
   | { op: 'treat'; role: string; quality: Unit }
   /** ปลูกฝีให้ role: ไม่เป็นไข้ทรพิษอีก (hadSmallpox) โดยไม่มีแผลเป็น — ดู health.inoculation */
   | { op: 'inoculate'; role: string }
+  /** role สั่งลอบฆ่าสำเร็จ → ญาติเหยื่อสืบรู้และตามล้างแค้น 1–3 ปีต่อมา (event feud.revenge, ผ่าน meta.feuds) */
+  | { op: 'feud'; role: string }
   /** เตรียมรับโรคระบาดที่จะมาปีหน้า (plague.news): ผลต่อโอกาสตายของคนในเรือนของ role ตอน applyHistoricalShocks (balance.plague.deathMult) */
   | { op: 'plague'; role: string; kind: 'flee' | 'home' | 'merit' }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
@@ -1412,6 +1414,8 @@ export interface GameState {
     fiction?: { next: number; bag: string[]; recent: Array<{ tag: string; year: number }> };
     /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
     /** การเตรียมรับโรคระบาดปี year (ตั้งโดย op plague ปีก่อน) — ใช้ครั้งเดียวแล้วลบ */
+    /** ผู้ที่สั่งลอบฆ่าสำเร็จแล้วรอวันถูกล้างแค้น — feud.revenge ออกให้เฉพาะผู้เล่นคนเดิม (ผู้สืบไม่ต้องรับกรรม) */
+    feuds?: Array<{ actorId: CharacterId; dueDay: number }>;
     plague?: { year: number; kind: 'flee' | 'home' | 'merit'; householdId: Character['householdId'] };
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };
   };

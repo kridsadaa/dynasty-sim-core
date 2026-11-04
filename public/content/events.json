@@ -3885,6 +3885,18 @@
                 "toward": "actor",
                 "kind": "grudge",
                 "atLeast": 0.9
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.25,
+                  0.5
+                ]
               }
             ]
           }
@@ -3909,6 +3921,10 @@
             "op": "stress",
             "role": "actor",
             "delta": 0.08
+          },
+          {
+            "op": "feud",
+            "role": "actor"
           }
         ]
       },
@@ -3970,6 +3986,18 @@
                 "toward": "actor",
                 "kind": "grudge",
                 "atLeast": 0.9
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.25,
+                  0.5
+                ]
               }
             ]
           }
@@ -3994,6 +4022,10 @@
             "op": "stress",
             "role": "actor",
             "delta": 0.08
+          },
+          {
+            "op": "feud",
+            "role": "actor"
           }
         ]
       },
@@ -5460,6 +5492,171 @@
         "textKey": "event.inoculation.decline",
         "replyKey": "reply.inoculation.decline",
         "effects": []
+      }
+    ]
+  },
+  "feud.revenge": {
+    "id": "feud.revenge",
+    "textKey": "event.feud",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "avenger": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "settle",
+        "textKey": "event.feud.settle",
+        "replyKey": "reply.feud.settle",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -20
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "move",
+        "textKey": "event.feud.move",
+        "replyKey": "reply.feud.move",
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -10
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.06
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": -0.1
+          }
+        ]
+      },
+      {
+        "id": "guards",
+        "textKey": "event.feud.guards",
+        "risk": {
+          "base": 0.25,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.2,
+              "reasonKey": "combat"
+            }
+          ],
+          "hintKey": "risk.feud_guards",
+          "successKey": "outcome.feud.guards_ok",
+          "fail": {
+            "textKey": "outcome.feud.guards_bad",
+            "effects": [
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "cut",
+                "severity": [
+                  0.4,
+                  0.8
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.12
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:feud",
+                "allowKin": true,
+                "chance": 0.1
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -8
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "textKey": "event.feud.ignore",
+        "risk": {
+          "base": 0.5,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.3,
+              "reasonKey": "combat"
+            }
+          ],
+          "hintKey": "risk.feud_ignore",
+          "successKey": "outcome.feud.ignore_ok",
+          "fail": {
+            "textKey": "outcome.feud.ignore_bad",
+            "effects": [
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "cut",
+                "severity": [
+                  0.5,
+                  0.9
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.2
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:feud",
+                "allowKin": true,
+                "chance": 0.25
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          }
+        ]
       }
     ]
   }

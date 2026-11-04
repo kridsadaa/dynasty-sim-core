@@ -6,11 +6,13 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
-import { ageOf, makeCtx, yearStart } from './core/ctx';
+import { ageOf, dayOfYear, isAlive, makeCtx, yearStart } from './core/ctx';
 import type { ContentDB } from './core/types';
 import { chooseOption, prepareFollowUp, type PreparedEvent } from './systems/events';
 import { emptyState } from './systems/factory';
+import { knownLocals } from './systems/acquaintance';
 import { heirCandidates, performHandover } from './systems/handover';
+import { interactionsFor, performInteraction } from './systems/interactions';
 import { bootstrapScenario } from './systems/scenario';
 import { advanceDay } from './systems/world';
 
@@ -28,9 +30,11 @@ const POLICIES = ALL_POLICIES.filter((p) => !args[1] || p === args[1]);
 type Policy = (typeof ALL_POLICIES)[number];
 
 const FIXED_CHOICE: Record<'careful' | 'reckless', Record<string, string>> = {
-  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate' },
-  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline' },
+  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate', 'feud.revenge': 'move', 'scheme.assassin': 'cancel' },
+  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore' },
 };
+/** โอกาสต่อปีที่ผู้เล่นกดปุ่ม "จ้างคนลอบฆ่า" กับคนที่รู้จัก (ข้อสมมุติของนโยบาย: ประมาท 35%, สุ่ม 5%, อื่น ๆ ไม่กด) */
+const ASSASSIN_PER_YEAR: Record<Policy, number> = { careful: 0, reckless: 0.35, random: 0.05, first: 0 };
 const NATURAL = /old_age|illness|smallpox|childbirth/;
 const WAR_HISTORY = /fall_of_ayutthaya|captive_after_fall|burmese_invasion|nine_armies|tha_din_daeng|famine_after_fall/;
 /** natural = ลูกเต๋าตามวัย/โรค, history = ศึก/โรคระบาด/ข้าวยากตามประวัติศาสตร์, choice = ผลของตัวเลือกที่ผู้เล่นเลือก (จมน้ำ รบ แผลเน่า ล้างแค้น) */
@@ -59,14 +63,22 @@ for (const policy of POLICIES) {
     };
     let over = false;
     let n = 0;
+    const resolve = (start: PreparedEvent | null) => {
+      for (let p = start; p; ) {
+        if (!p.options.some((o) => !p!.locked.has(o.id))) break;
+        p = prepareFollowUp(ctx, p, chooseOption(ctx, p, pick(p).id));
+      }
+    };
     while (S.meta.day < endDay && !over) {
+      const me = S.characters[S.meta.playerCharacterId]!;
+      if (isAlive(me) && ageOf(ctx, me) >= 18 && dayOfYear(ctx, S.meta.day) === 200 && ctx.rng.chance(ASSASSIN_PER_YEAR[policy])) {
+        const targets = knownLocals(ctx, me).filter((t) => interactionsFor(ctx, me, t).some((a) => a.id === 'assassin' && !a.problem));
+        const t = targets[Math.floor(ctx.rng.next() * targets.length)];
+        if (t) { const r = performInteraction(ctx, me, t, 'assassin'); if ('event' in r) resolve(r.event); }
+      }
       for (const sig of advanceDay(ctx)) {
-        if (sig.type === 'event') {
-          for (let p: PreparedEvent | null = sig.prepared; p; ) {
-            if (!p.options.some((o) => !p!.locked.has(o.id))) break;
-            p = prepareFollowUp(ctx, p, chooseOption(ctx, p, pick(p).id));
-          }
-        } else if (sig.type === 'playerDied') {
+        if (sig.type === 'event') resolve(sig.prepared);
+        else if (sig.type === 'playerDied') {
           const dead = S.characters[S.meta.playerCharacterId]!;
           lives.push({ age: ageOf(ctx, dead, dead.deathDay ?? S.meta.day), cause: dead.deathCause ?? 'unknown', first: n++ === 0 });
           if (!heirCandidates(ctx, dead).length) { over = true; extinct++; break; }

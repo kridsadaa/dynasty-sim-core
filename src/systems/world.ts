@@ -25,6 +25,7 @@ import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
 import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick } from './mortality';
 import { kinDeathEvent } from './mourning';
+import { feudEvent } from './feud';
 
 // ============================================================================
 // World tick — 1 call = 1 วัน. Pure function ของ (state, content, rng) → deterministic
@@ -124,6 +125,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (frail) out.push({ type: 'event', prepared: frail });
     const inoc = inoculationEvent(ctx);
     if (inoc) out.push({ type: 'event', prepared: inoc });
+    const feud = feudEvent(ctx);
+    if (feud) out.push({ type: 'event', prepared: feud });
     for (const hh of Object.values(S.households)) {
       const logs = [...householdYearTick(ctx, hh.id), ...servantsYearTick(ctx, hh.id)];
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', kind: 'household', line });

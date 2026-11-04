@@ -421,6 +421,11 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'plague':
         ctx.state.meta.plague = { year: yearOf(ctx, ctx.state.meta.day) + 1, kind: e.kind, householdId: ch.householdId ?? null };
         break;
+      case 'feud': {
+        const day = ctx.state.meta.day;
+        ctx.state.meta.feuds = [...(ctx.state.meta.feuds ?? []), { actorId: ch.id, dueDay: day + Math.round(ctx.rng.range(365, 1095)) }];
+        break;
+      }
       case 'inoculate':
         ch.hadSmallpox = true;
         break;
