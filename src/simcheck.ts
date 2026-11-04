@@ -12,7 +12,7 @@ import { feudEvent } from './systems/feud';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
-import { campaignBindings } from './systems/campaign';
+import { campaignBindings, resolveCampaign, SUBSTITUTE_DEATH, substituteDeathChance } from './systems/campaign';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep, purse } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
@@ -1146,6 +1146,95 @@ if (LONG) {
   }
   check('ส่งคนไปทัพแทน', problems);
   if (failed === before) console.log('  ✓ ส่งลูกชาย/ญาติ/บ่าวแทนบันทึกถูก · ไม่มีคนก็ไม่เห็นตัวเลือก · ไม่ใช่หัวเรือนส่งแทนไม่ได้ · หัวเรือนหญิง/ชายสูงวัยได้หมายแบบส่งแทน มีทางขอผ่อนผัน');
+}
+
+// [5h2h] ศึกเก้าทัพ ขั้น 4: สนามรบ (เฉพาะผู้เล่นที่ไปเอง) + ข่าวชัยและผลของคนที่ส่งแทน — ตายได้เฉพาะตัวเลือกที่บอกความเสี่ยง
+{
+  const before = failed;
+  console.log('สนามรบเก้าทัพ:');
+  const problems: string[] = [];
+  const mk = (seed: number) => {
+    const c = makeCtx(emptyState(seed), content);
+    const h = bootstrapScenario(c);
+    h.sex = 'm';
+    c.state.households[h.householdId!]!.headId = h.id;
+    c.state.meta.day = yearStart(c, 2329) + 29;
+    return { c, h };
+  };
+  const frontFor = (mode: 'self' | 'pay' | 'send' | 'dodge') => {
+    const { c, h } = mk(70);
+    c.state.meta.campaigns = { nine_armies: { mode, ...(mode === 'self' ? { soldier: h.id } : {}) } };
+    return advanceDay(c).some((sig) => sig.type === 'event' && sig.prepared.def.id === 'war2328.front');
+  };
+  if (!frontFor('self')) problems.push('ผู้เล่นที่ไปทัพเองไม่ได้ event สนามรบวันที่ 30 ของ 2329');
+  for (const m of ['pay', 'send', 'dodge'] as const) if (frontFor(m)) problems.push(`ผู้เล่นที่ ${m} ได้ event สนามรบ`);
+
+  // ตัวเลือก: ยืนแนวหน้าและทำตามคำสั่งตายได้ (บอกความเสี่ยง) ถอยไม่ตายแต่เสียตำแหน่ง/ถูกเฆี่ยน; ทักษะ combat ช่วยลดเสี่ยง
+  const { c: ctx, h: hero } = mk(71);
+  ctx.state.meta.campaigns = { nine_armies: { mode: 'self', soldier: hero.id } };
+  const ev = () => prepareEvent(ctx, 'war2328.front', { actor: hero.id });
+  const who = (p: PreparedEvent) => (role: string) => ctx.state.characters[p.instance.bindings[role] ?? ('' as Character['id'])];
+  const chance = (id: string, combat: number) => {
+    hero.skills['combat'] = combat;
+    const p = ev();
+    return riskChance(ctx, hero, p.options.find((o) => o.id === id)!.risk!, who(p));
+  };
+  const f0 = chance('front', 0), f80 = chance('front', 80), o0 = chance('orders', 0), o80 = chance('orders', 80);
+  if (!(f0 > o0) || !(f80 < f0) || !(o80 <= o0)) problems.push(`ความเสี่ยงไม่เรียงตามที่ออกแบบ: front ${f0.toFixed(2)}/${f80.toFixed(2)} orders ${o0.toFixed(2)}/${o80.toFixed(2)}`);
+  if (Math.abs(o0 - SUBSTITUTE_DEATH) > 0.011) problems.push(`ความเสี่ยง "ทำตามคำสั่ง" ${o0.toFixed(3)} ไม่ตรง SUBSTITUTE_DEATH ${SUBSTITUTE_DEATH}`);
+  hero.skills['combat'] = 80;
+  if (Math.abs(chance('orders', 80) - substituteDeathChance(hero)) > 0.011) problems.push('ความเสี่ยงของคนที่ถูกส่งแทนไม่ตรงตัวเลือก "ทำตามคำสั่ง"');
+  const fb = ev().options.find((o) => o.id === 'fallback')!;
+  if (fb.risk!.fail.effects.some((e) => e.op === 'kill')) problems.push('ถอยแล้วตายได้ — ผู้ใช้ตัดสินว่าโทษถอยต้องไม่ถึงตาย');
+
+  // ยืนแนวหน้า: รอดได้รางวัล (ความโปรดปราน บุญ) หรือตายจริงด้วยสาเหตุศึก
+  const trial = (opt: string, n: number) => {
+    let died = 0;
+    let rewarded = 0;
+    for (let i = 0; i < n; i++) {
+      const { c, h } = mk(1000 + i);
+      c.state.meta.campaigns = { nine_armies: { mode: 'self', soldier: h.id } };
+      h.skills['combat'] = 0;
+      const merit0 = h.merit;
+      chooseOption(c, prepareEvent(c, 'war2328.front', { actor: h.id }), opt);
+      if (!isAlive(h)) { died++; if (h.deathCause !== 'history:nine_armies') problems.push(`ตายด้วย ${h.deathCause} ไม่ใช่เก้าทัพ`); } else if (h.merit > merit0) rewarded++;
+    }
+    return { died, rewarded };
+  };
+  const t1 = trial('front', 200);
+  if (t1.died < 20 || t1.died > 70) problems.push(`ยืนแนวหน้าตาย ${t1.died}/200 (คาด ~22% = 44)`);
+  if (t1.rewarded < 100) problems.push(`รอดจากแนวหน้าแต่ไม่ได้บุญ ${t1.rewarded}`);
+  const t2 = trial('orders', 200);
+  if (t2.died < 5 || t2.died > 40) problems.push(`ทำตามคำสั่งตาย ${t2.died}/200 (คาด ~10% = 20)`);
+  const t3 = trial('fallback', 100);
+  if (t3.died !== 0) problems.push(`ถอยแล้วตาย ${t3.died}`);
+
+  // ศึกจบวันที่ 47: ทุกคนได้ข่าวชัย แม้ผู้เล่นตายแล้ว; ผู้ที่ถูกส่งแทนสุ่มผลอัตโนมัติ ~10%; บ่าวกลับ ~80%
+  const { c: rc, h: rh } = mk(72);
+  rc.state.meta.day = yearStart(rc, 2329) + 46;
+  const logs = advanceDay(rc).flatMap((sig) => (sig.type === 'log' ? [sig.line] : []));
+  if (!logs.some((l) => l.includes('ลาดหญ้า'))) problems.push('วันที่ 47 ของ 2329 ไม่มีข่าวชัยลาดหญ้า');
+  markDead(rc, rh, 'situation:old_age');
+  if (!resolveCampaign(rc, 'nine_armies').some((l) => l.includes('ลาดหญ้า'))) problems.push('ผู้เล่นตายแล้วไม่มีข่าวชัย');
+  const rctx = makeCtx(emptyState(73), content);
+  const rhead = bootstrapScenario(rctx);
+  rctx.state.households[rhead.householdId!]!.headId = rhead.id;
+  rctx.state.meta.day = yearStart(rctx, 2329) + 47;
+  let lost = 0;
+  for (let i = 0; i < 300; i++) {
+    const m = spawnCharacter(rctx, { name: `ทหาร${i}`, sex: 'm', birthYear: 2300, estate: 'phrai_som', dynastyId: null, householdId: rhead.householdId });
+    m.skills['combat'] = 0;
+    rctx.state.meta.campaigns = { nine_armies: { mode: 'send', soldier: m.id } };
+    resolveCampaign(rctx, 'nine_armies');
+    if (!isAlive(m)) lost++;
+  }
+  if (lost < 15 || lost > 50) problems.push(`คนที่ถูกส่งแทนตาย ${lost}/300 (คาด ~10% = 30)`);
+  const hh = rctx.state.households[rhead.householdId!]!;
+  hh.retainers = { that: 0, phrai: 0, loyalty: 0.5 };
+  for (let i = 0; i < 300; i++) { rctx.state.meta.campaigns = { nine_armies: { mode: 'servant' } }; resolveCampaign(rctx, 'nine_armies'); }
+  if (hh.retainers.that < 210 || hh.retainers.that > 270) problems.push(`บ่าวที่ส่งไปกลับ ${hh.retainers.that}/300 (คาด ~80% = 240)`);
+  check('สนามรบเก้าทัพ', problems);
+  if (failed === before) console.log(`  ✓ event สนามรบเฉพาะผู้ไปเอง · แนวหน้าตาย ${t1.died}/200 คำสั่ง ${t2.died}/200 ถอย 0/100 · ผู้ถูกส่งแทนตาย ${lost}/300 · ข่าวชัยวันที่ 47`);
 }
 
 // [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้

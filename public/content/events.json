@@ -6480,5 +6480,275 @@
         ]
       }
     ]
+  },
+  "war2328.front": {
+    "id": "war2328.front",
+    "textKey": "event.war2328_front",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        18,
+        50
+      ],
+      "requires": [
+        {
+          "type": "campaign",
+          "key": "nine_armies",
+          "is": "self"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "front",
+        "textKey": "event.war2328_front.front",
+        "risk": {
+          "base": 0.22,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.2,
+              "reasonKey": "combat"
+            },
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "weight": -0.1,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.war_front",
+          "successKey": "outcome.front.win",
+          "fail": {
+            "textKey": "outcome.front.lose",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "nine_armies",
+                "action": "conduct",
+                "conduct": "front"
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "history:nine_armies",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "conduct",
+            "conduct": "front"
+          },
+          {
+            "op": "wound",
+            "role": "actor",
+            "part": {
+              "tag": "body:torso"
+            },
+            "kind": "cut",
+            "severity": [
+              0.1,
+              0.3
+            ]
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 3
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 3
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.4
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 10
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 5
+          },
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "promote"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "orders",
+        "textKey": "event.war2328_front.orders",
+        "risk": {
+          "base": 0.1,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.08,
+              "reasonKey": "combat"
+            }
+          ],
+          "hintKey": "risk.war_front",
+          "successKey": "outcome.orders.win",
+          "fail": {
+            "textKey": "outcome.orders.lose",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "nine_armies",
+                "action": "conduct",
+                "conduct": "orders"
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "history:nine_armies",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "conduct",
+            "conduct": "orders"
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.15
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 5
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 3
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      },
+      {
+        "id": "fallback",
+        "textKey": "event.war2328_front.fallback",
+        "risk": {
+          "base": 0.45,
+          "hintKey": "risk.war_retreat",
+          "successKey": "outcome.retreat.ok",
+          "fail": {
+            "textKey": "outcome.retreat.caught",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "nine_armies",
+                "action": "conduct",
+                "conduct": "fallback"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.7
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -2
+              },
+              {
+                "op": "career",
+                "role": "actor",
+                "action": "demote"
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.1,
+                  0.25
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.08
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "conduct",
+            "conduct": "fallback"
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.05
+          }
+        ]
+      }
+    ]
   }
 }

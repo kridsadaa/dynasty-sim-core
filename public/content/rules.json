@@ -67,7 +67,9 @@
     { "year": 2328, "day": 328, "event": "war2328.news", "minAge": 12 },
     { "year": 2328, "day": 335, "event": "war2328.levy", "minAge": 18 },
     { "year": 2328, "day": 335, "event": "war2328.levy_f", "minAge": 18 },
-    { "year": 2328, "day": 335, "event": "war2328.levy_old", "minAge": 51 }
+    { "year": 2328, "day": 335, "event": "war2328.levy_old", "minAge": 51 },
+    { "year": 2329, "day": 30, "event": "war2328.front", "minAge": 18 },
+    { "year": 2329, "day": 47, "resolve": "nine_armies" }
   ],
   "history": [
     { "tag": "history:burmese_invasion", "year": 2308, "kind": "war", "lasts": 3,

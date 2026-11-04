@@ -24,7 +24,7 @@ export const SOLDIER_AGES: [number, number] = [18, 50];
 /** โอกาสตายของคนที่ถูกส่งแทน = เท่าตัวเลือก "ทำตามคำสั่ง" (war2328.front) — ทักษะ combat 100 ลดลงได้ COMBAT_RELIEF */
 export const SUBSTITUTE_DEATH = 0.1;
 export const COMBAT_RELIEF = 0.08;
-export const SUBSTITUTE_FLOOR = 0.03;
+export const SUBSTITUTE_FLOOR = 0.05; // เท่าขอบล่างของ riskChance (5%) เพื่อให้ผลของคนที่ถูกส่งแทนตรงกับตัวเลือก "ทำตามคำสั่ง"
 /** บ่าวที่ส่งไปแล้วไม่ได้กลับ */
 export const SERVANT_LOST = 0.2;
 
