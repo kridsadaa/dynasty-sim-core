@@ -1420,6 +1420,10 @@ if (LONG) {
   const before = failed;
   console.log('ความเสี่ยงชั้น 1 (จมน้ำ แผลเน่า ความหนักใจ):');
   const problems: string[] = [];
+  // ทุก event ต้องมีชื่อหัวข้อ (<textKey>.title) — ไม่งั้นหน้าต่างเลือกแสดง id ดิบ (พบตอนลองเล่น body.wound_infected / plague.news)
+  const textTh = load('text.th.json') as Record<string, string>;
+  const untitled = Object.values(content.events).filter((e) => !textTh[`${e.textKey}.title`]).map((e) => e.id);
+  if (untitled.length) problems.push(`event ไม่มีชื่อหัวข้อ: ${untitled.slice(0, 4).join(', ')}`);
   const lethalOpt = (evId: string, optId: string) => {
     const o = content.events[evId]!.options.find((x) => x.id === optId)!;
     return o.risk?.fail.effects.some((f) => f.op === 'kill' && f.chance !== undefined && f.allowKin) ?? false;
