@@ -997,7 +997,11 @@
         "event:war2328.levy",
         "event:war2328.levy_f",
         "event:war2328.levy_old",
-        "event:war2328.front"
+        "event:war2328.front",
+        "event:war2330.levy",
+        "event:war2330.levy_f",
+        "event:war2330.levy_old",
+        "event:war2330.front"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "width": 1024,

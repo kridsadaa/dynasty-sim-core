@@ -70,7 +70,12 @@
     { "year": 2328, "day": 335, "event": "war2328.levy_old", "minAge": 51 },
     { "year": 2329, "day": 30, "event": "war2328.front", "minAge": 18 },
     { "year": 2329, "day": 47, "resolve": "nine_armies" },
-    { "year": 2328, "day": 345, "event": "war2328.rice_dear", "minAge": 16 }
+    { "year": 2328, "day": 345, "event": "war2328.rice_dear", "minAge": 16 },
+    { "year": 2329, "day": 300, "event": "war2330.levy", "minAge": 18 },
+    { "year": 2329, "day": 300, "event": "war2330.levy_f", "minAge": 18 },
+    { "year": 2329, "day": 300, "event": "war2330.levy_old", "minAge": 51 },
+    { "year": 2330, "day": 40, "event": "war2330.front", "minAge": 18 },
+    { "year": 2330, "day": 53, "resolve": "tha_din_daeng" }
   ],
   "history": [
     { "tag": "history:burmese_invasion", "year": 2308, "kind": "war", "lasts": 3,

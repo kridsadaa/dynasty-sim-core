@@ -6856,5 +6856,903 @@
         ]
       }
     ]
+  },
+  "war2330.levy": {
+    "id": "war2330.levy",
+    "textKey": "event.war2330_levy",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "son": {},
+      "kin": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        18,
+        50
+      ],
+      "requires": [
+        {
+          "type": "sex",
+          "is": "m"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "serve",
+        "textKey": "event.war2330_levy.serve",
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "serve"
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 2
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "textKey": "event.war2330_levy.pay",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 8
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -8
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "pay"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "send_son",
+        "textKey": "event.war2330_levy.send_son",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "son"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "send",
+            "soldier": "son"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "stress",
+            "role": "son",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "send_kin",
+        "textKey": "event.war2330_levy.send_kin",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "kin"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "send",
+            "soldier": "kin"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          },
+          {
+            "op": "stress",
+            "role": "kin",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "servant",
+        "textKey": "event.war2330_levy.servant",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "campaign",
+            "key": "tha_din_daeng",
+            "is": "retainers",
+            "min": 1
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "servant"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "dodge",
+        "textKey": "event.war2330_levy.dodge",
+        "risk": {
+          "base": 0.45,
+          "hintKey": "risk.levy_plead",
+          "successKey": "outcome.levy2328.hide",
+          "fail": {
+            "textKey": "outcome.levy2328.caught",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "tha_din_daeng",
+                "action": "dodge"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.5
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.1,
+                  0.2
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "dodge"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      }
+    ]
+  },
+  "war2330.levy_f": {
+    "id": "war2330.levy_f",
+    "textKey": "event.war2330_levy_head",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "son": {},
+      "kin": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        18,
+        120
+      ],
+      "requires": [
+        {
+          "type": "householdHead"
+        },
+        {
+          "type": "sex",
+          "is": "f"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "send_son",
+        "textKey": "event.war2330_levy.send_son",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "son"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "send",
+            "soldier": "son"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "stress",
+            "role": "son",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "send_kin",
+        "textKey": "event.war2330_levy.send_kin",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "kin"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "send",
+            "soldier": "kin"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          },
+          {
+            "op": "stress",
+            "role": "kin",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "servant",
+        "textKey": "event.war2330_levy.servant",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "campaign",
+            "key": "tha_din_daeng",
+            "is": "retainers",
+            "min": 1
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "servant"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "textKey": "event.war2330_levy.pay",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 8
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -8
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "pay"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "plead",
+        "textKey": "event.war2330_levy_head.plead",
+        "risk": {
+          "base": 0.5,
+          "hintKey": "risk.levy_plead",
+          "successKey": "outcome.levy2328.pleaded",
+          "fail": {
+            "textKey": "outcome.levy2328.pleadfail",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "tha_din_daeng",
+                "action": "dodge"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.3
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "dodge"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      }
+    ]
+  },
+  "war2330.levy_old": {
+    "id": "war2330.levy_old",
+    "textKey": "event.war2330_levy_head",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "son": {},
+      "kin": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        51,
+        120
+      ],
+      "requires": [
+        {
+          "type": "householdHead"
+        },
+        {
+          "type": "sex",
+          "is": "m"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "send_son",
+        "textKey": "event.war2330_levy.send_son",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "son"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "send",
+            "soldier": "son"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "stress",
+            "role": "son",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "send_kin",
+        "textKey": "event.war2330_levy.send_kin",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "kin"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "send",
+            "soldier": "kin"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          },
+          {
+            "op": "stress",
+            "role": "kin",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "servant",
+        "textKey": "event.war2330_levy.servant",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "campaign",
+            "key": "tha_din_daeng",
+            "is": "retainers",
+            "min": 1
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "servant"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "textKey": "event.war2330_levy.pay",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 8
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -8
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "pay"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "plead",
+        "textKey": "event.war2330_levy_head.plead",
+        "risk": {
+          "base": 0.5,
+          "hintKey": "risk.levy_plead",
+          "successKey": "outcome.levy2328.pleaded",
+          "fail": {
+            "textKey": "outcome.levy2328.pleadfail",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "tha_din_daeng",
+                "action": "dodge"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.3
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "dodge"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      }
+    ]
+  },
+  "war2330.front": {
+    "id": "war2330.front",
+    "textKey": "event.war2330_front",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        18,
+        50
+      ],
+      "requires": [
+        {
+          "type": "campaign",
+          "key": "tha_din_daeng",
+          "is": "self"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "front",
+        "textKey": "event.war2330_front.front",
+        "risk": {
+          "base": 0.11,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.2,
+              "reasonKey": "combat"
+            },
+            {
+              "source": "personality",
+              "trait": "boldness",
+              "weight": -0.1,
+              "reasonKey": "bold"
+            }
+          ],
+          "hintKey": "risk.war_front",
+          "successKey": "outcome.front.win",
+          "fail": {
+            "textKey": "outcome.front.lose",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "tha_din_daeng",
+                "action": "conduct",
+                "conduct": "front"
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "history:tha_din_daeng",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "conduct",
+            "conduct": "front"
+          },
+          {
+            "op": "wound",
+            "role": "actor",
+            "part": {
+              "tag": "body:torso"
+            },
+            "kind": "cut",
+            "severity": [
+              0.1,
+              0.3
+            ]
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 3
+          },
+          {
+            "op": "prestige",
+            "role": "actor",
+            "delta": 3
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.4
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 10
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 5
+          },
+          {
+            "op": "career",
+            "role": "actor",
+            "action": "promote"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "orders",
+        "textKey": "event.war2330_front.orders",
+        "risk": {
+          "base": 0.05,
+          "factors": [
+            {
+              "source": "skill",
+              "skill": "combat",
+              "weight": -0.08,
+              "reasonKey": "combat"
+            }
+          ],
+          "hintKey": "risk.war_front",
+          "successKey": "outcome.orders.win",
+          "fail": {
+            "textKey": "outcome.orders.lose",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "tha_din_daeng",
+                "action": "conduct",
+                "conduct": "orders"
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "history:tha_din_daeng",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "conduct",
+            "conduct": "orders"
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 1
+          },
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.15
+          },
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": 5
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 3
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      },
+      {
+        "id": "fallback",
+        "textKey": "event.war2330_front.fallback",
+        "risk": {
+          "base": 0.45,
+          "hintKey": "risk.war_retreat",
+          "successKey": "outcome.retreat.ok",
+          "fail": {
+            "textKey": "outcome.retreat.caught",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "tha_din_daeng",
+                "action": "conduct",
+                "conduct": "fallback"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.7
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -2
+              },
+              {
+                "op": "career",
+                "role": "actor",
+                "action": "demote"
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.1,
+                  0.25
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.08
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "tha_din_daeng",
+            "action": "conduct",
+            "conduct": "fallback"
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.05
+          }
+        ]
+      }
+    ]
   }
 }

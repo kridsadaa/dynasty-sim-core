@@ -1263,6 +1263,61 @@ if (LONG) {
   if (failed === before) console.log('  ✓ ข้าวแพงวันที่ 345 ได้ทุกคนวัย 16+ · คนจนเหลือรอข้าวฉาง · ตุนข้าวไว้ถึงเปิดยุ้งได้ · ซื้อหัก 15 ตำลึง');
 }
 
+// [5h2j] ศึกท่าดินแดง 2329–2330 (ขั้น 6): ใช้แม่แบบเดียวกับเก้าทัพ ศึกสั้นและชนะ ความเสี่ยงต่ำกว่า
+{
+  const before = failed;
+  console.log('ศึกท่าดินแดง:');
+  const problems: string[] = [];
+  const mk = (seed: number, day: number) => {
+    const c = makeCtx(emptyState(seed), content);
+    const h = bootstrapScenario(c);
+    h.sex = 'm';
+    c.state.households[h.householdId!]!.headId = h.id;
+    c.state.meta.day = day;
+    return { c, h };
+  };
+  const eventsOn = (day: number) => {
+    const { c } = mk(80, day);
+    return advanceDay(c).flatMap((sig) => (sig.type === 'event' ? [sig.prepared.def.id] : []));
+  };
+  const yc = mk(81, 0).c;
+  if (!eventsOn(yearStart(yc, 2329) + 299).includes('war2330.levy')) problems.push('หมายเกณฑ์ท่าดินแดงไม่มาวันที่ 300 ของ 2329');
+  const { c: ctx, h: hero } = mk(82, yearStart(yc, 2329) + 299);
+  hero.social.wealth = 500;
+  const p0 = purse(ctx, hero);
+  chooseOption(ctx, prepareEvent(ctx, 'war2330.levy', { actor: hero.id }), 'pay');
+  if (ctx.state.meta.campaigns?.tha_din_daeng?.mode !== 'pay') problems.push('จ่ายแทนท่าดินแดงไม่บันทึกใน campaigns.tha_din_daeng');
+  if (ctx.state.meta.campaigns?.nine_armies) problems.push('ท่าดินแดงไปเขียนทับ campaigns ของเก้าทัพ');
+  if (Math.abs(p0 - purse(ctx, hero) - 8) > 0.6) problems.push('จ่ายแทนท่าดินแดงควรหัก 8 ตำลึง');
+  chooseOption(ctx, prepareEvent(ctx, 'war2330.levy', { actor: hero.id }), 'serve');
+  if (ctx.state.meta.campaigns?.tha_din_daeng?.mode !== 'self') problems.push('ไปเองท่าดินแดงไม่บันทึก mode self');
+  // สนามรบ: ผู้ไปเองเท่านั้น ที่วันที่ 41 ของ 2330
+  ctx.state.meta.day = yearStart(ctx, 2330) + 39;
+  if (!advanceDay(ctx).some((sig) => sig.type === 'event' && sig.prepared.def.id === 'war2330.front')) problems.push('ไม่มี event สนามรบท่าดินแดง');
+  // เสี่ยงต่ำกว่าเก้าทัพ
+  const ev = prepareEvent(ctx, 'war2330.front', { actor: hero.id });
+  const who = (role: string) => ctx.state.characters[ev.instance.bindings[role] ?? ('' as Character['id'])];
+  hero.skills['combat'] = 0;
+  const f = riskChance(ctx, hero, ev.options.find((o) => o.id === 'front')!.risk!, who);
+  const o = riskChance(ctx, hero, ev.options.find((o) => o.id === 'orders')!.risk!, who);
+  const nine = prepareEvent(ctx, 'war2328.front', { actor: hero.id });
+  const nf = riskChance(ctx, hero, nine.options.find((x) => x.id === 'front')!.risk!, (role) => ctx.state.characters[nine.instance.bindings[role] ?? ('' as Character['id'])]);
+  if (!(f < nf * 0.7) || f < 0.04 || o > 0.06 || o < 0.04) problems.push(`ความเสี่ยงท่าดินแดง front ${f.toFixed(2)} ควรต่ำกว่าเก้าทัพ ${nf.toFixed(2)} มาก · orders ${o.toFixed(2)} (คาด 0.05)`);
+  if (Math.abs(substituteDeathChance(hero, 'tha_din_daeng') - 0.05) > 0.011) problems.push('ความเสี่ยงของคนที่ถูกส่งแทนท่าดินแดงควร ~5%');
+  // ข่าวชัย วันที่ 54 ของ 2330
+  ctx.state.meta.day = yearStart(ctx, 2330) + 52;
+  const logs = advanceDay(ctx).flatMap((sig) => (sig.type === 'log' ? [sig.line] : []));
+  if (!logs.some((l) => l.includes('ท่าดินแดง'))) problems.push('ไม่มีข่าวชัยท่าดินแดง');
+  // คนในเรือนที่ถูกเกณฑ์ ไม่ถูกสุ่มตายตอน shock ปี 2330
+  const { c: sc, h: sh } = mk(83, yearStart(yc, 2330));
+  sc.state.meta.campaigns = { tha_din_daeng: { mode: 'pay' } };
+  const men = Array.from({ length: 80 }, (_, i) => spawnCharacter(sc, { name: `ชาย${i}`, sex: 'm', birthYear: 2295, estate: 'noble', dynastyId: sh.dynastyId, householdId: sh.householdId }));
+  applyHistoricalShocks(sc, 2330);
+  if (men.some((m) => !isAlive(m))) problems.push('คนในเรือนที่ถูกเกณฑ์ท่าดินแดงถูกสุ่มตายตอน shock');
+  check('ศึกท่าดินแดง', problems);
+  if (failed === before) console.log(`  ✓ หมายเกณฑ์วันที่ 300 ของ 2329 · แยก campaigns ของเก้าทัพ · แนวหน้า ${f.toFixed(2)} (เก้าทัพ ${nf.toFixed(2)}) คำสั่ง ${o.toFixed(2)} · ข่าวชัยวันที่ 54 ของ 2330 · เรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตาย`);
+}
+
 // [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้
 {
   const before = failed;

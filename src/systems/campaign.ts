@@ -14,9 +14,10 @@ import { markDead, settleDeath } from './handover';
 
 export type CampaignKey = 'nine_armies' | 'tha_din_daeng';
 
-export const CAMPAIGNS: Record<CampaignKey, { tag: `${string}:${string}`; victory: string }> = {
-  nine_armies: { tag: 'history:nine_armies', victory: 'ข่าวชัยมาถึงกรุง ทัพหลวงตีทัพหลวงพม่าที่ลาดหญ้าแตก' },
-  tha_din_daeng: { tag: 'history:tha_din_daeng', victory: 'ข่าวชัยมาถึงกรุง ไทยตีค่ายพม่าที่ท่าดินแดงแตก ทัพพม่าถอยกลับเมาะตะมะ' },
+/** deathScale: ท่าดินแดงเป็นศึกสั้นและชนะ ความเสี่ยงตายครึ่งเดียวของเก้าทัพ (ตรงกับ deathRisk ของ history shock 0.04 เทียบ 0.08) */
+export const CAMPAIGNS: Record<CampaignKey, { tag: `${string}:${string}`; victory: string; deathScale: number }> = {
+  nine_armies: { tag: 'history:nine_armies', victory: 'ข่าวชัยมาถึงกรุง ทัพหลวงตีทัพหลวงพม่าที่ลาดหญ้าแตก', deathScale: 1 },
+  tha_din_daeng: { tag: 'history:tha_din_daeng', victory: 'ข่าวชัยมาถึงกรุง ไทยตีค่ายพม่าที่ท่าดินแดงแตก ทัพพม่าถอยกลับเมาะตะมะ', deathScale: 0.5 },
 };
 
 /** วัยถูกเกณฑ์ (ตรงกับ ages ของ history:nine_armies ใน rules.json) */
@@ -135,8 +136,8 @@ export function applyCampaign(ctx: Ctx, ch: Character, e: CampaignEffect, soldie
 const playerOf = (ctx: Ctx): Character | undefined => ctx.state.characters[ctx.state.meta.playerCharacterId];
 
 /** โอกาสตายของคนที่ถูกส่งแทน — ทักษะ combat ช่วยลด */
-export const substituteDeathChance = (c: Character): number =>
-  Math.max(SUBSTITUTE_FLOOR, SUBSTITUTE_DEATH - ((c.skills.combat ?? 0) / 100) * COMBAT_RELIEF);
+export const substituteDeathChance = (c: Character, key: CampaignKey = 'nine_armies'): number =>
+  Math.max(SUBSTITUTE_FLOOR, (SUBSTITUTE_DEATH - ((c.skills.combat ?? 0) / 100) * COMBAT_RELIEF) * CAMPAIGNS[key].deathScale);
 
 /** ศึกจบ: ข่าวชัย + ผลของคนที่ไปแทน (อัตโนมัติ) — เรียกจากตารางนัดหมาย `resolve` ไม่ต้องมีผู้เล่นมีชีวิต */
 export function resolveCampaign(ctx: Ctx, key: string): string[] {
@@ -149,7 +150,7 @@ export function resolveCampaign(ctx: Ctx, key: string): string[] {
   if (st.mode === 'send' && st.soldier) {
     const sol = ctx.state.characters[st.soldier];
     if (sol && isAlive(sol)) {
-      if (ctx.rng.chance(substituteDeathChance(sol))) {
+      if (ctx.rng.chance(substituteDeathChance(sol, key as CampaignKey))) {
         markDead(ctx, sol, def.tag);
         lines.push(`${sol.name}ไม่ได้กลับมาจากทัพ — เพื่อนร่วมหมู่เล่าว่าล้มลงกลางแนว`, ...settleDeath(ctx, sol).lines);
         if (head && isAlive(head)) head.stress = Math.min(1, head.stress + 0.08);
@@ -172,7 +173,7 @@ export function resolveCampaign(ctx: Ctx, key: string): string[] {
   } else if (st.mode === 'self' && st.soldier && !st.conduct) {
     // ผู้เล่นไปทัพแต่ไม่เคยได้ event ในสนาม (เช่น เสียชีวิตก่อน/ผู้สืบรับต่อ) — ผลเหมือนทำตามคำสั่ง
     const sol = ctx.state.characters[st.soldier];
-    if (sol && isAlive(sol) && ctx.rng.chance(substituteDeathChance(sol))) {
+    if (sol && isAlive(sol) && ctx.rng.chance(substituteDeathChance(sol, key as CampaignKey))) {
       markDead(ctx, sol, def.tag);
       lines.push(`${sol.name}ไม่ได้กลับมาจากทัพ`);
     }
