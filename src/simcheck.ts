@@ -1651,6 +1651,39 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ ฆ่าสำเร็จมีเรื่องรอ (${success}/80) · พลาดถูกโบยเป็นแผลทุกครั้ง (${caught}) · event ออกครั้งเดียวและไม่ตกถึงผู้สืบ · ตาย: ไกล่เกลี่ย/ย้าย 0 · คุ้มกัน ${(guards * 100).toFixed(1)}% · เพิกเฉย ${(ignore * 100).toFixed(1)}%`);
 }
 
+// [5o] ผลชดเชยเมื่อตายจากการกระทำกล้า (จมน้ำตอนช่วยคน / ฟันตอนนำจับโจร): ตระกูลได้บารมี ผู้สืบเห็นข้อความ — ตายแบบอื่นไม่ได้
+{
+  const before = failed;
+  console.log('ผลชดเชยการตายอย่างกล้า:');
+  const problems: string[] = [];
+  const run = (cause: string) => {
+    const c = makeCtx(emptyState(77), content);
+    const h = bootstrapScenario(c);
+    const dyn = c.state.dynasties[h.dynastyId!]!;
+    markDead(c, h, cause as never);
+    const rep = performHandover(c, h.id);
+    return { prestige: dyn.prestige, said: rep.log.some((l) => l.includes('จากไปด้วยความกล้า')) };
+  };
+  const base = run('situation:old_age');
+  const B = content.balance.inheritance;
+  for (const cause of B.heroicDeathCauses) {
+    const r = run(cause);
+    if (!r.said) problems.push(`${cause}: ไม่มีข้อความถึงผู้สืบ`);
+    if (Math.abs(r.prestige - base.prestige - B.heroicDeathPrestige) > 0.01) problems.push(`${cause}: บารมีต่างจากตายตามวัย ${(r.prestige - base.prestige).toFixed(2)} (คาด ${B.heroicDeathPrestige})`);
+  }
+  for (const cause of ['situation:illness', 'situation:feud', 'situation:wound_fever', 'situation:old_age']) {
+    const r = run(cause);
+    if (r.said || Math.abs(r.prestige - base.prestige) > 0.01) problems.push(`${cause}: ไม่ควรได้ผลชดเชย`);
+  }
+  // ตัวเลือกที่ตายได้โดยกล้าต้องเป็นสาเหตุเดียวกับที่ชดเชย (กันแก้ cause ใน event แล้วชดเชยหลุด)
+  const causesOf = (evId: string, optId: string) => content.events[evId]!.options.find((o) => o.id === optId)!.risk!.fail.effects.flatMap((f) => (f.op === 'kill' ? [f.cause] : []));
+  for (const [evId, optId] of [['life.drowning', 'dive'], ['career.patrol_thief', 'lead']] as const) {
+    for (const cause of causesOf(evId, optId)) if (!B.heroicDeathCauses.includes(cause)) problems.push(`${evId}.${optId} ตายด้วย ${cause} ที่ไม่อยู่ใน heroicDeathCauses`);
+  }
+  check('ผลชดเชยการตายอย่างกล้า', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ ${B.heroicDeathCauses.join(', ')} → บารมีตระกูล +${B.heroicDeathPrestige} และผู้สืบเห็นข้อความ · ตายแบบอื่นไม่ได้`);
+}
+
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
 {
   const before = failed;

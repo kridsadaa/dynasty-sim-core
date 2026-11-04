@@ -1056,6 +1056,9 @@ export interface Balance {
     mainHeirBonus: number;
     funeralCostRate: Record<Estate, Unit>;
     funeralPrestigePerTamlueng: number;
+    /** ตายจากการกระทำกล้าที่ผู้เล่นเลือกเอง (จมน้ำตอนช่วยคน ถูกฟันตอนนำจับโจร) → ตระกูลได้บารมีเพิ่มตอนส่งต่อ (docs/design-choice-risk.md ข้อ 5) */
+    heroicDeathCauses: TagId[];
+    heroicDeathPrestige: number;
     prestigeDecay: Unit;
     relationCarry: Partial<Record<RelationKind, Unit>>;
     tabooMinYears: number;

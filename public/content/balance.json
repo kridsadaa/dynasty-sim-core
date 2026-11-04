@@ -35,6 +35,8 @@
   },
   "legend": { "baseDrift": 0.8, "writtenRecordDamp": 0.3, "maxOpsPerGeneration": 3, "truthChance": 0.2, "truthMinDivergence": 0.35 },
   "inheritance": {
+    "heroicDeathCauses": ["situation:drowning", "situation:combat"],
+    "heroicDeathPrestige": 3,
     "shareByParentage": { "principal_wife": 3, "minor_wife": 2.5, "slave_wife": 2, "adopted": 1.5, "unknown": 1 },
     "kinShares": {
       "grandchild": 2, "greatGrandchild": 1,

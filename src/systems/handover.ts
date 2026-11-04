@@ -282,6 +282,11 @@ export function performHandover(
 
   // [6] social
   dyn.prestige *= 1 - B.prestigeDecay * (dyn.legacies?.kin && dyn.legacies.kin >= 4 ? 0.5 : 1);
+  // ตายจากการกระทำกล้าที่เลือกเอง: คนเล่าขานถึงความกล้า ตระกูลได้บารมี (ไม่ลงโทษผู้สืบที่ต้องเสียพ่อแม่ไปเพราะผู้เล่นกล้า)
+  if (dead.deathCause && B.heroicDeathCauses.includes(dead.deathCause)) {
+    dyn.prestige += B.heroicDeathPrestige;
+    log.push(`${dead.name}จากไปด้วยความกล้า คนในย่านเล่าขานชื่อ ตระกูลได้บารมีเพิ่ม ${B.heroicDeathPrestige}`);
+  }
   // ผู้เล่นตายขณะที่ผู้นำตระกูล (เช่น บิดา) ยังอยู่ → ตำแหน่งผู้นำไม่เปลี่ยนมือ
   const headNode = ctx.state.familyNodes[dyn.headNodeId];
   const headAlive = isAlive(headNode?.characterId ? ctx.state.characters[headNode.characterId] : undefined);
