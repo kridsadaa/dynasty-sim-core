@@ -60,7 +60,10 @@ export function mortalityYearTick(ctx: Ctx): string[] {
       if (scarred) addScar(ctx, ch, 'face' as PartDefId, 'pox', ctx.rng.range(0.2, 0.6));
       if (isPlayer) out.push(`${ch.name}รอดจากไข้ทรพิษ${scarred ? ' แต่มีรอยแผลเป็นบนหน้า' : ''}`);
     }
-    if (isGraced(ctx, ch) || !ctx.rng.chance(yearlyDeathRisk(ctx, age, frail))) continue;
+    // ผู้เล่น: ลูกเต๋าฐานลดลง (playerAdultScale) และความหนักใจสูงเพิ่มความเสี่ยง — ดู docs/design-choice-risk.md
+    const playerMult = isPlayer && age >= 15
+      ? M.playerAdultScale * (1 + M.stressSlope * Math.max(0, ch.stress - M.stressFrom)) : 1;
+    if (isGraced(ctx, ch) || !ctx.rng.chance(Math.min(1, yearlyDeathRisk(ctx, age, frail) * playerMult))) continue;
     const cause: TagId = age >= M.oldAgeCause ? 'situation:old_age' : 'situation:illness';
     markDead(ctx, ch, cause);
     if (!isPlayer) died(ch.name, age, cause);

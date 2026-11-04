@@ -1297,6 +1297,13 @@
                 "op": "stress",
                 "role": "actor",
                 "delta": 0.1
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:combat",
+                "allowKin": true,
+                "chance": 0.05
               }
             ]
           }
@@ -5144,6 +5151,13 @@
                 "toward": "actor",
                 "kind": "gratitude",
                 "delta": 0.2
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:drowning",
+                "allowKin": true,
+                "chance": 0.08
               }
             ]
           }
@@ -5301,6 +5315,46 @@
         "id": "stay",
         "textKey": "event.petition.stay",
         "effects": []
+      }
+    ]
+  },
+  "body.wound_infected": {
+    "id": "body.wound_infected",
+    "textKey": "event.wound_infected",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "physician",
+        "textKey": "event.wound_infected.physician",
+        "replyKey": "reply.wound_infected.physician",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -4 },
+          { "op": "treat", "role": "actor", "quality": 0.75 }
+        ]
+      },
+      {
+        "id": "folk",
+        "textKey": "event.wound_infected.folk",
+        "replyKey": "reply.wound_infected.folk",
+        "effects": [
+          { "op": "merit", "role": "actor", "delta": 0.5 },
+          { "op": "treat", "role": "actor", "quality": 0.35 }
+        ]
+      },
+      {
+        "id": "endure",
+        "textKey": "event.wound_infected.endure",
+        "replyKey": "reply.wound_infected.endure",
+        "effects": [
+          { "op": "stress", "role": "actor", "delta": 0.05 }
+        ]
       }
     ]
   }

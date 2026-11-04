@@ -126,7 +126,7 @@ const STAGE_DAYS = { bleeding: 1, open: 3, infected: 7, festering: 10 } as const
 export interface WoundOutcome {
   woundId: Wound['id'];
   partDefId: PartDefId;
-  result: 'healed_clean' | 'scarred' | 'impaired' | 'lost_part';
+  result: 'healed_clean' | 'scarred' | 'impaired' | 'lost_part' | 'fatal';
   scar: Scar | null;
   integrityAfter: number;
 }
@@ -163,6 +163,13 @@ export function tickWounds(ctx: Ctx, ch: Character): WoundOutcome[] {
           advance('festering', STAGE_DAYS.infected);
         } else advance('healing', STAGE_DAYS.infected);
       } else if (w.stage === 'festering' && elapsed >= STAGE_DAYS.festering) {
+        // เฉพาะผู้เล่น: แผลเน่าไม่ได้รักษาถึงตายได้ (ผู้เรียก tickWounds ตั้ง markDead เมื่อเห็น result 'fatal')
+        if (ch.id === ctx.state.meta.playerCharacterId && ctx.rng.chance(clamp01(B.festerDeathChance * (0.5 + w.severity) * (1 - B.festerDeathTreatCut * q)))) {
+          delete ctx.state.wounds[w.id];
+          ch.woundIds = ch.woundIds.filter((id) => id !== w.id);
+          outcomes.push({ woundId: w.id, partDefId: w.partDefId, result: 'fatal', scar: null, integrityAfter: 0 });
+          break;
+        }
         if (ctx.rng.chance(B.festerLossChance)) {
           outcomes.push(finalizeWound(ctx, ch, w, true));
           break;

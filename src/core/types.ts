@@ -120,6 +120,8 @@ export interface Wound {
   stageSinceDay: Day;
   treatment: { quality: Unit; by: CharacterId | null; remedy: TagId | null } | null;
   complications: Array<'infected' | 'festered'>;
+  /** ผู้เล่นถูกถามเรื่องรักษาแผลนี้แล้ว (body.wound_infected) — กันถามซ้ำ */
+  consulted?: boolean;
   sourceEventId: EventInstanceId | null;
   memoryId: MemoryId | null;
 }
@@ -669,6 +671,8 @@ export type Effect =
   /** ปกติฆ่าได้เฉพาะคนนอกตระกูล (local) — allowKin ให้ตายได้ทุกคน รวมผู้เล่น (ผลพลาดของตัวเลือกเสี่ยง) */
   /** chance = โอกาสตายเมื่อ effect นี้ทำงาน (ไม่ใส่ = ตายแน่) — ใช้คู่ allowKin ใน risk.fail ของตัวเลือกเสี่ยง (ดู docs/design-choice-risk.md) */
   | { op: 'kill'; role: string; cause: TagId; allowKin?: boolean; chance?: Unit }
+  /** รักษาแผลที่กำลังอักเสบ (infected/festering) ของ role — quality สูงสุดที่เคยได้ใช้; ดู body.wound_infected */
+  | { op: 'treat'; role: string; quality: Unit }
   /** role หย่ากับ with: แบ่งลูกตามลำดับเกิด เมียได้ส่วนหนึ่งของเงิน */
   | { op: 'divorce'; role: string; with: string }
   /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
@@ -1011,6 +1015,9 @@ export interface Balance {
     healDaysPerSeverity: number;
     rainySeason: [number, number]; // วันที่เท่าไรของปีสุริยคติ (0 = 1 ม.ค.)
     festerLossChance: Unit;
+    /** แผลหนองเน่า (festering) ของผู้เล่น: โอกาสตายพื้นฐาน × (0.5 + ความรุนแรง) × (1 − festerDeathTreatCut × คุณภาพการรักษา) — เฉพาะผู้เล่น (docs/design-choice-risk.md 1d) */
+    festerDeathChance: Unit;
+    festerDeathTreatCut: Unit;
   };
   social: {
     ruleThreshold: Unit;
@@ -1063,6 +1070,11 @@ export interface Balance {
     oldFrom: number;
     oldBase: Unit;
     oldDoublingYears: number;
+    /** ตัวคูณลูกเต๋ารายปีของผู้เล่นอายุ 15 ขึ้นไป — ชดเชยความเสี่ยงที่ผูกกับตัวเลือก (docs/design-choice-risk.md ข้อ 5); 1 = ไม่ปรับ */
+    playerAdultScale: number;
+    /** ความหนักใจของผู้เล่นเกินค่านี้เพิ่มความเสี่ยงตายรายปี ×(1 + stressSlope × ส่วนที่เกิน) */
+    stressFrom: Unit;
+    stressSlope: number;
     /** อายุตั้งแต่นี้ขึ้นไปนับว่าตายเพราะชรา (ต่ำกว่านี้ = ป่วยตาย) */
     oldAgeCause: number;
     /**

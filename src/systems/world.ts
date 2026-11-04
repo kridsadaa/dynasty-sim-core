@@ -47,6 +47,7 @@ const WOUND_RESULT_TH: Record<WoundOutcome['result'], string> = {
   scarred: 'หายแล้ว',
   impaired: 'หายแต่ใช้การได้ไม่เต็มที่',
   lost_part: 'ลุกลามจนเสียอวัยวะ',
+  fatal: 'ลุกลามจนถึงแก่ชีวิต',
 };
 
 export function advanceDay(ctx: Ctx): WorldSignal[] {
@@ -64,7 +65,17 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const ch = S.characters[cid];
     if (!ch) continue;
     for (const o of tickWounds(ctx, ch)) {
+      if (o.result === 'fatal') markDead(ctx, ch, 'situation:wound_fever');
       if (ch.id === player?.id) out.push({ type: 'log', kind: 'body', line: `แผลของ${ch.name}${WOUND_RESULT_TH[o.result]}${o.scar ? ' (กลายเป็นแผลเป็น)' : ''}` });
+    }
+  }
+
+  // แผลของผู้เล่นเริ่มอักเสบ → ถามว่าจะรักษาอย่างไร (ครั้งเดียวต่อแผล) — ทางเลือกนี้กำหนดโอกาสรอดของแผลหนองเน่า
+  if (player && isAlive(player)) {
+    const w = Object.values(S.wounds).find((x) => x.characterId === player.id && x.stage === 'infected' && !x.consulted);
+    if (w) {
+      w.consulted = true;
+      out.push({ type: 'event', prepared: prepareEvent(ctx, 'body.wound_infected', { actor: player.id }) });
     }
   }
 

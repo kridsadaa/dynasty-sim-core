@@ -6,6 +6,8 @@ import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
 import { ageOf, commitRng, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import type { Character, ContentDB, GameEventDef } from './core/types';
+import { inflictWound, selectPart, tickWounds } from './systems/body';
+import { mortalityYearTick } from './systems/mortality';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
@@ -1411,6 +1413,79 @@ if (LONG) {
   if (d30 < 35 || d30 > 85) problems.push(`chance 0.3 ตาย ${d30}/200 (คาดราว 60)`);
   check('ความเสี่ยงถึงชีวิตจากตัวเลือก', problems.slice(0, 4));
   if (failed === before) console.log('  ✓ ตรวจเนื้อหา 4 กรณี · chance 0/1/0.3 ตายตามโอกาสและแจ้ง playerDied');
+}
+
+// [5k] ความเสี่ยงชั้น 1: จมน้ำ ปราบโจร แผลเน่าถึงตาย (เฉพาะผู้เล่น) การรักษา และความหนักใจ — docs/design-choice-risk.md
+{
+  const before = failed;
+  console.log('ความเสี่ยงชั้น 1 (จมน้ำ แผลเน่า ความหนักใจ):');
+  const problems: string[] = [];
+  const lethalOpt = (evId: string, optId: string) => {
+    const o = content.events[evId]!.options.find((x) => x.id === optId)!;
+    return o.risk?.fail.effects.some((f) => f.op === 'kill' && f.chance !== undefined && f.allowKin) ?? false;
+  };
+  if (!lethalOpt('life.drowning', 'dive')) problems.push('กระโดดช่วยคนตกน้ำไม่มีโอกาสตายใน risk.fail');
+  if (!lethalOpt('career.patrol_thief', 'lead')) problems.push('นำจับโจรไม่มีโอกาสตายใน risk.fail');
+  if (content.events['life.drowning']!.options.find((o) => o.id === 'pole')!.risk!.fail.effects.some((f) => f.op === 'kill')) problems.push('ใช้ไม้ยื่นช่วย (ทางปลอดภัย) ไม่ควรตาย');
+
+  // แผลหนองเน่าของผู้เล่น: ไม่รักษา vs รักษาดี — ตายเฉพาะผู้เล่น และการรักษาลดโอกาสตาย
+  const festering = (quality: number, asPlayer: boolean, n: number) => {
+    let dead = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(7000 + i), content);
+      const h = bootstrapScenario(c);
+      const victim = asPlayer ? h : Object.values(c.state.characters).find((x) => x.id !== h.id && isAlive(x) && ageOf(c, x) > 15)!;
+      const part = selectPart(c, victim, { tag: 'body:torso' })!;
+      const w = inflictWound(c, victim, part, 'cut', 0.7, quality > 0 ? { quality, by: null, remedy: null } : null, null);
+      w.stage = 'festering';
+      w.stageSinceDay = c.state.meta.day - 10;
+      if (tickWounds(c, victim).some((o) => o.result === 'fatal')) dead++;
+    }
+    return dead;
+  };
+  const untreated = festering(0, true, 300);
+  const treated = festering(0.75, true, 300);
+  const npc = festering(0, false, 100);
+  if (untreated < 70 || untreated > 150) problems.push(`แผลเน่าไม่รักษา ตาย ${untreated}/300 (คาดราว 108)`);
+  if (!(treated < untreated * 0.7)) problems.push(`รักษาดีแล้วตาย ${treated}/300 ไม่น้อยกว่าไม่รักษา ${untreated}/300 ชัดเจน`);
+  if (npc !== 0) problems.push(`NPC ตายจากแผลเน่า ${npc} (ควรเป็นเฉพาะผู้เล่น)`);
+
+  // event "แผลอักเสบ" ออกครั้งเดียวต่อแผล และ treat ใส่คุณภาพการรักษา
+  const c2 = makeCtx(emptyState(41), content);
+  const p2 = bootstrapScenario(c2);
+  const w2 = inflictWound(c2, p2, selectPart(c2, p2, { tag: 'body:torso' })!, 'cut', 0.6, null, null);
+  w2.stage = 'infected';
+  w2.stageSinceDay = c2.state.meta.day;
+  const seen = (): number => advanceDay(c2).filter((s) => s.type === 'event' && s.prepared.def.id === 'body.wound_infected').length;
+  const first = seen();
+  let again = 0;
+  for (let i = 0; i < 3; i++) again += seen();
+  if (first !== 1 || again !== 0) problems.push(`event แผลอักเสบออก ${first} ครั้งแรก แล้วซ้ำ ${again} (ควร 1 แล้ว 0)`);
+  chooseOption(c2, prepareEvent(c2, 'body.wound_infected', { actor: p2.id }), 'physician');
+  const q2 = Object.values(c2.state.wounds).find((x) => x.characterId === p2.id)?.treatment?.quality;
+  if (q2 !== 0.75) problems.push(`เลือกหมอยาแล้วคุณภาพการรักษา ${q2}`);
+
+  // ความหนักใจสูงเพิ่มความเสี่ยงตายรายปีของผู้เล่นเท่านั้น
+  const M = content.balance.mortality;
+  const yearDeaths = (stress: number, n: number) => {
+    let dead = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(8000 + i), content);
+      const h = bootstrapScenario(c);
+      c.state.meta.day = yearStart(c, 2330);
+      h.birthDay = c.state.meta.day - 40 * 365;
+      h.stress = stress;
+      mortalityYearTick(c);
+      if (!isAlive(h)) dead++;
+    }
+    return dead;
+  };
+  const calm = yearDeaths(0.2, 3000);
+  const tense = yearDeaths(0.95, 3000);
+  const expectRatio = (1 + M.stressSlope * (0.95 - M.stressFrom));
+  if (!(tense > calm * (expectRatio * 0.6))) problems.push(`ความหนักใจสูงตาย ${tense}/3000 vs ปกติ ${calm}/3000 (คาดอัตราส่วนราว ${expectRatio.toFixed(2)})`);
+  check('ความเสี่ยงชั้น 1', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ จมน้ำ/ปราบโจรมี kill chance · แผลเน่าตาย ไม่รักษา ${untreated}/300 รักษาดี ${treated}/300 NPC 0 · event แผลอักเสบครั้งเดียว · ความหนักใจสูงตายมากขึ้น (${calm}→${tense}/3000)`);
 }
 
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)

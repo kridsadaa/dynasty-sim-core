@@ -18,7 +18,9 @@
     "healDaysBase": 7,
     "healDaysPerSeverity": 40,
     "rainySeason": [135, 300],
-    "festerLossChance": 0.35
+    "festerLossChance": 0.35,
+    "festerDeathChance": 0.3,
+    "festerDeathTreatCut": 0.7
   },
   "social": {
     "ruleThreshold": 0.5,
@@ -49,7 +51,7 @@
     "tabooForgetBelow": 0.15,
     "tabooMutateChance": 0.15
   },
-  "mortality": { "infant": 0.2, "young": 0.025, "child": 0.004, "adult": 0.008, "oldFrom": 50, "oldBase": 0.015, "oldDoublingYears": 8, "oldAgeCause": 60, "smallpoxYearChance": 0.12, "smallpoxAttack": 0.5, "smallpoxFatality": 0.25, "smallpoxScarChance": 0.5 },
+  "mortality": { "infant": 0.2, "young": 0.025, "child": 0.004, "adult": 0.008, "oldFrom": 50, "oldBase": 0.015, "oldDoublingYears": 8, "playerAdultScale": 0.97, "stressFrom": 0.6, "stressSlope": 0.8, "oldAgeCause": 60, "smallpoxYearChance": 0.12, "smallpoxAttack": 0.5, "smallpoxFatality": 0.25, "smallpoxScarChance": 0.5 },
   "constitution": { "inherit": 0.5, "riskPerSD": 0.25, "hardToRaiseBelow": -1, "hardToRaiseAge": 1 },
   "world": { "eventsPerYear": 3, "repeatDamp": 0.5, "marriageAge": { "f": [15, 18], "m": [18, 22] }, "neverMarryChance": 0.05, "births": { "minGapYears": 2, "yearlyChance": 0.35, "maxMotherAge": 40, "dueDays": [30, 270] }, "childbirthDeathRisk": 0.012, "stayYears": [1, 3], "patrilocalChance": 0.35, "noviceAge": 8, "noviceChance": 0.5, "grandchildNamingChance": 0.5 },
   "chores": {

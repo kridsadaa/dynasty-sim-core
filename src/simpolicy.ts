@@ -1,4 +1,4 @@
-// npm run sim:policy [seeds] — ผู้เล่นอัตโนมัติ 3 แบบ (รอบคอบ / ประมาท / สุ่ม) + ตัวเลือกแรก: วัดว่าการเลือกมีผลต่อการรอดของตัวละครแรกแค่ไหน
+// npm run sim:policy [seeds] [นโยบาย] — ผู้เล่นอัตโนมัติ 3 แบบ (รอบคอบ / ประมาท / สุ่ม) + ตัวเลือกแรก: วัดว่าการเลือกมีผลต่อการรอดของตัวละครแรกแค่ไหน
 // เป็นรายงานเฉยๆ ไม่ทำให้ test ล้ม (docs/design-choice-risk.md หัวข้อ 6) — ใช้ดูฐานก่อน/หลังเพิ่มความเสี่ยงที่ผูกกับตัวเลือก
 // นโยบาย: ตัวเลือกของศึก 2308–2310 ระบุเป็นรายตัว (ความหมายรู้แน่) ที่เหลือใช้ risk.base ของตัวเลือก (รอบคอบ = เสี่ยงน้อยสุด, ประมาท = มากสุด)
 import { readFileSync } from 'node:fs';
@@ -18,8 +18,10 @@ const content: ContentDB = buildContentDB({
   chores: load('chores.json'), balance: load('balance.json'),
 });
 const SEEDS = Number(process.argv[2] ?? 60);
-const POLICIES = ['careful', 'reckless', 'random', 'first'] as const;
-type Policy = (typeof POLICIES)[number];
+const ALL_POLICIES = ['careful', 'reckless', 'random', 'first'] as const;
+// npm run sim:policy -- 200 random → รันเฉพาะนโยบายที่ระบุ (ใช้ปรับสมดุลให้เร็วขึ้น)
+const POLICIES = ALL_POLICIES.filter((p) => !process.argv[3] || p === process.argv[3]);
+type Policy = (typeof ALL_POLICIES)[number];
 
 const WAR_CHOICE: Record<'careful' | 'reckless', Record<string, string>> = {
   careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store' },

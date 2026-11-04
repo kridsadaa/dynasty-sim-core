@@ -418,6 +418,14 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         report.notes.push(`${ch.name}ตายแล้ว`);
         break;
       }
+      case 'treat': {
+        for (const wid of ch.woundIds) {
+          const w = ctx.state.wounds[wid];
+          if (!w || (w.stage !== 'infected' && w.stage !== 'festering')) continue;
+          w.treatment = { quality: Math.max(w.treatment?.quality ?? 0, e.quality), by: null, remedy: null };
+        }
+        break;
+      }
       case 'takeWife': {
         const other = who(e.with);
         if (other) report.notes.push(takeMinorWife(ctx, ch, other));
