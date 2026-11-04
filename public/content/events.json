@@ -5858,7 +5858,9 @@
     "textKey": "event.war2328_levy",
     "contextTags": [],
     "roles": {
-      "actor": {}
+      "actor": {},
+      "son": {},
+      "kin": {}
     },
     "trigger": {
       "weight": 0,
@@ -5927,11 +5929,103 @@
         ]
       },
       {
+        "id": "send_son",
+        "textKey": "event.war2328_levy.send_son",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "son"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "send",
+            "soldier": "son"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "stress",
+            "role": "son",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "send_kin",
+        "textKey": "event.war2328_levy.send_kin",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "kin"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "send",
+            "soldier": "kin"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          },
+          {
+            "op": "stress",
+            "role": "kin",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "servant",
+        "textKey": "event.war2328_levy.servant",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "campaign",
+            "key": "nine_armies",
+            "is": "retainers",
+            "min": 1
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "servant"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
         "id": "dodge",
         "textKey": "event.war2328_levy.dodge",
         "risk": {
           "base": 0.45,
-          "hintKey": "risk.levy_dodge",
+          "hintKey": "risk.levy_plead",
           "successKey": "outcome.levy2328.hide",
           "fail": {
             "textKey": "outcome.levy2328.caught",
@@ -5988,6 +6082,400 @@
             "op": "stress",
             "role": "actor",
             "delta": 0.03
+          }
+        ]
+      }
+    ]
+  },
+  "war2328.levy_f": {
+    "id": "war2328.levy_f",
+    "textKey": "event.war2328_levy_head",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "son": {},
+      "kin": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        18,
+        120
+      ],
+      "requires": [
+        {
+          "type": "householdHead"
+        },
+        {
+          "type": "sex",
+          "is": "f"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "send_son",
+        "textKey": "event.war2328_levy.send_son",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "son"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "send",
+            "soldier": "son"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "stress",
+            "role": "son",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "send_kin",
+        "textKey": "event.war2328_levy.send_kin",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "kin"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "send",
+            "soldier": "kin"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          },
+          {
+            "op": "stress",
+            "role": "kin",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "servant",
+        "textKey": "event.war2328_levy.servant",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "campaign",
+            "key": "nine_armies",
+            "is": "retainers",
+            "min": 1
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "servant"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "textKey": "event.war2328_levy.pay",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 12
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -12
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "pay"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "plead",
+        "textKey": "event.war2328_levy_head.plead",
+        "risk": {
+          "base": 0.5,
+          "hintKey": "risk.levy_plead",
+          "successKey": "outcome.levy2328.pleaded",
+          "fail": {
+            "textKey": "outcome.levy2328.pleadfail",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "nine_armies",
+                "action": "dodge"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.3
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "dodge"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          }
+        ]
+      }
+    ]
+  },
+  "war2328.levy_old": {
+    "id": "war2328.levy_old",
+    "textKey": "event.war2328_levy_head",
+    "contextTags": [],
+    "roles": {
+      "actor": {},
+      "son": {},
+      "kin": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        51,
+        120
+      ],
+      "requires": [
+        {
+          "type": "householdHead"
+        },
+        {
+          "type": "sex",
+          "is": "m"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "send_son",
+        "textKey": "event.war2328_levy.send_son",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "son"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "send",
+            "soldier": "son"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.04
+          },
+          {
+            "op": "stress",
+            "role": "son",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "send_kin",
+        "textKey": "event.war2328_levy.send_kin",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "hasRole",
+            "role": "kin"
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "send",
+            "soldier": "kin"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
+          },
+          {
+            "op": "stress",
+            "role": "kin",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "servant",
+        "textKey": "event.war2328_levy.servant",
+        "conditions": [
+          {
+            "type": "householdHead"
+          },
+          {
+            "type": "campaign",
+            "key": "nine_armies",
+            "is": "retainers",
+            "min": 1
+          }
+        ],
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "servant"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "textKey": "event.war2328_levy.pay",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 12
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -12
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "pay"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "plead",
+        "textKey": "event.war2328_levy_head.plead",
+        "risk": {
+          "base": 0.5,
+          "hintKey": "risk.levy_plead",
+          "successKey": "outcome.levy2328.pleaded",
+          "fail": {
+            "textKey": "outcome.levy2328.pleadfail",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "nine_armies",
+                "action": "dodge"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.3
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "dodge"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.02
           }
         ]
       }

@@ -12,6 +12,7 @@ import { feudEvent } from './systems/feud';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
+import { campaignBindings } from './systems/campaign';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep, purse } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
@@ -1074,6 +1075,77 @@ if (LONG) {
   if (!menB.some((m) => !isAlive(m))) problems.push('เรือนที่ไม่ได้ถูกเกณฑ์ไม่มีใครตายจาก shock เลย (ควรเสี่ยง ~8%)');
   check('ศึกเก้าทัพ 2328', problems);
   if (failed === before) console.log('  ✓ ข่าววันที่ 328 หมายเกณฑ์วันที่ 335 · จ่ายแทนหัก 12 ตำลึง · เรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตายตอน shock');
+}
+
+// [5h2g] ศึกเก้าทัพ ขั้น 3: ส่งคนในเรือนไปแทน — ลูกชาย/ญาติชาย/บ่าวชาย, หัวเรือนหญิงหรือชายสูงวัยก็ได้หมายเกณฑ์
+{
+  const before = failed;
+  console.log('ส่งคนไปทัพแทน:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(62), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day = yearStart(ctx, 2328) + 335;
+  hero.sex = 'm';
+  const hh = S.households[hero.householdId!]!;
+  hh.headId = hero.id; // หัวเรือน = ผู้เล่น
+  const ids = (id: string, actor = hero) => prepareEvent(ctx, id, { actor: actor.id, ...campaignBindings(ctx, actor, ['son', 'kin']) }).options.map((o) => o.id);
+  // ยังไม่มีลูก/ญาติชาย: ไม่เห็นตัวเลือกส่งแทนคน แต่ยังจ่ายเงิน/ไปเองได้
+  hero.social.wealth = 500;
+  if (ids('war2328.levy').some((o) => o === 'send_son' || o === 'send_kin')) problems.push('ไม่มีลูก/ญาติชายแต่เห็นตัวเลือกส่งแทน');
+  const son = spawnCharacter(ctx, { name: 'ลูกชาย', sex: 'm', birthYear: 2308, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+  const kid = spawnCharacter(ctx, { name: 'ลูกเล็ก', sex: 'm', birthYear: 2322, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+  const nephew = spawnCharacter(ctx, { name: 'หลานชาย', sex: 'm', birthYear: 2300, estate: 'noble', dynastyId: hero.dynastyId, householdId: hero.householdId });
+  const bound = campaignBindings(ctx, hero, ['son', 'kin']);
+  if (bound.son !== son.id) problems.push(`ลูกชายที่ส่งได้ควรเป็นลูกวัยฉกรรจ์ (ไม่ใช่เด็ก) ได้ ${bound.son}`);
+  if (bound.kin !== nephew.id) problems.push(`ญาติชายที่ส่งได้ควรเป็นหลาน ได้ ${bound.kin}`);
+  if (!ids('war2328.levy').includes('send_son') || !ids('war2328.levy').includes('send_kin')) problems.push('มีลูก/ญาติชายแล้วไม่เห็นตัวเลือกส่งแทน');
+  // คนที่ไม่ใช่หัวเรือน (ลูกชายเอง) ส่งใครแทนไม่ได้
+  if (ids('war2328.levy', son).some((o) => o.startsWith('send') || o === 'servant')) problems.push('ลูกที่ไม่ใช่หัวเรือนเห็นตัวเลือกส่งคนแทน');
+
+  const stateNow = () => ctx.state.meta.campaigns?.nine_armies;
+  const send = (opt: string) => {
+    delete ctx.state.meta.campaigns;
+    chooseOption(ctx, prepareEvent(ctx, 'war2328.levy', { actor: hero.id, ...campaignBindings(ctx, hero, ['son', 'kin']) }), opt);
+    return stateNow();
+  };
+  const c1 = send('send_son');
+  if (c1?.mode !== 'send' || c1.soldier !== son.id) problems.push('ส่งลูกชายแล้วไม่บันทึก soldier เป็นลูกชาย');
+  const c2 = send('send_kin');
+  if (c2?.mode !== 'send' || c2.soldier !== nephew.id) problems.push('ส่งญาติชายแล้วไม่บันทึก soldier เป็นหลาน');
+  // บ่าว: ลดจำนวนบ่าวในเรือน 1 คน
+  hh.retainers = { that: 3, phrai: 0, loyalty: 0.5 };
+  if (!ids('war2328.levy').includes('servant')) problems.push('มีบ่าวแล้วไม่เห็นตัวเลือกส่งบ่าว');
+  const c3 = send('servant');
+  if (c3?.mode !== 'servant' || hh.retainers.that !== 2) problems.push(`ส่งบ่าวแล้วบ่าวควรเหลือ 2 เหลือ ${hh.retainers.that}`);
+  hh.retainers = { that: 0, phrai: 0, loyalty: 0.5 };
+  if (ids('war2328.levy').includes('servant')) problems.push('ไม่มีบ่าวแต่เห็นตัวเลือกส่งบ่าว');
+
+  // หัวเรือนหญิง / ชายสูงวัย ได้หมายเกณฑ์แบบส่งแทน (ไม่มีตัวเลือกไปเอง) และมีทางเลือกที่ปลอดภัยเสมอ (ขอผ่อนผัน)
+  hero.sex = 'f';
+  const f = ids('war2328.levy_f');
+  if (f.includes('serve') || !f.includes('send_son') || !f.includes('plead')) problems.push(`หมายเกณฑ์หัวเรือนหญิงตัวเลือกผิด: ${f}`);
+  hero.sex = 'm';
+  hero.birthDay = yearStart(ctx, 2270);
+  const old = ids('war2328.levy_old');
+  if (!old.includes('send_son') || old.includes('serve')) problems.push(`หมายเกณฑ์ชายสูงวัยตัวเลือกผิด: ${old}`);
+  // schedule: ผู้เล่นแต่ละแบบได้เพียง event เดียวในวันนั้น
+  const dayEvents = (sex: 'm' | 'f', birth: number) => {
+    const c = makeCtx(emptyState(63), content);
+    const h = bootstrapScenario(c);
+    h.sex = sex;
+    h.birthDay = yearStart(c, birth);
+    c.state.households[h.householdId!]!.headId = h.id;
+    c.state.meta.day = yearStart(c, 2328) + 334;
+    return advanceDay(c).flatMap((s) => (s.type === 'event' && s.prepared.def.id.startsWith('war2328.levy') ? [s.prepared.def.id] : []));
+  };
+  const cases: Array<[string, 'm' | 'f', number, string]> = [['ชายวัยฉกรรจ์', 'm', 2290, 'war2328.levy'], ['หญิงหัวเรือน', 'f', 2290, 'war2328.levy_f'], ['ชายสูงวัยหัวเรือน', 'm', 2270, 'war2328.levy_old']];
+  for (const [label, sex, birth, want] of cases) {
+    const got = dayEvents(sex, birth);
+    if (got.join() !== want) problems.push(`${label}ควรได้ ${want} ได้ ${got.join() || 'ไม่มี'}`);
+  }
+  check('ส่งคนไปทัพแทน', problems);
+  if (failed === before) console.log('  ✓ ส่งลูกชาย/ญาติ/บ่าวแทนบันทึกถูก · ไม่มีคนก็ไม่เห็นตัวเลือก · ไม่ใช่หัวเรือนส่งแทนไม่ได้ · หัวเรือนหญิง/ชายสูงวัยได้หมายแบบส่งแทน มีทางขอผ่อนผัน');
 }
 
 // [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้
