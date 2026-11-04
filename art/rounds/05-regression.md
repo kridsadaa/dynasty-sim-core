@@ -118,3 +118,22 @@ A family legend: a warrior wielding a two-handed sword fights several enemy sold
 - **ที่ดีขึ้นกว่า approved เดิม:** S1 (ผ้านุ่งจีบ), S3 (ปากไม่ดำ ไม่มีผ้าคลุมไหล่สองข้าง), S6 (ไม่มีเสื้อกล้าม)
 - **ที่ถอยหลัง/ต้องระวัง:** ผมหญิงเป็นทรงตั้งสูง (pompadour) ทุกภาพ — เป็นทิศทางที่ผู้ใช้เลือก; บันไดไม่แขวนใน S2-b, S7, S8; หน้ากระดาษเปล่าครึ่งภาพใน S2-b, S6-a
 - ตัวอย่าง a/b น้อย (3 โจทย์) และผมดูแต่ละภาพครั้งเดียว ผลนี้เป็นแนวโน้ม
+
+## Prompt ของภาพที่อนุมัติเข้า art/approved (2026-11-04)
+
+ใช้คู่กับ style block `reality` v0.8 ใน art/style.json (ภาพอนุมัติ: S1, S3-a, S6-b)
+
+### S1 ขุนนางลอมพอก
+```
+Full-body view: a Siamese official, an adult man in his forties, standing in a timber house doorway, three-quarter view, wearing an open-front collarless white muslin over-shirt with very wide sleeves reaching almost to the wrist, hanging to the hips, over a patterned silk lower cloth. The lower cloth is NOT a wrapped skirt, sarong or trousers: its two ends are pulled together between the legs and tucked in at the back, so it forms loose pleated breeches that end at the knee, with the lower legs bare. On his head is a tall, narrow, brimless white cloth hat shaped like a slender cone, about as tall as his head again, with thin gold bands near the base, tied under the chin with a cord. Barefoot; a pair of pointed heel-less slippers set beside him. Avoid also: hat brim, wide-brimmed hat, witch hat, farmer's hat, conical straw hat. Mouth closed with a calm natural expression.
+```
+
+### S3 หญิงมีฐานะ
+```
+Medium shot: a well-to-do Siamese woman in her thirties sitting on a reed mat inside a timber house with both legs folded to one side, wearing a black wrap skirt, a horizontal white breast-cloth wrapped snugly around her torso and a white single-shoulder diagonal sash over her left shoulder only, both arms and the right shoulder completely bare; pear-shaped gold earrings, several rings on her last three fingers; a betel box beside her; mouth closed with a faint smile.
+```
+
+### S6 หญิงชรา
+```
+Portrait from the shoulders up: an elderly Siamese village woman in her sixties, deeply lined sun-weathered face, grey short hair as described in the style block, mouth closed with a calm expression, gold pear-shaped earrings; plain background of a bamboo wall.
+```
