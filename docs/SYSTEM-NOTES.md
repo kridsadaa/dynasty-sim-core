@@ -7,6 +7,8 @@
 
 ---
 
+> **ความเสี่ยงที่ผูกกับตัวเลือก (2026-11-04):** `kill` มี `chance` (โอกาสตายชั้นที่สองใน `risk.fail`), `buildContentDB` ตรวจว่าตัวเลือกที่ตายได้มี `risk.hintKey` และมีทางปลอดภัย, op `treat`/`plague`/`inoculate`/`feud`/`ill`, แผลหนองเน่าของผู้เล่นตายได้ (`body.ts`), ข่าวโรคระบาด `plague.news` (ตาราง `historyEvents` 2362/2391), ผลชดเชยตายอย่างกล้า (`inheritance.heroicDeathCauses`) — ออกแบบและผลวัดอยู่ที่ [design-choice-risk.md](design-choice-risk.md); วัดด้วย `npm run sim:policy`
+
 ## แผนที่ระบบ → ไฟล์
 
 ### แกนกลาง (`src/core/`)
@@ -26,7 +28,8 @@
 | `war.ts` | ศึกพม่า 2308–2310: ฝังเงินเป็นไหทองซ่อน (`buryValuables`/`unearthBuried`), ตัดสินใจอยู่/หนี (`stayInCity`/`leaveCity` เก็บใน `meta.war`), ที่อยู่รายคน (`warWhere`) และตัวคูณผลตอนกรุงแตก (`warDeathMult` = ที่อยู่ × การเตรียมตัว, `WAR_CASH_LOSS_MULT`), ถูกกวาดต้อนตอนกรุงแตก (`shock.captureRisk`, `WAR_CAPTURE_MULT`, `CAPTIVE_TAG` — หายจากเกมเหมือนตาย ไม่มีงานศพ), ตามพระยาตาก (`joinTaksin`) — event ล้อมกรุงใช้เงื่อนไข `inCity` |
 | `fiction.ts` | เล่นต่อหลัง 2400 (เรื่องสมมติ): สำรับเหตุการณ์ `rules.json` › `fiction.deck` 12 ใบ (โรคห่า น้ำท่วม แล้ง ไฟไหม้ ศึกชายแดน/ศึกใหญ่ โจรชุม ราชสำนักผันผวน ส่วยหนัก + ปีดี 3 ใบ `kind: boon` ทรัพย์เพิ่ม ใจเบาลง) จั่วแบบ shuffle bag ทุก 8–15 ปี เก็บใน `meta.fiction`; ใช้ shock เดิมผ่าน `applyHistoricalShocks`; ก่อน 2400 ไม่เรียก rng จึงไม่กระทบเรื่องจริง |
 | `historyEvents.ts` | ส่ง event ให้ผู้เล่นตามวันที่ของปีประวัติศาสตร์ (`rules.json` `historyEvents`) — ศึกพม่า 2308–2310 ดู [design-war-2308.md](design-war-2308.md) |
-| `mortality.ts` `mourning.ts` | ทอยตายรายปีตามอายุ ไข้ทรพิษ; event งานศพของญาติใกล้ชิด |
+| `mortality.ts` `mourning.ts` | ทอยตายรายปีตามอายุ ไข้ทรพิษ; event งานศพของญาติใกล้ชิด; ผู้เล่นมีตัวคูณ `playerAdultScale` + ความหนักใจ + ป่วยหนัก (`illMult`); `inoculationEvent` เสนอปลูกฝีให้ลูกตั้งแต่ 2382 |
+| `feud.ts` | `feudEvent` — ลอบฆ่าสำเร็จ (op `feud`) เก็บใน `meta.feuds` → 1–3 ปีต่อมาญาติเหยื่อมา (event `feud.revenge`) เฉพาะผู้เล่นที่สั่งฆ่า |
 | `career.ts` | ราชการ: ตำแหน่ง, `favor`, เลื่อนยศ/ถูกลงโทษ, รายได้ตามศักดินา; `careerSkill` = ขั้นวิชาในสายของกรม → `favor` รายปี |
 | `skills.ts` | วิชาประจำตัว 4 สาย และมรดกตระกูล 5 สาย (perk) |
 | `marriage.ts` `matchmaking.ts` `wives.ts` | แต่งงาน/สินสอด/หนีตามกัน; หาคู่; เมียน้อยและหย่า |
