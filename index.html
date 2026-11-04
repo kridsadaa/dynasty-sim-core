@@ -204,13 +204,14 @@
         section { padding: 10px 12px; }
         #log { height: calc(100dvh - 210px); min-height: 280px; }
         #known, #tree { max-height: none; }
-        #backdrop, #sheet { padding: 8px; align-items: flex-end; }
-        #event, #inspect { width: 100%; max-height: calc(100dvh - 16px); border-radius: 12px; }
+        /* หัวเว็บติดบนจอและอยู่เหนือพื้นหลังหน้าต่าง (กดหยุดเวลาได้) → เว้นที่ให้เท่าความสูงหัวเว็บจริง (--header-h ตั้งจาก main.ts) ไม่งั้นบังหัวเรื่อง event */
+        #backdrop, #sheet { padding: calc(var(--header-h, 64px) + 8px) 8px 8px; align-items: flex-end; }
+        #event, #inspect { width: 100%; max-height: calc(100dvh - var(--header-h, 64px) - 16px); border-radius: 12px; }
         #event .opt { padding: 10px 12px; margin-top: 8px; }
       }
       @media (max-width: 420px) {
         .clock { flex-wrap: wrap; }
-        .dates { width: 100%; }
+        .dates { flex: 1 0 100%; }
         #status { min-width: 0; font-size: 12px; }
       }
       #play { min-width: 5.5em; text-align: center; }

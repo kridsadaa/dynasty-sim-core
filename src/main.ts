@@ -78,6 +78,13 @@ for (const b of document.querySelectorAll<HTMLButtonElement>('.tabs button')) b.
 window.addEventListener('resize', () => {
   if (tab === 'player' && window.innerWidth > 800) showTab('log');
 });
+// ความสูงหัวเว็บจริง (มือถือ: นาฬิกาตัดบรรทัดได้) → CSS ใช้เว้นที่ให้หน้าต่าง event/ข้อมูลคน ไม่ให้หัวเว็บบัง
+{
+  const header = document.querySelector('header')!;
+  const setHeaderH = () => document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+  setHeaderH();
+  new ResizeObserver(setHeaderH).observe(header);
+}
 
 /** สร้างช่องข้อความที่จองความกว้างเท่าคำที่ยาวที่สุด (data-max) ไม่ให้ดิ้นหรือทับกัน */
 function dSlot(text: string, maxText: string, cls?: string): HTMLElement {
@@ -87,7 +94,12 @@ function dSlot(text: string, maxText: string, cls?: string): HTMLElement {
 }
 
 /** แยกวันที่เป็นช่องความกว้างคงที่ตามคำที่ยาวที่สุดของแต่ละส่วน ไม่ให้ตัวหนังสือดิ้นไปมาระหว่างเวลาเดิน */
+let shownDates = '';
 function renderDates(solar: string, lunar: string) {
+  // progress มาทุก tick แม้วันยังไม่เปลี่ยน — ไม่ต้องสร้างช่องใหม่ถ้าข้อความเดิม
+  const key = `${solar}|${lunar}`;
+  if (key === shownDates) return;
+  shownDates = key;
   const sBox = $('date');
   const sParts = solar.split(' ');
   sBox.replaceChildren(
@@ -231,7 +243,7 @@ function renderClock() {
   // มีหน้าต่าง event: เวลาหยุดรออยู่แล้ว ปุ่มนี้สั่งว่าตัดสินใจเสร็จแล้วจะให้เดินต่อเองหรือหยุดค้างไว้
   const waiting = modalOpen() && !clock.playing;
   const running = clock.playing || (waiting && clock.resumeAfter);
-  play.textContent = running ? '⏸ หยุด' : '▶ เดิน';
+  play.textContent = running ? (waiting ? '⏸ หยุดหลังเลือก' : '⏸ หยุด') : '▶ เดิน';
   play.classList.toggle('playing', running);
   play.disabled = !hasGame || clock.ended;
   $<HTMLButtonElement>('slower').disabled = !hasGame || clock.speed <= 1;
