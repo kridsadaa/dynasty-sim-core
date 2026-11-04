@@ -10,6 +10,7 @@ import { adjustFavor, applyCareer, officeRank } from './career';
 import { applyChore } from './chores';
 import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
 import { buryValuables, joinTaksin, leaveCity, stayInCity, warWhere } from './war';
+import { applyCampaign, campaignIs } from './campaign';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { markDead } from './handover';
@@ -175,6 +176,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       return warWhere(ctx, ch.id) === 'city';
     case 'warPrep':
       return (ctx.state.meta.war?.prep ?? 0) >= c.min;
+    case 'campaign':
+      return campaignIs(ctx, ch, c);
     case 'householdHead':
       return !!ch.householdId && ctx.state.households[ch.householdId]?.headId === ch.id;
     case 'canPay': {
@@ -522,6 +525,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         report.named = { characterId: ch.id, name, byPlayer };
         break;
       }
+      case 'campaign':
+        report.notes.push(...applyCampaign(ctx, ch, e, e.action === 'send' ? who(e.soldier) : undefined));
+        break;
       case 'war':
         if (e.action === 'prep') ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };
         else if (e.action === 'bury') report.notes.push(...buryValuables(ctx, ch, e.fraction));

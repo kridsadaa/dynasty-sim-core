@@ -5794,5 +5794,203 @@
         ]
       }
     ]
+  },
+  "war2328.news": {
+    "id": "war2328.news",
+    "textKey": "event.war2328_news",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "ask",
+        "textKey": "event.war2328_news.ask",
+        "effects": [
+          {
+            "op": "favor",
+            "role": "actor",
+            "delta": 0.03
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "textKey": "event.war2328_news.ignore",
+        "effects": []
+      },
+      {
+        "id": "store",
+        "textKey": "event.war2328_news.store",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 2
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -2
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "stock"
+          }
+        ]
+      }
+    ]
+  },
+  "war2328.levy": {
+    "id": "war2328.levy",
+    "textKey": "event.war2328_levy",
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0,
+      "ageRange": [
+        18,
+        50
+      ],
+      "requires": [
+        {
+          "type": "sex",
+          "is": "m"
+        }
+      ]
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "serve",
+        "textKey": "event.war2328_levy.serve",
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "serve"
+          },
+          {
+            "op": "skill",
+            "role": "actor",
+            "skill": "combat",
+            "delta": 2
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "textKey": "event.war2328_levy.pay",
+        "conditions": [
+          {
+            "type": "purse",
+            "min": 12
+          }
+        ],
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -12
+          },
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "pay"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.01
+          }
+        ]
+      },
+      {
+        "id": "dodge",
+        "textKey": "event.war2328_levy.dodge",
+        "risk": {
+          "base": 0.45,
+          "hintKey": "risk.levy_dodge",
+          "successKey": "outcome.levy2328.hide",
+          "fail": {
+            "textKey": "outcome.levy2328.caught",
+            "effects": [
+              {
+                "op": "campaign",
+                "role": "actor",
+                "key": "nine_armies",
+                "action": "dodge"
+              },
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -15
+              },
+              {
+                "op": "favor",
+                "role": "actor",
+                "delta": -0.5
+              },
+              {
+                "op": "merit",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "wound",
+                "role": "actor",
+                "part": {
+                  "tag": "body:torso"
+                },
+                "kind": "blunt",
+                "severity": [
+                  0.1,
+                  0.2
+                ]
+              },
+              {
+                "op": "stress",
+                "role": "actor",
+                "delta": 0.05
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "campaign",
+            "role": "actor",
+            "key": "nine_armies",
+            "action": "dodge"
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.03
+          }
+        ]
+      }
+    ]
   }
 }

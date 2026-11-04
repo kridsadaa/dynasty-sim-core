@@ -246,6 +246,12 @@ for (let seed = 1; seed <= SEEDS; seed++) {
         bal.takeoverAges.push(ageOf(ctx, S.characters[S.meta.playerCharacterId]!));
       }
     }
+    // ผู้เล่นตายจากตัวเลือก event ในวันสุดท้ายของเรื่อง — ไม่มี signal playerDied รอบหน้าเพราะเกมจบ ต้องส่งต่อตรงนี้ ไม่งั้น invariant เห็นผู้นำตายค้าง
+    const last = S.characters[S.meta.playerCharacterId];
+    if (!over && S.meta.day >= endDay && last && !isAlive(last)) {
+      if (!heirCandidates(ctx, last).length) over = true;
+      else performHandover(ctx, last.id);
+    }
     trackDemography(ctx, tracked);
     const me = S.characters[S.meta.playerCharacterId];
     if (dayOfYear(ctx, S.meta.day) === 0 && isAlive(me)) {
@@ -1017,6 +1023,57 @@ if (LONG) {
   if (!(east.cash > 70 && city.cash < 55)) problems.push(`เงินสดที่เหลือ: หนีตะวันออก ${east.cash.toFixed(0)} · อยู่ในกรุง ${city.cash.toFixed(0)} (ควร >70 และ <55)`);
   check('ออกจากกรุงหรืออยู่', problems);
   if (failed === before) console.log(`  ✓ ตัวเลือกตามหัวเรือน · รายชื่อคนที่ไปด้วยถูก · กรุงแตก: ต่อพัน (ตาย/กวาดต้อน) กรุง ${city.dead}/${city.captured} ตะวันออก ${east.dead}/${east.captured} ป่า ${forest.dead}/${forest.captured} · รอด: กรุงไม่เตรียม ${(city.survive * 100).toFixed(0)}% prep3 ${(prepared.survive * 100).toFixed(0)}% prep5 ${(wellPrepared.survive * 100).toFixed(0)}% ตะวันออก ${(east.survive * 100).toFixed(0)}% ป่า ${(forest.survive * 100).toFixed(0)}% ยอมแพ้ ${(camp.survive * 100).toFixed(0)}% (ตาย/กวาดต้อน ${camp.dead}/${camp.captured}, เงินสด ${camp.cash.toFixed(0)}) · เงินสดเหลือ กรุง ${city.cash.toFixed(0)} ตะวันออก ${east.cash.toFixed(0)}`);
+}
+
+// [5h2f] ศึกเก้าทัพ 2328–2329 (docs/design-war-2328.md ขั้น 2): ข่าวและหมายเกณฑ์มาตามวันจริง, ตัวเลือกบันทึกใน meta.campaigns, คนในเรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตาย
+{
+  const before = failed;
+  console.log('ศึกเก้าทัพ 2328:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(60), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  hero.sex = 'm';
+  const yearOfShock = (tag: string) => content.history.find((h) => h.tag === tag)?.year;
+  if (yearOfShock('history:nine_armies') !== 2329) problems.push('เก้าทัพต้องอยู่ปี 2329 (ลาดหญ้าแตก 17 ก.พ. 2329)');
+  if (yearOfShock('history:tha_din_daeng') !== 2330) problems.push('ท่าดินแดงต้องอยู่ปี 2330');
+
+  // ข่าวและหมายเกณฑ์มาตามวัน (ข่าวถึงกรุง 25 พ.ย. 2328 = วันที่ 328)
+  S.meta.day = yearStart(ctx, 2328) + 327;
+  const seen: Array<[number, string]> = [];
+  for (let i = 0; i < 12; i++) for (const sig of advanceDay(ctx)) if (sig.type === 'event' && sig.prepared.def.id.startsWith('war2328')) seen.push([dayOfYear(ctx, S.meta.day), sig.prepared.def.id]);
+  if (!seen.some(([d, id]) => d === 328 && id === 'war2328.news')) problems.push(`ข่าวไม่มาวันที่ 328: ${JSON.stringify(seen)}`);
+  if (!seen.some(([d, id]) => d === 335 && id === 'war2328.levy')) problems.push(`หมายเกณฑ์ไม่มาวันที่ 335: ${JSON.stringify(seen)}`);
+
+  // ตัวเลือกหมายเกณฑ์: ไปเอง → campaigns.mode self; จ่ายแทนต้องมีเงิน 12 และหักเงิน; หลบ → dodge
+  hero.social.wealth = 500;
+  const opts = (id = 'war2328.levy') => prepareEvent(ctx, id, { actor: hero.id });
+  const p0 = purse(ctx, hero);
+  chooseOption(ctx, opts(), 'pay');
+  if (S.meta.campaigns?.nine_armies?.mode !== 'pay') problems.push('จ่ายแทนแล้วไม่บันทึก mode pay');
+  if (Math.abs(p0 - purse(ctx, hero) - 12) > 0.6) problems.push(`จ่ายแทนควรหัก 12 ตำลึง หักไป ${(p0 - purse(ctx, hero)).toFixed(1)}`);
+  chooseOption(ctx, opts(), 'serve');
+  const st = S.meta.campaigns?.nine_armies;
+  if (st?.mode !== 'self' || st.soldier !== hero.id) problems.push('ไปเองแล้วไม่บันทึก mode self/soldier');
+  hero.social.wealth = 1;
+  for (const ch of Object.values(S.characters)) if (ch.id !== hero.id) ch.social.wealth = 0;
+  if (opts().options.some((o) => o.id === 'pay')) problems.push('คนจนเห็นตัวเลือกจ้างคนแทน');
+  const young = spawnCharacter(ctx, { name: 'เด็กหนุ่ม', sex: 'm', birthYear: 2315, estate: 'noble', dynastyId: null, householdId: null });
+  if (prepareEvent(ctx, 'war2328.levy', { actor: young.id }).options.length === 0) problems.push('หมายเกณฑ์ไม่มีตัวเลือกให้ชายหนุ่ม');
+
+  // คนในเรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตายตอน shock ปี 2329 (ตายจากตัวเลือกเท่านั้น); ถ้าเรือนนั้นไม่ได้ถูกเกณฑ์ ยังเสี่ยงตามเดิม
+  const manyMen = (c: typeof ctx) => Array.from({ length: 60 }, (_, i) => spawnCharacter(c, { name: `ชาย${i}`, sex: 'm', birthYear: 2295, estate: 'noble', dynastyId: c.state.characters[c.state.meta.playerCharacterId]!.dynastyId, householdId: c.state.characters[c.state.meta.playerCharacterId]!.householdId }));
+  const men = manyMen(ctx);
+  applyHistoricalShocks(ctx, 2329);
+  if (men.some((m) => !isAlive(m))) problems.push('คนในเรือนที่ถูกเกณฑ์ถูกสุ่มตายตอน shock');
+  const ctxB = makeCtx(emptyState(61), content);
+  bootstrapScenario(ctxB);
+  ctxB.state.meta.day = yearStart(ctxB, 2329); // อายุคนในเรือนคำนวณจากวันปัจจุบัน
+  const menB = manyMen(ctxB);
+  applyHistoricalShocks(ctxB, 2329);
+  if (!menB.some((m) => !isAlive(m))) problems.push('เรือนที่ไม่ได้ถูกเกณฑ์ไม่มีใครตายจาก shock เลย (ควรเสี่ยง ~8%)');
+  check('ศึกเก้าทัพ 2328', problems);
+  if (failed === before) console.log('  ✓ ข่าววันที่ 328 หมายเกณฑ์วันที่ 335 · จ่ายแทนหัก 12 ตำลึง · เรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตายตอน shock');
 }
 
 // [5h3] เล่นต่อหลัง 2400: สำรับเหตุการณ์สมมติ — ไม่จั่วก่อน 2400, ไม่ซ้ำจนกว่าสำรับหมด, ห่างกัน 8–15 ปี, deterministic, เซฟได้

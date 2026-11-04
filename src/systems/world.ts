@@ -9,9 +9,9 @@ import {
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
 import { fictionEventsOfYear } from './fiction';
-import { applyHistoricalShocks, historyHeadline, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
+import { appointLivingHead, applyHistoricalShocks, historyHeadline, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, deptOf, officeRank } from './career';
-import { historyEventsToday } from './historyEvents';
+import { campaignResolutionsToday, historyEventsToday } from './historyEvents';
 import { pruneState } from './prune';
 import { legendTruthEvent, renderLegend } from './legend';
 import { divorceEvent, jealousyEvent, livingWives, minorWifeEvent } from './wives';
@@ -183,6 +183,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const ch of diedToday.filter((c) => !isHeadWithHeir(c))) {
       const r = settleDeath(ctx, ch);
       if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', kind: 'inherit', line });
+      appointLivingHead(ctx, ch); // หัวหน้าตระกูลที่ไม่มีผู้สืบตามสายเลือด แต่ตระกูลยังมีคนอยู่
     }
     // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
     for (const ch of diedToday.filter(isHeadWithHeir)) {
@@ -204,6 +205,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   }
 
   // event ตามปฏิทินประวัติศาสตร์ (ศึกพม่า 2308–2310 ฯลฯ — rules.json historyEvents)
+  for (const line of campaignResolutionsToday(ctx)) out.push({ type: 'log', kind: 'history', line });
   for (const prepared of historyEventsToday(ctx)) out.push({ type: 'event', prepared });
   // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่ — ที่ทำจนเป็นนิสัยแล้วเลือกให้เอง
   for (const req of player ? tickFestivals(ctx, awayLabor(ctx, player)) : []) {

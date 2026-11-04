@@ -1,6 +1,7 @@
 import { ageOf, dayOfYear, isAlive, yearOf, type Ctx } from '../core/ctx';
 import type { Character } from '../core/types';
 import { spawnLocal } from './acquaintance';
+import { campaignBindings, resolveCampaign } from './campaign';
 import { prepareEvent, requirementsMet, type PreparedEvent } from './events';
 
 // ============================================================================
@@ -18,10 +19,11 @@ export function historyEventsToday(ctx: Ctx): PreparedEvent[] {
   const day = dayOfYear(ctx, S.meta.day);
   const out: PreparedEvent[] = [];
   for (const s of ctx.content.historyEvents) {
-    if (s.year !== year || s.day !== day || ageOf(ctx, player) < (s.minAge ?? 0)) continue;
+    if (!s.event || s.year !== year || s.day !== day || ageOf(ctx, player) < (s.minAge ?? 0)) continue;
     const def = ctx.content.events[s.event];
     if (!def) continue;
-    const bindings: Record<string, Character['id']> = { actor: player.id };
+    // role son/kin = ญาติชายในเรือนที่ส่งไปทัพแทนได้ (systems/campaign.ts) — ไม่มีคนก็ไม่ผูก
+    const bindings: Record<string, Character['id']> = { actor: player.id, ...campaignBindings(ctx, player, Object.keys(def.roles)) };
     const age = ageOf(ctx, player);
     if (def.trigger.ageRange && (age < def.trigger.ageRange[0] || age > def.trigger.ageRange[1])) continue;
     if (!requirementsMet(ctx, def, player, bindings)) continue;
@@ -33,4 +35,12 @@ export function historyEventsToday(ctx: Ctx): PreparedEvent[] {
     out.push(prepareEvent(ctx, s.event, bindings));
   }
   return out;
+}
+
+/** ศึกจบวันนี้ → ข่าวชัยและผลของคนที่ถูกส่งไปแทน (ทำแม้ผู้เล่นตายแล้ว เพราะผลเป็นของเรือน) */
+export function campaignResolutionsToday(ctx: Ctx): string[] {
+  const S = ctx.state;
+  const year = yearOf(ctx, S.meta.day);
+  const day = dayOfYear(ctx, S.meta.day);
+  return ctx.content.historyEvents.filter((s) => s.resolve && s.year === year && s.day === day).flatMap((s) => resolveCampaign(ctx, s.resolve!));
 }

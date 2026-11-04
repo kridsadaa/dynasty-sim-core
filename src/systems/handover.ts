@@ -1,3 +1,4 @@
+import { campaignShockExempt } from './campaign';
 import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, newId, yearOf, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
@@ -356,6 +357,19 @@ export function driftLine(r: PruneReport): string | null {
  * ผู้ตายที่ไม่ใช่ผู้นำตระกูล (ลูกหลานสายรอง คู่ครองคนนอก) — งานศพ + แบ่งมรดกให้ลูก (ไม่มีลูก → ญาติ) + ออกจากเรือน
  * ไม่แตะตำแหน่งผู้นำ ตำนาน หรือข้อห้ามตระกูล; ต้องเรียกก่อน prune ไม่งั้นทรัพย์ค้างอยู่กับตัวละครที่ถูกลบ
  */
+/**
+ * หัวหน้าตระกูลตายโดยไม่มีผู้สืบตามสายเลือด (heirCandidates ว่าง) แต่ตระกูลยังมีสมาชิกมีชีวิต — ตั้งผู้เล่น (ถ้าอยู่ตระกูลนี้) หรือคนอายุมากสุดเป็นหัวหน้า
+ * ไม่งั้น headNodeId ค้างอยู่กับคนตาย (invariant "ผู้นำตระกูลที่ไม่มีชีวิต") จนกว่าผู้เล่นจะตาย
+ */
+export function appointLivingHead(ctx: Ctx, dead: Character): void {
+  const dyn = dead.dynastyId ? ctx.state.dynasties[dead.dynastyId] : undefined;
+  if (!dyn || dyn.headNodeId !== dead.familyNodeId) return;
+  const living = Object.values(ctx.state.characters).filter((c) => c.dynastyId === dyn.id && isAlive(c));
+  const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
+  const next = living.find((c) => c.id === player?.id) ?? living.sort((x, y) => ageOf(ctx, y) - ageOf(ctx, x))[0];
+  if (next) dyn.headNodeId = next.familyNodeId;
+}
+
 export function settleDeath(ctx: Ctx, dead: Character): { lines: string[]; heirIds: Array<Character['id']> } {
   const heirs = estateHeirs(ctx, dead);
   const lines = [holdFuneral(ctx, dead)];
@@ -656,6 +670,7 @@ export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
     for (const c of Object.values(ctx.state.characters)) {
       if (!isAlive(c) || isGraced(ctx, c) || (!ev.shock.everyone && !c.dynastyId)) continue;
       if (ev.shock.ages && (ageOf(ctx, c) < ev.shock.ages[0] || ageOf(ctx, c) > ev.shock.ages[1])) continue;
+      if (campaignShockExempt(ctx, c, ev.tag)) continue; // คนในเรือนผู้เล่นที่ถูกเกณฑ์ ตายได้เฉพาะจากตัวเลือก
       const whereMult = (ev.tag === 'history:fall_of_ayutthaya' ? warDeathMult(ctx, c.id) : 1) * (ev.kind === 'plague' ? plagueDeathMult(ctx, c, ev.year) : 1);
       if (!ctx.rng.chance((ev.shock.deathRiskBySex?.[c.sex] ?? ev.shock.deathRisk) * whereMult)) continue;
       markDead(ctx, c, ev.tag);

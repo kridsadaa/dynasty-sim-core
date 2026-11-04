@@ -605,6 +605,8 @@ export type Condition =
   | { type: 'householdHead' }
   /** ยังอยู่ในกรุง (ไม่ได้พาตัวออกไปตอนศึกพม่า) */
   | { type: 'inCity' }
+  /** สถานะการเกณฑ์ศึก key: self = ผู้เล่นเองไปทัพ · other = คนอื่นไปแทน · none = ไม่มีใครไป · stocked = ตุนข้าวไว้ · retainers = มีบ่าวไพร่ในเรือนอย่างน้อย min */
+  | { type: 'campaign'; key: string; is: 'self' | 'other' | 'none' | 'stocked' | 'retainers'; min?: number }
   /** เตรียมรับศึกสะสมถึง min (meta.war.prep) */
   | { type: 'warPrep'; min: number }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
@@ -698,6 +700,10 @@ export type Effect =
   | { op: 'war'; role: string; action: 'bury'; fraction: Unit }
   /** ปักหลักอยู่ในกรุง */
   | { op: 'war'; role: string; action: 'stay' }
+  /** ศึกหลัง 2310 (systems/campaign.ts): serve/pay/dodge/servant = ตัดสินใจเรื่องหมายเกณฑ์ · send = ส่งคนใน role soldier ไปแทน · conduct = ท่าทีในสนามรบ · stock = ตุนข้าว */
+  | { op: 'campaign'; role: string; key: string; action: 'serve' | 'pay' | 'dodge' | 'servant' | 'stock' }
+  | { op: 'campaign'; role: string; key: string; action: 'send'; soldier: string }
+  | { op: 'campaign'; role: string; key: string; action: 'conduct'; conduct: 'front' | 'orders' | 'fallback' }
   /** ออกจากกรุง: ทิศ + พาใคร (all = ทั้งเรือน, nuclear = คู่ครองและลูกในเรือน, alone = ไปคนเดียว) */
   | { op: 'war'; role: string; action: 'leave'; dir: 'east' | 'forest' | 'camp'; party: 'all' | 'nuclear' | 'alone' }
   /** ตามพระยาตากฝ่าวงล้อมออกไปทางตะวันออกคนเดียว — ตระกูลนับเป็นฝ่ายพระเจ้าตากแต่เนิ่น (ได้ความโปรดปรานในราชการ 2311–2324) */
@@ -946,11 +952,26 @@ export interface TradeDef {
 // History (Anti-snowball shocks)
 // ============================================================================
 
+/**
+ * การเกณฑ์ทัพของเรือนผู้เล่นในศึกหนึ่ง — mode ตั้งเมื่อหมายเกณฑ์มาถึงและผู้เล่นตัดสินใจแล้ว (ไม่มี mode = เรือนนี้ไม่ได้ถูกเกณฑ์ → คนในเรือนยังเสี่ยงตามสุ่มเดิม)
+ *  self = ผู้เล่นไปเอง · send = ส่งญาติชาย (soldier) · servant = ส่งบ่าวชาย · pay = จ่ายเงินแทน · dodge = หลบ
+ */
+export interface CampaignState {
+  mode?: 'self' | 'send' | 'servant' | 'pay' | 'dodge';
+  soldier?: CharacterId;
+  conduct?: 'front' | 'orders' | 'fallback';
+  /** ตุนข้าวไว้ก่อนข้าวแพง (event ข่าวศึก) */
+  stocked?: boolean;
+}
+
 /** วันที่ (นับจาก 1 ม.ค. = 0) ของปีหนึ่ง ที่ผู้เล่นอายุถึง minAge จะได้ event นี้ — ไม่ซ้ำเพราะวันตรงครั้งเดียวต่อปี */
 export interface HistoryEventSchedule {
   year: number;
   day: number;
-  event: EventDefId;
+  /** event ที่ส่งให้ผู้เล่น — ไม่ใส่ได้ถ้ามี resolve */
+  event?: EventDefId;
+  /** สรุปผลศึกที่ผู้เล่นถูกเกณฑ์ไว้ (คีย์ใน meta.campaigns เช่น nine_armies) — ไม่ต้องมีผู้เล่นมีชีวิต (systems/campaign.ts) */
+  resolve?: string;
   minAge?: number;
 }
 
@@ -1433,6 +1454,8 @@ export interface GameState {
     feuds?: Array<{ actorId: CharacterId; dueDay: number }>;
     plague?: { year: number; kind: 'flee' | 'home' | 'merit'; householdId: Character['householdId'] };
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };
+    /** ศึกหลัง 2310 ที่เกณฑ์คนในเรือนผู้เล่น คีย์ตามศึก (nine_armies, tha_din_daeng) — docs/design-war-2328.md; เซฟเก่าไม่มี */
+    campaigns?: Record<string, CampaignState>;
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;
