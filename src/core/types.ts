@@ -759,6 +759,8 @@ export interface GameEventDef {
   variables?: Record<string, { oneOf: TagId[] }>;
   roles: Record<string, RoleFilter>;
   /** weight 0 = ไม่สุ่มขึ้นเอง เกิดได้เฉพาะเป็น followUp ของ event อื่น */
+  /** สถานการณ์ที่อันตรายโดยตัวมันเอง ทุกตัวเลือกเสี่ยงตายได้ (เช่นไข้หนัก) — ยกเว้นกฎ "ต้องมีทางปลอดภัย" แต่ทุกตัวเลือกยังต้องมี risk.hintKey */
+  perilous?: boolean;
   trigger: {
     ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number;
     /** เกิดเฉพาะคนที่รับราชการอยู่ในระดับนี้ (0 = มหาดเล็ก) */
@@ -1093,6 +1095,8 @@ export interface Balance {
     inoculationFrom: number;
     /** ผู้เล่นที่ป่วยหนัก (illYear) ในปีที่ผ่านไป: ตัวคูณความเสี่ยงตายรายปี */
     illMult: number;
+    /** ผู้เล่นอายุ 15–59 ที่ทอยตายด้วยไข้: ตายด้วยลูกเต๋าล้วนที่ความเสี่ยง × d และกลายเป็น event ไข้หนัก (body.grave_illness) ที่ความเสี่ยง × 2(1−d) เพราะวิธีรักษาตายเฉลี่ยครึ่งหนึ่ง (0.3/0.5/0.7) — ตายรวมของผู้เล่นสุ่มจึงคงเดิมทุกค่า d (docs/design-choice-risk.md) */
+    graveIllnessDiceShare: Unit;
     /** ความหนักใจของผู้เล่นเกินค่านี้เพิ่มความเสี่ยงตายรายปี ×(1 + stressSlope × ส่วนที่เกิน) */
     stressFrom: Unit;
     stressSlope: number;
@@ -1424,6 +1428,8 @@ export interface GameState {
     /** สถานะศึกพม่า 2308–2310 — ไม่มี = ยังไม่เริ่ม/ยังไม่ได้ตัดสินใจอะไร (เซฟเก่าไม่มี) */
     /** การเตรียมรับโรคระบาดปี year (ตั้งโดย op plague ปีก่อน) — ใช้ครั้งเดียวแล้วลบ */
     /** ผู้ที่สั่งลอบฆ่าสำเร็จแล้วรอวันถูกล้างแค้น — feud.revenge ออกให้เฉพาะผู้เล่นคนเดิม (ผู้สืบไม่ต้องรับกรรม) */
+    /** ทอยตายรายปีของผู้เล่นออกผล "ไข้หนัก" — world.ts แปลงเป็น event body.grave_illness ทันที */
+    graveIllness?: boolean;
     feuds?: Array<{ actorId: CharacterId; dueDay: number }>;
     plague?: { year: number; kind: 'flee' | 'home' | 'merit'; householdId: Character['householdId'] };
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };

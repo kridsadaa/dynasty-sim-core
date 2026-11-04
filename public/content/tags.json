@@ -46,6 +46,7 @@
   { "id": "situation:craft", "parents": ["situation:any"], "label": { "th": "งานช่าง" } },
   { "id": "situation:old_age", "parents": ["situation:any"], "label": { "th": "ชราภาพ" } },
   { "id": "situation:illness", "parents": ["situation:any"], "label": { "th": "เจ็บไข้" } },
+  { "id": "situation:fever", "parents": ["situation:illness"], "label": { "th": "ไข้หนัก" } },
   { "id": "situation:drowning", "parents": ["situation:any"], "label": { "th": "จมน้ำ" } },
   { "id": "situation:wound_fever", "parents": ["situation:illness"], "label": { "th": "ไข้จากบาดแผล" } },
   { "id": "situation:feud", "parents": ["situation:combat"], "label": { "th": "ถูกล้างแค้น" } },

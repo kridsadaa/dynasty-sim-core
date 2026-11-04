@@ -30,8 +30,8 @@ const POLICIES = ALL_POLICIES.filter((p) => !args[1] || p === args[1]);
 type Policy = (typeof ALL_POLICIES)[number];
 
 const FIXED_CHOICE: Record<'careful' | 'reckless', Record<string, string>> = {
-  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate', 'feud.revenge': 'move', 'scheme.assassin': 'cancel' },
-  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore' },
+  careful: { 'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate', 'feud.revenge': 'move', 'body.grave_illness': 'physician', 'scheme.assassin': 'cancel' },
+  reckless: { 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore', 'body.grave_illness': 'endure' },
 };
 /** โอกาสต่อปีที่ผู้เล่นกดปุ่ม "จ้างคนลอบฆ่า" กับคนที่รู้จัก (ข้อสมมุติของนโยบาย: ประมาท 35%, สุ่ม 5%, อื่น ๆ ไม่กด) */
 const ASSASSIN_PER_YEAR: Record<Policy, number> = { careful: 0, reckless: 0.35, random: 0.05, first: 0 };

@@ -5675,5 +5675,124 @@
         ]
       }
     ]
+  },
+  "body.grave_illness": {
+    "id": "body.grave_illness",
+    "textKey": "event.grave_illness",
+    "perilous": true,
+    "contextTags": [],
+    "roles": {
+      "actor": {}
+    },
+    "trigger": {
+      "weight": 0
+    },
+    "percepts": [],
+    "options": [
+      {
+        "id": "physician",
+        "textKey": "event.grave_illness.physician",
+        "risk": {
+          "base": 0.3,
+          "factors": [],
+          "hintKey": "risk.grave_illness_physician",
+          "successKey": "outcome.grave_illness.physician_ok",
+          "fail": {
+            "textKey": "outcome.grave_illness.physician_bad",
+            "effects": [
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -10
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:fever",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -10
+          },
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": -0.03
+          }
+        ]
+      },
+      {
+        "id": "folk",
+        "textKey": "event.grave_illness.folk",
+        "risk": {
+          "base": 0.5,
+          "factors": [],
+          "hintKey": "risk.grave_illness_folk",
+          "successKey": "outcome.grave_illness.folk_ok",
+          "fail": {
+            "textKey": "outcome.grave_illness.folk_bad",
+            "effects": [
+              {
+                "op": "wealth",
+                "role": "actor",
+                "delta": -1
+              },
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:fever",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "wealth",
+            "role": "actor",
+            "delta": -1
+          },
+          {
+            "op": "merit",
+            "role": "actor",
+            "delta": 0.5
+          }
+        ]
+      },
+      {
+        "id": "endure",
+        "textKey": "event.grave_illness.endure",
+        "risk": {
+          "base": 0.7,
+          "factors": [],
+          "hintKey": "risk.grave_illness_endure",
+          "successKey": "outcome.grave_illness.endure_ok",
+          "fail": {
+            "textKey": "outcome.grave_illness.endure_bad",
+            "effects": [
+              {
+                "op": "kill",
+                "role": "actor",
+                "cause": "situation:fever",
+                "allowKin": true
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "op": "stress",
+            "role": "actor",
+            "delta": 0.05
+          }
+        ]
+      }
+    ]
   }
 }

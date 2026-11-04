@@ -1746,6 +1746,65 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ โหมงานพลาด→ป่วยหนัก (ตายรายปี ${well}→${sick}/4000) · ใส่ความพลาด→ถูกโบย · ป้ายรอดตาย + นับเมื่อรอดจริง (${survived}/300)`);
 }
 
+// [5q] ไข้หนัก: ผู้เล่นอายุ 15–59 ที่ทอยตายด้วยไข้ ส่วนหนึ่งกลายเป็น event ให้เลือกวิธีรักษา — ตายเฉลี่ยของผู้เล่นสุ่มคงเดิม รอบคอบดีกว่า ประมาทแย่กว่า
+{
+  const before = failed;
+  console.log('ไข้หนัก (เลือกวิธีรักษา):');
+  const problems: string[] = [];
+  const M = content.balance.mortality;
+  const optionRate = (opt: string, n: number) => {
+    let dead = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(21000 + i), content);
+      const h = bootstrapScenario(c);
+      h.birthDay = c.state.meta.day - 40 * 365;
+      chooseOption(c, prepareEvent(c, 'body.grave_illness', { actor: h.id }), opt);
+      if (!isAlive(h)) { dead++; if (h.deathCause !== 'situation:fever') problems.push(`ตายด้วย ${h.deathCause}`); }
+    }
+    return dead / n;
+  };
+  const phys = optionRate('physician', 800);
+  const folk = optionRate('folk', 800);
+  const endure = optionRate('endure', 800);
+  if (Math.abs(phys - 0.3) > 0.07 || Math.abs(folk - 0.5) > 0.07 || Math.abs(endure - 0.7) > 0.07) problems.push(`ตายตามวิธีรักษา หมอยา ${phys.toFixed(2)} (0.3) พื้นบ้าน ${folk.toFixed(2)} (0.5) ทนเอง ${endure.toFixed(2)} (0.7)`);
+  if (!(phys < folk && folk < endure)) problems.push('ลำดับความเสี่ยงของวิธีรักษาผิด');
+
+  // ตายเฉลี่ยทั้งปีของผู้เล่นอายุ 55: ลูกเต๋าล้วน (diceShare 1) เทียบกับมี event + เลือกวิธีรักษาแบบสุ่ม — ต้องใกล้กัน
+  const yearDeaths = (diceShare: number, policy: 'random' | 'physician' | 'endure', n: number) => {
+    const saved = M.graveIllnessDiceShare;
+    M.graveIllnessDiceShare = diceShare;
+    let dead = 0;
+    let events = 0;
+    for (let i = 0; i < n; i++) {
+      const c = makeCtx(emptyState(30000 + i), content);
+      const h = bootstrapScenario(c);
+      c.state.meta.day = yearStart(c, 2330);
+      h.birthDay = c.state.meta.day - 55 * 365;
+      h.stress = 0;
+      mortalityYearTick(c);
+      if (c.state.meta.graveIllness) {
+        events++;
+        const opts = ['physician', 'folk', 'endure'];
+        const pick = policy === 'random' ? opts[Math.floor(c.rng.next() * 3)]! : policy;
+        chooseOption(c, prepareEvent(c, 'body.grave_illness', { actor: h.id }), pick);
+      }
+      if (!isAlive(h)) dead++;
+    }
+    M.graveIllnessDiceShare = saved;
+    return { dead, events };
+  };
+  const N = 15000;
+  const dice = yearDeaths(1, 'random', N);
+  const rnd = yearDeaths(M.graveIllnessDiceShare, 'random', N);
+  const careful = yearDeaths(M.graveIllnessDiceShare, 'physician', N);
+  const reckless = yearDeaths(M.graveIllnessDiceShare, 'endure', N);
+  if (dice.events !== 0) problems.push('diceShare 1 แต่ยังมี event ไข้หนัก');
+  if (Math.abs(rnd.dead - dice.dead) > dice.dead * 0.22) problems.push(`ผู้เล่นสุ่มตาย ${rnd.dead}/${N} ต่างจากลูกเต๋าล้วน ${dice.dead}/${N} เกิน 22%`);
+  if (!(careful.dead < rnd.dead && rnd.dead < reckless.dead)) problems.push(`ลำดับตายรายปี รอบคอบ ${careful.dead} สุ่ม ${rnd.dead} ประมาท ${reckless.dead}`);
+  check('ไข้หนัก', problems.slice(0, 4));
+  if (failed === before) console.log(`  ✓ ตายตามวิธีรักษา ${(phys * 100).toFixed(0)}/${(folk * 100).toFixed(0)}/${(endure * 100).toFixed(0)}% · ตายรายปีอายุ 55 (n=${N}): ลูกเต๋าล้วน ${dice.dead} · สุ่ม ${rnd.dead} · หมอยา ${careful.dead} · ทนเอง ${reckless.dead}`);
+}
+
 // [7] ปฏิทินจันทรคติเทียบวันที่ที่รู้แน่ (Gislén & Eade, JAHH 22(3) 2019 และวันที่ในพงศาวดาร)
 {
   const before = failed;

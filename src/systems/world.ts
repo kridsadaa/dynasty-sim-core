@@ -127,6 +127,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (inoc) out.push({ type: 'event', prepared: inoc });
     const feud = feudEvent(ctx);
     if (feud) out.push({ type: 'event', prepared: feud });
+    if (S.meta.graveIllness) {
+      delete S.meta.graveIllness;
+      if (player && isAlive(player)) out.push({ type: 'event', prepared: prepareEvent(ctx, 'body.grave_illness', { actor: player.id }) });
+    }
     for (const hh of Object.values(S.households)) {
       const logs = [...householdYearTick(ctx, hh.id), ...servantsYearTick(ctx, hh.id)];
       if (player && hh.memberIds.includes(player.id)) for (const line of logs) out.push({ type: 'log', kind: 'household', line });

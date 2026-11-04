@@ -40,7 +40,7 @@ export function buildContentDB(raw: {
       }
     }
     const lethalIds = ev.options.filter((o) => lethal(o.risk?.fail.effects ?? []).length || lethal(o.effects).length);
-    if (lethalIds.length && lethalIds.length === ev.options.length) throw new Error(`event ${ev.id}: ทุกตัวเลือกตายได้ — ต้องมีทางปลอดภัยอย่างน้อย 1 ตัว`);
+    if (lethalIds.length && lethalIds.length === ev.options.length && !ev.perilous) throw new Error(`event ${ev.id}: ทุกตัวเลือกตายได้ — ต้องมีทางปลอดภัยอย่างน้อย 1 ตัว`);
   }
   for (const d of raw.chores.domains) {
     known(`chore ${d.id}`, d.tag);
