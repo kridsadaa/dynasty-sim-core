@@ -294,6 +294,7 @@
       "id": "scene.audience_hall",
       "style": "reality",
       "tags": [
+        "event:thonburi.succession_side",
         "event:career.audience_late",
         "event:career.promotion",
         "event:career.punished",
@@ -1225,6 +1226,7 @@
       "id": "scene.war_hunger",
       "style": "reality",
       "tags": [
+        "event:thonburi.rice_dole",
         "event:war.rice_gone",
         "event:war2328.rice_dear"
       ],

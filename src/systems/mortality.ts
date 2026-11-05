@@ -5,6 +5,7 @@ import { prepareEvent, type PreparedEvent } from './events';
 import { livingChildren } from './factory';
 import { isGraced, markDead } from './handover';
 import { mortalityShield } from './skills';
+import { institutionActive } from './eras';
 
 // ============================================================================
 // ความตายรายปี — ทอยทุก 1 ม.ค. ด้วยอายุตลอดปีที่เพิ่งผ่านไป (เด็กที่เกิดวันนี้ยังไม่ทอย)
@@ -98,12 +99,12 @@ export function hardToRaiseEvent(ctx: Ctx): PreparedEvent | null {
 }
 
 /**
- * ปลูกฝี (ตั้งแต่ balance.mortality.inoculationFrom): เสนอให้ผู้เล่นตัดสินใจปีละไม่เกินหนึ่งครั้ง สำหรับลูกที่ยังไม่เคยเป็นไข้ทรพิษ อายุ 1–14
+ * ปลูกฝี (ตั้งแต่ rules.json › institutions.inoculation.from): เสนอให้ผู้เล่นตัดสินใจปีละไม่เกินหนึ่งครั้ง สำหรับลูกที่ยังไม่เคยเป็นไข้ทรพิษ อายุ 1–14
  * เสนอครั้งเดียวต่อเด็ก (inoculationOffered) — เรียกทุก 1 ม.ค. หลัง mortalityYearTick
  */
 export function inoculationEvent(ctx: Ctx): PreparedEvent | null {
   const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
-  if (!isAlive(player) || yearOf(ctx, ctx.state.meta.day) < ctx.content.balance.mortality.inoculationFrom) return null;
+  if (!isAlive(player) || !institutionActive(ctx, 'inoculation')) return null;
   const kid = livingChildren(ctx, player).find((k) => !k.hadSmallpox && !k.inoculationOffered && ageOf(ctx, k) >= 1 && ageOf(ctx, k) < 15);
   if (!kid) return null;
   kid.inoculationOffered = true;

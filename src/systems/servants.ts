@@ -4,6 +4,7 @@ import { clamp01 } from '../core/rng';
 import type { Character, Household, HouseholdId, SlaveCare, SlaveTask } from '../core/types';
 import { purse, spend } from './marriage';
 import { hasPerk, legacyLevel } from './skills';
+import { institutionActive } from './eras';
 
 // ============================================================================
 // เรือน ที่ดิน และบ่าวไพร่
@@ -203,9 +204,10 @@ export function servantsYearTick(ctx: Ctx, householdId: HouseholdId): string[] {
   if (!isAlive(head)) return [];
   const log: string[] = [];
   const care = B.care[hh.care ?? 'normal'];
-  const keepsSlaves = B.estates.includes(head.social.estate);
+  // ชั้นยุค: เลิกทาส/เลิกเกณฑ์ไพร่แล้วไม่ได้บ่าวไพร่เพิ่ม (rules.json › institutions — ตอนนี้มีผลตลอด 2288–2400)
+  const keepsSlaves = B.estates.includes(head.social.estate) && institutionActive(ctx, 'slavery');
   const wantThat = keepsSlaves ? Math.min(B.maxSlaves, Math.floor(head.social.wealth / B.wealthPerSlave)) : 0;
-  const wantPhrai = Math.min(B.maxPhrai, Math.floor(head.social.sakdina / B.sakdinaPerPhrai));
+  const wantPhrai = institutionActive(ctx, 'corvee') ? Math.min(B.maxPhrai, Math.floor(head.social.sakdina / B.sakdinaPerPhrai)) : 0;
   // เรือนที่มีอยู่ก่อนระบบนี้ (ฉากเริ่ม เซฟเก่า) — มีบ่าวไพร่ตามฐานะอยู่แล้ว ไม่ต้องค่อยๆ ได้มา
   if (!hh.retainers) {
     hh.retainers = { that: wantThat, phrai: wantPhrai, loyalty: care.loyalty };

@@ -54,6 +54,7 @@
     }
   },
   "historyEvents": [
+    { "year": 2325, "day": 90, "event": "thonburi.succession_side", "minAge": 18 },
     { "year": 2362, "day": 300, "event": "plague.news", "minAge": 16 },
     { "year": 2391, "day": 300, "event": "plague.news", "minAge": 16 },
     { "year": 2308, "day": 40, "event": "war.news_tenasserim", "minAge": 12 },
@@ -77,13 +78,29 @@
     { "year": 2330, "day": 40, "event": "war2330.front", "minAge": 18 },
     { "year": 2330, "day": 53, "resolve": "tha_din_daeng" }
   ],
+  "eras": [
+    { "id": "late_ayutthaya", "name": "ปลายกรุงศรีอยุธยา", "from": 2288, "to": 2308, "capital": "ayutthaya", "theme": "ความสงบ ราชการ งานบุญ การค้ากับต่างชาติ" },
+    { "id": "burmese_war", "name": "ศึกพม่าและเสียกรุง", "from": 2308, "to": 2313, "capital": "ayutthaya", "theme": "เอาตัวรอด (เมืองหลวงย้ายไปธนบุรีหลังเสียกรุง 2310)", "loreRefs": ["event.fall_of_ayutthaya_2310", "event.famine_2310_2313"] },
+    { "id": "thonburi", "name": "กรุงธนบุรี", "from": 2313, "to": 2325, "capital": "thonburi", "theme": "ฟื้นตัว ตั้งตัวใหม่ เลือกข้างตอนผลัดแผ่นดิน", "loreRefs": ["event.thonburi_succession_2325"] },
+    { "id": "rama1", "name": "รัชกาลที่ 1", "from": 2325, "to": 2352, "capital": "bangkok", "theme": "สร้างกรุงใหม่ ศึกเก้าทัพ" },
+    { "id": "rama2_3", "name": "รัชกาลที่ 2–3", "from": 2352, "to": 2394, "capital": "bangkok", "theme": "การค้าสำเภา เงินทอง โรคระบาด" },
+    { "id": "rama4", "name": "รัชกาลที่ 4", "from": 2394, "to": 2400, "capital": "bangkok", "theme": "ฝรั่งเข้ามา การเปลี่ยนแปลงใหม่" }
+  ],
+  "institutions": {
+    "_comment": "ชั้นยุค docs/design-eras.md — ช่องเสียบไว้ก่อน: ทุกข้อยังมีผลตลอด 2288–2400 (ปีสิ้นสุดเติมใน PLAN 4c พร้อม lore)",
+    "slavery": { "loreRefs": ["social.slave_types"] },
+    "corvee": { "loreRefs": ["social.corvee"] },
+    "sakdinaIncome": { "loreRefs": ["social.sakdina_civil_list"] },
+    "surnames": { "from": 2456, "loreRefs": ["naming.no_surname_pre_2456"] },
+    "inoculation": { "from": 2382, "note": "2381–82 หมอหลวงเรียนปลูกฝี", "loreRefs": ["health.smallpox_endemic"] }
+  },
   "history": [
     { "tag": "history:burmese_invasion", "year": 2308, "kind": "war", "lasts": 3,
       "shock": { "wealthLoss": [0.0, 0.0], "deathRisk": 0.0 } },
     { "tag": "history:fall_of_ayutthaya", "year": 2310, "kind": "war",
       "shock": { "wealthLoss": [0.5, 0.9], "deathRisk": 0.15, "captureRisk": 0.5, "endsOffices": true } },
     { "tag": "history:thonburi_succession", "year": 2325, "kind": "succession",
-      "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.02, "purgeFactions": ["faction:taksin_loyalist"], "purgeChance": 0.3 } },
+      "day": 120, "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.02, "purgeFactions": ["faction:phraya_san"], "purgeChance": 0.7 } },
     { "tag": "history:famine_after_fall", "year": 2311, "kind": "famine",
       "shock": { "wealthLoss": [0.0, 0.1], "deathRisk": 0.06, "everyone": true } },
     { "tag": "history:famine_after_fall", "year": 2312, "kind": "famine",

@@ -17,6 +17,7 @@ import { markDead } from './handover';
 import { divorce, takeMinorWife } from './wives';
 import { recordHabit } from './festivals';
 import { markNursing, markTopknot } from './lifeEvents';
+import { eraAt } from './eras';
 
 // ============================================================================
 // Contextual Event Injection
@@ -192,6 +193,12 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       return (ch.skills[c.skill] ?? 0) >= c.min;
     case 'stress':
       return ch.stress >= (c.min ?? 0) && ch.stress <= (c.max ?? 1);
+    case 'year': {
+      const y = yearOf(ctx, ctx.state.meta.day);
+      return y >= (c.min ?? -Infinity) && y <= (c.max ?? Infinity);
+    }
+    case 'era':
+      return c.in.includes(eraAt(ctx).id);
     case 'seen': {
       const other = c.withRole ? bindings[c.withRole] : undefined;
       if (c.withRole && !other) return false;
@@ -535,6 +542,11 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         else if (e.action === 'taksin') report.notes.push(...joinTaksin(ctx, ch));
         else report.notes.push(...leaveCity(ctx, ch, e.dir, e.party));
         break;
+      case 'faction': {
+        const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
+        if (dyn) dyn.faction = e.set;
+        break;
+      }
       case 'prestige': {
         const dyn = ch.dynastyId ? ctx.state.dynasties[ch.dynastyId] : undefined;
         // บารมีที่ได้จากการกระทำขึ้นกับบุญ ส่วนบารมีที่เสียไม่ลดตามบุญ

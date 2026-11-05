@@ -129,6 +129,7 @@
   { "id": "gold:buried_jar", "parents": ["asset:any"], "label": { "th": "ไหทองฝังดิน" }, "loreRefs": ["material.buried_valuables"] },
   { "id": "manual:goldsmith", "parents": ["asset:any"], "label": { "th": "ตำราช่างทอง" }, "loreRefs": ["material.family_craft_manual"] },
   { "id": "faction:any", "parents": [], "label": { "th": "ฝักฝ่าย" }, "generalizeStop": true },
+  { "id": "faction:phraya_san", "parents": ["faction:any"], "label": { "th": "ฝ่ายพระยาสรรค์" }, "loreRefs": ["event.thonburi_succession_2325"] },
   { "id": "faction:taksin_loyalist", "parents": ["faction:any"], "label": { "th": "ฝ่ายพระยาตาก" }, "loreRefs": ["event.thonburi_succession_2325"] },
   { "id": "chore:any", "parents": [], "label": { "th": "งาน" }, "generalizeStop": true},
   { "id": "chore:kitchen", "parents": ["chore:any"], "label": { "th": "งานในโรงครัว" } },

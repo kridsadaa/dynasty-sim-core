@@ -188,19 +188,9 @@ export function eraConditions(ctx: Ctx): StatusBadge[] {
   return out;
 }
 
-/** ช่วงยุคสำหรับหลอดยุคสมัย — ขอบยุคเป็นการแบ่งของเกม (ตรงกับเหตุการณ์ใน history ของ rules.json) */
-const ERAS: ReadonlyArray<{ name: string; from: number; to: number }> = [
-  { name: 'ปลายกรุงศรีอยุธยา', from: 2288, to: 2308 },
-  { name: 'ศึกพม่าและเสียกรุง', from: 2308, to: 2313 },
-  { name: 'กรุงธนบุรี', from: 2313, to: 2325 },
-  { name: 'รัชกาลที่ 1', from: 2325, to: 2352 },
-  { name: 'รัชกาลที่ 2–3', from: 2352, to: 2394 },
-  { name: 'รัชกาลที่ 4', from: 2394, to: 2400 },
-];
-
 export function eraBar(ctx: Ctx): EraSegment[] {
   const now = yearOf(ctx, ctx.state.meta.day);
-  return ERAS.map((e) => {
+  return ctx.content.eras.map((e) => {
     const state = now >= e.to ? 'past' : now >= e.from ? 'now' : 'future';
     return { name: state === 'future' ? null : e.name, from: e.from, to: e.to, state };
   });

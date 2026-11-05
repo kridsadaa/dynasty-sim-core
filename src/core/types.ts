@@ -589,6 +589,29 @@ export interface PartSelector {
   side?: 'dominant' | 'nondominant' | 'any';
 }
 
+/** ยุคของเกม — ขอบยุคเป็นการแบ่งของเกม ตรงกับเหตุการณ์ใน history (docs/design-eras.md) */
+export interface EraDef {
+  id: string;
+  name: string;
+  /** ปีแรกของยุค (รวม) */
+  from: number;
+  /** ปีแรกของยุคถัดไป (ไม่รวม) */
+  to: number;
+  capital: 'ayutthaya' | 'thonburi' | 'bangkok';
+  /** ธีมการเล่นของยุค (สำหรับผู้เขียนเนื้อหา ไม่แสดงต่อผู้เล่น) */
+  theme?: string;
+  loreRefs?: string[];
+}
+
+export type InstitutionId = 'slavery' | 'corvee' | 'sakdinaIncome' | 'surnames' | 'inoculation';
+/** มีผลตั้งแต่ปี from ถึงปี until (รวมทั้งสองข้าง) — ไม่มี = ไม่จำกัดด้านนั้น */
+export interface InstitutionDef {
+  from?: number;
+  until?: number;
+  note?: string;
+  loreRefs?: string[];
+}
+
 export type Condition =
   | { type: 'age'; min?: number; max?: number }
   | { type: 'capability'; capability: CapabilityId; min: Unit }
@@ -619,9 +642,15 @@ export type Condition =
    * เคยเลือกใน event นี้มาแล้วกี่ครั้ง (Character.seen) — option: นับเฉพาะตัวเลือกนั้น, withRole: นับเฉพาะครั้งที่คนใน role
    * นั้นเป็นคนเดียวกับครั้งนี้ — max 0 = ยังไม่เคย (event ครั้งเดียว / ครั้งเดียวต่อคน)
    */
-  | { type: 'seen'; event: EventDefId; option?: string; withRole?: string; min?: number; max?: number };
+  | { type: 'seen'; event: EventDefId; option?: string; withRole?: string; min?: number; max?: number }
+  /** ปีปัจจุบันอยู่ในช่วงนี้ (พ.ศ., รวมปลายทั้งสองข้าง) — ชั้นยุค docs/design-eras.md */
+  | { type: 'year'; min?: number; max?: number }
+  /** ปีปัจจุบันอยู่ในยุคใดยุคหนึ่ง (id ใน rules.json › eras) */
+  | { type: 'era'; in: string[] };
 
 export type Effect =
+  /** ตระกูลของ role ถูกนับเป็นฝ่ายนี้ (Dynasty.faction) — ใช้กับ shock.purgeFactions เช่น เลือกข้างตอนผลัดแผ่นดิน 2325 */
+  | { op: 'faction'; role: string; set: TagId }
   | {
       op: 'wound'; role: string; part: PartSelector; kind: WoundKind;
       severity: [number, number]; treatedByRole?: string; treatmentQuality?: Unit;
@@ -991,6 +1020,8 @@ export interface HistoricalEvent {
   year: number;
   /** boon = ปีดี (ทรัพย์เพิ่ม ใจเบาลง) — มีเฉพาะเหตุการณ์สมมติหลัง 2400 */
   kind: 'war' | 'plague' | 'succession' | 'famine' | 'boon';
+  /** วันของปีที่ shock ลง (นับจาก 1 ม.ค. = 0; ไม่ระบุ = 1 ม.ค.) — ให้ event ที่นัดไว้ก่อนวันนั้นได้ตัดสินใจก่อน (เช่น เลือกข้างตอนผลัดแผ่นดิน 2325) */
+  day?: number;
   /** กี่ปีที่ป้าย "สภาวะบ้านเมือง" ค้างบน UI นับจาก year (ไม่ระบุ = 1 ปี) — ไม่มีผลต่อ shock */
   lasts?: number;
   shock: {
@@ -1112,8 +1143,6 @@ export interface Balance {
     oldDoublingYears: number;
     /** ตัวคูณลูกเต๋ารายปีของผู้เล่นอายุ 15 ขึ้นไป — ชดเชยความเสี่ยงที่ผูกกับตัวเลือก (docs/design-choice-risk.md ข้อ 5); 1 = ไม่ปรับ */
     playerAdultScale: number;
-    /** ปีแรกที่มีการปลูกฝีให้ราษฎร (lore health.smallpox_endemic: 2381–82 หมอหลวงเรียนปลูกฝี) */
-    inoculationFrom: number;
     /** ผู้เล่นที่ป่วยหนัก (illYear) ในปีที่ผ่านไป: ตัวคูณความเสี่ยงตายรายปี */
     illMult: number;
     /** ผู้เล่นอายุ 15–59 ที่ทอยตายด้วยไข้: ตายด้วยลูกเต๋าล้วนที่ความเสี่ยง × d และกลายเป็น event ไข้หนัก (body.grave_illness) ที่ความเสี่ยง × 2(1−d) เพราะวิธีรักษาตายเฉลี่ยครึ่งหนึ่ง (0.3/0.5/0.7) — ตายรวมของผู้เล่นสุ่มจึงคงเดิมทุกค่า d (docs/design-choice-risk.md) */
@@ -1410,6 +1439,10 @@ export interface ContentDB {
   injectionRules: InjectionRule[];
   claimTemplates: Record<string, ClaimTemplate>;
   history: HistoricalEvent[];
+  /** ยุคของเกม เรียงตามปี ต่อกันไม่มีช่อง (rules.json › eras) — ใช้กับหลอดยุคและเงื่อนไข 'era' */
+  eras: EraDef[];
+  /** สถาบัน/กฎหมายที่มีอยู่เฉพาะบางช่วง (rules.json › institutions) — ถามผ่าน institutionActive() ใน systems/eras.ts */
+  institutions: Record<InstitutionId, InstitutionDef>;
   /** event ที่ส่งให้ผู้เล่นในวันที่กำหนดของปีประวัติศาสตร์ (ต่างจาก history ที่เป็น shock) */
   historyEvents: HistoryEventSchedule[];
   /** สำรับเหตุการณ์สมมติหลังปีจบของเรื่อง (ไม่มี = ไม่มีโหมดเล่นต่อ) */

@@ -5,6 +5,7 @@ import type { OfficeTier } from '../art/select';
 import { livingParents } from './factory';
 import { opinion } from './opinion';
 import { hasPerk, legacyLevel, SKILL_TRACKS } from './skills';
+import { institutionActive } from './eras';
 
 // ============================================================================
 // Career — รับราชการ (บันไดจากทำเนียบศักดินาจริง ตำแหน่งนาพลเรือน)
@@ -250,7 +251,8 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   const post = must(postOf(ctx, player), player.office.postId);
   const courtLvl = legacyLevel(ctx, player, 'court');
   const incomeMult = (courtLvl >= 4 ? 1.25 : 1) * (hasPerk(player, 'stewardship_4') ? 1.15 : 1);
-  const income = Math.round(post.sakdina * C.incomePerSakdina * incomeMult);
+  // ชั้นยุค: รายได้ตามศักดินา (rules.json › institutions.sakdinaIncome — ตอนนี้มีผลตลอด 2288–2400)
+  const income = institutionActive(ctx, 'sakdinaIncome') ? Math.round(post.sakdina * C.incomePerSakdina * incomeMult) : 0;
   if (income > 0) {
     player.social.wealth += income;
     lines.push(`ได้ของกำนัลและผลประโยชน์ตามตำแหน่ง ${income} ตำลึง`);

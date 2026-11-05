@@ -9,7 +9,7 @@ import {
   pickCaregiverChild, pickName, spawnCharacter, spouseAgeFor, wed,
 } from './factory';
 import { fictionEventsOfYear } from './fiction';
-import { appointLivingHead, applyHistoricalShocks, historyHeadline, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
+import { appointLivingHead, applyHistoricalShocks, historyHeadline, historyOn, driftLine, heirCandidates, isGraced, markDead, performHandover, settleDeath } from './handover';
 import { careerYearTick, deptOf, officeRank } from './career';
 import { campaignResolutionsToday, historyEventsToday } from './historyEvents';
 import { pruneState } from './prune';
@@ -109,10 +109,52 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const line of skillsMonthTick(ctx)) out.push({ type: 'log', kind: 'daily', line });
   }
 
+  /** NPC ที่ตายวันนี้ → งานศพ มรดก ผู้สืบ และยุบคนตาย — ทำทุกวันที่มีคนตายจาก shock (1 ม.ค. หรือกลางปี) */
+  const settleDeathsToday = () => {
+    // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
+    const diedToday = Object.values(S.characters).filter((ch) => ch.deathDay === S.meta.day && ch.id !== player?.id);
+    const isHeadWithHeir = (ch: Character) =>
+      !!ch.dynastyId && S.dynasties[ch.dynastyId]?.headNodeId === ch.familyNodeId && heirCandidates(ctx, ch).length > 0;
+    // คนทั่วไป → งานศพ แบ่งมรดก ออกจากเรือน; ทำก่อน handover เพราะ handover prune ตัวละครที่ตายแล้วทิ้ง
+    for (const ch of diedToday.filter((c) => !isHeadWithHeir(c))) {
+      const r = settleDeath(ctx, ch);
+      if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', kind: 'inherit', line });
+      appointLivingHead(ctx, ch); // หัวหน้าตระกูลที่ไม่มีผู้สืบตามสายเลือด แต่ตระกูลยังมีคนอยู่
+    }
+    // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
+    for (const ch of diedToday.filter(isHeadWithHeir)) {
+      if (!S.characters[ch.id]) continue;
+      const cands = heirCandidates(ctx, ch);
+      if (!cands.length) {
+        settleDeath(ctx, ch);
+        continue;
+      }
+      const heirId = cands.some((c) => c.ch.id === player?.id) ? player!.id : undefined;
+      const r = performHandover(ctx, ch.id, heirId, { asPlayer: false });
+      out.push({ type: 'log', kind: 'inherit', line: `มรดกของ${r.deceased} ตกถึง${r.heir} ผู้นำตระกูลคนใหม่` });
+      for (const line of r.log) out.push({ type: 'log', kind: 'inherit', line });
+    }
+    // ยุบคนตายทุกปี ไม่รอ handover ครั้งหน้า (ซึ่งอาจห่างหลายสิบปี) — หลังแบ่งมรดกและสร้าง event งานศพแล้ว
+    // คนที่ event ยังรอคำตอบอ้างถึง (งานศพ) และผู้เล่นที่เพิ่งตาย (worker ทำ handover ต่อ) ยุบรอบหน้า
+    const drifted = driftLine(pruneState(ctx));
+    if (drifted) out.push({ type: 'log', kind: 'family', line: drifted });
+  };
+
+  // เหตุการณ์ประวัติศาสตร์ที่ลงกลางปี (HistoricalEvent.day) — ของ 1 ม.ค. อยู่ในรอบรายปีด้านล่าง
+  const doy = dayOfYear(ctx, S.meta.day);
+  if (doy !== 0 && historyOn(ctx, year, doy).length) {
+    const events = historyOn(ctx, year, doy);
+    for (const line of applyHistoricalShocks(ctx, year, doy)) {
+      const ev = events.find((e) => line === historyHeadline(ctx, e));
+      out.push({ type: 'log', kind: 'history', line, ...(ev ? { art: [ev.tag, `historykind:${ev.kind}`] } : {}) });
+    }
+    settleDeathsToday();
+  }
+
   // รายปี (1 ม.ค. — ปีเดียวกับ พ.ศ. ที่ใช้ระบุเหตุการณ์ประวัติศาสตร์)
-  if (dayOfYear(ctx, S.meta.day) === 0) {
+  if (doy === 0) {
     const shocks = applyHistoricalShocks(ctx, year);
-    const events = [...ctx.content.history.filter((h) => h.year === year), ...fictionEventsOfYear(ctx, year)];
+    const events = [...historyOn(ctx, year, 0), ...fictionEventsOfYear(ctx, year)];
     for (const line of shocks) {
       const ev = events.find((e) => line === historyHeadline(ctx, e));
       out.push({ type: 'log', kind: 'history', line, ...(ev ? { art: [ev.tag, `historykind:${ev.kind}`] } : {}) });
@@ -175,33 +217,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     // ญาติใกล้ชิดของผู้เล่นตายปีนี้ → งานศพ (คนที่ใกล้ที่สุด)
     const mourning = kinDeathEvent(ctx);
     if (mourning) out.push({ type: 'event', prepared: mourning });
-    // NPC ที่ตายวันนี้ (แก่ / ศึกสงคราม) — ผู้เล่นจัดการผ่าน playerDied
-    const diedToday = Object.values(S.characters).filter((ch) => ch.deathDay === S.meta.day && ch.id !== player?.id);
-    const isHeadWithHeir = (ch: Character) =>
-      !!ch.dynastyId && S.dynasties[ch.dynastyId]?.headNodeId === ch.familyNodeId && heirCandidates(ctx, ch).length > 0;
-    // คนทั่วไป → งานศพ แบ่งมรดก ออกจากเรือน; ทำก่อน handover เพราะ handover prune ตัวละครที่ตายแล้วทิ้ง
-    for (const ch of diedToday.filter((c) => !isHeadWithHeir(c))) {
-      const r = settleDeath(ctx, ch);
-      if (player && r.heirIds.includes(player.id)) for (const line of r.lines) out.push({ type: 'log', kind: 'inherit', line });
-      appointLivingHead(ctx, ch); // หัวหน้าตระกูลที่ไม่มีผู้สืบตามสายเลือด แต่ตระกูลยังมีคนอยู่
-    }
-    // หัวหน้าตระกูลที่เป็น NPC → สืบทอดตระกูลทันที ผู้เล่นได้ส่วนถ้าเป็นทายาท
-    for (const ch of diedToday.filter(isHeadWithHeir)) {
-      if (!S.characters[ch.id]) continue;
-      const cands = heirCandidates(ctx, ch);
-      if (!cands.length) {
-        settleDeath(ctx, ch);
-        continue;
-      }
-      const heirId = cands.some((c) => c.ch.id === player?.id) ? player!.id : undefined;
-      const r = performHandover(ctx, ch.id, heirId, { asPlayer: false });
-      out.push({ type: 'log', kind: 'inherit', line: `มรดกของ${r.deceased} ตกถึง${r.heir} ผู้นำตระกูลคนใหม่` });
-      for (const line of r.log) out.push({ type: 'log', kind: 'inherit', line });
-    }
-    // ยุบคนตายทุกปี ไม่รอ handover ครั้งหน้า (ซึ่งอาจห่างหลายสิบปี) — หลังแบ่งมรดกและสร้าง event งานศพแล้ว
-    // คนที่ event ยังรอคำตอบอ้างถึง (งานศพ) และผู้เล่นที่เพิ่งตาย (worker ทำ handover ต่อ) ยุบรอบหน้า
-    const drifted = driftLine(pruneState(ctx));
-    if (drifted) out.push({ type: 'log', kind: 'family', line: drifted });
+    settleDeathsToday();
   }
 
   // event ตามปฏิทินประวัติศาสตร์ (ศึกพม่า 2308–2310 ฯลฯ — rules.json historyEvents)

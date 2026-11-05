@@ -3327,6 +3327,39 @@
         "effects": [ { "op": "career", "role": "actor", "action": "assign", "dept": "royal_scholars" } ] }
     ]
   },
+  "thonburi.rice_dole": {
+    "id": "thonburi.rice_dole", "textKey": "event.rice_dole", "contextTags": [], "loreRefs": ["event.famine_2310_2313"],
+    "roles": { "actor": {} },
+    "trigger": { "ageRange": [14, 80], "weight": 1.5, "cooldownDays": 720, "requires": [ { "type": "year", "min": 2311, "max": 2312 } ] },
+    "percepts": [],
+    "options": [
+      { "id": "queue", "textKey": "event.rice_dole.queue",
+        "effects": [ { "op": "prestige", "role": "actor", "delta": -0.3 }, { "op": "stress", "role": "actor", "delta": 0.02 } ] },
+      { "id": "buy", "textKey": "event.rice_dole.buy",
+        "conditions": [ { "type": "purse", "min": 4 } ],
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -4 }, { "op": "stress", "role": "actor", "delta": -0.03 } ] },
+      { "id": "endure", "textKey": "event.rice_dole.endure",
+        "risk": { "base": 0.3, "hintKey": "risk.rice_dole_ill", "successKey": "outcome.rice_dole.ok",
+          "fail": { "textKey": "outcome.rice_dole.ill", "effects": [ { "op": "ill", "role": "actor" }, { "op": "stress", "role": "actor", "delta": 0.06 } ] } },
+        "effects": [ { "op": "stress", "role": "actor", "delta": 0.04 } ] }
+    ]
+  },
+  "thonburi.succession_side": {
+    "id": "thonburi.succession_side", "textKey": "event.succession_side", "contextTags": [], "loreRefs": ["event.thonburi_succession_2325"],
+    "roles": { "actor": {} },
+    "trigger": { "weight": 0, "requires": [ { "type": "office" }, { "type": "era", "in": ["thonburi", "rama1"] } ] },
+    "percepts": [],
+    "options": [
+      { "id": "san", "textKey": "event.succession_side.san",
+        "effects": [ { "op": "faction", "role": "actor", "set": "faction:phraya_san" }, { "op": "favor", "role": "actor", "delta": 0.05 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] },
+      { "id": "suriya", "textKey": "event.succession_side.suriya",
+        "risk": { "base": 0.25, "hintKey": "risk.succession_fight", "successKey": "outcome.succession_side.ok",
+          "fail": { "textKey": "outcome.succession_side.hurt", "effects": [ { "op": "wound", "role": "actor", "part": { "tag": "body:torso" }, "kind": "cut", "severity": [0.15, 0.35] }, { "op": "stress", "role": "actor", "delta": 0.06 } ] } },
+        "effects": [ { "op": "favor", "role": "actor", "delta": 0.15 }, { "op": "stress", "role": "actor", "delta": 0.04 } ] },
+      { "id": "home", "textKey": "event.succession_side.home",
+        "effects": [ { "op": "favor", "role": "actor", "delta": -0.05 }, { "op": "stress", "role": "actor", "delta": 0.04 } ] }
+    ]
+  },
   "career.recall": {
     "id": "career.recall", "textKey": "event.recall", "contextTags": [],
     "roles": { "actor": {}, "elder": {} }, "trigger": { "weight": 0 }, "percepts": [],

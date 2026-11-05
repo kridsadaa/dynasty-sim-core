@@ -28,6 +28,7 @@
 | `war.ts` | ศึกพม่า 2308–2310: ฝังเงินเป็นไหทองซ่อน (`buryValuables`/`unearthBuried`), ตัดสินใจอยู่/หนี (`stayInCity`/`leaveCity` เก็บใน `meta.war`), ที่อยู่รายคน (`warWhere`) และตัวคูณผลตอนกรุงแตก (`warDeathMult` = ที่อยู่ × การเตรียมตัว, `WAR_CASH_LOSS_MULT`), ถูกกวาดต้อนตอนกรุงแตก (`shock.captureRisk`, `WAR_CAPTURE_MULT`, `CAPTIVE_TAG` — หายจากเกมเหมือนตาย ไม่มีงานศพ), ตามพระยาตาก (`joinTaksin`) — event ล้อมกรุงใช้เงื่อนไข `inCity` |
 | `fiction.ts` | เล่นต่อหลัง 2400 (เรื่องสมมติ): สำรับเหตุการณ์ `rules.json` › `fiction.deck` 12 ใบ (โรคห่า น้ำท่วม แล้ง ไฟไหม้ ศึกชายแดน/ศึกใหญ่ โจรชุม ราชสำนักผันผวน ส่วยหนัก + ปีดี 3 ใบ `kind: boon` ทรัพย์เพิ่ม ใจเบาลง) จั่วแบบ shuffle bag ทุก 8–15 ปี เก็บใน `meta.fiction`; ใช้ shock เดิมผ่าน `applyHistoricalShocks`; ก่อน 2400 ไม่เรียก rng จึงไม่กระทบเรื่องจริง |
 | `historyEvents.ts` | ส่ง event ให้ผู้เล่นตามวันที่ของปีประวัติศาสตร์ (`rules.json` `historyEvents`) — ศึกพม่า 2308–2310 ดู [design-war-2308.md](design-war-2308.md) |
+| `eras.ts` | ชั้นยุค: `eraAt` (ยุคของปี), `institutionActive` (ทาส เกณฑ์ไพร่ รายได้ตามศักดินา นามสกุล ปลูกฝี) — ข้อมูลอยู่ใน `rules.json` › `eras`/`institutions` ดู [design-eras.md](design-eras.md); เงื่อนไข event ชนิด `year`/`era` อยู่ใน `checkCondition` (`events.ts`) |
 | `campaign.ts` | ศึกหลังเสียกรุงที่เกณฑ์คนในเรือนผู้เล่น (เก้าทัพ 2328–29, ท่าดินแดง 2329–30): `meta.campaigns[key]` เก็บว่าไปเอง/ส่งญาติ/ส่งบ่าว/จ่ายแทน/หลบ, `resolveCampaign` สรุปผลคนที่ส่งแทนตอนศึกจบ, `campaignShockExempt` ข้ามทอยตายของ shock กับเรือนที่ถูกเกณฑ์ — ออกแบบที่ [design-war-2328.md](design-war-2328.md); เพิ่มศึกใหม่: ใส่ key ใน `CAMPAIGNS` + event `<ศึก>.levy/levy_f/levy_old/front` + ตารางใน `rules.json` `historyEvents` (`resolve`) |
 | `mortality.ts` `mourning.ts` | ทอยตายรายปีตามอายุ ไข้ทรพิษ; event งานศพของญาติใกล้ชิด; ผู้เล่นมีตัวคูณ `playerAdultScale` + ความหนักใจ + ป่วยหนัก (`illMult`); `inoculationEvent` เสนอปลูกฝีให้ลูกตั้งแต่ 2382 |
 | `feud.ts` | `feudEvent` — ลอบฆ่าสำเร็จ (op `feud`) เก็บใน `meta.feuds` → 1–3 ปีต่อมาญาติเหยื่อมา (event `feud.revenge`) เฉพาะผู้เล่นที่สั่งฆ่า |
@@ -64,8 +65,9 @@
 | `src/demo.ts` | `npm run demo` — เล่นสั้นๆ ดูผลใน terminal |
 
 ### วิธีต่อยอดที่ใช้บ่อย
-- **เพิ่ม event:** `events.json` + ข้อความใน `text.th.json`; trigger ไม่มีเงื่อนไขปี (ดู PLAN ข้อ 4) · เช็กด้วย `sim:check`
-- **เพิ่มเหตุการณ์ประวัติศาสตร์:** เพิ่มรายการใน `history` ของ `rules.json` + tag ใน `tags.json`
+- **เพิ่ม event:** `events.json` + ข้อความใน `text.th.json`; event เฉพาะปี/ยุคใช้เงื่อนไข `year`/`era` (ดูข้อด้านล่าง) · เช็กด้วย `sim:check`
+- **เพิ่มเหตุการณ์ประวัติศาสตร์:** เพิ่มรายการใน `history` ของ `rules.json` + tag ใน `tags.json` · ใส่ `day` ได้ถ้าต้องให้ event ที่นัดไว้มาก่อน shock (ลงกลางปี)
+- **event เฉพาะยุค:** ใส่ `{ "type": "year", "min", "max" }` หรือ `{ "type": "era", "in": [...] }` ใน `trigger.requires` — lint คำผิดยุคจะตรวจกับช่วงนั้น
 - **เพิ่ม/ปรับตัวเลข:** `balance.json` หรือ `rules.json` แล้วรัน `npm test` (ช่วงสมดุลอยู่ใน `balanceCheck`)
 - **เพิ่มภาพตัวละครตามขั้นยศ:** ใส่ tag `rank:page|low|mid|high|head` ร่วมกับ `role:official*` ใน `art/assets.spec.json` — ขั้นมาจาก `officeTier` (career.ts: มหาดเล็ก=page, ขั้นที่ 1=low, ที่ 2=mid, ขั้นบนสุดของกรม=head, ระหว่างนั้น=high); ภาพที่ติดขั้นใช้เฉพาะคนขั้นนั้น ขั้นที่ไม่มีภาพถอยไปใช้ภาพบทบาทเดียวกันที่ไม่ติดขั้น (ตอนนี้ยังไม่มีภาพติดขั้นยศเลย)
 - **เพิ่ม modal/ข้อความถึงผู้เล่น:** เพิ่ม Push ใน `protocol.ts` → ส่งจาก `engine.worker.ts` → แสดงใน `main.ts`

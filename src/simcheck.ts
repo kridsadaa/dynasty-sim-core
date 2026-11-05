@@ -31,6 +31,9 @@ import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
 import { riskChance } from './systems/will';
 import { activeFiction, drawFictionEvents, isFictionYear } from './systems/fiction';
+import { eraAt, institutionActive } from './systems/eras';
+import { historyEventsToday } from './systems/historyEvents';
+import { END_YEAR } from './systems/scenario';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
 const content: ContentDB = buildContentDB({
@@ -1631,6 +1634,77 @@ if (LONG) {
   }
   check('ตัวเลือกแพ้ขาด', problems);
   if (failed === before) console.log(`  ✓ event ที่เจอ ≥ 1% (${frequent.length} ชนิด) ไม่มีตัวเลือกแพ้ขาด`);
+}
+
+// [5h4] ชั้นยุค (docs/design-eras.md): ยุคต่อกันครบช่วงเกม, เงื่อนไขปี/ยุค, สถาบันยังมีผลตลอด 2288–2400 (ช่องเสียบ),
+// ข้าวแจกที่ธนบุรีออกเฉพาะ 2311–2312, เลือกข้างตอนผลัดแผ่นดิน 2325 ก่อน shock (ลงกลางปี) และฝ่ายพระยาสรรค์ถูกกวาดล้าง
+{
+  const before = failed;
+  console.log('ชั้นยุค:');
+  const problems: string[] = [];
+  const eras = content.eras;
+  if (eras[0]!.from > 2288 || eras[eras.length - 1]!.to < END_YEAR) problems.push(`ยุคไม่ครอบคลุม 2288–${END_YEAR}`);
+  for (let i = 1; i < eras.length; i++) if (eras[i]!.from !== eras[i - 1]!.to) problems.push(`ยุค ${eras[i - 1]!.id} → ${eras[i]!.id} ไม่ต่อกัน`);
+  const eraIds = new Set(eras.map((e) => e.id));
+  for (const d of Object.values(content.events)) {
+    const conds = [...(d.trigger.requires ?? []), ...d.options.flatMap((o) => o.conditions ?? [])];
+    for (const c of conds) {
+      if (c.type === 'era') for (const id of c.in) if (!eraIds.has(id)) problems.push(`${d.id}: ไม่มียุค ${id}`);
+      if (c.type === 'year' && ((c.max ?? Infinity) < 2288 || (c.min ?? -Infinity) > END_YEAR)) problems.push(`${d.id}: เงื่อนไขปีอยู่นอกช่วงเกม`);
+    }
+  }
+  const ctx = makeCtx(emptyState(77), content);
+  const hero = bootstrapScenario(ctx);
+  hero.sex = 'm';
+  const at = (year: number, day = 0) => { ctx.state.meta.day = yearStart(ctx, year) + day; };
+  for (const y of [2290, 2350, 2399]) for (const id of ['slavery', 'corvee', 'sakdinaIncome'] as const) {
+    at(y);
+    if (!institutionActive(ctx, id)) problems.push(`${id} ไม่มีผลปี ${y} (ช่องเสียบต้องยังเปิดอยู่)`);
+  }
+  at(2381); if (institutionActive(ctx, 'inoculation')) problems.push('ปลูกฝีมีก่อน 2382');
+  at(2382); if (!institutionActive(ctx, 'inoculation')) problems.push('ปลูกฝีไม่มีปี 2382');
+  at(2320); if (eraAt(ctx).id !== 'thonburi') problems.push(`ปี 2320 ไม่อยู่ยุคธนบุรี (${eraAt(ctx).id})`);
+  const dole = content.events['thonburi.rice_dole']!;
+  for (const [y, want] of [[2310, false], [2311, true], [2312, true], [2313, false]] as const) {
+    at(y, 100);
+    if (requirementsMet(ctx, dole, hero, { actor: hero.id }) !== want) problems.push(`ข้าวแจก ปี ${y}: ควร${want ? '' : 'ไม่'}ออก`);
+  }
+  // เลือกข้าง 2325: ต้องมีตำแหน่ง; event มาวันที่นัด (90) ก่อน shock (120)
+  const shock = content.history.find((h) => h.tag === 'history:thonburi_succession')!;
+  const sched = content.historyEvents.find((h) => h.event === 'thonburi.succession_side')!;
+  if (!(sched.year === shock.year && sched.day < (shock.day ?? 0))) problems.push('event เลือกข้างไม่ได้มาก่อน shock ผลัดแผ่นดิน');
+  at(2325, sched.day);
+  hero.birthDay = ctx.state.meta.day - yearsToDays(30);
+  if (historyEventsToday(ctx).some((p) => p.def.id === 'thonburi.succession_side')) problems.push('คนไม่มีตำแหน่งได้ event เลือกข้าง');
+  applyCareer(ctx, hero, 'enter_dept', 'patrol');
+  const side = historyEventsToday(ctx).find((p) => p.def.id === 'thonburi.succession_side');
+  if (!side) problems.push('ข้าราชการไม่ได้ event เลือกข้างปี 2325');
+  else chooseOption(ctx, side, 'san');
+  const dyn = ctx.state.dynasties[hero.dynastyId!]!;
+  if (dyn.faction !== 'faction:phraya_san') problems.push(`เลือกฝ่ายพระยาสรรค์แล้วตระกูลไม่เป็นฝ่ายนั้น (${dyn.faction})`);
+  // shock ลงวันที่ 120 ผ่าน advanceDay (ลงกลางปี) — กวาดล้างตามโอกาส ทอยหลายรอบให้เห็นผล
+  let purged = 0;
+  const N = 40;
+  for (let i = 0; i < N; i++) {
+    hero.social.wealth = 100;
+    hero.social.title ??= 'หมื่นทดสอบ';
+    dyn.faction = 'faction:phraya_san';
+    at(2325, (shock.day ?? 0) - 1);
+    const sigs = advanceDay(ctx);
+    if (i === 0 && !sigs.some((g) => g.type === 'log' && g.kind === 'history')) problems.push('shock ผลัดแผ่นดินไม่ลงกลางปีผ่าน advanceDay');
+    if (hero.social.wealth <= 20) purged++;
+    if (!isAlive(hero)) break;
+  }
+  if (purged < N * 0.4 || purged > N * 0.95) problems.push(`ฝ่ายพระยาสรรค์ถูกกวาดล้าง ${purged}/${N} (ควรราว 70%)`);
+  // ข้อความของ event ยุคธนบุรีครบ ไม่มีตัวแปรค้าง
+  const text = load('text.th.json') as Record<string, string>;
+  at(2311, 100);
+  for (const id of ['thonburi.rice_dole', 'thonburi.succession_side']) {
+    const v = eventView(ctx, prepareEvent(ctx, id, { actor: hero.id }), text);
+    if (v.title === id || !v.text || /[{}]/.test(v.text) || v.options.some((o) => !o.text || /[{}]|^event\./.test(o.text))) problems.push(`${id}: ข้อความไม่ครบ`);
+  }
+  check('ชั้นยุค', problems);
+  if (failed === before) console.log(`  ✓ ${eras.length} ยุคต่อกัน · เงื่อนไขปี/ยุค · สถาบันยังเปิด · ข้าวแจกเฉพาะ 2311–2312 · เลือกข้างก่อน shock · ฝ่ายพระยาสรรค์ถูกกวาดล้าง ${purged}/${N}`);
 }
 
 // [5i] ผู้เล่นรู้สึกหนักใจเอง: ญาติใกล้ชิดตาย (ยิ่งรักยิ่งหนัก) เมียที่ไม่รักแล้ว และเหตุการณ์บ้านเมือง

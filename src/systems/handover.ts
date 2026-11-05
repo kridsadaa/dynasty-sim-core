@@ -623,10 +623,16 @@ export function plagueDeathMult(ctx: Ctx, c: Character, year: number): number {
 
 const PLAGUE_PREP_TH = { flee: 'หนีไปอยู่ไกลจากกรุง', home: 'ปิดเรืออยู่กับบ้าน', merit: 'ทำบุญสะเดาะเคราะห์' } as const;
 
-export function applyHistoricalShocks(ctx: Ctx, year: number): string[] {
+/** เหตุการณ์ประวัติศาสตร์ที่ลงวันนี้ (วันของปี) */
+export function historyOn(ctx: Ctx, year: number, day: number) {
+  return ctx.content.history.filter((h) => h.year === year && (h.day ?? 0) === day);
+}
+
+export function applyHistoricalShocks(ctx: Ctx, year: number, day = 0): string[] {
   const out: string[] = [];
-  const drawn = drawFictionEvents(ctx, year);
-  for (const ev of [...ctx.content.history.filter((h) => h.year === year), ...drawn.map((d) => d.ev)]) {
+  // เรื่องสมมติจั่วปีละครั้งตอน 1 ม.ค.; เหตุการณ์จริงลงตามวันของตัวเอง (HistoricalEvent.day)
+  const drawn = day === 0 ? drawFictionEvents(ctx, year) : [];
+  for (const ev of [...historyOn(ctx, year, day), ...drawn.map((d) => d.ev)]) {
     out.push(historyHeadline(ctx, ev));
     const note = drawn.find((d) => d.ev === ev)?.note;
     if (note) out.push(note);

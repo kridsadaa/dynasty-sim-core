@@ -84,7 +84,8 @@
     "gameRefs": {
       "tags": [
         "history:thonburi_succession",
-        "faction:taksin_loyalist"
+        "faction:taksin_loyalist",
+        "faction:phraya_san"
       ]
     },
     "aiCheck": {

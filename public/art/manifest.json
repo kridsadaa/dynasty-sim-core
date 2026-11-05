@@ -237,6 +237,7 @@
       "file": "art/scene.audience_hall.webp",
       "style": "reality",
       "tags": [
+        "event:thonburi.succession_side",
         "event:career.audience_late",
         "event:career.promotion",
         "event:career.punished",
@@ -1045,6 +1046,7 @@
       "file": "art/scene.war_hunger.webp",
       "style": "reality",
       "tags": [
+        "event:thonburi.rice_dole",
         "event:war.rice_gone",
         "event:war2328.rice_dear"
       ],

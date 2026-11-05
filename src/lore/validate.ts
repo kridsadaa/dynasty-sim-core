@@ -172,16 +172,47 @@ for (const img of manifest.images) {
   }
 }
 
+// ---------- loreRefs ของชั้นยุค (rules.json › eras/institutions) และของ event ----------
+{
+  const rules = readJson<{ eras?: Array<{ id: string; loreRefs?: string[] }>; institutions?: Record<string, { loreRefs?: string[] }> }>('public', 'content', 'rules.json');
+  const refs: Array<[string, string[] | undefined]> = [
+    ...(rules.eras ?? []).map((e): [string, string[] | undefined] => [`rules.json › eras › ${e.id}`, e.loreRefs]),
+    ...Object.entries(rules.institutions ?? {}).filter(([k]) => !k.startsWith('_')).map(([k, v]): [string, string[] | undefined] => [`rules.json › institutions › ${k}`, v.loreRefs]),
+    ...Object.values(readJson<Record<string, { id: string; loreRefs?: string[] }>>('public', 'content', 'events.json')).map((d): [string, string[] | undefined] => [`events.json › ${d.id}`, d.loreRefs]),
+  ];
+  for (const [at, ids] of refs) for (const id of ids ?? []) if (!entryIds.has(id)) errors.push(`${at}: loreRef ${id} ไม่มี`);
+}
+
 // ---------- anachronism lint ----------
+// ช่วงปีที่ข้อความถูกใช้ (ชั้นยุค docs/design-eras.md): event ที่มีเงื่อนไข 'year' ใน trigger.requires หรือถูกนัดปีใน historyEvents
+// ตรวจกับช่วงนั้นแทนทั้งเกม — event หลัง 2456 ใช้คำว่า "นามสกุล" ได้ ส่วนข้อความอื่นตรวจกับทั้งเกมเหมือนเดิม
+type EventLite = { id: string; textKey: string; trigger?: { requires?: Array<{ type: string; min?: number; max?: number }> } };
+const eventDefs = Object.values(readJson<Record<string, EventLite>>('public', 'content', 'events.json'));
+const scheduled = readJson<{ historyEvents?: Array<{ year: number; event: string }> }>('public', 'content', 'rules.json').historyEvents ?? [];
+const windowOf = new Map<string, YearRange>();
+for (const d of eventDefs) {
+  const years = scheduled.filter((h) => h.event === d.id).map((h) => h.year);
+  const cond = d.trigger?.requires?.find((c) => c.type === 'year');
+  const w: YearRange | undefined = years.length ? [Math.min(...years), Math.max(...years)]
+    : cond ? [Math.max(game[0], cond.min ?? game[0]), Math.min(game[1], cond.max ?? game[1])] : undefined;
+  if (w) windowOf.set(d.textKey, w);
+}
+const textWindow = (key: string): YearRange => {
+  for (let k = key; k.includes('.'); k = k.slice(0, k.lastIndexOf('.'))) {
+    const w = windowOf.get(k);
+    if (w) return w;
+  }
+  return game;
+};
 for (const rule of anachronisms) {
   if (rule.loreRef && !entryIds.has(rule.loreRef)) errors.push(`anachronisms › "${rule.term}": loreRef ${rule.loreRef} ไม่มี`);
   const valid: YearRange = [rule.validFrom ?? -Infinity, rule.validTo ?? Infinity];
-  const fullyValid = valid[0] <= game[0] && game[1] <= valid[1];
-  if (fullyValid) continue;
   for (const [key, text] of Object.entries(texts)) {
     if (!text.includes(rule.term)) continue;
-    const msg = `text.th.json › ${key}: ใช้ "${rule.term}" — ${rule.note}`;
-    (overlaps(valid, game) ? warnings : errors).push(msg);
+    const used = textWindow(key);
+    if (valid[0] <= used[0] && used[1] <= valid[1]) continue;
+    const msg = `text.th.json › ${key}: ใช้ "${rule.term}" (ข้อความใช้ช่วง ${used.join('–')}) — ${rule.note}`;
+    (overlaps(valid, used) ? warnings : errors).push(msg);
   }
 }
 
