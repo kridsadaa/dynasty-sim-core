@@ -273,7 +273,8 @@ export function performHandover(
   const heirNode = must(ctx.state.familyNodes[heir.familyNodeId], 'heir node');
 
   // [4] funeral
-  log.push(holdFuneral(ctx, dead));
+  const funeralLine = holdFuneral(ctx, dead);
+  if (funeralLine) log.push(funeralLine);
 
   // [5] estate
   // ทรัพย์ไปตามกฎหมายแก่ลูก (ไม่มีลูกจึงญาติ) แม้ผู้สืบต่อเป็นพี่น้อง — ผู้สืบต่อได้ตำแหน่ง ไม่ใช่ทรัพย์ทั้งหมด
@@ -372,7 +373,8 @@ export function appointLivingHead(ctx: Ctx, dead: Character): void {
 
 export function settleDeath(ctx: Ctx, dead: Character): { lines: string[]; heirIds: Array<Character['id']> } {
   const heirs = estateHeirs(ctx, dead);
-  const lines = [holdFuneral(ctx, dead)];
+  const funeralLine = holdFuneral(ctx, dead);
+  const lines = funeralLine ? [funeralLine] : [];
   const estate = distributeEstate(ctx, dead, heirs, undefined);
   lines.push(...estate.lines);
   leaveHousehold(ctx, dead, [estate.houseHeir]);
@@ -384,7 +386,9 @@ export function settleDeath(ctx: Ctx, dead: Character): { lines: string[]; heirI
  * คิดจากทรัพย์ทั้งหมด ไม่ใช่เงินสดอย่างเดียว; เงินสดไม่พอ → ขายทอง แล้วขายที่ดินแปลงเล็กก่อน
  * ปลงศพก่อนแบ่งมรดก (lore: ritual.funeral_cremation, social.cremation_before_division) — เรือนและของตกทอดไม่ขาย
  */
-function holdFuneral(ctx: Ctx, dead: Character): string {
+function holdFuneral(ctx: Ctx, dead: Character): string | null {
+  // ถูกกวาดต้อนไปพม่า: ยังไม่ตาย ไม่มีศพให้ปลง — ข้ามงานศพ (event งานศพของญาติก็ข้ามคนกลุ่มนี้แล้วใน mourning.ts) ทรัพย์ยังตกแก่ญาติตามเดิม
+  if (dead.deathCause === CAPTIVE_TAG) return null;
   const B = ctx.content.balance.inheritance;
   const owned = Object.values(ctx.state.items).filter((i) => i.ownerCharacterId === dead.id);
   const estateValue = dead.social.wealth + owned.reduce((a, i) => a + i.value, 0);

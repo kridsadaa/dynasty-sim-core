@@ -2,6 +2,7 @@
   "war.news_tenasserim": {
     "id": "war.news_tenasserim",
     "textKey": "event.war_news_tenasserim",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0 },
@@ -17,6 +18,7 @@
   "war.siege_begins": {
     "id": "war.siege_begins",
     "textKey": "event.war_siege_begins",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0, "requires": [ { "type": "inCity" } ] },
@@ -54,6 +56,7 @@
   "war.rice_gone": {
     "id": "war.rice_gone",
     "textKey": "event.war_rice_gone",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0, "requires": [ { "type": "inCity" } ] },
@@ -99,6 +102,7 @@
   "war.taksin_breakout": {
     "id": "war.taksin_breakout",
     "textKey": "event.war_taksin_breakout",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0, "ageRange": [18, 45], "requires": [ { "type": "inCity" }, { "type": "sex", "is": "m" }, { "type": "skill", "skill": "combat", "min": 10 } ] },
@@ -131,6 +135,7 @@
   "war.decide_leave": {
     "id": "war.decide_leave",
     "textKey": "event.war_decide_leave",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0 },
@@ -246,6 +251,7 @@
   "war.levy": {
     "id": "war.levy",
     "textKey": "event.war_levy",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0, "ageRange": [18, 50], "requires": [ { "type": "sex", "is": "m" } ] },
@@ -297,6 +303,7 @@
   "war.prepare": {
     "id": "war.prepare",
     "textKey": "event.war_prepare",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {} },
     "trigger": { "weight": 0 },
@@ -314,6 +321,7 @@
   "war.west_falls": {
     "id": "war.west_falls",
     "textKey": "event.war_west_falls",
+    "loreRefs": ["event.burmese_war_2308_2310"],
     "contextTags": [],
     "roles": { "actor": {}, "refugee": {} },
     "trigger": { "weight": 0 },

@@ -11,7 +11,8 @@ import { inoculationEvent, mortalityYearTick } from './systems/mortality';
 import { feudEvent } from './systems/feud';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type PreparedEvent } from './systems/events';
 import { emptyState, marry, spawnCharacter } from './systems/factory';
-import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover } from './systems/handover';
+import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover, settleDeath } from './systems/handover';
+import { CAPTIVE_TAG } from './systems/war';
 import { campaignBindings, resolveCampaign, SUBSTITUTE_DEATH, substituteDeathChance } from './systems/campaign';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep, purse } from './systems/marriage';
@@ -1705,6 +1706,25 @@ if (LONG) {
   }
   check('ชั้นยุค', problems);
   if (failed === before) console.log(`  ✓ ${eras.length} ยุคต่อกัน · เงื่อนไขปี/ยุค · สถาบันยังเปิด · ข้าวแจกเฉพาะ 2311–2312 · เลือกข้างก่อน shock · ฝ่ายพระยาสรรค์ถูกกวาดล้าง ${purged}/${N}`);
+}
+
+// [5h5] ถูกกวาดต้อนไปพม่าไม่มีงานศพ (ยังไม่ตาย) แต่ทรัพย์ยังตกแก่ญาติ — คนตายตามปกติยังมีงานศพ
+{
+  const before = failed;
+  console.log('ผู้ถูกกวาดต้อน:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(31), content);
+  const hero = bootstrapScenario(ctx);
+  const mk = (name: string) => spawnCharacter(ctx, { name, sex: 'm', birthYear: 2270, estate: 'noble', dynastyId: hero.dynastyId, householdId: hero.householdId });
+  const taken = mk('ถูกต้อน'); taken.social.wealth = 50;
+  const dead = mk('ตายปกติ'); dead.social.wealth = 50;
+  markDead(ctx, taken, CAPTIVE_TAG);
+  markDead(ctx, dead, 'situation:illness');
+  const a = settleDeath(ctx, taken).lines, b = settleDeath(ctx, dead).lines;
+  if (a.some((l) => l.includes('งานศพ'))) problems.push(`จัดงานศพให้คนที่ถูกกวาดต้อน: ${a.join(' / ')}`);
+  if (!b.some((l) => l.includes('งานศพ'))) problems.push('คนตายปกติไม่มีงานศพ');
+  check('ผู้ถูกกวาดต้อน', problems);
+  if (failed === before) console.log('  ✓ ไม่มีงานศพให้คนที่ถูกกวาดต้อน · คนตายปกติยังมีงานศพ');
 }
 
 // [5i] ผู้เล่นรู้สึกหนักใจเอง: ญาติใกล้ชิดตาย (ยิ่งรักยิ่งหนัก) เมียที่ไม่รักแล้ว และเหตุการณ์บ้านเมือง

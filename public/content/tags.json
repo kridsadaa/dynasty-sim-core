@@ -52,7 +52,7 @@
   { "id": "situation:feud", "parents": ["situation:combat"], "label": { "th": "ถูกล้างแค้น" } },
   { "id": "situation:smallpox", "parents": ["situation:illness"], "label": { "th": "ไข้ทรพิษ" }, "loreRefs": ["health.smallpox_endemic"] },
   { "id": "situation:childbirth", "parents": ["situation:any"], "label": { "th": "คลอดลูก" }, "loreRefs": ["health.childbirth_deaths", "belief.bad_death_burial"] },
-  { "id": "history:burmese_invasion", "parents": ["situation:war"], "label": { "th": "ศึกพม่า" } },
+  { "id": "history:burmese_invasion", "parents": ["situation:war"], "label": { "th": "ศึกพม่า" }, "loreRefs": ["event.burmese_war_2308_2310"] },
   { "id": "history:fall_of_ayutthaya", "parents": ["situation:war"], "label": { "th": "ศึกเสียกรุงครั้งที่สอง" }, "prestige": 0.9,
     "loreRefs": ["event.fall_of_ayutthaya_2310"] },
   { "id": "history:captive_after_fall", "parents": ["situation:war"], "label": { "th": "ถูกกวาดต้อนไปพม่า" } },
