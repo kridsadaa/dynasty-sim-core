@@ -3330,7 +3330,7 @@
   "thonburi.rice_dole": {
     "id": "thonburi.rice_dole", "textKey": "event.rice_dole", "contextTags": [], "loreRefs": ["event.famine_2310_2313"],
     "roles": { "actor": {} },
-    "trigger": { "ageRange": [14, 80], "weight": 1.5, "cooldownDays": 720, "requires": [ { "type": "year", "min": 2311, "max": 2312 } ] },
+    "trigger": { "ageRange": [14, 80], "weight": 0, "requires": [ { "type": "year", "min": 2311, "max": 2312 } ] },
     "percepts": [],
     "options": [
       { "id": "queue", "textKey": "event.rice_dole.queue",

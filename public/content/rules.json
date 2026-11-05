@@ -54,6 +54,7 @@
     }
   },
   "historyEvents": [
+    { "year": 2311, "day": 120, "event": "thonburi.rice_dole", "minAge": 14 },
     { "year": 2325, "day": 90, "event": "thonburi.succession_side", "minAge": 18 },
     { "year": 2362, "day": 300, "event": "plague.news", "minAge": 16 },
     { "year": 2391, "day": 300, "event": "plague.news", "minAge": 16 },

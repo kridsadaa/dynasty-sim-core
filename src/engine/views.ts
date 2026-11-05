@@ -475,6 +475,7 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
       if (e.awe && e.awe > 0) parts.push(`เกรง${to}ขึ้น`);
     }
     if (e.op === 'wound' && e.role === 'actor') parts.push(e.severity[1] >= 0.3 ? 'เจ็บหนัก' : 'เจ็บตัว');
+    if (e.op === 'ill' && e.role === 'actor') parts.push('ล้มป่วย');
     // คนอื่นรู้สึกต่อเรา: "{rival}ไม่พอใจ" / "{patron}เอ็นดู"
     if (e.op === 'relation' && e.role !== 'actor' && e.toward === 'actor' && e.delta) {
       const who = vars[e.role] ?? e.role;
@@ -503,7 +504,8 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
     if (e.op === 'war' && e.action === 'stay') parts.push('อยู่ในกรุง');
     if (e.op === 'war' && e.action === 'taksin') parts.push('ออกจากกรุงไปกับพระยาตาก');
     if (e.op === 'war' && e.action === 'leave') parts.push(`${e.dir === 'east' ? 'ไปทางตะวันออก' : e.dir === 'camp' ? 'ยอมแพ้ที่ค่ายพม่า (รอดชีวิตง่ายแต่มักถูกกวาดต้อน)' : 'เข้าป่าทางตะวันตก'} · ${e.party === 'all' ? 'ทั้งเรือน' : e.party === 'nuclear' ? 'คนใกล้ชิด' : 'คนเดียว'}`);
-    if (showCost && hasOffice && e.op === 'favor' && e.delta < 0) parts.push('ถูกมองว่าทิ้งราชการ');
+    // ความโปรดปราน (เฉพาะคนมีตำแหน่ง ไม่บอกตัวเลข — แบบเดียวกับ event ราชการ): งานบุญ/ศึกที่เสียความโปรดปรานคือทิ้งราชการ
+    if (hasOffice && e.op === 'favor' && Math.abs(e.delta) >= 0.05) parts.push(e.delta > 0 ? 'เป็นที่พอใจ' : showCost ? 'ถูกมองว่าทิ้งราชการ' : 'ถูกมองไม่ดี');
     if (e.op === 'prestige' && e.delta) parts.push(e.delta > 0 ? 'ตระกูลได้หน้า' : 'ตระกูลเสียหน้า');
   }
   return parts.length ? [...new Set(parts)].join(' · ') : undefined;
