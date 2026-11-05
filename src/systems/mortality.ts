@@ -43,6 +43,7 @@ export function mortalityYearTick(ctx: Ctx): string[] {
       : cause === 'situation:smallpox' ? `${name}ตายด้วยไข้ทรพิษ ${when}`
         : age < 15 ? `${name}เจ็บไข้ตาย ${when}` : `${name}เจ็บไข้ถึงแก่กรรม ${when}`);
   };
+  const player = S.characters[S.meta.playerCharacterId];
   for (const ch of Object.values(S.characters)) {
     if (!isAlive(ch)) continue;
     const age = ageOf(ctx, ch, day - 1);
@@ -76,11 +77,26 @@ export function mortalityYearTick(ctx: Ctx): string[] {
         S.meta.graveIllness = true;
         continue;
       }
+    } else if (cause === 'situation:illness' && !S.meta.childIllness && age < 15 && isPlayersChildAtHome(ctx, ch, player)) {
+      // ลูกของผู้เล่นในเรือน: ส่วนหนึ่งเป็น event ลูกไข้หนักให้เลือกวิธีรักษา (ตัวเลือก 0.3/0.5/0.5/0.7 เฉลี่ย 0.5) — ตายรวมเท่าเดิม (docs/design-sick-child.md)
+      const u = ctx.rng.next();
+      if (u >= risk * (M.graveIllnessDiceShare + 2 * (1 - M.graveIllnessDiceShare))) continue;
+      if (u >= risk * M.graveIllnessDiceShare) {
+        S.meta.childIllness = ch.id;
+        continue;
+      }
     } else if (!ctx.rng.chance(risk)) continue;
     markDead(ctx, ch, cause);
     if (!isPlayer) died(ch.name, age, cause);
   }
   return out;
+}
+
+/** ลูกของผู้เล่นที่ยังอยู่เรือนเดียวกับผู้เล่น (พ่อหรือแม่คือผู้เล่น) */
+function isPlayersChildAtHome(ctx: Ctx, ch: Character, player: Character | undefined): boolean {
+  if (!player || !isAlive(player) || ch.id === player.id || !ch.householdId || ch.householdId !== player.householdId) return false;
+  const node = ctx.state.familyNodes[ch.familyNodeId];
+  return !!node && (node.fatherId === player.familyNodeId || node.motherId === player.familyNodeId);
 }
 
 /**

@@ -169,6 +169,11 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (inoc) out.push({ type: 'event', prepared: inoc });
     const feud = feudEvent(ctx);
     if (feud) out.push({ type: 'event', prepared: feud });
+    if (S.meta.childIllness) {
+      const kid = S.characters[S.meta.childIllness];
+      delete S.meta.childIllness;
+      if (player && isAlive(player) && kid && isAlive(kid)) out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_grave_illness', { actor: player.id, child: kid.id }) });
+    }
     if (S.meta.graveIllness) {
       delete S.meta.graveIllness;
       if (player && isAlive(player)) out.push({ type: 'event', prepared: prepareEvent(ctx, 'body.grave_illness', { actor: player.id }) });

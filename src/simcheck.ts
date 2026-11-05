@@ -302,7 +302,8 @@ function balanceCheck(): void {
     ['ตัวละครแรกตายก่อนอายุ 30 (ไม่นับกรุงแตก)', bal.firstDeathAges.filter((a) => a < 30).length / SEEDS, 0, 0.35],
     // ผู้เล่นอัตโนมัติเลือกตัวเลือกแรก (ปักหลัก ไม่ฝังทรัพย์) = กรณีเลวร้ายที่สุดของคนในกรุง ~57%; เพดานกันศึกโหดเกินเป้า
     ['ตัวละครแรกตายหรือถูกกวาดต้อนตอนกรุงแตก', bal.firstWarDeaths / SEEDS, 0, 0.7],
-    ['ตระกูลสิ้นสายก่อนจบเรื่อง', extinct / SEEDS, 0, 0.25],
+    // 30 seed แกว่ง ±8 จุด รอบค่าจริงราว 25% — เพดาน 0.3 กันล้มเพราะดวง เป้าจริง ≤ 25% อยู่ที่ประตู sim:policy n ≥ 150 (PLAN ข้อ 9, 2026-11-05)
+    ['ตระกูลสิ้นสายก่อนจบเรื่อง', extinct / SEEDS, 0, 0.3],
     ['อายุมัธยฐานของผู้สืบตอนรับช่วง', median(bal.takeoverAges), 25, 60],
     ['ความหนักใจเฉลี่ยของผู้เล่น', ratio(bal.stress), 0.05, 0.35],
     [`ผู้เล่นมีตำแหน่งราชการ (ตั้งแต่ พ.ศ. ${OFFICE_FROM_YEAR})`, ratio(bal.office), 0.15, 0.6],
@@ -1600,10 +1601,7 @@ if (LONG) {
   const before = failed;
   console.log('ตัวเลือกแพ้ขาดใน event ที่เจอบ่อย:');
   /** ตั้งใจให้มีตัวเลือกชนะขาด — ใส่เหตุผลทุกข้อ */
-  const ALLOW: Record<string, string> = {
-    // ตัวเลือกผิดธรรมเนียมที่เกมให้เลือกได้ (WRITING.md ข้อ 2) — ยังไม่มีอะไรชดเชย ดู docs/design-tradeoffs.md หัวข้อ 2 ง.
-    'family.death_bad': 'เผาทันทีผิดธรรมเนียมตายร้าย ตั้งใจให้แย่กว่าฝัง',
-  };
+  const ALLOW: Record<string, string> = {};
   const total = Object.values(seenEvents).reduce((a, n) => a + n, 0);
   const frequent = Object.entries(seenEvents).filter(([, n]) => n / total >= 0.01).map(([id]) => id);
   const NUMERIC = new Set(['wealth', 'merit', 'stress', 'skill', 'favor', 'prestige', 'bond']);
@@ -2046,6 +2044,68 @@ if (LONG) {
   }
   check('เตรียมรับโรคระบาด', problems.slice(0, 4));
   if (failed === before) console.log(`  ✓ คนในเรือนตาย: ไม่เตรียม ${(none.rate * 100).toFixed(0)}% · หนี ${(flee.rate * 100).toFixed(0)}% · ปิดเรือน ${(home.rate * 100).toFixed(0)}% · ทำบุญ ${(merit.rate * 100).toFixed(0)}% · คนนอกเรือนไม่ได้อานิสงส์ · ข่าว 2362/2391 อยู่ในตาราง`);
+}
+
+// [5n] PLAN 3b ลูกไข้หนัก (docs/design-sick-child.md): ลูกของผู้เล่นในเรือนที่ทอยตายด้วยไข้ ส่วนหนึ่งกลายเป็น event ให้เลือกรักษา
+// (หลานไม่ได้) · ตายใน event แล้วได้งานศพ/มรดก/ออกจากเรือนทันที · ตัวเลือกมีครบและหมอยาเสียเงิน
+{
+  const before = failed;
+  console.log('ลูกไข้หนัก:');
+  const problems: string[] = [];
+  const M = content.balance.mortality;
+  const keep = { young: M.young, smallpoxYearChance: M.smallpoxYearChance };
+  M.young = 0.4; M.smallpoxYearChance = 0; // ให้ทอยตายบ่อยพอจะเห็นทั้งสองทาง (คืนค่าท้ายข้อ)
+  let events = 0, diceDeaths = 0, grandEvents = 0;
+  for (let i = 0; i < 60; i++) {
+    const ctx = makeCtx(emptyState(500 + i), content);
+    const hero = bootstrapScenario(ctx);
+    ctx.state.meta.day = yearStart(ctx, 2300);
+    hero.birthDay = ctx.state.meta.day - yearsToDays(30);
+    const kid = spawnCharacter(ctx, { name: 'ลูกป่วย', sex: 'm', birthYear: 2297, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+    kid.constitution = 0;
+    mortalityYearTick(ctx);
+    if (ctx.state.meta.childIllness === kid.id) events++;
+    else if (!isAlive(kid)) diceDeaths++;
+    // หลาน (ลูกของลูก) ไม่ได้ event — ใช้ลูกเต๋าเดิม
+    delete ctx.state.meta.childIllness;
+    const grown = spawnCharacter(ctx, { name: 'ลูกโต', sex: 'm', birthYear: 2280, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+    const grand = spawnCharacter(ctx, { name: 'หลานป่วย', sex: 'm', birthYear: 2297, estate: 'noble', father: grown, dynastyId: hero.dynastyId, householdId: hero.householdId });
+    grand.constitution = 0;
+    for (const c of Object.values(ctx.state.characters)) if (c.id !== grand.id && c.id !== hero.id) c.deathGraceUntil = ctx.state.meta.day + 400;
+    mortalityYearTick(ctx);
+    if (ctx.state.meta.childIllness === grand.id) grandEvents++;
+  }
+  Object.assign(M, keep);
+  if (events < 10 || diceDeaths < 5) problems.push(`ลูกของผู้เล่นควรได้ทั้ง event และตายด้วยลูกเต๋า (event ${events} ลูกเต๋า ${diceDeaths} จาก 60)`);
+  if (grandEvents) problems.push(`หลานได้ event ลูกไข้หนัก ${grandEvents} ครั้ง (ควรเป็นเฉพาะลูกของผู้เล่น)`);
+  // event: ตัวเลือกครบ หมอยาเสียเงิน ตายแล้วถูกจัดการทันที
+  const text = load('text.th.json') as Record<string, string>;
+  let settled = false, paid = false;
+  for (let i = 0; i < 40 && !settled; i++) {
+    const ctx = makeCtx(emptyState(700 + i), content);
+    const hero = bootstrapScenario(ctx);
+    hero.social.wealth = 20;
+    const kid = spawnCharacter(ctx, { name: 'ลูกป่วย', sex: 'f', birthYear: yearOf(ctx, ctx.state.meta.day) - 2, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+    const p = prepareEvent(ctx, 'family.child_grave_illness', { actor: hero.id, child: kid.id });
+    if (i === 0) {
+      const v = eventView(ctx, p, text);
+      if (v.options.length !== 4 || v.options.some((o) => !o.text || /[{}]/.test(o.text) || !o.hint?.includes('ราว'))) problems.push(`ตัวเลือกลูกไข้หนักไม่ครบ/ไม่มีคำใบ้ความเสี่ยง: ${v.options.map((o) => o.text + ' | ' + o.hint).join(' / ')}`);
+      if (/[{}]/.test(v.text)) problems.push(`ข้อความลูกไข้หนักมีตัวแปรค้าง: ${v.text}`);
+      const w = hero.social.wealth;
+      chooseOption(ctx, p, 'physician');
+      paid = hero.social.wealth <= w - 3 + 1e-9;
+      continue;
+    }
+    chooseOption(ctx, p, 'wait');
+    if (!isAlive(kid)) {
+      settled = !ctx.state.households[hero.householdId!]!.memberIds.includes(kid.id);
+      if (!settled) problems.push('ลูกที่ตายใน event ยังค้างอยู่ในเรือน (ไม่ได้จัดการการตาย)');
+      settled = true;
+    }
+  }
+  if (!paid) problems.push('ตามหมอยาแล้วเงินไม่ลด 3 ตำลึง');
+  check('ลูกไข้หนัก', problems);
+  if (failed === before) console.log(`  ✓ ลูกของผู้เล่น: event ${events} · ตายด้วยลูกเต๋า ${diceDeaths} (จาก 60, ความเสี่ยงที่ตั้งไว้สูง) · หลานไม่ได้ event · ตัวเลือก 4 แบบมีคำใบ้ · หมอยาเสียเงิน · ตายแล้วออกจากเรือนทันที`);
 }
 
 // [5m] ชั้น 2c: ปลูกฝีให้ลูก (ตั้งแต่ 2382) — เสนอครั้งเดียวต่อเด็กที่ยังไม่เคยเป็นไข้ทรพิษ; ปลูกแล้วภูมิคุ้มกัน; เสี่ยงตายต่ำ

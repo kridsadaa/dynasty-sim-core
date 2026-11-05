@@ -2216,7 +2216,9 @@
       {
         "id": "stay",
         "textKey": "event.outing_lotus.stay",
-        "effects": []
+        "effects": [
+          { "op": "skill", "role": "actor", "skill": "housework", "delta": 1 }
+        ]
       }
     ]
   },
@@ -2253,7 +2255,9 @@
       {
         "id": "stay",
         "textKey": "event.outing_lotus.stay",
-        "effects": []
+        "effects": [
+          { "op": "skill", "role": "actor", "skill": "housework", "delta": 1 }
+        ]
       }
     ]
   },
@@ -3213,6 +3217,7 @@
         "id": "bury",
         "textKey": "event.death_bad.bury",
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -2 },
           {
             "op": "merit",
             "role": "actor",
@@ -5722,6 +5727,30 @@
           }
         ]
       }
+    ]
+  },
+  "family.child_grave_illness": {
+    "id": "family.child_grave_illness", "textKey": "event.child_grave_illness", "perilous": true, "contextTags": [], "loreRefs": ["health.child_grave_illness_choice", "psyche.khwan_doctor"],
+    "roles": { "actor": {}, "child": {} }, "trigger": { "weight": 0 }, "percepts": [],
+    "options": [
+      { "id": "physician", "textKey": "event.child_grave_illness.physician",
+        "conditions": [ { "type": "purse", "min": 3 } ],
+        "risk": { "base": 0.3, "factors": [], "hintKey": "risk.child_grave_illness_physician", "successKey": "outcome.child_grave_illness.physician_ok",
+          "fail": { "textKey": "outcome.child_grave_illness.physician_bad", "effects": [ { "op": "wealth", "role": "actor", "delta": -3 }, { "op": "kill", "role": "child", "cause": "situation:fever", "allowKin": true } ] } },
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -3 }, { "op": "bond", "role": "child", "toward": "actor", "affection": 0.06 } ] },
+      { "id": "folk", "textKey": "event.child_grave_illness.folk",
+        "risk": { "base": 0.5, "factors": [], "hintKey": "risk.child_grave_illness_folk", "successKey": "outcome.child_grave_illness.folk_ok",
+          "fail": { "textKey": "outcome.child_grave_illness.folk_bad", "effects": [ { "op": "kill", "role": "child", "cause": "situation:fever", "allowKin": true } ] } },
+        "effects": [ { "op": "bond", "role": "child", "toward": "actor", "affection": 0.06 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] },
+      { "id": "khwan", "textKey": "event.child_grave_illness.khwan",
+        "conditions": [ { "type": "purse", "min": 1 } ],
+        "risk": { "base": 0.5, "factors": [], "hintKey": "risk.child_grave_illness_khwan", "successKey": "outcome.child_grave_illness.khwan_ok",
+          "fail": { "textKey": "outcome.child_grave_illness.khwan_bad", "effects": [ { "op": "wealth", "role": "actor", "delta": -1 }, { "op": "kill", "role": "child", "cause": "situation:fever", "allowKin": true } ] } },
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -1 }, { "op": "bond", "role": "child", "toward": "actor", "affection": 0.06 }, { "op": "stress", "role": "actor", "delta": -0.03 } ] },
+      { "id": "wait", "textKey": "event.child_grave_illness.wait",
+        "risk": { "base": 0.7, "factors": [], "hintKey": "risk.child_grave_illness_wait", "successKey": "outcome.child_grave_illness.wait_ok",
+          "fail": { "textKey": "outcome.child_grave_illness.wait_bad", "effects": [ { "op": "kill", "role": "child", "cause": "situation:fever", "allowKin": true } ] } },
+        "effects": [ { "op": "bond", "role": "child", "toward": "actor", "affection": 0.06 } ] }
     ]
   },
   "body.grave_illness": {

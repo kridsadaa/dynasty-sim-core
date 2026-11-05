@@ -1484,6 +1484,8 @@ export interface GameState {
     /** ผู้ที่สั่งลอบฆ่าสำเร็จแล้วรอวันถูกล้างแค้น — feud.revenge ออกให้เฉพาะผู้เล่นคนเดิม (ผู้สืบไม่ต้องรับกรรม) */
     /** ทอยตายรายปีของผู้เล่นออกผล "ไข้หนัก" — world.ts แปลงเป็น event body.grave_illness ทันที */
     graveIllness?: boolean;
+    /** ลูกของผู้เล่นที่ทอยตายด้วยไข้ปีนี้แล้วกลายเป็น event ลูกไข้หนัก (family.child_grave_illness) — ปีละคนเดียว (docs/design-sick-child.md) */
+    childIllness?: CharacterId;
     feuds?: Array<{ actorId: CharacterId; dueDay: number }>;
     plague?: { year: number; kind: 'flee' | 'home' | 'merit'; householdId: Character['householdId'] };
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };

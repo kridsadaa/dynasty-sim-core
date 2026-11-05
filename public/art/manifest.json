@@ -130,6 +130,7 @@
       "file": "art/scene.sickbed.webp",
       "style": "reality",
       "tags": [
+        "event:family.child_grave_illness",
         "event:family.parent_illness",
         "event:body.grave_illness",
         "event:body.wound_infected",

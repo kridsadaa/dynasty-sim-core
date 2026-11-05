@@ -13,7 +13,7 @@ import { buryValuables, joinTaksin, leaveCity, stayInCity, warWhere } from './wa
 import { applyCampaign, campaignIs } from './campaign';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
-import { markDead } from './handover';
+import { appointLivingHead, markDead, settleDeath } from './handover';
 import { divorce, takeMinorWife } from './wives';
 import { recordHabit } from './festivals';
 import { markNursing, markTopknot } from './lifeEvents';
@@ -429,6 +429,13 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         }
         markDead(ctx, ch, e.cause);
         report.notes.push(`${ch.name}ตายแล้ว`);
+        // ญาติที่ไม่ใช่ผู้เล่นตายเพราะตัวเลือก (เช่น ลูกไข้หนัก) — รอบงานศพ/มรดกของวันนี้ผ่านไปแล้ว จัดการทันที (ผู้เล่นไป handover ตามปกติ)
+        if (!ch.local && ch.id !== ctx.state.meta.playerCharacterId) {
+          const settled = settleDeath(ctx, ch);
+          // บอกงานศพ/มรดกเฉพาะเมื่อผู้เล่นได้ส่วน — แบบเดียวกับคนตายตามปกติใน world.ts (ลูกเล็กไม่มีทรัพย์ไม่ต้องขึ้นบรรทัด "ได้ 0 ตำลึง")
+          if (settled.heirIds.includes(ctx.state.meta.playerCharacterId)) report.notes.push(...settled.lines);
+          appointLivingHead(ctx, ch);
+        }
         break;
       }
       case 'plague':
