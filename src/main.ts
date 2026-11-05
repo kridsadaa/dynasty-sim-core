@@ -1271,8 +1271,16 @@ async function showEnding() {
     for (const i of s.items) ul.append(el('li', i));
     parts.push(el('h3', s.title), ul);
   }
-  const row = el('div', undefined, 'row');
-  row.append(
+  parts.push(
+    el(
+      'p',
+      `ขอบคุณที่เล่นจนจบนะครับ${v.continueTo ? ' ถ้ายังอยากเห็นตระกูลนี้ไปต่อ กด "เล่นต่อ" ได้เลย' : ''} และถ้าสนุก สนับสนุนผู้พัฒนาได้ที่ปุ่ม "เลี้ยงน้ำร้อนน้ำชา" ☕`,
+      'release-meta',
+    ),
+  );
+  const row = el('div', undefined, 'row split');
+  const right = el('div', undefined, 'row');
+  right.append(
     button('ดูผังตระกูล', () => {
       closeModal();
       showTab('tree');
@@ -1280,6 +1288,7 @@ async function showEnding() {
     ...(v.continueTo ? [button(`เล่นต่อ (เรื่องสมมติถึง พ.ศ. ${v.continueTo})`, () => confirmContinue(v, parts, row))] : []),
     button('เริ่มใหม่', () => void $('new').click()),
   );
+  row.append(button('☕ เลี้ยงน้ำร้อนน้ำชา', () => showDonate(() => openModal(...parts, row))), right);
   openModal(...parts, row);
 }
 
@@ -1518,13 +1527,11 @@ function showAbout() {
     ...(BUILD_DATE ? [el('dt', 'สร้างเมื่อ'), el('dd', thaiDate(BUILD_DATE))] : []),
     el('dt', 'ผู้สร้าง'), el('dd', CREATOR),
   );
+  // หน้าเกี่ยวกับแสดงแค่รุ่นล่าสุด — ประวัติทั้งหมดอยู่อีกหน้าต่าง หน้านี้จะได้ไม่ยาวขึ้นทุกรุ่น
   const history = el('div', undefined, 'history');
-  CHANGELOG.forEach((e, i) => {
-    const d = el('details') as HTMLDetailsElement;
-    d.open = i === 0;
-    d.append(el('summary', `รุ่น ${e.version} · ${thaiDate(e.date)}`), ...releaseBody(e));
-    history.append(d);
-  });
+  history.append(releaseDetails(CHANGELOG[0]!, true));
+  const more = el('div', undefined, 'row');
+  if (CHANGELOG.length > 1) more.append(button(`ดูประวัติการอัปเดตทั้งหมด (${CHANGELOG.length} รุ่น)`, showHistory));
   const row = el('div', undefined, 'row split');
   const right = el('div', undefined, 'row');
   if (installOffered(prefs.get('pwaInstalled', false))) right.append(button('📲 ติดตั้งเป็นแอป', () => void installNow(showAbout)));
@@ -1536,10 +1543,27 @@ function showAbout() {
     dl,
     links,
     el('p', 'ขอบคุณที่ลองเล่นนะครับ ถ้าเจอข้อผิดพลาดหรือมีไอเดีย บอกได้ตามลิงก์ด้านบน', 'release-meta'),
-    el('h3', 'ประวัติการอัปเดต'),
+    el('h3', 'มีอะไรใหม่ในรุ่นล่าสุด'),
     history,
+    more,
     row,
   );
+}
+
+/** รุ่นหนึ่งเป็นหัวข้อพับได้ */
+function releaseDetails(e: ChangelogEntry, open: boolean): HTMLDetailsElement {
+  const d = el('details') as HTMLDetailsElement;
+  d.open = open;
+  d.append(el('summary', `รุ่น ${e.version} · ${thaiDate(e.date)}`), ...releaseBody(e));
+  return d;
+}
+
+function showHistory() {
+  const history = el('div', undefined, 'history');
+  CHANGELOG.forEach((e, i) => history.append(releaseDetails(e, i === 0)));
+  const row = el('div', undefined, 'row');
+  row.append(button('กลับ', showAbout), button('ปิด', closeModal));
+  openModal(el('h2', 'ประวัติการอัปเดต'), history, row);
 }
 $('about').onclick = showAbout;
 
