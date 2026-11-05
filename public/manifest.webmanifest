@@ -1,0 +1,17 @@
+{
+  "name": "หนึ่งตระกูล — Dynasty Sim",
+  "short_name": "หนึ่งตระกูล",
+  "description": "เกมจำลองตระกูลขุนนางชั้นผู้น้อย ปลายอยุธยาถึงต้นรัตนโกสินทร์ เล่นต่อกันหลายรุ่นจนถึง พ.ศ. 2400",
+  "lang": "th",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f1e7",
+  "theme_color": "#8a3b12",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

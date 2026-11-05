@@ -49,6 +49,7 @@
 | `src/engine/death.ts` | `settlePlayerDeath` — แจ้งการตายของผู้เล่นและส่งต่อผู้สืบ (ใช้ทั้งตายตามวัยในลูปเวลาและตายเพราะผลของตัวเลือกเสี่ยงใน event) |
 | `src/engine/persistence.ts` | IndexedDB เซฟ/โหลด |
 | `src/main.ts` | UI ฝั่ง main thread (modal, log, แผงตัวละคร); ไม่ถือ state |
+| `src/pwa.ts`, `public/sw.js`, `public/manifest.webmanifest` | ติดตั้งเป็นแอป (PWA): จับ `beforeinstallprompt`, ลงทะเบียน SW เฉพาะ build จริง (`sw.js?v=<รุ่น>` รุ่นเปลี่ยนล้างแคชเก่า; assets แคชก่อน ที่เหลือเน็ตก่อน); หน้าต่างแนะนำ + ปุ่มในหน้าเกี่ยวกับอยู่ท้าย `main.ts` (pref `installNever`, `pwaInstalled`); ไอคอนใน `public/icons/` |
 
 ### เนื้อหาและเครื่องมือ
 | ที่อยู่ | หน้าที่ |

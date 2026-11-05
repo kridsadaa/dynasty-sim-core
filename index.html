@@ -9,6 +9,11 @@
     <meta property="og:description" content="เกมจำลองตระกูลขุนนางชั้นผู้น้อย ปลายอยุธยาถึงต้นรัตนโกสินทร์ เล่นต่อกันหลายรุ่นจนถึง พ.ศ. 2400" />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#8a3b12" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="หนึ่งตระกูล" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%238a3b12'/%3E%3Ctext x='16' y='24' font-size='22' text-anchor='middle' fill='%23f6f1e7' font-family='serif'%3E%E0%B9%91%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -236,6 +241,8 @@
       #event .factors .up { color: var(--good); }
       #event .factors .down { color: var(--accent); }
       #event .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+      #event .row .row { margin-top: 0; }
+      #event .install-never { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); margin-top: 8px; cursor: pointer; }
       #event dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 14px; margin: 8px 0; }
       #event dt { color: var(--muted); }
       #event dd { margin: 0; }

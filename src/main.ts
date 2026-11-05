@@ -4,6 +4,7 @@ import type {
   SkillsView, StatusBadge, TreeView,
 } from './engine/protocol';
 import { pickArt, type ArtManifest, type ArtStyle } from './art/select';
+import { canPromptInstall, initPwa, installOffered, isIOS, promptInstall } from './pwa';
 import { APP_VERSION, BUILD_DATE, CHANGELOG, CREATOR, GIT_HASH, REPO_URL, releaseNotes, thaiDate, type ChangelogEntry } from './release';
 
 // UI บาง ๆ: ไม่มี game logic, ไม่มี state ของเกม — ทุกอย่างถามจาก Worker
@@ -1128,6 +1129,7 @@ const closeModal = () => {
   modal.replaceChildren();
   $('backdrop').hidden = true;
   renderClock();
+  queueMicrotask(maybeSuggestInstall); // หน้าต่างแนะนำติดตั้งรอจนไม่มีหน้าต่างอื่นค้าง
 };
 
 /** ฟอร์มพิมพ์ชื่อ — ตรวจแบบเดียวกับ worker (อักษรไทย 1–20 ตัว) */
@@ -1524,7 +1526,10 @@ function showAbout() {
     history.append(d);
   });
   const row = el('div', undefined, 'row split');
-  row.append(button('☕ เลี้ยงน้ำร้อนน้ำชาผู้พัฒนา', () => showDonate(showAbout)), button('ปิด', closeModal));
+  const right = el('div', undefined, 'row');
+  if (installOffered(prefs.get('pwaInstalled', false))) right.append(button('📲 ติดตั้งเป็นแอป', () => void installNow(showAbout)));
+  right.append(button('ปิด', closeModal));
+  row.append(button('☕ เลี้ยงน้ำร้อนน้ำชาผู้พัฒนา', () => showDonate(showAbout)), right);
   openModal(
     el('h2', 'หนึ่งตระกูล'),
     el('p', 'เกมจำลองตระกูลขุนนางผู้น้อย ปลายอยุธยาถึงต้นรัตนโกสินทร์ เล่นต่อกันหลายรุ่นจน พ.ศ. 2400 — ตัวเลขสมดุลเป็นของเกม ส่วนเนื้อหาประวัติศาสตร์อ้างอิงที่มาในคลัง lore', 'release-meta'),
@@ -1537,6 +1542,73 @@ function showAbout() {
   );
 }
 $('about').onclick = showAbout;
+
+// ---------------- ติดตั้งเป็นแอป (PWA) ----------------
+// เปิดผ่านเบราว์เซอร์ปกติ: เด้งแนะนำครั้งเดียวต่อการเปิดหน้า (ติ๊ก "ไม่ต้องแสดงอีก" ได้)
+// ปุ่ม "ติดตั้งเป็นแอป" ในหน้าเกี่ยวกับอยู่ตลอดจนกว่าจะติดตั้ง
+let installSuggested = false;
+
+/** วิธีติดตั้งเองเมื่อเบราว์เซอร์ไม่มีกล่องติดตั้งให้เรียก (Safari บน iPhone/iPad, Firefox ฯลฯ) */
+function manualInstallSteps(): Node {
+  const ol = el('ol', undefined, 'release-list');
+  const steps = isIOS()
+    ? ['เปิดหน้านี้ใน Safari', 'กดปุ่มแชร์ (สี่เหลี่ยมมีลูกศรชี้ขึ้น)', 'เลือก "เพิ่มไปยังหน้าจอโฮม" แล้วกด "เพิ่ม"']
+    : ['เปิดเมนูของเบราว์เซอร์ (⋮ หรือ ☰)', 'เลือก "ติดตั้งแอป" หรือ "เพิ่มไปยังหน้าจอหลัก"', 'ถ้าไม่มีให้เลือก ลองเปิดหน้านี้ใน Chrome หรือ Edge'];
+  for (const t of steps) ol.append(el('li', t));
+  return ol;
+}
+
+async function installNow(back: () => void) {
+  if (canPromptInstall()) {
+    closeModal();
+    if (await promptInstall()) status.textContent = 'ติดตั้งหนึ่งตระกูลเป็นแอปแล้ว';
+    return;
+  }
+  const row = el('div', undefined, 'row');
+  row.append(button('กลับ', back));
+  openModal(el('h2', 'ติดตั้งเป็นแอป'), el('p', 'เบราว์เซอร์นี้ให้ติดตั้งเองจากเมนู:'), manualInstallSteps(), row);
+}
+
+function maybeSuggestInstall() {
+  if (installSuggested || modalOpen() || clock.playing) return; // ไม่ขัดจังหวะ event หรือเวลาที่กำลังเดิน
+  if (prefs.get('installNever', false) || !installOffered(prefs.get('pwaInstalled', false))) return;
+  if (!canPromptInstall() && !isIOS()) return; // เด้งเฉพาะเมื่อติดตั้งได้จริง — เบราว์เซอร์อื่นดูวิธีได้ที่ปุ่มในหน้าเกี่ยวกับ
+  installSuggested = true;
+  const never = el('input') as HTMLInputElement;
+  never.type = 'checkbox';
+  const label = el('label', undefined, 'install-never');
+  label.append(never, document.createTextNode(' ไม่ต้องแสดงอีก'));
+  const done = () => {
+    if (never.checked) prefs.set('installNever', true);
+  };
+  const row = el('div', undefined, 'row');
+  const later = button('ไว้ทีหลัง', () => {
+    done();
+    closeModal();
+  });
+  const ok = button(canPromptInstall() ? 'ติดตั้ง' : 'ดูวิธีติดตั้ง', () => {
+    done();
+    void installNow(closeModal);
+  });
+  row.append(later, ok);
+  openModal(
+    el('h2', 'ติดตั้งหนึ่งตระกูลเป็นแอป'),
+    el('p', 'เปิดเล่นจากหน้าจอโฮมหรือเดสก์ท็อปได้เลย ไม่มีแถบเบราว์เซอร์มาบัง และเปิดเล่นต่อได้แม้เน็ตหลุด เซฟยังอยู่ที่เดิม'),
+    el('p', 'ติดตั้งภายหลังได้ตลอดที่ปุ่ม "เกี่ยวกับ" ด้านบน', 'release-meta'),
+    label,
+    row,
+  );
+  queueMicrotask(() => ok.focus());
+}
+
+initPwa({
+  version: APP_VERSION,
+  onAvailable: () => {
+    prefs.set('pwaInstalled', false); // เบราว์เซอร์ยอมให้ติดตั้งอีก = ถอนการติดตั้งไปแล้ว
+    maybeSuggestInstall();
+  },
+  onInstalled: () => prefs.set('pwaInstalled', true),
+});
 
 if (prefs.get<number>('noticeAck', 0) < NOTICE_VERSION) showNotice(true);
 else showReleaseIfNew();
