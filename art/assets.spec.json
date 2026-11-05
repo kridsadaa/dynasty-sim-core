@@ -174,11 +174,9 @@
       "id": "scene.sickbed",
       "style": "reality",
       "tags": [
-        "event:family.child_grave_illness",
         "event:family.parent_illness",
         "event:body.grave_illness",
         "event:body.wound_infected",
-        "event:family.hard_to_raise",
         "situation:illness"
       ],
       "alt": "ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย",
@@ -297,10 +295,6 @@
       "tags": [
         "event:thonburi.succession_side",
         "event:career.audience_late",
-        "event:career.promotion",
-        "event:career.punished",
-        "event:career.gift_offered",
-        "event:career.rival_accuses",
         "event:career.reported",
         "event:career.recall"
       ],
@@ -674,6 +668,22 @@
       "subject": "An army marching to war: a column of soldiers with spears, swords and shields following a war elephant with a mahout and a howdah, standard-bearers carrying tall banners, drummers and a conch blower at the front, officials on horseback, villagers watching from the roadside with palms pressed together, decorative trees and rocks; stylized, no fighting shown.",
       "loreRefs": [
         "event.nine_armies_2328",
+        "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "history.succession",
+      "style": "chronicle",
+      "tags": [
+        "historykind:succession"
+      ],
+      "alt": "ภาพจิตรกรรม: คืนผลัดแผ่นดิน ทหารเฝ้าประตูวัง ขุนนางหมอบรอฟังข่าว",
+      "subject": "A tense night at a royal palace when one reign ends: high palace walls and gates with tiered roofs, guards with spears posted at the gates and along the walls by torchlight, rows of officials in tall white conical hats kneeling in the outer courtyard awaiting news, war boats with oarsmen moored at the river landing, townspeople watching from the far bank with palms pressed together, decorative trees and water patterns; the inner palace is closed and empty. No king or royal figure, no crown, no throne, no fighting.",
+      "loreRefs": [
+        "event.thonburi_succession_2325",
+        "event.rama1_succession_2352",
+        "event.rama3_accession_2367",
+        "event.rama4_accession_2394",
         "attire.wat_ko_kaeo_reference"
       ]
     },
@@ -1155,6 +1165,42 @@
       ]
     },
     {
+      "id": "portrait.f.elder.head",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:elder",
+        "estate:noble",
+        "estate:merchant",
+        "role:household_head"
+      ],
+      "alt": "แม่เรือนสูงวัยผู้นำตระกูล นั่งตัวตรงข้างหีบไม้และเชี่ยนหมาก",
+      "subject": "Medium portrait: a dignified elderly Siamese matriarch in her sixties who heads her household, with a lined, firm oval face, warm olive-brown skin, high cheekbones and calm, watchful dark eyes, mouth closed; dressed as a well-to-do woman, with gold pear-shaped earrings and gold finger rings; seated upright on a reed mat beside a wooden chest and a betel set, inside a timber house, her posture that of the one who gives the orders. Hair: She wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): grey hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s",
+        "material.household_objects_1680s"
+      ]
+    },
+    {
+      "id": "portrait.f.youth.head",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "estate:noble",
+        "estate:merchant",
+        "role:household_head"
+      ],
+      "alt": "หญิงสาวที่ต้องขึ้นเป็นเจ้าเรือน นั่งข้างหีบไม้และเชี่ยนหมาก สีหน้าจริงจัง",
+      "subject": "Medium portrait: a young well-to-do Siamese woman of about twenty who has had to become head of her household, with warm olive-brown skin, a gentle oval face, high cheekbones and serious, composed dark eyes, mouth closed; dressed as a well-to-do woman, with pear-shaped gold earrings; seated upright on a mat beside a wooden chest and a betel set inside a timber house, a little stiff, as if still growing into the role. Hair: She wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): black hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "attire.women_1680s",
+        "attire.hair_1680s",
+        "material.household_objects_1680s"
+      ]
+    },
+    {
       "id": "scene.war_news",
       "style": "reality",
       "tags": [
@@ -1284,6 +1330,88 @@
       "loreRefs": [
         "health.smallpox_endemic",
         "health.inoculation_choice"
+      ]
+    },
+    {
+      "id": "scene.gift_offered",
+      "style": "reality",
+      "tags": [
+        "event:career.gift_offered"
+      ],
+      "alt": "คู่ความหมอบนำของกำนัลมาให้ขุนนางที่ชานเรือน",
+      "subject": "Morning on the front veranda of a minor official's timber house: the official, a man in his forties in an open-front collarless white muslin over-shirt with wide long sleeves and a patterned silk lower cloth, no hat, sits on a raised mat beside a lacquered betel box; on the boards below the edge of the platform a commoner couple kneel low with palms pressed together, the man bare-chested, having set before them a footless tray with folded cloth, a small basket of rice, a bunch of bananas and a small earthenware jar; a household servant waits at the side. Calm, customary, matter-of-fact mood; no coins or money shown. Mouths closed. Hair: The official and the commoner man both wear the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut; the wife wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): black hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "social.officers_no_salary_1680s",
+        "attire.officials_1680s",
+        "material.household_objects_1680s"
+      ]
+    },
+    {
+      "id": "scene.rival_accuses",
+      "style": "reality",
+      "tags": [
+        "event:career.rival_accuses"
+      ],
+      "alt": "ขุนนางกรมเดียวกันกล่าวโทษอีกคนต่อหน้าเจ้ากรม",
+      "subject": "Inside an open-sided timber pavilion of a government department: an elderly department head in an open-front collarless white muslin over-shirt with wide long sleeves and a patterned silk lower cloth sits on a raised platform with a lacquered betel box beside him; on the floor before him two officials in white muslin over-shirts kneel side by side: one leans forward with palms pressed together, speaking earnestly and casting a sideways glance at the other; the other kneels stiffly with eyes lowered and jaw set. Clerks in the background keep their heads down over folded paper books. The tension is only in posture and gaze; mouths closed. No king or royal figure visible. Hair: Every official and clerk wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "social.court_punishments_1680s",
+        "attire.officials_1680s"
+      ]
+    },
+    {
+      "id": "scene.punished",
+      "style": "reality",
+      "tags": [
+        "event:career.punished"
+      ],
+      "alt": "ขุนนางถูกใส่คานั่งก้มหน้าอยู่หน้ากำแพงที่ทำการ",
+      "subject": "A packed-earth yard outside the whitewashed wall of a government compound: a middle-aged official without his over-shirt, bare-chested, no shirt, in a silk lower cloth, sits on the ground with a heavy flat wooden cangue, a large square board locked around his neck, his head bowed; two other men in cangues sit near him in a loose circle; a guard with a rattan cane stands nearby, and passers-by glance and look away. No blood, no visible wounds; sober, humiliating mood; mouths closed. Hair: Every man wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "social.court_punishments_1680s",
+        "attire.officials_1680s"
+      ]
+    },
+    {
+      "id": "scene.promotion",
+      "style": "reality",
+      "tags": [
+        "event:career.promotion"
+      ],
+      "alt": "ขุนนางหมอบรับเครื่องยศที่ได้พระราชทาน",
+      "subject": "Inside a department pavilion: an official in his forties in an open-front collarless white muslin over-shirt with wide long sleeves and a patterned silk lower cloth kneels with palms pressed together before a low stand holding his new insignia of rank, a silver betel box and a lacquered tray with a folded cloth, which an elderly senior official in a tall white conical hat with a gold band presents on behalf of the crown; other officials kneel in rows behind, watching; quiet ceremonial mood, mouths closed. No king or royal figure visible. Hair: Every official not wearing a hat wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "social.officers_no_salary_1680s",
+        "attire.officials_1680s"
+      ]
+    },
+    {
+      "id": "scene.petition",
+      "style": "reality",
+      "tags": [
+        "event:career.petition"
+      ],
+      "alt": "ชายหนุ่มกับญาติผู้ใหญ่หมอบฝากตัวกับเจ้ากรมพร้อมของกำนัล",
+      "subject": "Late morning at the veranda of a senior official's large timber house: a young man of about twenty, bare-chested, no shirt, in a knee-length lower cloth, kneels on the lower step beside an older male relative, both with palms pressed together and heads lowered; before them a footless tray of gifts with folded cloth, fruit and a small jar; the senior official, in an open-front collarless white muslin over-shirt with wide long sleeves and a patterned silk lower cloth, seated above on a mat beside his betel box, looks down at the young man appraisingly; servants in the background. Mouths closed. Hair: The young man, his relative and the senior official all wear the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "social.protection_patronage",
+        "social.officers_no_salary_1680s",
+        "attire.officials_1680s"
+      ]
+    },
+    {
+      "id": "scene.sick_child",
+      "style": "reality",
+      "tags": [
+        "event:family.child_grave_illness",
+        "event:family.hard_to_raise"
+      ],
+      "alt": "แม่อุ้มลูกตัวร้อน หมอขวัญผูกด้ายขาวที่ข้อมือเด็ก",
+      "subject": "Night inside a timber house lit only by a shallow open clay saucer lamp with a small bare flame on the floor, with no glass chimney and no lantern: a mother kneeling on a reed mat holds a feverish child of about four in her lap, the child with a shaved head and a small topknot, bare-chested and wearing a small white lower cloth clearly visible at the hips, not hidden by the mother's arms or a blanket, limp and flushed, a damp cloth on the forehead; beside them an older woman, the khwan doctor, ties a loop of white raw cotton thread around the child's wrist, a brass bowl covered with a cloth, a ladle and a small silver bracelet on a tray in front of her; the father sits behind with a worried face. Quiet, anxious mood; mouths closed. Hair: The mother wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): black hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up; the khwan doctor wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): grey hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up; the father wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.",
+      "loreRefs": [
+        "psyche.riak_khwan_ritual",
+        "psyche.hard_to_raise_child",
+        "psyche.khwan_doctor"
       ]
     }
   ]

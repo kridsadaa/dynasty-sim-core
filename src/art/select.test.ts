@@ -130,13 +130,13 @@ test('งานบ้านแต่ละหมวดได้ภาพขอ�
   assert.equal(pickArt(all, 'reality', eventArtTags('temple.other', []))?.id, 'scene.temple_holy_day');
 });
 
-test('เหตุการณ์ประวัติศาสตร์ที่เป็นศึก ข้าวยาก โรคระบาด ได้ภาพจิตรกรรมของชนิดนั้น ส่วนผลัดแผ่นดินไม่มีภาพ', () => {
+test('เหตุการณ์ประวัติศาสตร์ทุกชนิดได้ภาพจิตรกรรมของชนิดนั้น (ผลัดแผ่นดินได้ history.succession)', () => {
   const spec = JSON.parse(readFileSync('art/assets.spec.json', 'utf8')) as { images: Array<{ id: string; style: ArtImage['style']; tags: string[] }> };
   const all: ArtManifest = { styleVersion: 'spec', images: spec.images.map((i) => img(i.id, i.style, i.tags)) };
   const history = (JSON.parse(readFileSync('public/content/rules.json', 'utf8')) as { history: Array<{ tag: string; kind: string }> }).history;
   for (const h of history) {
     const picked = pickArt(all, 'chronicle', [h.tag, `historykind:${h.kind}`])?.id;
-    if (h.kind === 'succession') assert.equal(picked, undefined, h.tag);
+    if (h.kind === 'succession') assert.equal(picked, 'history.succession', h.tag);
     else assert.ok(picked?.startsWith('history.'), `${h.tag} ได้ ${picked}`);
   }
   assert.equal(pickArt(all, 'chronicle', ['history:fall_of_ayutthaya', 'historykind:war'])?.id, 'history.fall_of_ayutthaya');

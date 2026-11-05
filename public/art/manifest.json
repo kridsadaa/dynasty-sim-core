@@ -130,11 +130,9 @@
       "file": "art/scene.sickbed.webp",
       "style": "reality",
       "tags": [
-        "event:family.child_grave_illness",
         "event:family.parent_illness",
         "event:body.grave_illness",
         "event:body.wound_infected",
-        "event:family.hard_to_raise",
         "situation:illness"
       ],
       "alt": "ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย",
@@ -240,10 +238,6 @@
       "tags": [
         "event:thonburi.succession_side",
         "event:career.audience_late",
-        "event:career.promotion",
-        "event:career.punished",
-        "event:career.gift_offered",
-        "event:career.rival_accuses",
         "event:career.reported",
         "event:career.recall"
       ],
@@ -558,6 +552,17 @@
         "historykind:war"
       ],
       "alt": "ภาพจิตรกรรม: กองทัพเคลื่อนพลตามช้างศึก ธงและกลองนำหน้า",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "history.succession",
+      "file": "art/history.succession.webp",
+      "style": "chronicle",
+      "tags": [
+        "historykind:succession"
+      ],
+      "alt": "ภาพจิตรกรรม: คืนผลัดแผ่นดิน ทหารเฝ้าประตูวัง ขุนนางหมอบรอฟังข่าว",
       "width": 1024,
       "height": 572
     },
@@ -967,6 +972,36 @@
       "height": 572
     },
     {
+      "id": "portrait.f.elder.head",
+      "file": "art/portrait.f.elder.head.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:elder",
+        "estate:noble",
+        "estate:merchant",
+        "role:household_head"
+      ],
+      "alt": "แม่เรือนสูงวัยผู้นำตระกูล นั่งตัวตรงข้างหีบไม้และเชี่ยนหมาก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.f.youth.head",
+      "file": "art/portrait.f.youth.head.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:f",
+        "age:youth",
+        "estate:noble",
+        "estate:merchant",
+        "role:household_head"
+      ],
+      "alt": "หญิงสาวที่ต้องขึ้นเป็นเจ้าเรือน นั่งข้างหีบไม้และเชี่ยนหมาก สีหน้าจริงจัง",
+      "width": 1024,
+      "height": 572
+    },
+    {
       "id": "scene.war_news",
       "file": "art/scene.war_news.webp",
       "style": "reality",
@@ -1096,6 +1131,73 @@
         "event:health.inoculation"
       ],
       "alt": "ศาลาโล่งในหมู่บ้าน พ่อแม่อุ้มลูกเล็กนั่งรอหมอหลวงที่มาปลูกฝี เด็กบางคนกอดแม่แน่นอย่างกลัว",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.gift_offered",
+      "file": "art/scene.gift_offered.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.gift_offered"
+      ],
+      "alt": "คู่ความหมอบนำของกำนัลมาให้ขุนนางที่ชานเรือน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.rival_accuses",
+      "file": "art/scene.rival_accuses.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.rival_accuses"
+      ],
+      "alt": "ขุนนางกรมเดียวกันกล่าวโทษอีกคนต่อหน้าเจ้ากรม",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.punished",
+      "file": "art/scene.punished.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.punished"
+      ],
+      "alt": "ขุนนางถูกใส่คานั่งก้มหน้าอยู่หน้ากำแพงที่ทำการ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.promotion",
+      "file": "art/scene.promotion.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.promotion"
+      ],
+      "alt": "ขุนนางหมอบรับเครื่องยศที่ได้พระราชทาน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.petition",
+      "file": "art/scene.petition.webp",
+      "style": "reality",
+      "tags": [
+        "event:career.petition"
+      ],
+      "alt": "ชายหนุ่มกับญาติผู้ใหญ่หมอบฝากตัวกับเจ้ากรมพร้อมของกำนัล",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.sick_child",
+      "file": "art/scene.sick_child.webp",
+      "style": "reality",
+      "tags": [
+        "event:family.child_grave_illness",
+        "event:family.hard_to_raise"
+      ],
+      "alt": "แม่อุ้มลูกตัวร้อน หมอขวัญผูกด้ายขาวที่ข้อมือเด็ก",
       "width": 1024,
       "height": 572
     }
