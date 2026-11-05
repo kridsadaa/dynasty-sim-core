@@ -113,6 +113,8 @@ let extinct = 0; // seed ที่ตระกูลสิ้นสายก่�
 // ร่างกายแต่กำเนิดของคนตาย แยกตามอายุที่ตาย [ผลรวม, จำนวน] — คนตายเด็กควรต่ำกว่าคนที่อยู่ถึงแก่
 const constitutionAt = { young: [0, 0], old: [0, 0] };
 let hardToRaise = 0;
+/** event ที่ผู้เล่นเจอใน [1] (นับรวมทุก seed, รวม event ต่อเนื่อง) — ใช้หา event ที่เจอบ่อยสำหรับตัวตรวจตัวเลือกแพ้ขาด [5h3b] */
+const seenEvents: Record<string, number> = {};
 // ตัวชี้วัดสมดุลฝั่งผู้เล่น (balanceCheck) — เก็บจากการเล่นอัตโนมัติ "เลือกตัวเลือกแรกเสมอ" แบบเดียวกับที่ BACKLOG ใช้วัด
 const bal = {
   firstDeathAges: [] as number[], // อายุที่ตัวละครแรกของผู้เล่นตาย (seed ที่ยังไม่ตายจนจบไม่นับ) — ไม่รวมตายตอนกรุงแตก
@@ -231,6 +233,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
         for (let p: PreparedEvent | null = sig.prepared; p; ) {
           const opt = p.options.find((o) => !p!.locked.has(o.id));
           if (!opt) throw new Error(`seed ${seed}: event ${p.def.id} ไม่มีตัวเลือกที่เลือกได้`);
+          seenEvents[p.def.id] = (seenEvents[p.def.id] ?? 0) + 1;
           p = prepareFollowUp(ctx, p, chooseOption(ctx, p, opt.id));
         }
       } else if (sig.type === 'playerDied') {
@@ -1570,8 +1573,64 @@ if (LONG) {
   const done = prepareEvent(ctx, 'intent.befriend.done', { actor: hero.id, target: target.id });
   chooseOption(ctx, done, 'feast');
   if (Math.abs(hero.social.wealth - 9) > 0.001) problems.push(`เลี้ยงฉลองเพื่อนแล้วเงินไม่ลด 1 ตำลึง (${hero.social.wealth})`);
+  // คำใบ้บอกการได้วิชา (ของตัวเองและของลูก) และเงินที่ได้ — ไม่งั้นฝั่ง "ได้" ของข้อแลกเปลี่ยนมองไม่เห็น
+  const text = load('text.th.json') as Record<string, string>;
+  const kid = spawnCharacter(ctx, { name: 'บุญมี', sex: 'm', birthYear: yearOf(ctx, ctx.state.meta.day) - 6, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+  const hintOf = (id: string, opt: string, b: Record<string, string>) =>
+    eventView(ctx, prepareEvent(ctx, id, { actor: hero.id, ...b }, { moon: 'moon:full' }), text).options.find((o) => o.id === opt)?.hint ?? '';
+  const holyChild = hintOf('festival.holy_day', 'child', { child: kid.id });
+  if (!holyChild.includes('บุญมีได้ฝึก') || !holyChild.includes('เสียเงิน 0.3')) problems.push(`วันพระ พาลูกไปวัด: คำใบ้ไม่บอกว่าลูกได้ฝึกวิชา/เสียเงิน (${holyChild})`);
+  const fish = hintOf('festival.holy_day', 'fish', { child: kid.id });
+  if (!fish.includes('ได้เงิน 0.3')) problems.push(`วันพระ หาปลา: คำใบ้ไม่บอกว่าได้เงิน (${fish})`);
+  const spar = hintOf('skill.muay_sparring', 'spar', {});
+  if (!spar.startsWith('ได้ฝึก')) problems.push(`ซ้อมมวย: คำใบ้ไม่บอกว่าได้ฝึกวิชา (${spar})`);
+  const bath = hintOf('festival.bathing', 'temple', { parent: hero.id });
+  if (!bath.includes('ได้บุญ') || !bath.includes('เสียเงิน')) problems.push(`รดน้ำผู้ใหญ่ ไปวัดก่อน: คำใบ้ไม่ครบ (${bath})`);
   check('ข้อแลกเปลี่ยนใน event ที่เจอบ่อย', problems);
-  if (failed === before) console.log('  ✓ งานบุญและผลผูกมิตรมีทั้งตัวเลือกเสียเงินและไม่เสีย · เสียแล้วเงินลดจริง');
+  if (failed === before) console.log(`  ✓ งานบุญและผลผูกมิตรมีทั้งตัวเลือกเสียเงินและไม่เสีย · เสียแล้วเงินลดจริง · คำใบ้: "${holyChild}" / "${fish}" / "${spar}"`);
+}
+
+// [5h3b] ตัวเลือกแพ้ขาด (docs/design-tradeoffs.md): event ที่ผู้เล่นเจอ ≥ 1% ต้องไม่มีตัวเลือกที่อีกตัวเลือกดีกว่าหรือเท่ากันทุกด้าน
+// และดีกว่าอย่างน้อยหนึ่งด้าน — เทียบเฉพาะผลที่เป็นตัวเลข; ตัวเลือกที่มีผลชนิดอื่น (แต่งงาน ตั้งชื่อ ความสัมพันธ์ ฯลฯ) หรือไม่มีผลเลย ไม่เอามาเทียบ
+{
+  const before = failed;
+  console.log('ตัวเลือกแพ้ขาดใน event ที่เจอบ่อย:');
+  /** ตั้งใจให้มีตัวเลือกชนะขาด — ใส่เหตุผลทุกข้อ */
+  const ALLOW: Record<string, string> = {
+    // ตัวเลือกผิดธรรมเนียมที่เกมให้เลือกได้ (WRITING.md ข้อ 2) — ยังไม่มีอะไรชดเชย ดู docs/design-tradeoffs.md หัวข้อ 2 ง.
+    'family.death_bad': 'เผาทันทีผิดธรรมเนียมตายร้าย ตั้งใจให้แย่กว่าฝัง',
+  };
+  const total = Object.values(seenEvents).reduce((a, n) => a + n, 0);
+  const frequent = Object.entries(seenEvents).filter(([, n]) => n / total >= 0.01).map(([id]) => id);
+  const NUMERIC = new Set(['wealth', 'merit', 'stress', 'skill', 'favor', 'prestige', 'bond']);
+  type Opt = (typeof content.events)[string]['options'][number];
+  /** ค่าบวก = ดี */
+  const score = (o: Opt): Record<string, number> | undefined => {
+    if (!o.effects.length || o.effects.some((e) => !NUMERIC.has(e.op))) return undefined;
+    const v: Record<string, number> = { wealth: 0, merit: 0, calm: 0, skillSelf: 0, skillOther: 0, favor: 0, prestige: 0, bond: 0, safe: -(o.risk?.base ?? 0) };
+    for (const e of o.effects as Array<{ op: string; role?: string; delta?: number; affection?: number; perSakdina?: number }>) {
+      if (e.op === 'wealth') v.wealth! += (e.delta ?? 0) + (e.perSakdina ?? 0) * 400; // ศักดินา 400 = ขุนนางผู้น้อยราวกลางเกม (ใช้แค่เทียบทิศทาง)
+      else if (e.op === 'merit') v.merit! += e.delta ?? 0;
+      else if (e.op === 'stress') v.calm! -= e.delta ?? 0;
+      else if (e.op === 'skill') v[e.role === 'actor' ? 'skillSelf' : 'skillOther']! += e.delta ?? 0;
+      else if (e.op === 'favor') v.favor! += e.delta ?? 0;
+      else if (e.op === 'prestige') v.prestige! += e.delta ?? 0;
+      else if (e.op === 'bond') v.bond! += e.affection ?? 0;
+    }
+    return v;
+  };
+  const problems: string[] = [];
+  for (const id of frequent) {
+    if (ALLOW[id]) continue;
+    const opts = content.events[id]!.options.map((o) => ({ id: o.id, v: score(o) })).filter((o) => o.v);
+    for (const a of opts) for (const b of opts) {
+      if (a === b) continue;
+      const keys = Object.keys(a.v!);
+      if (keys.every((k) => b.v![k]! >= a.v![k]! - 1e-9) && keys.some((k) => b.v![k]! > a.v![k]! + 1e-9)) problems.push(`${id}: "${b.id}" ดีกว่า "${a.id}" ทุกด้าน`);
+    }
+  }
+  check('ตัวเลือกแพ้ขาด', problems);
+  if (failed === before) console.log(`  ✓ event ที่เจอ ≥ 1% (${frequent.length} ชนิด) ไม่มีตัวเลือกแพ้ขาด`);
 }
 
 // [5i] ผู้เล่นรู้สึกหนักใจเอง: ญาติใกล้ชิดตาย (ยิ่งรักยิ่งหนัก) เมียที่ไม่รักแล้ว และเหตุการณ์บ้านเมือง

@@ -2439,6 +2439,7 @@
           }
         ],
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.3 },
           {
             "op": "bond",
             "role": "child",
@@ -2476,7 +2477,7 @@
           {
             "op": "stress",
             "role": "actor",
-            "delta": 0.02
+            "delta": 0.04
           }
         ]
       },
@@ -2512,6 +2513,7 @@
           }
         ],
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": 0.3 },
           {
             "op": "merit",
             "role": "actor",
@@ -2913,6 +2915,7 @@
           }
         ],
         "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.3 },
           {
             "op": "bond",
             "role": "child",
@@ -2961,12 +2964,16 @@
             "role": "actor",
             "toward": "parent",
             "affection": 0.05
-          },
-          {
-            "op": "merit",
-            "role": "actor",
-            "delta": 0.5
           }
+        ]
+      },
+      {
+        "id": "temple",
+        "textKey": "event.bathing.temple",
+        "effects": [
+          { "op": "wealth", "role": "actor", "delta": -0.3 },
+          { "op": "bond", "role": "actor", "toward": "parent", "affection": 0.05 },
+          { "op": "merit", "role": "actor", "delta": 1 }
         ]
       },
       {
@@ -4684,7 +4691,7 @@
             "op": "skill",
             "role": "actor",
             "skill": "combat",
-            "delta": 4
+            "delta": 5
           },
           {
             "op": "stress",
@@ -4701,7 +4708,7 @@
             "op": "skill",
             "role": "actor",
             "skill": "combat",
-            "delta": 3
+            "delta": 2
           },
           {
             "op": "stress",

@@ -433,9 +433,13 @@ function nameInput(ctx: Ctx, p: PreparedEvent): { default: string; label: string
  *  เรื่องในบ้าน: ใจต่อผู้ใหญ่ ความหนักใจ บุญบาป หน้าตาของตระกูล — ราคาอยู่ในข้อความตัวเลือกแล้ว จึงไม่บอกเงินซ้ำ
  */
 function effectHint(
-  ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>,
+  ctx: Ctx, p: PreparedEvent, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>, text: TextTable,
 ): string | undefined {
-  if (!p.def.id.startsWith('career.')) return everydayHint(effects, vars, ['festival.', 'intent.', 'war.'].some((prefix) => p.def.id.startsWith(prefix)), !!p.actor.office);
+  const skills = skillHints(ctx, effects, vars, text);
+  if (!p.def.id.startsWith('career.')) {
+    const base = everydayHint(effects, vars, ['festival.', 'intent.', 'war.'].some((prefix) => p.def.id.startsWith(prefix)), !!p.actor.office);
+    return [...skills, base].filter(Boolean).join(' · ') || undefined; // วิชาก่อน — เป็นผลหลักของตัวเลือกฝึก
+  }
   const parts: string[] = [];
   for (const e of effects) {
     if (e.op === 'followUp') {
@@ -450,7 +454,23 @@ function effectHint(
     if (e.op === 'favor' && Math.abs(e.delta) >= 0.05) parts.push(e.delta > 0 ? 'เป็นที่พอใจ' : 'ถูกมองไม่ดี');
     if (e.op === 'merit' && e.delta) parts.push(e.delta > 0 ? 'ได้บุญ' : 'เป็นบาป');
   }
+  parts.push(...skills);
   return parts.length ? parts.join(' · ') : undefined;
+}
+
+/**
+ * ได้ฝึกวิชา: "ได้ฝึกเพลงมวยและเพลงอาวุธ" / "{child}ได้ฝึกงานบุญ" — ไม่บอกตัวเลข (ตัวละครรู้แค่ว่าได้ฝึก)
+ * วิชาที่ไม่มีชื่อให้ผู้เล่นอ่าน (เช่น stoicism) ไม่บอก
+ */
+function skillHints(ctx: Ctx, effects: PreparedEvent['options'][number]['effects'], vars: Record<string, string>, text: TextTable): string[] {
+  const out: string[] = [];
+  for (const e of effects) {
+    if (e.op !== 'skill' || e.delta <= 0) continue;
+    const label = ctx.content.chores.skillLabels[e.skill] ?? text[`skill.${e.skill}`];
+    if (!label) continue;
+    out.push(`${e.role === 'actor' ? '' : (vars[e.role] ?? e.role)}ได้ฝึก${label}`);
+  }
+  return [...new Set(out)];
 }
 
 /** showCost: บอกเงินที่เสียด้วย (งานบุญ/ผูกมิตร ราคาไม่อยู่ในข้อความตัวเลือก) */
@@ -458,6 +478,7 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
   const parts: string[] = [];
   for (const e of effects) {
     if (showCost && e.op === 'wealth' && e.role === 'actor' && (e.delta ?? 0) < 0) parts.push(`เสียเงิน ${+Math.abs(e.delta!).toFixed(1)} ตำลึง`);
+    if (showCost && e.op === 'wealth' && e.role === 'actor' && (e.delta ?? 0) > 0) parts.push(`ได้เงิน ${+e.delta!.toFixed(1)} ตำลึง`);
     if (e.op === 'bond' && e.role === 'actor') {
       const to = vars[e.toward] ?? e.toward;
       if (e.affection) parts.push(e.affection > 0 ? `สนิทกับ${to}ขึ้น` : `ห่างเหิน${to}`);
@@ -596,7 +617,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       injected: !!o.injectedBy,
       note: willNote(o.id),
       nameInput: o.input === 'name' ? nameInput(ctx, p) : undefined,
-      hint: [optionHint(ctx, p, o.effects) ?? effectHint(ctx, p, o.effects, vars), riskHint(ctx, p, o, text, vars)]
+      hint: [optionHint(ctx, p, o.effects) ?? effectHint(ctx, p, o.effects, vars, text), riskHint(ctx, p, o, text, vars)]
         .filter(Boolean).join(' · ') || undefined,
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
