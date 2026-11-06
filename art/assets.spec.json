@@ -921,10 +921,7 @@
         "sex:m",
         "age:elder",
         "estate:noble",
-        "role:official",
-        "role:official_patrol",
-        "role:official_palace",
-        "role:official_scholar"
+        "role:official"
       ],
       "alt": "ขุนนางอาวุโสวัยชราสวมเสื้อมัสลินและลอมพอก",
       "subject": "Medium portrait: an elderly senior Siamese official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated on a reed mat inside a timber hall. Avoid: hat brim, wide-brimmed hat.",
@@ -1412,6 +1409,138 @@
         "psyche.riak_khwan_ritual",
         "psyche.hard_to_raise_child",
         "psyche.khwan_doctor"
+      ]
+    },
+    {
+      "id": "portrait.m.elder.official_patrol",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol"
+      ],
+      "alt": "ขุนนางกรมกระเวนสูงวัย ดาบวางบนที่วางข้างตัว",
+      "subject": "Medium portrait: an elderly senior Siamese patrol-department official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated on a reed mat inside a timber hall, a sheathed sword resting on a stand beside him and a rolled warrant cloth on a low tray. Avoid: hat brim, wide-brimmed hat.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.hair_1680s",
+        "social.patrol_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.elder.official_palace",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "role:official",
+        "role:official_palace"
+      ],
+      "alt": "ขุนนางกรมชาวที่สูงวัย ข้างพานเครื่องทอง",
+      "subject": "Medium portrait: an elderly senior Siamese palace-chamber official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated cross-legged on a reed mat in a palace hall, a footed brass tray and betel box beside him. Avoid: hat brim, wide-brimmed hat.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.hair_1680s",
+        "social.royal_chamber_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.elder.official_scholar",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:elder",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar"
+      ],
+      "alt": "ราชบัณฑิตสูงวัย ข้างสมุดไทยดำและเครื่องเขียน",
+      "subject": "Medium portrait: an elderly senior Siamese royal-scholar official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated cross-legged on a reed mat, an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him. Avoid: hat brim, wide-brimmed hat.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.hair_1680s",
+        "social.royal_scholars_department_ladder"
+      ]
+    },
+    {
+      "id": "history.war_naval",
+      "style": "chronicle",
+      "tags": [
+        "history:annam_war_2376",
+        "history:thalang_war"
+      ],
+      "alt": "ภาพจิตรกรรม: กองเรือรบพายออกจากท่า ธงทิวและปืนบนเรือ",
+      "subject": "A war fleet setting out by river: long narrow war boats packed with oarsmen in two rows, each with a prow platform where soldiers hold spears, swords and shields and a small cannon on a swivel stands, tall banners and umbrellas of rank on the larger boats, a drummer beating a drum on the lead boat, officials in tall white conical hats seated under a canopy, townspeople and monks watching from the bank with palms pressed together, stylized wave and fish patterns; no fighting shown, no gore.",
+      "loreRefs": [
+        "event.annam_war_2376",
+        "event.thalang_war_2352",
+        "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "history.flood",
+      "style": "chronicle",
+      "tags": [
+        "fiction:great_flood"
+      ],
+      "alt": "ภาพจิตรกรรม: น้ำท่วมใหญ่ ผู้คนอพยพขึ้นเรือและขึ้นที่สูง",
+      "subject": "A great flood: water covering the fields and rising to the floors of raised houses, families poling and paddling small boats loaded with rice jars, bundles and chickens, a buffalo swimming beside a boat, villagers and monks gathered on a raised temple platform, a woman handing a child up into a boat (child wearing a small lower cloth), stylized water swirls and fish, decorative trees half submerged; calm and dignified, no corpses.",
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "history.fire",
+      "style": "chronicle",
+      "tags": [
+        "fiction:city_fire"
+      ],
+      "alt": "ภาพจิตรกรรม: ไฟไหม้เรือนหนาแน่นริมน้ำ ผู้คนวิ่งหนีและตักน้ำ",
+      "subject": "A fire in a crowded riverside quarter: flames and curling smoke rising from rows of bamboo and timber houses on piles, people passing water in buckets and clay jars along a line to the river, others carrying chests and children to boats, a man pulling down a burning wall with a long hooked pole, officials directing from a landing, a temple spire untouched in the distance, stylized flame and smoke patterns; no one visibly burned, no gore.",
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "history.drought",
+      "style": "chronicle",
+      "tags": [
+        "fiction:drought"
+      ],
+      "alt": "ภาพจิตรกรรม: แล้งจัด ชาวบ้านตักน้ำก้นบ่อและทำพิธีขอฝน",
+      "subject": "A year of drought: cracked dry rice fields and a nearly empty canal, villagers carrying water jars on shoulder poles to a deep well, thin buffalo standing in dry mud, monks and elders seated in a ritual circle praying for rain with offerings of flowers and food on trays, a few farmers looking up at a cloudless sky, withered trees; sombre but dignified, no corpses.",
+      "loreRefs": [
+        "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "history.good_harvest",
+      "style": "chronicle",
+      "tags": [
+        "fiction:good_harvest",
+        "fiction:royal_grace"
+      ],
+      "alt": "ภาพจิตรกรรม: ปีข้าวดี เก็บเกี่ยวรวงข้าวหนักเต็มท้องนา",
+      "subject": "A bountiful harvest: golden heavy-headed rice stalks across the fields, villagers cutting and carrying sheaves, a buffalo cart piled with rice, a full rice barn on stilts, children playing at the edge of the field (bare-chested, wearing small lower cloths), a monk receiving alms rice, cheerful and orderly mood, decorative trees and birds; no king or royal figure.",
+      "loreRefs": [
+        "event.famine_2310_2313",
+        "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "history.trade_boom",
+      "style": "chronicle",
+      "tags": [
+        "fiction:trade_boom"
+      ],
+      "alt": "ภาพจิตรกรรม: ท่าน้ำคึกคัก เรือสินค้าเรียงเต็มและพ่อค้าซื้อขาย",
+      "subject": "A busy river port in a good trading year: many cargo boats moored in rows with sacks, jars and bundles of cloth, porters carrying goods up the landing, merchants in plain lower cloths haggling with scales, Chinese junks with tall battened sails in the distance, a market under awnings with fruit and fish, officials in tall white conical hats inspecting cargo, stylized river waves; no gore.",
+      "loreRefs": [
+        "social.chinese_mobility",
+        "attire.wat_ko_kaeo_reference"
       ]
     }
   ]
