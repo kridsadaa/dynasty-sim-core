@@ -296,7 +296,9 @@
         "event:thonburi.succession_side",
         "event:career.audience_late",
         "event:career.reported",
-        "event:career.recall"
+        "event:career.recall",
+        "event:war2376.muster",
+        "event:court2394.watch"
       ],
       "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
       "subject": "Interior of a palace audience hall seen from behind the officials: rows of Siamese officials in open-front white muslin over-shirts and tall white conical hats with gold bands prostrating on the floor in strict order, betel boxes beside them, tall red columns; the throne area is off-frame. No king or royal figure visible.",
@@ -1203,7 +1205,8 @@
       "tags": [
         "event:war.news_tenasserim",
         "event:war2328.news",
-        "place:market"
+        "place:market",
+        "event:riot2391.news"
       ],
       "alt": "ข่าวศึกที่ท่าน้ำและตลาด",
       "subject": "A busy river landing and market at midday: a travelling boatman, still standing in his boat, speaking urgently to a small crowd of merchants, porters and women who have stopped their trading; baskets of fruit and fish forgotten on the ground, one old man with a hand over his mouth, a child holding a woman's lower cloth; covered boats and a canal lined with raised houses behind. The mood is uneasy murmuring, not panic."
@@ -1229,7 +1232,14 @@
         "event:war2330.levy",
         "event:war2330.levy_f",
         "event:war2330.levy_old",
-        "event:war2330.front"
+        "event:war2330.front",
+        "event:war2336.levy",
+        "event:war2336.levy_f",
+        "event:war2336.levy_old",
+        "event:war2376.levy",
+        "event:war2376.levy_f",
+        "event:war2376.levy_old",
+        "event:war2376.front"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "subject": "Morning in the open yard of a pillared hall at a district office: a row of village men in plain lower cloths and head cloths standing in line, bare-chested, some with spears or long knives; a clerk seated on a mat writing names in a palm-leaf register with a stylus, an officer in a plain white lower cloth and a simple sash standing over him pointing along the line; wives and mothers watching quietly from beyond a bamboo fence. No crowns, no gold regalia."
@@ -1272,7 +1282,8 @@
       "tags": [
         "event:thonburi.rice_dole",
         "event:war.rice_gone",
-        "event:war2328.rice_dear"
+        "event:war2328.rice_dear",
+        "event:war2336.march"
       ],
       "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
       "subject": "Inside a house at evening: an empty woven rice bin standing open on the floor, a woman kneeling and scraping the last few grains from the bottom into a clay pot with her hand, a man sitting with his head lowered beside her, two thin children with shaved heads and topknots, in small lower cloths, waiting quietly; a single small fish on a footless tray. Dim warm light from the doorway, bare and quiet, no melodrama."

@@ -13,7 +13,7 @@ import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type Prep
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover, settleDeath } from './systems/handover';
 import { CAPTIVE_TAG } from './systems/war';
-import { campaignBindings, resolveCampaign, SUBSTITUTE_DEATH, substituteDeathChance } from './systems/campaign';
+import { campaignBindings, resolveCampaign, SUBSTITUTE_DEATH, SUBSTITUTE_FLOOR, substituteDeathChance } from './systems/campaign';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep, purse } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
@@ -1389,6 +1389,89 @@ if (LONG) {
   if (men.some((m) => !isAlive(m))) problems.push('คนในเรือนที่ถูกเกณฑ์ท่าดินแดงถูกสุ่มตายตอน shock');
   check('ศึกท่าดินแดง', problems);
   if (failed === before) console.log(`  ✓ หมายเกณฑ์วันที่ 300 ของ 2329 · แยก campaigns ของเก้าทัพ · แนวหน้า ${f.toFixed(2)} (เก้าทัพ ${nf.toFixed(2)}) คำสั่ง ${o.toFixed(2)} · ข่าวชัยวันที่ 54 ของ 2330 · เรือนที่ถูกเกณฑ์ไม่ถูกสุ่มตาย`);
+}
+
+// [5h2j2] event ยุค รอบ 2 (docs/design-eras.md หัวข้อ 7): ทัพทวาย 2335–2336, ทัพญวน 2376–2377, ตั้วเหี่ย 2391, เวรในวัง 2394
+{
+  const before = failed;
+  console.log('event ยุค รอบ 2 (ทวาย ญวน ตั้วเหี่ย เวรในวัง):');
+  const problems: string[] = [];
+  const mk = (seed: number, day: number, office = false) => {
+    const c = makeCtx(emptyState(seed), content);
+    const h = bootstrapScenario(c);
+    h.sex = 'm';
+    h.social.estate = 'noble';
+    c.state.households[h.householdId!]!.headId = h.id;
+    c.state.meta.day = day;
+    h.birthDay = day - yearsToDays(30);
+    if (office) applyCareer(c, h, 'enter_dept', 'patrol');
+    return { c, h };
+  };
+  const yc = mk(84, 0).c;
+  /** event ที่ขึ้นเมื่อเดินจากวันก่อนหน้าเข้าวันที่ day ของปี (นับจาก 1 ม.ค. = 0) */
+  const eventsOn = (year: number, day: number, office = false, prep?: (c: Ctx, h: Character) => void) => {
+    const { c, h } = mk(85, yearStart(yc, year) + day - 1, office);
+    prep?.(c, h);
+    return advanceDay(c).flatMap((sig) => (sig.type === 'event' ? [sig.prepared.def.id] : []));
+  };
+  const logsOn = (c: Ctx, year: number, day: number) => {
+    c.state.meta.day = yearStart(c, year) + day - 1;
+    return advanceDay(c).flatMap((sig) => (sig.type === 'log' ? [sig.line] : []));
+  };
+
+  // ทวาย: หมายปลาย 2335 → กลางป่า 2336 วันที่ 20 → ถอยทัพวันที่ 70
+  if (!eventsOn(2335, 330).includes('war2336.levy')) problems.push('หมายเกณฑ์ทัพทวายไม่มาวันที่ 330 ของ 2335');
+  const { c: tc, h: th } = mk(86, yearStart(yc, 2335) + 330);
+  th.social.wealth = 500;
+  const tp = purse(tc, th);
+  chooseOption(tc, prepareEvent(tc, 'war2336.levy', { actor: th.id }), 'pay');
+  if (tc.state.meta.campaigns?.tavoy?.mode !== 'pay' || tc.state.meta.campaigns?.tha_din_daeng || tc.state.meta.campaigns?.nine_armies) problems.push('จ่ายแทนทวายไม่บันทึกใน campaigns.tavoy หรือไปเขียนทับศึกอื่น');
+  if (Math.abs(tp - purse(tc, th) - 8) > 0.6) problems.push('จ่ายแทนทวายควรหัก 8 ตำลึง');
+  chooseOption(tc, prepareEvent(tc, 'war2336.levy', { actor: th.id }), 'serve');
+  tc.state.meta.day = yearStart(tc, 2336) + 19;
+  if (!advanceDay(tc).some((sig) => sig.type === 'event' && sig.prepared.def.id === 'war2336.march')) problems.push('ไปทัพทวายเองแล้วไม่มี event กลางป่า');
+  if (!logsOn(tc, 2336, 70).some((l) => l.includes('ถอยกลับจากทวาย'))) problems.push('ไม่มีข่าวถอยทัพจากทวาย');
+  if (Math.abs(substituteDeathChance(th, 'tavoy') - SUBSTITUTE_FLOOR) > 0.011) problems.push('คนที่ส่งไปทวายแทนควรเสี่ยงราวขอบล่าง 5%');
+
+  // ญวน: ขุนนางได้หมายคุมพล (วันที่ 295) แล้วไม่ได้หมายไพร่ซ้ำ · คนไม่มีตำแหน่งได้หมายไพร่ (วันที่ 300)
+  if (!eventsOn(2376, 295, true).includes('war2376.muster')) problems.push('ขุนนางไม่ได้หมายคุมพลไปทัพญวน');
+  if (eventsOn(2376, 295, false).includes('war2376.muster')) problems.push('คนไม่มีตำแหน่งได้หมายคุมพลของขุนนาง');
+  if (!eventsOn(2376, 300, false).includes('war2376.levy')) problems.push('หมายเกณฑ์ทัพญวนไม่มาวันที่ 300');
+  const mustered = eventsOn(2376, 300, true, (c, h) => chooseOption(c, prepareEvent(c, 'war2376.muster', { actor: h.id }), 'steady'));
+  if (mustered.includes('war2376.levy')) problems.push('ขุนนางที่คุมพลไปแล้วยังได้หมายไพร่ซ้ำ');
+  const { c: ac, h: ah } = mk(87, yearStart(yc, 2376) + 300, true);
+  chooseOption(ac, prepareEvent(ac, 'war2376.muster', { actor: ah.id }), 'rush');
+  if (ac.state.meta.campaigns?.annam?.mode !== 'self') problems.push('เร่งคุมพลไปแล้วไม่นับว่าไปทัพเอง');
+  ac.state.meta.day = yearStart(ac, 2377) + 29;
+  if (!advanceDay(ac).some((sig) => sig.type === 'event' && sig.prepared.def.id === 'war2376.front')) problems.push('ไปทัพญวนเองแล้วไม่มี event สนามรบ');
+  if (!logsOn(ac, 2377, 90).some((l) => l.includes('ญวน'))) problems.push('ไม่มีข่าวจบศึกญวน');
+  // shock ญวนย้ายไปวันที่ 330 — เรือนที่รับหมายแล้วไม่ถูกสุ่มตาย
+  const { c: sc, h: sh } = mk(88, yearStart(yc, 2376) + 330);
+  sc.state.meta.campaigns = { annam: { mode: 'pay' } };
+  const men = Array.from({ length: 80 }, (_, i) => spawnCharacter(sc, { name: `ชาย${i}`, sex: 'm', birthYear: 2346, estate: 'noble', dynastyId: sh.dynastyId, householdId: sh.householdId }));
+  applyHistoricalShocks(sc, 2376, 330);
+  if (men.some((m) => !isAlive(m))) problems.push('คนในเรือนที่รับหมายทัพญวนถูกสุ่มตายตอน shock');
+  if (content.history.find((h) => h.tag === 'history:annam_war_2376')?.day !== 330) problems.push('shock ทัพญวนต้องอยู่วันที่ 330 (หลังหมายเกณฑ์)');
+
+  // ตั้วเหี่ย 2391: ทุกคน 16+ · ตัวเลือกคุมคนไปปราบเฉพาะผู้มีตำแหน่ง
+  if (!eventsOn(2391, 99).includes('riot2391.news')) problems.push('ข่าวตั้วเหี่ยไม่มาวันที่ 99 ของ 2391');
+  const { c: rc, h: rh } = mk(89, yearStart(yc, 2391) + 99);
+  const riot = prepareEvent(rc, 'riot2391.news', { actor: rh.id });
+  if (riot.options.some((o) => o.id === 'suppress') && !riot.locked.has('suppress')) problems.push('คนไม่มีตำแหน่งเลือกคุมคนไปปราบตั้วเหี่ยได้');
+  if (!((content.history.find((h) => h.tag === 'history:tua_hia_chachoengsao')?.day ?? 0) > 99)) problems.push('shock ตั้วเหี่ยต้องมาหลังข่าว (วันที่ 99)');
+
+  // เวรในวัง 2394: เฉพาะผู้มีตำแหน่ง
+  if (!eventsOn(2394, 75, true).includes('court2394.watch')) problems.push('ขุนนางไม่ได้เวรในวัง 2394');
+  if (eventsOn(2394, 75, false).includes('court2394.watch')) problems.push('คนไม่มีตำแหน่งได้เวรในวัง');
+
+  // ข้อความครบ ไม่มี {ตัวแปร} ค้าง
+  const text = load('text.th.json') as Record<string, string>;
+  for (const id of ['war2336.levy', 'war2336.levy_f', 'war2336.levy_old', 'war2336.march', 'war2376.muster', 'war2376.levy', 'war2376.levy_f', 'war2376.levy_old', 'war2376.front', 'riot2391.news', 'court2394.watch']) {
+    const v = eventView(rc, prepareEvent(rc, id, { actor: rh.id }), text);
+    if (!v.title || v.title.includes('event.') || /\{[a-z]+\}/.test(v.text) || v.options.some((o) => o.text.includes('event.') || /\{[a-z]+\}/.test(o.text))) problems.push(`ข้อความ ${id} ไม่ครบ`);
+  }
+  check('event ยุค รอบ 2', problems);
+  if (failed === before) console.log('  ✓ ทวาย: หมาย/กลางป่า/ถอยทัพ แยก campaigns · ญวน: ขุนนางคุมพลแล้วไม่ได้หมายซ้ำ สนามรบ ข่าวจบ shock วันที่ 330 ไม่สุ่มตายเรือนที่รับหมาย · ตั้วเหี่ยวันที่ 99 ปราบได้เฉพาะขุนนาง · เวรในวังเฉพาะขุนนาง · ข้อความครบ');
 }
 
 // [5h2k] ศึกเก้าทัพ/ท่าดินแดง: ข้อความของทุก event และตัวเลือกครบ ชื่อคนในตัวเลือกส่งแทนถูกแทนที่ ไม่มี {ตัวแปร} ค้าง

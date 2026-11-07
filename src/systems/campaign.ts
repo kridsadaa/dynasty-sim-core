@@ -10,14 +10,25 @@ import { markDead, settleDeath } from './handover';
 //  คนในเรือนผู้เล่นตายได้จากตัวเลือกเท่านั้น (ผู้ใช้ตัดสิน 2026-11-04) — shock สุ่มของปีนั้นข้ามคนเหล่านี้ (campaignShockExempt)
 //  ผู้ที่ถูกส่งแทนไม่ใช่ผู้เล่น ผลคำนวณอัตโนมัติตอนศึกจบ (resolveCampaign) ด้วยความเสี่ยงเท่าตัวเลือก "ทำตามคำสั่ง"
 //  lore: event.nine_armies_2328, event.tha_din_daeng_2329 (attested) · event.nine_armies_options (invented — ตัวเลขทุกตัวในไฟล์นี้เป็นของเกม)
+//  รอบ 2 ของชั้นยุค (docs/design-eras.md หัวข้อ 7): ทัพไปทวาย 2335–2336 (event.tavoy_campaign_2336), ทัพญวน 2376–2377 (event.annam_war_2376)
 // ============================================================================
 
-export type CampaignKey = 'nine_armies' | 'tha_din_daeng';
+export type CampaignKey = 'nine_armies' | 'tha_din_daeng' | 'tavoy' | 'annam';
 
-/** deathScale: ท่าดินแดงเป็นศึกสั้นและชนะ ความเสี่ยงตายครึ่งเดียวของเก้าทัพ (ตรงกับ deathRisk ของ history shock 0.04 เทียบ 0.08) */
-export const CAMPAIGNS: Record<CampaignKey, { tag: `${string}:${string}`; victory: string; deathScale: number }> = {
+/**
+ * deathScale: ความเสี่ยงตายเทียบเก้าทัพ ตามสัดส่วน deathRisk ชายของ history shock (เก้าทัพ 0.08 = 1)
+ *  ท่าดินแดง 0.04 → 0.5 · ทวาย 0.03 → 0.375 · ญวน 2376 0.06 → 0.75
+ * victory: ข่าวตอนศึกจบ (ทวายจบด้วยการถอยทัพ) · lost: บรรทัดเมื่อคนที่ส่งไปแทนไม่ได้กลับ (ไม่ใส่ = ตายในแนวรบ)
+ */
+export const CAMPAIGNS: Record<CampaignKey, { tag: `${string}:${string}`; victory: string; deathScale: number; lost?: string }> = {
   nine_armies: { tag: 'history:nine_armies', victory: 'ข่าวชัยมาถึงกรุง ทัพหลวงตีทัพหลวงพม่าที่ลาดหญ้าแตก', deathScale: 1 },
   tha_din_daeng: { tag: 'history:tha_din_daeng', victory: 'ข่าวชัยมาถึงกรุง ไทยตีค่ายพม่าที่ท่าดินแดงแตก ทัพพม่าถอยกลับเมาะตะมะ', deathScale: 0.5 },
+  tavoy: {
+    tag: 'history:tavoy_campaign', deathScale: 0.375,
+    victory: 'ทัพหลวงถอยกลับจากทวาย เพราะเมืองทวายกลับไปเข้ากับพม่า คนที่ไปทัพทยอยเดินกลับเข้ากรุงทั้งที่ผอมโซ',
+    lost: 'ล้มป่วยเพราะอดอยากกลางป่า และไม่ได้เดินกลับมาพร้อมหมู่',
+  },
+  annam: { tag: 'history:annam_war_2376', victory: 'ทัพที่ไปเขมรและญวนผลัดกันกลับเข้ากรุง ศึกกับญวนยังไม่จบ แต่หมู่ที่ครบกำหนดได้กลับบ้าน', deathScale: 0.75 },
 };
 
 /** วัยถูกเกณฑ์ (ตรงกับ ages ของ history:nine_armies ใน rules.json) */
@@ -86,6 +97,7 @@ export function campaignIs(ctx: Ctx, ch: Character, c: Extract<Condition, { type
     case 'self': return st?.mode === 'self' && st.soldier === ch.id;
     case 'other': return st?.mode === 'send' || st?.mode === 'servant';
     case 'none': return st?.mode === 'pay' || st?.mode === 'dodge';
+    case 'unset': return st?.mode === undefined; // ยังไม่ได้รับหมายของศึกนี้ (เช่น ขุนนางที่รับหมายคุมพลไปแล้วไม่ต้องได้หมายไพร่ซ้ำ)
     case 'stocked': return !!st?.stocked;
     case 'retainers': {
       const r = ch.householdId ? ctx.state.households[ch.householdId]?.retainers : undefined;
@@ -152,7 +164,7 @@ export function resolveCampaign(ctx: Ctx, key: string): string[] {
     if (sol && isAlive(sol)) {
       if (ctx.rng.chance(substituteDeathChance(sol, key as CampaignKey))) {
         markDead(ctx, sol, def.tag);
-        lines.push(`${sol.name}ไม่ได้กลับมาจากทัพ — เพื่อนร่วมหมู่เล่าว่าล้มลงกลางแนว`, ...settleDeath(ctx, sol).lines);
+        lines.push(`${sol.name}ไม่ได้กลับมาจากทัพ — ${def.lost ? `เพื่อนร่วมหมู่เล่าว่า${def.lost}` : 'เพื่อนร่วมหมู่เล่าว่าล้มลงกลางแนว'}`, ...settleDeath(ctx, sol).lines);
         if (head && isAlive(head)) head.stress = Math.min(1, head.stress + 0.08);
       } else {
         sol.skills.combat = Math.min(100, (sol.skills.combat ?? 0) + 3);

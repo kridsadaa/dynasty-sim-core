@@ -239,7 +239,9 @@
         "event:thonburi.succession_side",
         "event:career.audience_late",
         "event:career.reported",
-        "event:career.recall"
+        "event:career.recall",
+        "event:war2376.muster",
+        "event:court2394.watch"
       ],
       "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
       "width": 1024,
@@ -1005,7 +1007,8 @@
       "tags": [
         "event:war.news_tenasserim",
         "event:war2328.news",
-        "place:market"
+        "place:market",
+        "event:riot2391.news"
       ],
       "alt": "ข่าวศึกที่ท่าน้ำและตลาด",
       "width": 1024,
@@ -1035,7 +1038,14 @@
         "event:war2330.levy",
         "event:war2330.levy_f",
         "event:war2330.levy_old",
-        "event:war2330.front"
+        "event:war2330.front",
+        "event:war2336.levy",
+        "event:war2336.levy_f",
+        "event:war2336.levy_old",
+        "event:war2376.levy",
+        "event:war2376.levy_f",
+        "event:war2376.levy_old",
+        "event:war2376.front"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "width": 1024,
@@ -1081,7 +1091,8 @@
       "tags": [
         "event:thonburi.rice_dole",
         "event:war.rice_gone",
-        "event:war2328.rice_dear"
+        "event:war2328.rice_dear",
+        "event:war2336.march"
       ],
       "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
       "width": 1024,

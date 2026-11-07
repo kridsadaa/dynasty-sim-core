@@ -631,7 +631,7 @@ export type Condition =
   /** ยังอยู่ในกรุง (ไม่ได้พาตัวออกไปตอนศึกพม่า) */
   | { type: 'inCity' }
   /** สถานะการเกณฑ์ศึก key: self = ผู้เล่นเองไปทัพ · other = คนอื่นไปแทน · none = ไม่มีใครไป · stocked = ตุนข้าวไว้ · retainers = มีบ่าวไพร่ในเรือนอย่างน้อย min */
-  | { type: 'campaign'; key: string; is: 'self' | 'other' | 'none' | 'stocked' | 'retainers'; min?: number }
+  | { type: 'campaign'; key: string; is: 'self' | 'other' | 'none' | 'stocked' | 'retainers' | 'unset'; min?: number }
   /** เตรียมรับศึกสะสมถึง min (meta.war.prep) */
   | { type: 'warPrep'; min: number }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */

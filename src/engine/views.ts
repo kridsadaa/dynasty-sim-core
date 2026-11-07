@@ -427,7 +427,9 @@ function effectHint(
 ): string | undefined {
   const skills = skillHints(ctx, effects, vars, text);
   if (!p.def.id.startsWith('career.')) {
-    const base = everydayHint(effects, vars, ['festival.', 'intent.', 'war.'].some((prefix) => p.def.id.startsWith(prefix)), !!p.actor.office);
+    // เงินที่ได้/เสียไม่อยู่ในข้อความตัวเลือก → บอกในคำใบ้ (หมายเกณฑ์ war2328/2330/2336/2376 บอกราคาในข้อความแล้ว จึงไม่รวม)
+    const showCost = ['festival.', 'intent.', 'war.', 'war2336.march', 'riot2391.'].some((prefix) => p.def.id.startsWith(prefix));
+    const base = everydayHint(effects, vars, showCost, !!p.actor.office);
     return [...skills, base].filter(Boolean).join(' · ') || undefined; // วิชาก่อน — เป็นผลหลักของตัวเลือกฝึก
   }
   const parts: string[] = [];
