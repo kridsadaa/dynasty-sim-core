@@ -1854,6 +1854,51 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ ${eras.length} ยุคต่อกัน · เงื่อนไขปี/ยุค · สถาบันยังเปิด · ข้าวแจกเฉพาะ 2311–2312 · เลือกข้างก่อน shock · ฝ่ายพระยาสรรค์ถูกกวาดล้าง ${purged}/${N}`);
 }
 
+// [5h4c] ข้าหลวงเดิม 2367 (docs/design-eras.md หัวข้อ 7b): มาหลัง shock ผลัดแผ่นดิน · เฉพาะผู้มีตำแหน่ง · ฝากตัวเลื่อนขั้นราว 45% · ข้อความครบ
+{
+  const before = failed;
+  console.log('ข้าหลวงเดิม 2367:');
+  const problems: string[] = [];
+  const text = load('text.th.json') as Record<string, string>;
+  const sched = content.historyEvents.find((h) => h.event === 'rama3.old_retainers')!;
+  const shock = content.history.find((h) => h.tag === 'history:rama3_accession')!;
+  if (!(sched.year === shock.year && sched.day > (shock.day ?? 0))) problems.push('ข้าหลวงเดิมไม่ได้มาหลังผลัดแผ่นดิน 2367');
+  const setup = (seed: number) => {
+    const ctx = makeCtx(emptyState(seed), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = 'm';
+    ctx.state.meta.day = yearStart(ctx, 2367) + sched.day;
+    hero.birthDay = ctx.state.meta.day - yearsToDays(30);
+    const find = () => historyEventsToday(ctx).find((p) => p.def.id === 'rama3.old_retainers');
+    return { ctx, hero, find };
+  };
+  {
+    const { ctx, hero, find } = setup(43);
+    if (find()) problems.push('คนไม่มีตำแหน่งได้ event ข้าหลวงเดิม');
+    applyCareer(ctx, hero, 'enter_dept', 'patrol');
+    const p = find();
+    if (!p) problems.push('ผู้มีตำแหน่งไม่ได้ event ข้าหลวงเดิม');
+    else {
+      const v = eventView(ctx, p, text);
+      if (v.title === p.def.id || !v.text || /[{}]/.test(v.text) || v.options.some((o) => !o.text || /[{}]|^(event|risk|outcome)\./.test(o.text))) problems.push('ข้าหลวงเดิม: ข้อความไม่ครบ');
+    }
+  }
+  let promoted = 0;
+  for (let i = 0; i < 60; i++) {
+    const s = setup(400 + i);
+    applyCareer(s.ctx, s.hero, 'enter_dept', 'patrol');
+    s.hero.social.wealth = 10;
+    const rank = officeRank(s.ctx, s.hero) ?? 0;
+    const q = s.find();
+    if (!q) continue;
+    chooseOption(s.ctx, q, 'patron');
+    if ((officeRank(s.ctx, s.hero) ?? 0) > rank) promoted++;
+  }
+  if (promoted < 15 || promoted > 42) problems.push(`ฝากตัวกับข้าหลวงเดิมเลื่อนขั้น ${promoted}/60 (ควรราว 45%)`);
+  check('ข้าหลวงเดิม 2367', problems);
+  if (failed === before) console.log(`  ✓ มาหลังผลัดแผ่นดิน · เฉพาะผู้มีตำแหน่ง · ฝากตัวเลื่อน ${promoted}/60 · ข้อความครบ`);
+}
+
 // [5h5] ถูกกวาดต้อนไปพม่าไม่มีงานศพ (ยังไม่ตาย) แต่ทรัพย์ยังตกแก่ญาติ — คนตายตามปกติยังมีงานศพ
 {
   const before = failed;

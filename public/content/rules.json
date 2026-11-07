@@ -90,6 +90,7 @@
     { "year": 2377, "day": 30, "event": "war2376.front", "minAge": 18 },
     { "year": 2377, "day": 90, "resolve": "annam" },
     { "year": 2391, "day": 99, "event": "riot2391.news", "minAge": 16 },
+    { "year": 2367, "day": 215, "event": "rama3.old_retainers", "minAge": 18 },
     { "year": 2394, "day": 75, "event": "court2394.watch", "minAge": 13 }
   ],
   "eras": [
@@ -135,7 +136,7 @@
       "shock": {"wealthLoss": [0.0, 0.0], "deathRisk": 0.0} },
     { "tag": "history:thalang_war", "year": 2352, "kind": "war",
       "shock": {"wealthLoss": [0.0, 0.02], "deathRisk": 0.015, "deathRiskBySex": {"m": 0.03, "f": 0.0}, "ages": [18, 50]} },
-    { "tag": "history:rama3_accession", "year": 2367, "kind": "succession",
+    { "tag": "history:rama3_accession", "year": 2367, "day": 202, "kind": "succession",
       "shock": {"wealthLoss": [0.0, 0.0], "deathRisk": 0.0} },
     { "tag": "history:anuwong_revolt", "year": 2369, "kind": "war",
       "shock": {"wealthLoss": [0.0, 0.05], "deathRisk": 0.03, "deathRiskBySex": {"m": 0.06, "f": 0.01}, "ages": [18, 50]} },

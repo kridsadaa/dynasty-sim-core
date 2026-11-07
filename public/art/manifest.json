@@ -241,7 +241,8 @@
         "event:career.reported",
         "event:career.recall",
         "event:war2376.muster",
-        "event:court2394.watch"
+        "event:court2394.watch",
+        "event:rama3.old_retainers"
       ],
       "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
       "width": 1024,
