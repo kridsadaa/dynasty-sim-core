@@ -118,6 +118,10 @@
     "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }],
     "disgraceYears": 20,
     "pardonChance": 0.25,
+    "probationAge": 38,
+    "removeAtOffence": 5,
+    "removedWealthShare": 0.5,
+    "patronBlame": 0.2,
     "recallYears": [2311, 2313]
   },
   "marriage": {

@@ -1158,7 +1158,8 @@
       "file": "art/scene.punished.webp",
       "style": "reality",
       "tags": [
-        "event:career.punished"
+        "event:career.punished",
+        "event:career.removed"
       ],
       "alt": "ขุนนางถูกใส่คานั่งก้มหน้าอยู่หน้ากำแพงที่ทำการ",
       "width": 1024,

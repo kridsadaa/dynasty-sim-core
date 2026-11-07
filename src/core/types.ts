@@ -250,6 +250,8 @@ export interface Character {
   /** ตำแหน่งที่หมดไปเพราะราชสำนักล่ม (เสียกรุง 2310) — แผ่นดินใหม่อาจให้คงยศเดิม (career.recall) */
   /** ถูกลดจนหลุดจากราชการเพราะความผิด — ไม่ฝากตัวเข้ากรมเองได้จนกว่าจะได้รับอภัย/ผลัดแผ่นดิน/ครบ disgraceYears (career.ts) */
   disgrace?: { year: number; deptId?: string };
+  /** ต้องโทษในราชการมาแล้วกี่ครั้ง (รวมภาคทัณฑ์) — ครั้งแรกตอนหนุ่มได้ภาคทัณฑ์ ค่าปรับเพิ่มทีละเท่า ครั้งที่ removeAtOffence ถูกถอด (career.ts) */
+  offences?: number;
   formerOffice?: { postId: string; deptId?: string; name?: string; title: string | null };
   /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
   ordainedYear?: number;
@@ -680,13 +682,13 @@ export type Effect =
   | { op: 'marriage'; role: string; with: string; step: MarriageStep }
   /**
    * ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, assign = พ้นมหาดเล็กไปสังกัดกรม dept แล้วเลื่อนหนึ่งขั้น,
-   * promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ — ดู systems/career.ts
+   * promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ, remove = ถอดเพราะความผิด (ติด disgrace) — ดู systems/career.ts
    */
-  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline'; dept?: string }
+  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove' | 'restore' | 'decline'; dept?: string }
   /** ความโปรดปรานในราชการ */
   | { op: 'favor'; role: string; delta: number }
-  /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์) */
-  | { op: 'wealth'; role: string; delta?: number; perSakdina?: number }
+  /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์); perOffence = คูณครั้งที่ต้องโทษ (ทวีคูณ ตรีคูณ… ดู offenceMultiple ใน career.ts) */
+  | { op: 'wealth'; role: string; delta?: number; perSakdina?: number; perOffence?: boolean }
   /**
    * งานบ้าน (หมวดและขั้นจากตัวแปร $chore / $task ของ event): join = ตกลงช่วยครั้งแรก teacher สอนขั้นแรก,
    * learn = หัดขั้นใหม่ได้ (factor คูณทักษะที่ได้), decline = ไม่ช่วย — ดู systems/chores.ts
@@ -781,6 +783,8 @@ export interface EventOption {
   input?: 'name';
   /** บทตอบ/ฉากต่อของตัวเลือกที่ไม่เสี่ยง (ใช้แทน risk.successKey) — แสดงเป็นบรรทัดผลเหมือน outcome */
   replyKey?: string;
+  /** คำใบ้ที่เขียนเอง ใช้แทนคำใบ้อัตโนมัติจาก effect (เช่น ภาคทัณฑ์: "เป็นที่พอใจ" อ่านแล้วผิดความหมาย) */
+  hintKey?: string;
   effects: Effect[];
   /** ตัวเลือกที่ระบบ inject เข้ามา (ไม่ได้อยู่ใน def) */
   injectedBy?: string;
@@ -1353,6 +1357,12 @@ export interface Balance {
     recallYears: [number, number];
     /** ถูกถอดเพราะความผิดแล้ว: ต้องรอครบกี่ปีจึงยื่นเข้ารับราชการเองได้อีก; มีผู้ใหญ่ที่ฝากตัวไว้ช่วยกราบทูลขออภัยโทษปีละ pardonChance (ตัวเลขของเกม ไม่มีหลักฐานใน lore — invented) */
     disgraceYears: number; pardonChance: Unit;
+    /** ผิดครั้งแรกตอนอายุต่ำกว่านี้ → ภาคทัณฑ์แทนลงโทษ (lore: social.official_probation_first_offence; เส้นอายุยืมวัยวุฒิ 38 จาก social.appointment_qualifications_2283 — การใช้ตรงนี้เป็นการตีความของเกม) */
+    probationAge: number;
+    /** ผิดครั้งที่เท่านี้ขึ้นไป → ริบทรัพย์ (ส่วน removedWealthShare ของเงินที่มี) แล้วถอดจากราชการ (lore: social.official_repeat_offence_escalation; สัดส่วนเป็นของเกม ตัวบทว่าริบทรัพย์ไม่ได้บอกว่าเท่าไร) */
+    removeAtOffence: number; removedWealthShare: Unit;
+    /** ผู้เล่นถูกลดขั้น/ถอด → ความผูกพันกับผู้ใหญ่ที่ฝากตัวไว้ลดลงเท่านี้ (lore: social.official_sponsor_and_kin_liability; ตัวเลขของเกม) */
+    patronBlame: number;
   };
   /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
   marriage: {

@@ -91,9 +91,40 @@ function addPrestige(ctx: Ctx, ch: Character, delta: number): void {
   dyn.prestige = Math.max(0, dyn.prestige + delta * mult);
 }
 
+/** ผู้ใหญ่ที่ฝากตัวไว้ ยังมีชีวิตและยังเอ็นดู (ความผูกพันถึงเกณฑ์) */
+function activePatron(ctx: Ctx, ch: Character) {
+  return Object.values(ctx.state.relations).find((r) => r.from === ch.id && r.kind === 'patron' && r.strength >= 0.6
+    && isAlive(ctx.state.characters[r.to]) && opinion(ctx, r.to, ch.id) > 0);
+}
+
+/**
+ * ค่าปรับคูณตามครั้งที่ต้องโทษ: ครั้งแรกลาหนึ่ง ครั้งที่สองทวีคูณ … สูงสุดจัตุรคูณ
+ * (lore: social.official_repeat_offence_escalation) — offences นับครั้งปัจจุบันแล้วตอนเกิด event
+ */
+export function offenceMultiple(ch: Character): number {
+  return Math.min(4, Math.max(1, ch.offences ?? 1));
+}
+
+/**
+ * ผู้ทูลรับรองต้องรับผิดชอบคนที่ตนฝาก (lore: social.official_sponsor_and_kin_liability)
+ * — ผู้เล่นถูกลดขั้น/ถอดเพราะความผิด → ความผูกพันกับผู้ใหญ่ลดลง (ตัวเลขของเกม)
+ */
+function blamePatron(ctx: Ctx, ch: Character): string[] {
+  const rel = Object.values(ctx.state.relations).find((r) => r.from === ch.id && r.kind === 'patron' && isAlive(ctx.state.characters[r.to]));
+  if (!rel) return [];
+  rel.strength = Math.max(0, rel.strength - ctx.content.balance.career.patronBlame);
+  return [`${ctx.state.characters[rel.to]!.name}ถูกตำหนิที่รับรอง${ch.name} จึงไม่ค่อยอยากช่วยเหมือนก่อน`];
+}
+
+/** ริบทรัพย์ตอนถูกถอดครั้งที่ removeAtOffence (ถอดเพราะลดจนหลุดขั้นแรกไม่ริบ) */
+function removalFine(ctx: Ctx, ch: Character): number {
+  const C = ctx.content.balance.career;
+  return (ch.offences ?? 0) >= C.removeAtOffence ? Math.round(Math.max(0, ch.social.wealth) * C.removedWealthShare) : 0;
+}
+
 /** ทำ action ราชการจาก effect ของ event — คืนบรรทัด log */
 export function applyCareer(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'restore' | 'decline', deptId?: string,
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove' | 'restore' | 'decline', deptId?: string,
 ): string[] {
   const C = ctx.content.balance.career;
   const post = postOf(ctx, ch);
@@ -151,12 +182,18 @@ export function applyCareer(
       if (!post) return [];
       // ตกจากตำแหน่งไม่ถือเป็นความอัปยศ (lore: social.court_punishments_1680s) — แต่บารมีตระกูลยังลด
       addPrestige(ctx, ch, -C.promotePrestige * post.rank * 0.5);
-      if (!prev) {
-        ch.disgrace = { year: yearOf(ctx, ctx.state.meta.day), ...(ch.office?.deptId ? { deptId: ch.office.deptId } : {}) };
-        return applyCareer(ctx, ch, 'dismiss');
-      }
+      if (!prev) return applyCareer(ctx, ch, 'remove');
       setPost(ctx, ch, prev);
-      return [`${ch.name}ถูกลดลงเป็น${ch.social.title ?? prev.label.th} ศักดินา ${prev.sakdina}`];
+      return [`${ch.name}ถูกลดลงเป็น${ch.social.title ?? prev.label.th} ศักดินา ${prev.sakdina}`, ...blamePatron(ctx, ch)];
+    }
+    case 'remove': {
+      // ถอดเพราะความผิด (ต่างจาก dismiss ที่ใช้ตอนพ้นวัยมหาดเล็ก) → ติดความผิด ยื่นเข้ากรมเองไม่ได้จนกว่าจะพ้น
+      if (!ch.office) return [];
+      // ผิดครั้งที่ห้า: ริบทรัพย์ก่อนเอาออก (lore: social.official_repeat_offence_escalation) — จ่ายเท่าที่มี
+      const fine = removalFine(ctx, ch);
+      ch.social.wealth = Math.max(0, ch.social.wealth - fine);
+      ch.disgrace = { year: yearOf(ctx, ctx.state.meta.day), ...(ch.office.deptId ? { deptId: ch.office.deptId } : {}) };
+      return [...(fine > 0 ? [`${ch.name}ถูกริบทรัพย์ ${fine} ตำลึง`] : []), ...applyCareer(ctx, ch, 'dismiss'), ...blamePatron(ctx, ch)];
     }
     case 'dismiss': {
       if (!ch.office) return [];
@@ -221,8 +258,7 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   if (!player.office && player.disgrace) {
     // ถูกถอดเพราะความผิด (lore: social.court_punishments_1680s) — กลับเข้าได้เมื่อมีผู้ใหญ่กราบทูลขออภัย ผลัดแผ่นดิน หรือเวลาผ่านไปนาน
     const d = player.disgrace;
-    const patron = Object.values(S.relations).find((r) => r.from === player.id && r.kind === 'patron' && r.strength >= 0.6
-      && isAlive(S.characters[r.to]) && opinion(ctx, r.to, player.id) > 0);
+    const patron = activePatron(ctx, player);
     if (patron && ctx.rng.chance(C.pardonChance)) {
       delete player.disgrace;
       lines.push(`${S.characters[patron.to]!.name}กราบทูลขออภัยโทษให้${player.name}`);
@@ -264,8 +300,7 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   const minYears = Math.max(1, post.minYears - (courtLvl >= 3 ? 1 : 0));
   // ฝากตัวกับขุนนางผู้ใหญ่ไว้ (adult.court_feast → pledge): ผู้ใหญ่ยังอยู่และยังเอ็นดู → ช่วยพูดให้ทุกปี
   //  (lore: social.protection_patronage — ฝากตัวกับผู้มีอำนาจแลกการคุ้มครอง; ตัวเลขเป็นของเกม)
-  const patron = Object.values(S.relations).find((r) => r.from === player.id && r.kind === 'patron' && r.strength >= 0.6
-    && isAlive(S.characters[r.to]) && opinion(ctx, r.to, player.id) > 0);
+  const patron = activePatron(ctx, player);
   if (patron) {
     player.office.favor = Math.min(1, player.office.favor + C.patronFavor);
     lines.push(`${S.characters[patron.to]!.name}ช่วยพูดถึง${player.name}ให้เจ้ากรมฟัง`);
@@ -288,7 +323,14 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
     return { lines, events };
   }
   if (favor <= C.punishAt) {
-    events.push({ event: post.rank === 0 ? 'career.punished_page' : 'career.punished', bindings: bind });
+    // อาชญาหลวง: ขุนนางหนุ่มผิดครั้งแรกให้ภาคทัณฑ์ · ผิดซ้ำปรับเพิ่มทีละเท่า · ครั้งที่ห้าริบทรัพย์แล้วเอาออกจากราชการ
+    //  (lore: social.official_probation_first_offence, social.official_repeat_offence_escalation)
+    const n = (player.offences ?? 0) + 1;
+    player.offences = n;
+    const event = n === 1 && ageOf(ctx, player) < C.probationAge ? 'career.probation'
+      : n >= C.removeAtOffence ? 'career.removed'
+      : post.rank === 0 ? 'career.punished_page' : 'career.punished';
+    events.push({ event, bindings: bind });
   } else if (favor >= C.promoteAt && next && years >= minYears && (!next.unique || ctx.rng.chance(C.uniqueVacancyChance))) {
     events.push({ event: promotion, bindings: bind });
   }
@@ -308,12 +350,13 @@ export function officeStatus(ctx: Ctx, ch: Character): string | null {
   const help = skill.tier > 0
     ? `วิชา${skill.track.name} ขั้น ${skill.tier} ช่วยให้เป็นที่โปรดปรานขึ้น ${+(skill.favor * 100).toFixed(1)}% ต่อปี`
     : `ฝึกวิชา${skill.track.name}จะช่วยให้เลื่อนยศเร็วขึ้น`;
-  return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood} · ${help}`;
+  const record = ch.offences ? ` · เคยต้องโทษ ${ch.offences} ครั้ง` : '';
+  return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood}${record} · ${help}`;
 }
 
 /** ข้อความใต้ตัวเลือก event ราชการ — ราคา/ผลที่ตามมาให้เห็นก่อนเลือก */
 export function careerHint(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss', deptId?: string,
+  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove', deptId?: string,
 ): string | undefined {
   const post = postOf(ctx, ch);
   const dept = deptOf(ctx, ch);
@@ -341,7 +384,11 @@ export function careerHint(
   }
   if (action === 'demote') {
     const prev = post && postAt(dept, post.rank - 1);
-    return prev ? `ลดเป็น${prev.label.th} ศักดินา ${prev.sakdina}` : 'ถูกถอดจากราชการ';
+    return prev ? `ลดเป็น${prev.label.th} ศักดินา ${prev.sakdina}` : 'ถูกถอดจากราชการ · ยื่นเข้ากรมเองไม่ได้จนกว่าจะพ้นโทษ';
+  }
+  if (action === 'remove') {
+    const fine = removalFine(ctx, ch);
+    return `${ch.offences ? `ความผิดครั้งที่ ${ch.offences} · ` : ''}${fine > 0 ? `ริบทรัพย์ ${fine} ตำลึง · ` : ''}ถูกถอดจากราชการ · ยื่นเข้ากรมเองไม่ได้จนกว่าจะพ้นโทษ`;
   }
   return 'ถูกถอดจากราชการ';
 }

@@ -318,6 +318,8 @@ function balanceCheck(): void {
     if (!ok) bad.push(`${label} ${+v.toFixed(3)}`);
   }
   console.log(`  · ผู้เล่นถึงขั้นขุนขึ้นไป (ตั้งแต่ พ.ศ. ${OFFICE_FROM_YEAR}) ${+ratio(bal.senior).toFixed(3)}${INVEST ? ' [โหมด invest]' : ''}`);
+  // โทษขุนนาง (docs/design-official-punishment.md) — ดูว่าภาคทัณฑ์/ถูกถอดครั้งที่ห้าเกิดบ่อยแค่ไหนในการเล่นจริง
+  console.log(`  · โทษขุนนางใน ${SEEDS} เกม (เลื่อนยศ ${seenEvents['career.promotion'] ?? 0} ครั้ง): ภาคทัณฑ์ ${seenEvents['career.probation'] ?? 0} · ถูกฟ้อง ${seenEvents['career.punished'] ?? 0} · มหาดเล็กต้องพระราชอาญา ${seenEvents['career.punished_page'] ?? 0} · ถูกถอดครั้งที่ห้า ${seenEvents['career.removed'] ?? 0}`);
   if (enforce) check('สมดุลของผู้เล่นหลุดช่วง', bad);
 }
 balanceCheck();
@@ -774,6 +776,69 @@ if (LONG) {
   if (!asked()) problems.push('พ้นความผิดแล้วยังฝากตัวเข้ากรมไม่ได้');
   check('ถูกถอดเพราะความผิด', problems);
   if (failed === before) console.log('  ✓ ถูกถอดแล้วฝากตัวเองไม่ได้ · ครบกำหนดแล้วจึงยื่นได้อีก');
+}
+
+// [5i2] โทษขุนนางตามอาชญาหลวง: ผิดครั้งแรกตอนหนุ่มได้ภาคทัณฑ์ · ค่าปรับทวีคูณเมื่อผิดซ้ำ · ครั้งที่ห้าริบทรัพย์แล้วถอด · ผู้ใหญ่ที่ฝากตัวเสียด้วย
+//  (docs/design-official-punishment.md)
+{
+  const before = failed;
+  console.log('โทษขุนนาง (ภาคทัณฑ์ ทวีคูณ ครั้งที่ห้า):');
+  const C = content.balance.career;
+  const ctx = makeCtx(emptyState(45), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  const problems: string[] = [];
+  const setAge = (age: number) => { hero.birthDay = S.meta.day - yearsToDays(age) - 30; };
+  const offend = () => {
+    hero.office!.favor = -1;
+    return careerYearTick(ctx).events.find((e) => e.bindings.actor === hero.id && e.event.startsWith('career.'))?.event;
+  };
+  const enter = () => {
+    delete hero.office; delete hero.disgrace; hero.offences = 0;
+    applyCareer(ctx, hero, 'enter_dept', 'patrol');
+  };
+  const patron = Object.values(S.characters).find((c) => c.id !== hero.id && isAlive(c))!;
+  setRelation(ctx, hero.id, patron.id, 'patron', 0.8);
+  const patronStrength = () => Object.values(S.relations).find((r) => r.from === hero.id && r.to === patron.id && r.kind === 'patron')?.strength ?? 0;
+
+  setAge(25); enter();
+  if (offend() !== 'career.probation') problems.push('ผิดครั้งแรกตอนหนุ่มไม่ได้ภาคทัณฑ์');
+  if (offend() !== 'career.punished') problems.push('ผิดครั้งที่สองยังได้ภาคทัณฑ์อีก');
+  setAge(45); enter();
+  if (offend() !== 'career.punished') problems.push('ขุนนางอายุ 45 ผิดครั้งแรกได้ภาคทัณฑ์ (ตัวบทไม่ให้ขุนนางผู้ใหญ่)');
+
+  // ค่าปรับไหม: ครั้งที่สองเป็นสองเท่าของครั้งแรก (ทวีคูณ) สูงสุดจัตุรคูณ
+  const fineAt = (n: number) => {
+    hero.offences = n; hero.social.wealth = 10000;
+    const p = prepareEvent(ctx, 'career.punished', { actor: hero.id });
+    p.locked.clear();
+    chooseOption(ctx, p, 'gift');
+    return 10000 - hero.social.wealth;
+  };
+  const [f1, f2, f4, f5] = [fineAt(1), fineAt(2), fineAt(4), fineAt(5)];
+  if (!(f1 > 0 && Math.abs(f2 - 2 * f1) < 1e-9 && Math.abs(f4 - 4 * f1) < 1e-9 && Math.abs(f5 - f4) < 1e-9)) problems.push(`ค่าปรับไม่ทวีคูณ: ${f1}/${f2}/${f4}/${f5}`);
+
+  // ครั้งที่ห้า: event ถูกถอด → ริบทรัพย์ ถอด ติดความผิด ผู้ใหญ่ที่ฝากตัวเสีย
+  enter();
+  hero.offences = C.removeAtOffence - 1;
+  if (offend() !== 'career.removed') problems.push(`ผิดครั้งที่ ${C.removeAtOffence} ไม่ถูกถอด`);
+  hero.social.wealth = 1000;
+  const pBefore = patronStrength();
+  const p = prepareEvent(ctx, 'career.removed', { actor: hero.id });
+  p.locked.clear();
+  chooseOption(ctx, p, 'take');
+  if (hero.office || !hero.disgrace) problems.push('ถูกถอดครั้งที่ห้าแต่ยังมีตำแหน่งหรือไม่ติดความผิด');
+  if (1000 - hero.social.wealth !== Math.round(1000 * C.removedWealthShare)) problems.push(`ริบทรัพย์ ${1000 - hero.social.wealth} ไม่ตรง ${Math.round(1000 * C.removedWealthShare)}`);
+  if (!(patronStrength() < pBefore)) problems.push('ผู้ใหญ่ที่ฝากตัวไม่ได้รับผลเมื่อผู้เล่นถูกถอด');
+
+  // ลดจนหลุดขั้นแรก (ยังไม่ถึงครั้งที่ห้า) ถอดและติดความผิดแต่ไม่ริบทรัพย์
+  enter(); hero.offences = 2; hero.social.wealth = 1000;
+  for (let i = 0; i < 5 && hero.office; i++) applyCareer(ctx, hero, 'demote');
+  if (hero.office || !hero.disgrace || hero.social.wealth !== 1000) problems.push('ลดจนหลุดขั้นแรก: ควรถอดและติดความผิดโดยไม่ริบทรัพย์');
+  check('โทษขุนนาง', problems);
+  if (failed === before) console.log(`  ✓ หนุ่มผิดครั้งแรกภาคทัณฑ์ (อายุ 45 ไม่ได้) · ค่าปรับ ${f1}/${f2}/${f4} ตำลึง (ครั้งที่ 1/2/4+) · ครั้งที่ ${C.removeAtOffence} ริบทรัพย์แล้วถอด · ผู้ใหญ่ที่ฝากตัวเสียด้วย`);
 }
 
 // [5h2] วิชาช่วยเลื่อนยศ: ขั้นวิชาในสายของกรมเพิ่มความโปรดปรานรายปี และแผงตัวละครบอกผลให้เห็น

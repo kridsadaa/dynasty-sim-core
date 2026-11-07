@@ -1125,22 +1125,45 @@
           {
             "op": "wealth",
             "role": "actor",
-            "perSakdina": -0.05
+            "perSakdina": -0.05,
+            "perOffence": true
           },
           {
             "op": "favor",
             "role": "actor",
             "delta": 0.4
-          },
-          {
-            "op": "merit",
-            "role": "actor",
-            "delta": -1
           }
         ]
       }
     ]
   },
+  "career.probation": {
+    "id": "career.probation",
+    "textKey": "event.probation",
+    "loreRefs": ["social.official_probation_first_offence"],
+    "contextTags": [],
+    "roles": { "actor": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "accept", "textKey": "event.probation.accept", "hintKey": "event.probation.accept.hint",
+        "effects": [ { "op": "favor", "role": "actor", "delta": 0.4 }, { "op": "stress", "role": "actor", "delta": 0.05 } ] }
+    ]
+  },
+  "career.removed": {
+    "id": "career.removed",
+    "textKey": "event.removed",
+    "loreRefs": ["social.official_repeat_offence_escalation", "social.removal_case_luang_chaimontri_2280"],
+    "contextTags": [],
+    "roles": { "actor": {}, "elder": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "take", "textKey": "event.removed.take",
+        "effects": [ { "op": "career", "role": "actor", "action": "remove" }, { "op": "stress", "role": "actor", "delta": 0.2 }, { "op": "prestige", "role": "actor", "delta": -2 } ] }
+    ]
+  },
+
   "career.page_duty": {
     "id": "career.page_duty",
     "textKey": "event.page_duty",

@@ -6,7 +6,7 @@ import type {
 } from '../core/types';
 import { capability, inflictWound, selectPart } from './body';
 import { cleanName, livingSpouse, pickNameFor, rememberCustomName, renameCharacter, wed } from './factory';
-import { adjustFavor, applyCareer, officeRank } from './career';
+import { adjustFavor, applyCareer, offenceMultiple, officeRank } from './career';
 import { applyChore } from './chores';
 import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
 import { buryValuables, joinTaksin, leaveCity, stayInCity, warWhere } from './war';
@@ -517,7 +517,7 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       case 'wealth': {
         // ปรับไหมตามบรรดาศักดิ์ (perSakdina × ศักดินา) — จ่ายไม่ไหวก็จ่ายเท่าที่มี เงินไม่ติดลบ
-        const d = (e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina;
+        const d = (e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina * (e.perOffence ? offenceMultiple(ch) : 1);
         if (d >= 0) ch.social.wealth += d;
         else spend(ctx, ch, -d); // เงินตัวเองไม่พอ ใช้เงินในเรือน (ผัว/เมีย พ่อแม่)
         break;

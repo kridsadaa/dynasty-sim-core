@@ -6,7 +6,7 @@ import { capability } from '../systems/body';
 import type { EventReport, PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
-import { careerHint, officeRank, officeStatus, officeTier } from '../systems/career';
+import { careerHint, offenceMultiple, officeRank, officeStatus, officeTier } from '../systems/career';
 import { warBadges } from '../systems/war';
 import { activeFiction, isFictionYear } from '../systems/fiction';
 import { livingWives } from '../systems/wives';
@@ -438,7 +438,8 @@ function effectHint(
     }
     const ch = ctx.state.characters[p.instance.bindings[e.role] ?? ('' as Character['id'])];
     if (e.op === 'wealth' && ch) {
-      const d = Math.round((e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina);
+      const d = Math.round((e.delta ?? 0) + (e.perSakdina ?? 0) * ch.social.sakdina * (e.perOffence ? offenceMultiple(ch) : 1));
+      if (e.perOffence && ch.offences) parts.push(`ความผิดครั้งที่ ${ch.offences}`);
       if (d) parts.push(`${ch === p.actor ? '' : ch.name}${d > 0 ? 'ได้' : 'เสีย'} ${Math.abs(d)} ตำลึง`);
     }
     if (e.op === 'favor' && Math.abs(e.delta) >= 0.05) parts.push(e.delta > 0 ? 'เป็นที่พอใจ' : 'ถูกมองไม่ดี');
@@ -609,7 +610,7 @@ export function eventView(ctx: Ctx, p: PreparedEvent, text: TextTable): EventVie
       injected: !!o.injectedBy,
       note: willNote(o.id),
       nameInput: o.input === 'name' ? nameInput(ctx, p) : undefined,
-      hint: [optionHint(ctx, p, o.effects) ?? effectHint(ctx, p, o.effects, vars, text), riskHint(ctx, p, o, text, vars)]
+      hint: [o.hintKey ? fill(text[o.hintKey] ?? o.hintKey, vars) : optionHint(ctx, p, o.effects) ?? effectHint(ctx, p, o.effects, vars, text), riskHint(ctx, p, o, text, vars)]
         .filter(Boolean).join(' · ') || undefined,
     })),
     triggered: [...new Set(p.hits.map((h) => describeTrait(ctx, h.trait)))],
