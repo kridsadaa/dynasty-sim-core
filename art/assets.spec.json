@@ -298,7 +298,6 @@
         "event:career.reported",
         "event:career.recall",
         "event:war2376.muster",
-        "event:court2394.watch",
         "event:rama3.old_retainers"
       ],
       "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
@@ -1239,8 +1238,7 @@
         "event:war2336.levy_old",
         "event:war2376.levy",
         "event:war2376.levy_f",
-        "event:war2376.levy_old",
-        "event:war2376.front"
+        "event:war2376.levy_old"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "subject": "Morning in the open yard of a pillared hall at a district office: a row of village men in plain lower cloths and head cloths standing in line, bare-chested, some with spears or long knives; a clerk seated on a mat writing names in a palm-leaf register with a stylus, an officer in a plain white lower cloth and a simple sash standing over him pointing along the line; wives and mothers watching quietly from beyond a bamboo fence. No crowns, no gold regalia."
@@ -1283,8 +1281,7 @@
       "tags": [
         "event:thonburi.rice_dole",
         "event:war.rice_gone",
-        "event:war2328.rice_dear",
-        "event:war2336.march"
+        "event:war2328.rice_dear"
       ],
       "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
       "subject": "Inside a house at evening: an empty woven rice bin standing open on the floor, a woman kneeling and scraping the last few grains from the bottom into a clay pot with her hand, a man sitting with his head lowered beside her, two thin children with shaved heads and topknots, in small lower cloths, waiting quietly; a single small fish on a footless tray. Dim warm light from the doorway, bare and quiet, no melodrama."
@@ -1321,7 +1318,7 @@
         "event:plague.news"
       ],
       "alt": "ท่าน้ำริมคลองบางกอก พ่อค้าเรือเล่าข่าวไข้ป่วงใหญ่ ชาวบ้านมุงฟังหน้าเครียด บางเรือนขนของลงเรือ",
-      "subject": "Set in early Bangkok (about 1820 to 1850), not Ayutthaya. A wooden landing on a Bangkok canal at morning: a trader standing in his long boat moored at the steps, telling news and pointing back downriver; a small crowd of townspeople on the landing listening with worried faces, a woman pulling a child close, two men whispering to each other; behind them a few market stalls on the bank half empty, baskets covered; further along the canal one family loading rolled mats, pots and bundles into a small boat as if to leave. Overcast hot-season light, uneasy quiet mood. No sick or dead people shown, no bodies.",
+      "subject": "Set in early Bangkok (about 1820 to 1850), not Ayutthaya. A wooden landing on a Bangkok canal at morning: a trader standing in his long boat moored at the steps, telling news and pointing back downriver; a small crowd of townspeople on the landing listening with worried faces, a woman pulling a child close, two men whispering to each other; behind them a few market stalls on the bank half empty, baskets covered; further along the canal one family loading rolled mats, pots and bundles into a small boat as if to leave. Overcast hot-season light, uneasy quiet mood. No sick or dead people shown, no bodies. Hair: Every Siamese adult, man or woman, including small background figures, crops the hair short all over, only an inch or two long and standing up like a brush; men keep a round patch about four inches across on the crown where it is only slightly longer, women a smaller such patch, all in the same upright brush-like texture; no shaved sides under a longer top, never tied up, no one bald except Buddhist monks; small children have shaved heads with a small topknot. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair on adults, long hair, a fully shaved bald head on laymen.",
       "loreRefs": [
         "event.cholera_2363",
         "event.plague_response_options"
@@ -1335,7 +1332,7 @@
         "event:health.inoculation"
       ],
       "alt": "ศาลาโล่งในหมู่บ้าน พ่อแม่อุ้มลูกเล็กนั่งรอหมอหลวงที่มาปลูกฝี เด็กบางคนกอดแม่แน่นอย่างกลัว",
-      "subject": "Set in early Bangkok times (about 1840), not Ayutthaya. An open-sided wooden sala with a thatched roof at the edge of a village, dry-season daylight: an older man of some standing, the royal physician, seated cross-legged on a mat at the far end with a closed cloth bundle beside him, speaking calmly to a father; in the foreground several mothers and fathers sitting on the floor waiting their turn with small children on their laps, one child clinging to his mother's neck in fear, another looking curiously toward the physician; villagers watching from outside. The procedure itself is not shown: no blades, no wounds, no needles.",
+      "subject": "Set in early Bangkok times (about 1840), not Ayutthaya. An open-sided wooden sala with a thatched roof at the edge of a village, dry-season daylight: an older man of some standing, the royal physician, seated cross-legged on a mat at the far end with a closed cloth bundle beside him, speaking calmly to a father; in the foreground several mothers and fathers sitting on the floor waiting their turn with small children on their laps, one child clinging to his mother's neck in fear, another looking curiously toward the physician; villagers watching from outside. The procedure itself is not shown: no blades, no wounds, no needles. Hair: Every Siamese adult, man or woman, including small background figures, crops the hair short all over, only an inch or two long and standing up like a brush; men keep a round patch about four inches across on the crown where it is only slightly longer, women a smaller such patch, all in the same upright brush-like texture; no shaved sides under a longer top, never tied up, no one bald except Buddhist monks; small children have shaved heads with a small topknot. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair on adults, long hair, a fully shaved bald head on laymen.",
       "loreRefs": [
         "health.smallpox_endemic",
         "health.inoculation_choice"
@@ -1554,6 +1551,254 @@
       "loreRefs": [
         "social.chinese_mobility",
         "attire.wat_ko_kaeo_reference"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_patrol_low",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "rank:low"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา",
+      "subject": "Medium portrait, head to waist: the same Siamese patrol-department official throughout his career, here in his late twenties, with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a plain block-printed cotton lower cloth with a simple small pattern, and a tall brimless white conical cloth hat (lomphok) with no bands at all, plain white with a chin cord; a plain wooden betel box and a sheathed sword resting on a wooden stand beside him, the plain timber hall of the patrol office behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.patrol_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_patrol_mid",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "rank:mid"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ",
+      "subject": "Medium portrait, head to waist: the same Siamese patrol-department official throughout his career, here in his early thirties, with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a finely painted cotton lower cloth with a plain coloured border, and a tall brimless white conical cloth hat (lomphok) with one thin silver band near the base and a chin cord; a black lacquered betel box and a sheathed sword resting on a wooden stand beside him, the plain timber hall of the patrol office behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.patrol_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_patrol_head",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "rank:head"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน",
+      "subject": "Medium portrait, head to waist: the same Siamese patrol-department official throughout his career, here in his forties, with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless over-shirt of cream satin richly embroidered with gold thread, with wide sleeves over a fine royal-gift lower cloth of Indian-style painted chintz with dense floral patterns, and a tall brimless white conical cloth hat (lomphok) with several gold bands from the base upward and a chin cord; a gold betel set on a footed gold tray, his insignia of rank and a sheathed sword resting on a wooden stand beside him, the plain timber hall of the patrol office behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.patrol_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_palace_low",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:low"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา",
+      "subject": "Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his late twenties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a plain block-printed cotton lower cloth with a simple small pattern, and a tall brimless white conical cloth hat (lomphok) with no bands at all, plain white with a chin cord; a plain wooden betel box and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_chamber_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_palace_mid",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:mid"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ",
+      "subject": "Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his early thirties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a finely painted cotton lower cloth with a plain coloured border, and a tall brimless white conical cloth hat (lomphok) with one thin silver band near the base and a chin cord; a black lacquered betel box and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_chamber_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_palace_high",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:high"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นขั้นกลาง: ลอมพอกวงทองสองวง ผ้าไหมขอบทอง",
+      "subject": "Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his late thirties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a silk lower cloth with a narrow gold border, and a tall brimless white conical cloth hat (lomphok) with two gold bands near the base and a chin cord; a silver betel box and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_chamber_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_palace_head",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:head"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน",
+      "subject": "Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his forties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless over-shirt of cream satin richly embroidered with gold thread, with wide sleeves over a fine royal-gift lower cloth of Indian-style painted chintz with dense floral patterns, and a tall brimless white conical cloth hat (lomphok) with several gold bands from the base upward and a chin cord; a gold betel set on a footed gold tray, his insignia of rank and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_chamber_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_low",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:low"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา",
+      "subject": "Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his late twenties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a plain block-printed cotton lower cloth with a simple small pattern, and a tall brimless white conical cloth hat (lomphok) with no bands at all, plain white with a chin cord; a plain wooden betel box and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_scholars_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_mid",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:mid"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ",
+      "subject": "Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his early thirties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a finely painted cotton lower cloth with a plain coloured border, and a tall brimless white conical cloth hat (lomphok) with one thin silver band near the base and a chin cord; a black lacquered betel box and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_scholars_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_high",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:high"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นขั้นกลาง: ลอมพอกวงทองสองวง ผ้าไหมขอบทอง",
+      "subject": "Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his late thirties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a silk lower cloth with a narrow gold border, and a tall brimless white conical cloth hat (lomphok) with two gold bands near the base and a chin cord; a silver betel box and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_scholars_department_ladder"
+      ]
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_head",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:head"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน",
+      "subject": "Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his forties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless over-shirt of cream satin richly embroidered with gold thread, with wide sleeves over a fine royal-gift lower cloth of Indian-style painted chintz with dense floral patterns, and a tall brimless white conical cloth hat (lomphok) with several gold bands from the base upward and a chin cord; a gold betel set on a footed gold tray, his insignia of rank and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.",
+      "loreRefs": [
+        "attire.officials_1680s",
+        "attire.rank_visual_ladder",
+        "social.royal_scholars_department_ladder"
+      ]
+    },
+    {
+      "id": "scene.tavoy_hunger",
+      "style": "reality",
+      "tags": [
+        "event:war2336.march"
+      ],
+      "alt": "ค่ายทหารกลางป่าระหว่างเดินทัพไปทวาย ทหารผอมโซต้มหน่อไม้ในหม้อดิน คนหนึ่งนอนจับไข้บนใบไม้",
+      "subject": "Set in 1793, a generation after Ayutthaya fell, with the same dress and hairstyles as the late Ayutthaya era. A forest camp of a Siamese army marching through the hills toward Tavoy, late afternoon under tall trees: gaunt, exhausted foot soldiers with ribs showing and hollow cheeks, bare-chested in knee-length pleated lower cloths, sit around a small fire where bamboo shoots and wild yam boil in a blackened clay pot; one soldier pours the last handful of rice from a cloth bag into his palm and stares at it; another lies on a bed of leaves shivering with fever while a comrade lays a damp cloth on his forehead; spears and empty shoulder bags lean against a tree trunk; far away between the trees, the thatched granaries of a hill village. Exhausted, quiet mood; no fighting, no corpses; mouths closed. Hair: Every soldier wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair only 2 to 3 cm long sitting on top of the head like a small skullcap, standing up or lying flat but never combed back or to the side and never longer than 3 cm; around it the head is shaved close, and the edge between the patch and the shaved skin is soft and natural, not a sharp barber's fade line. Not bald, not an undercut, not slicked back. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair, and no adult is bald except Buddhist monks. Avoid: an undercut, a high fade, slicked-back, combed-back or side-parted hair, longer hair on top, a quiff or pompadour, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults.",
+      "loreRefs": [
+        "event.tavoy_campaign_2336"
+      ]
+    },
+    {
+      "id": "scene.palace_watch",
+      "style": "reality",
+      "era": "late",
+      "tags": [
+        "event:court2394.watch"
+      ],
+      "alt": "กลางคืนในวัง ขุนนางผู้น้อยนั่งเรียงประจำซองข้างกำแพง บางคนสัปหงก ตะเกียงดินเผาดวงเล็ก",
+      "subject": "Set in Bangkok in 1851, not Ayutthaya. Night in an outer courtyard of the royal palace: a long open-fronted wooden guard shed against a high whitewashed palace wall; minor officials in open-front collarless white muslin over-shirts with wide long sleeves and silk lower cloths sit in a row on reed mats along the shed, some dozing upright, one awake and staring into the dark, a lacquered betel box passed from hand to hand; small open clay saucer lamps with bare flames on the floor, no glass chimneys and no lanterns; two guards with long spears stand at a gateway; the dark tiered roofs of palace halls rise behind the wall against the night sky. Tense, sleepless, watchful mood, nothing happening. No king or royal figure visible; mouths closed. Hair: Every man crops his hair short all over, only an inch or two long and standing up like a brush, with a round patch about four inches across on the crown where it is only slightly longer, in the same upright brush-like texture; no shaved sides under a longer top, not an undercut, not bald, never tied up. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair, a fully shaved bald head.",
+      "loreRefs": [
+        "event.rama4_accession_2394",
+        "attire.officials_1680s"
+      ]
+    },
+    {
+      "id": "scene.annam_landing",
+      "style": "reality",
+      "era": "late",
+      "tags": [
+        "event:war2376.front"
+      ],
+      "alt": "ทัพเรือไทยขึ้นบกที่ปากน้ำบันทายมาศ ทหารลุยน้ำจากเรือยาวเข้าหาค่ายดินริมคลอง",
+      "subject": "Set in 1833, early Bangkok period, not Ayutthaya. The mouth of a muddy river on the Cambodian coast at Banteay Meas, overcast morning: several long Siamese war boats with rows of paddlers run onto the shallow bank; foot soldiers, bare-chested in knee-length pleated lower cloths, with spears, swords and round rattan shields, jump into knee-deep water and wade toward an earthen stockade with a wooden palisade on the far bank half hidden by smoke from a cannon on a boat's bow; an officer in an open-front white jacket points the way from the lead boat. Tense, determined mood; no blood, no one shown dying; mouths closed. Hair: Every man, including small background figures, crops his hair short all over, only an inch or two long and standing up like a brush, with a round patch about four inches across on the crown where it is only slightly longer, in the same upright brush-like texture; no shaved sides under a longer top, not an undercut, not bald, never tied up. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair, a fully shaved bald head.",
+      "loreRefs": [
+        "event.annam_war_2376"
       ]
     }
   ]

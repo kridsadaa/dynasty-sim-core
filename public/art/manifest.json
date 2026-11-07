@@ -241,7 +241,6 @@
         "event:career.reported",
         "event:career.recall",
         "event:war2376.muster",
-        "event:court2394.watch",
         "event:rama3.old_retainers"
       ],
       "alt": "ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง",
@@ -1045,8 +1044,7 @@
         "event:war2336.levy_old",
         "event:war2376.levy",
         "event:war2376.levy_f",
-        "event:war2376.levy_old",
-        "event:war2376.front"
+        "event:war2376.levy_old"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "width": 1024,
@@ -1092,8 +1090,7 @@
       "tags": [
         "event:thonburi.rice_dole",
         "event:war.rice_gone",
-        "event:war2328.rice_dear",
-        "event:war2336.march"
+        "event:war2328.rice_dear"
       ],
       "alt": "ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ",
       "width": 1024,
@@ -1321,6 +1318,215 @@
         "fiction:trade_boom"
       ],
       "alt": "ภาพจิตรกรรม: ท่าน้ำคึกคัก เรือสินค้าเรียงเต็มและพ่อค้าซื้อขาย",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_patrol_low",
+      "file": "art/portrait.m.adult.official_patrol_low.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "rank:low"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_patrol_mid",
+      "file": "art/portrait.m.adult.official_patrol_mid.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "rank:mid"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_patrol_head",
+      "file": "art/portrait.m.adult.official_patrol_head.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_patrol",
+        "rank:head"
+      ],
+      "alt": "ขุนนางกรมกองกระเวนขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_palace_low",
+      "file": "art/portrait.m.adult.official_palace_low.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:low"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_palace_mid",
+      "file": "art/portrait.m.adult.official_palace_mid.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:mid"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_palace_high",
+      "file": "art/portrait.m.adult.official_palace_high.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:high"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นขั้นกลาง: ลอมพอกวงทองสองวง ผ้าไหมขอบทอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_palace_head",
+      "file": "art/portrait.m.adult.official_palace_head.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_palace",
+        "rank:head"
+      ],
+      "alt": "ขุนนางกรมชาวที่ขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_low",
+      "file": "art/portrait.m.adult.official_scholar_low.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:low"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_mid",
+      "file": "art/portrait.m.adult.official_scholar_mid.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:mid"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_high",
+      "file": "art/portrait.m.adult.official_scholar_high.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:high"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นขั้นกลาง: ลอมพอกวงทองสองวง ผ้าไหมขอบทอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "portrait.m.adult.official_scholar_head",
+      "file": "art/portrait.m.adult.official_scholar_head.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:adult",
+        "estate:noble",
+        "role:official",
+        "role:official_scholar",
+        "rank:head"
+      ],
+      "alt": "ขุนนางกรมราชบัณฑิตขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.tavoy_hunger",
+      "file": "art/scene.tavoy_hunger.webp",
+      "style": "reality",
+      "tags": [
+        "event:war2336.march"
+      ],
+      "alt": "ค่ายทหารกลางป่าระหว่างเดินทัพไปทวาย ทหารผอมโซต้มหน่อไม้ในหม้อดิน คนหนึ่งนอนจับไข้บนใบไม้",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.palace_watch",
+      "file": "art/scene.palace_watch.webp",
+      "style": "reality",
+      "tags": [
+        "event:court2394.watch"
+      ],
+      "alt": "กลางคืนในวัง ขุนนางผู้น้อยนั่งเรียงประจำซองข้างกำแพง บางคนสัปหงก ตะเกียงดินเผาดวงเล็ก",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.annam_landing",
+      "file": "art/scene.annam_landing.webp",
+      "style": "reality",
+      "tags": [
+        "event:war2376.front"
+      ],
+      "alt": "ทัพเรือไทยขึ้นบกที่ปากน้ำบันทายมาศ ทหารลุยน้ำจากเรือยาวเข้าหาค่ายดินริมคลอง",
       "width": 1024,
       "height": 572
     }

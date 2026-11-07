@@ -93,6 +93,21 @@ test('คลังภาพจริง: ทุกเพศ วัย ชนช�
   assert.equal(pickArt(real, 'portrait', portraitArtTags({ sex: 'f', age: 30, estate: 'noble' }))?.id, 'portrait.f.adult.noble', 'หญิงขุนนางยังไม่มีผัวก็มีภาพ');
 });
 
+test('ขุนนางทุกกรม × ทุกขั้นยศได้ภาพขั้นนั้นของกรมตัวเอง (assets.spec.json, docs/design-rank-portraits.md)', () => {
+  const spec = JSON.parse(readFileSync('art/assets.spec.json', 'utf8')) as { images: Array<{ id: string; style: ArtImage['style']; tags: string[] }> };
+  const all: ArtManifest = { styleVersion: 'spec', images: spec.images.map((i) => img(i.id, i.style, i.tags)) };
+  const ladder = { patrol: ['low', 'mid', 'head'], palace: ['low', 'mid', 'high', 'head'], scholar: ['low', 'mid', 'high', 'head'] } as const;
+  for (const [dept, tiers] of Object.entries(ladder)) {
+    for (const rank of tiers) {
+      const got = pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble', roles: ['official', `official_${dept}`], rank }))?.id;
+      assert.equal(got, `portrait.m.adult.official_${dept}_${rank}`, `${dept} ${rank}`);
+    }
+  }
+  // มหาดเล็กยังได้ภาพมหาดเล็ก · คนไม่มีตำแหน่งไม่ได้ภาพขั้นยศ · ขุนนางชราใช้ภาพชราเดิม
+  assert.equal(pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 20, estate: 'noble', roles: ['page'], rank: 'page' }))?.id, 'portrait.m.youth.page');
+  assert.ok(!pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble' }))?.tags.some((t) => t.startsWith('rank:')));
+});
+
 const PORTRAIT_TAGS = new Set([
   'sex:m', 'sex:f',
   'age:child', 'age:youth', 'age:adult', 'age:elder',

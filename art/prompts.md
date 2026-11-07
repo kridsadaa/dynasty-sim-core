@@ -1,6 +1,6 @@
 # Prompt ภาพประกอบ (สร้างจาก `npm run art:prompts` — ห้ามแก้มือ)
 
-style v0.8 · อัตราส่วน 16:9 · สร้างภาพละ 2 ครั้งแล้วคัด
+style v0.9 · อัตราส่วน 16:9 · สร้างภาพละ 2 ครั้งแล้วคัด
 
 ขั้นตอน: คัดลอก prompt ไปสร้างใน Gemini → บันทึกภาพที่คัดแล้วเป็น `art/generated/<id>.jpg` (หรือ .png/.webp) → `npm run art:ingest`
 
@@ -43,7 +43,7 @@ Top-down still life on a reed mat: a round footless lacquered wooden tray holdin
 
 ### scene.compound — เรือนหมู่ไม้จริงของขุนนางผู้น้อย มีชานแล่น โรงครัว เรือนบ่าวไพร่ในรั้วไผ่ริมคลองตะเคียน
 
-⬜ ยังไม่มีภาพ · tag: `group:family` `event:family.legend_truth` `place:domestic`
+✅ มีภาพแล้ว · tag: `group:family` `event:family.legend_truth` `place:domestic`
 
 lore: `material.houses_1680s` (attested, verified), `material.household_objects_1680s` (attested)
 
@@ -55,7 +55,7 @@ Wide view of a minor Siamese official's compound (ruean mu) by a canal: a main c
 
 ### scene.village — เรือนไผ่ยกสูงของชาวบ้านริมน้ำ
 
-⬜ ยังไม่มีภาพ · tag: `group:intent` `event:intent.befriend.done` `event:intent.befriend.failed` `event:intent.befriend.mischief` `event:intent.called_home`
+✅ มีภาพแล้ว · tag: `group:intent` `event:intent.befriend.done` `event:intent.befriend.failed` `event:intent.befriend.mischief` `event:intent.called_home`
 
 lore: `material.houses_1680s` (attested, verified)
 
@@ -67,7 +67,7 @@ Wide view of a small Siamese commoner house by a canal: walls, floor and roof of
 
 ### scene.kitchen_yard — ลานครัวหลังเรือน มีเตาไฟกองเล็กและข้าวของทำครัว
 
-⬜ ยังไม่มีภาพ · tag: `place:kitchen` `situation:kitchen_work` `group:chore` `group:childhood` `chore:kitchen` `event:childhood.kitchen_cut` `event:chore.learn_chop`
+✅ มีภาพแล้ว · tag: `place:kitchen` `situation:kitchen_work` `group:chore` `group:childhood` `chore:kitchen` `event:childhood.kitchen_cut` `event:chore.learn_chop`
 
 lore: `material.houses_1680s` (attested, verified), `material.kitchen_tasks` (inferred, verified), `material.food_1680s` (attested)
 
@@ -79,7 +79,7 @@ Medium-wide view of an outdoor kitchen in a house yard seen from the side: a sma
 
 ### scene.chore_housework — เด็กช่วยงานบ้าน กวาดชาน ขัดพื้นกระดาน และหาบน้ำขึ้นเรือน
 
-⬜ ยังไม่มีภาพ · tag: `chore:housework`
+✅ มีภาพแล้ว · tag: `chore:housework`
 
 lore: `material.floor_polishing` (invented, verified), `material.houses_1680s` (attested, verified), `material.household_objects_1680s` (attested), `kinship.child_chores_by_strength` (inferred, verified)
 
@@ -91,7 +91,7 @@ Medium-wide view of a timber house platform and yard in the morning: a girl of a
 
 ### scene.chore_craft — หญิงชรานั่งสานเสื่อบนชานเรือน เด็กหญิงนั่งหัดเย็บปักผ้าอยู่ข้างๆ
 
-⬜ ยังไม่มีภาพ · tag: `chore:craft`
+✅ มีภาพแล้ว · tag: `chore:craft`
 
 lore: `material.crafts_1680s` (attested, verified), `kinship.child_chores_by_strength` (inferred, verified), `material.household_objects_1680s` (attested)
 
@@ -103,7 +103,7 @@ Medium view of a shaded veranda of a house: an old woman seated on the floor pla
 
 ### scene.chore_flowers — เด็กหญิงนั่งร้อยดอกไม้เป็นพวงกับผู้ใหญ่ มีดอกบัวกองอยู่บนกระด้ง
 
-⬜ ยังไม่มีภาพ · tag: `chore:flowers`
+✅ มีภาพแล้ว · tag: `chore:flowers`
 
 lore: `material.flower_stringing` (inferred, verified), `material.boats_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -115,7 +115,7 @@ Medium view of women and a girl seated on a reed mat on a veranda, threading sma
 
 ### scene.chore_merit — พระยืนเงียบที่หน้าประตูเรือนยามเช้า ผู้หญิงกับเด็กใส่ข้าวลงบาตร
 
-⬜ ยังไม่มีภาพ · tag: `chore:merit`
+✅ มีภาพแล้ว · tag: `chore:merit`
 
 lore: `ritual.alms_round_1680s` (attested, verified), `attire.monks_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -127,7 +127,7 @@ Early morning in front of a house gate: a Buddhist monk in an ochre robe standin
 
 ### scene.meal — สำรับข้าวกับปลาแห้งบนถาดไม่มีขา
 
-⬜ ยังไม่มีภาพ · tag: `situation:feast`
+✅ มีภาพแล้ว · tag: `situation:feast`
 
 lore: `material.food_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -139,7 +139,7 @@ Top-down still life on a reed mat: a round footless lacquered wooden tray holdin
 
 ### scene.court_feast — แขกนั่งล้อมถาดอาหารบนเสื่อในงานเลี้ยงของขุนนาง
 
-⬜ ยังไม่มีภาพ · tag: `event:adult.court_feast`
+✅ มีภาพแล้ว · tag: `event:adult.court_feast`
 
 lore: `material.household_objects_1680s` (attested), `material.food_1680s` (attested)
 
@@ -151,7 +151,7 @@ Medium-wide view inside a timber house during a household feast: adult men seate
 
 ### scene.newborn — แม่ลูกอ่อนนอนอยู่ไฟ ทารกนอนบนเสื่อข้างตัว
 
-⬜ ยังไม่มีภาพ · tag: `event:family.newborn` `event:family.grandchild_naming` `situation:childbirth`
+✅ มีภาพแล้ว · tag: `event:family.newborn` `event:family.grandchild_naming` `situation:childbirth`
 
 lore: `ritual.yu_fai_placenta` (inferred)
 
@@ -163,7 +163,7 @@ Interior of a house at dusk: a young mother wrapped in a lower cloth and a shawl
 
 ### scene.sickbed — ผู้เฒ่านอนป่วยบนเสื่อ ลูกนั่งเฝ้าข้างกาย
 
-⬜ ยังไม่มีภาพ · tag: `event:family.parent_illness` `event:body.grave_illness` `event:body.wound_infected` `situation:illness`
+✅ มีภาพแล้ว · tag: `event:family.parent_illness` `event:body.grave_illness` `event:body.wound_infected` `situation:illness`
 
 lore: `material.household_objects_1680s` (attested)
 
@@ -175,7 +175,7 @@ Interior of a house in dim daylight: an old man lying ill on a reed mat under a 
 
 ### scene.funeral_home — ศพห่อผ้าขาวในเรือน ญาตินั่งล้อม พระสวด
 
-⬜ ยังไม่มีภาพ · tag: `event:family.death` `event:family.death_bad`
+✅ มีภาพแล้ว · tag: `event:family.death` `event:family.death_bad`
 
 lore: `ritual.funeral_cremation` (inferred, verified), `attire.monks_1680s` (attested)
 
@@ -187,7 +187,7 @@ Interior of a house: a body wrapped entirely in white cloth lying on a mat, only
 
 ### scene.betrothal — ผู้ใหญ่สองฝ่ายนั่งเจรจาสู่ขอ มีพานหมากอยู่ตรงกลาง
 
-⬜ ยังไม่มีภาพ · tag: `group:marriage` `event:family.arranged_match` `event:intent.court.accepted_formal` `event:marriage.refused` `event:marriage.refused_f` `event:marriage.milk_claim` `event:marriage.milk_claim_f`
+✅ มีภาพแล้ว · tag: `group:marriage` `event:family.arranged_match` `event:intent.court.accepted_formal` `event:marriage.refused` `event:marriage.refused_f` `event:marriage.milk_claim` `event:marriage.milk_claim_f`
 
 lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `material.household_objects_1680s` (attested)
 
@@ -199,7 +199,7 @@ Interior of a timber house: two groups of middle-aged adults seated on reed mats
 
 ### scene.wedding — พิธีแต่งงาน เจ้าบ่าวเจ้าสาวนั่งเคียงกันรับน้ำสังข์จากผู้ใหญ่
 
-⬜ ยังไม่มีภาพ · tag: `event:marriage.wedding` `event:marriage.wedding_f` `event:marriage.minor_wife` `event:family.child_wedding`
+✅ มีภาพแล้ว · tag: `event:marriage.wedding` `event:marriage.wedding_f` `event:marriage.minor_wife` `event:family.child_wedding`
 
 lore: `kinship.betrothal_khanmak_three_seals` (attested, verified), `attire.women_1680s` (attested), `material.houses_1680s` (attested, verified)
 
@@ -211,7 +211,7 @@ Interior of a Siamese timber bridal house: a young bride and groom seated side b
 
 ### scene.courtship — หนุ่มสาวคุยกันที่ท่าน้ำ ฝ่ายหญิงถือหม้อน้ำ
 
-⬜ ยังไม่มีภาพ · tag: `event:intent.court.trial` `event:intent.court.gossip` `event:intent.court.accepted` `event:intent.court.rejected` `event:intent.court.meet` `event:marriage.divorce`
+✅ มีภาพแล้ว · tag: `event:intent.court.trial` `event:intent.court.gossip` `event:intent.court.accepted` `event:intent.court.rejected` `event:intent.court.meet` `event:marriage.divorce`
 
 lore: `kinship.courtship_liberty_1680s` (attested, verified), `attire.women_1680s` (attested)
 
@@ -223,7 +223,7 @@ A wooden landing on a canal in late afternoon: a young woman wearing a lower clo
 
 ### scene.lotus_pond — เรือลำเล็กกลางบึงบัว
 
-⬜ ยังไม่มีภาพ · tag: `group:outing` `event:outing.lotus_f` `event:outing.lotus_m` `event:outing.lotus_fall_f` `event:outing.lotus_fall_m`
+✅ มีภาพแล้ว · tag: `group:outing` `event:outing.lotus_f` `event:outing.lotus_m` `event:outing.lotus_fall_f` `event:outing.lotus_fall_m`
 
 lore: `kinship.lotus_boat_meeting` (invented)
 
@@ -235,7 +235,7 @@ Wide view of a lotus pond in the morning: two teenagers in a small narrow wooden
 
 ### scene.palace_pages — มหาดเล็กหนุ่มนั่งเรียงรอรับใช้ในลานพระราชวัง
 
-⬜ ยังไม่มีภาพ · tag: `group:career` `place:court` `event:career.page_duty` `event:career.page_mistake` `event:career.page_found_out` `event:career.punished_page` `event:career.present_page` `event:career.assign_department`
+✅ มีภาพแล้ว · tag: `group:career` `place:court` `event:career.page_duty` `event:career.page_mistake` `event:career.page_found_out` `event:career.punished_page` `event:career.present_page` `event:career.assign_department`
 
 lore: `social.royal_pages_1680s` (inferred, verified), `attire.officials_1680s` (attested)
 
@@ -247,7 +247,7 @@ A paved palace courtyard beside a pavilion with tiered roofs: a row of young roy
 
 ### scene.audience_hall — ขุนนางสวมลอมพอกหมอบเฝ้าเป็นแถวในท้องพระโรง
 
-⬜ ยังไม่มีภาพ · tag: `event:thonburi.succession_side` `event:career.audience_late` `event:career.reported` `event:career.recall`
+✅ มีภาพแล้ว · tag: `event:thonburi.succession_side` `event:career.audience_late` `event:career.reported` `event:career.recall` `event:war2376.muster` `event:rama3.old_retainers`
 
 lore: `attire.officials_1680s` (attested), `social.court_attendance_rules` (attested, verified)
 
@@ -259,7 +259,7 @@ Interior of a palace audience hall seen from behind the officials: rows of Siame
 
 ### scene.night_patrol — กองตระเวนถือคบไฟจับขโมยควายริมคลอง
 
-⬜ ยังไม่มีภาพ · tag: `event:career.patrol_thief` `situation:combat`
+✅ มีภาพแล้ว · tag: `event:career.patrol_thief` `situation:combat`
 
 lore: `social.patrol_department_ladder` (attested, verified), `attire.commoner_men_1680s` (attested)
 
@@ -271,7 +271,7 @@ Night by a canal bank: three patrol men, bare-chested, in lower cloths, carrying
 
 ### scene.temple_holy_day — ชาวบ้านนำของไปถวายพระที่วัดในวันพระ
 
-⬜ ยังไม่มีภาพ · tag: `group:festival` `group:ritual` `event:festival.holy_day` `event:ritual.elder_precepts` `group:temple`
+✅ มีภาพแล้ว · tag: `group:festival` `group:ritual` `event:festival.holy_day` `event:ritual.elder_precepts` `group:temple`
 
 lore: `ritual.holy_days_1680s` (attested, verified), `ritual.alms_round_1680s` (attested, verified), `attire.monks_1680s` (attested)
 
@@ -283,7 +283,7 @@ A temple compound on a holy day: villagers in clean lower cloths carrying fruit,
 
 ### scene.temple_fair — งานวัด คนมาในผ้าใหม่ มีชกมวยพันเชือก
 
-⬜ ยังไม่มีภาพ · tag: `event:festival.temple_fair`
+✅ มีภาพแล้ว · tag: `event:festival.temple_fair`
 
 lore: `ritual.temple_festival_1680s` (attested, verified), `material.household_objects_1680s` (attested)
 
@@ -295,7 +295,7 @@ A crowded temple festival: people in new bright lower cloths walking around the 
 
 ### scene.lanterns — ลำน้ำเต็มไปด้วยโคมกระดาษลอยตามน้ำยามค่ำ
 
-⬜ ยังไม่มีภาพ · tag: `event:festival.lanterns`
+✅ มีภาพแล้ว · tag: `event:festival.lanterns`
 
 lore: `ritual.floating_lanterns_1680s` (attested, verified)
 
@@ -307,7 +307,7 @@ Night on a wide river as the floodwater begins to fall: the water covered with m
 
 ### scene.bathing_elders — ลูกหลานรดน้ำพ่อแม่ในวันเพ็ญเดือนห้า
 
-⬜ ยังไม่มีภาพ · tag: `event:festival.bathing`
+✅ มีภาพแล้ว · tag: `event:festival.bathing`
 
 lore: `ritual.fifth_month_bathing_1680s` (attested, verified)
 
@@ -319,7 +319,7 @@ Bright hot-season day in a house yard: an elderly couple seated on a low bench w
 
 ### scene.ordination — แห่นาคไปวัดพร้อมร่มและดนตรี
 
-⬜ ยังไม่มีภาพ · tag: `event:ritual.ordination`
+✅ มีภาพแล้ว · tag: `event:ritual.ordination`
 
 lore: `ritual.ordination` (inferred, verified), `attire.monks_1680s` (attested)
 
@@ -331,7 +331,7 @@ A procession toward a temple: a young man of about twenty-one with a shaved head
 
 ### scene.topknot — เด็กนั่งให้ผู้ใหญ่ตัดจุก
 
-⬜ ยังไม่มีภาพ · tag: `event:ritual.topknot`
+✅ มีภาพแล้ว · tag: `event:ritual.topknot`
 
 lore: `ritual.topknot_cutting` (inferred, verified), `attire.monks_1680s` (attested)
 
@@ -343,7 +343,7 @@ Interior of a house: a child of about eleven, bare-chested and wearing a lower c
 
 ### scene.muay_sparring — ชายหนุ่มสองคนพันเชือกที่มือซ้อมมวยกันที่ลานใต้ต้นไม้ มีเพื่อนบ้านยืนดู
 
-⬜ ยังไม่มีภาพ · tag: `event:skill.muay_sparring`
+✅ มีภาพแล้ว · tag: `event:skill.muay_sparring`
 
 lore: `ritual.temple_festival_1680s` (attested, verified), `attire.commoner_men_1680s` (attested)
 
@@ -355,7 +355,7 @@ Late afternoon in a shaded house yard under a large tree: two bare-chested young
 
 ### scene.night_assassin — ชายคลุมผ้าสีเข้มนั่งยองใต้ถุนเรือนยามค่ำ ถือมีดมองขึ้นไปที่แสงตะเกียงชั้นบน
 
-⬜ ยังไม่มีภาพ · tag: `event:scheme.assassin` `event:feud.revenge`
+✅ มีภาพแล้ว · tag: `event:scheme.assassin` `event:feud.revenge`
 
 lore: `material.houses_1680s` (attested, verified)
 
@@ -367,7 +367,7 @@ Night inside the dark ground level under a raised timber house: a cloaked man in
 
 ### scene.wife_jealousy — เมียหลวงนั่งนิ่งเย็นชา เมียน้อยหมอบยกพานหมากถวายอยู่อีกฟากของห้อง
 
-⬜ ยังไม่มีภาพ · tag: `event:marriage.wife_jealousy` `event:marriage.wife_jealousy_slave`
+✅ มีภาพแล้ว · tag: `event:marriage.wife_jealousy` `event:marriage.wife_jealousy_slave`
 
 lore: `attire.women_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -379,7 +379,7 @@ Interior of a timber house in the evening: a wife of the household in her thirti
 
 ### scene.elder_visit — สามีภรรยากราบพระเถระชราที่นั่งถือตาลปัตร มีพานดอกไม้เทียนวางตรงหน้า
 
-⬜ ยังไม่มีภาพ · tag: `event:temple.elder` `event:temple.elder_visit`
+✅ มีภาพแล้ว · tag: `event:temple.elder` `event:temple.elder_visit`
 
 lore: `attire.monks_1680s` (attested), `ritual.alms_round_1680s` (attested, verified)
 
@@ -391,7 +391,7 @@ Interior of a modest monastery residence in the morning: an elderly Siamese Budd
 
 ### scene.heavy_heart — ชายวัยกลางคนนั่งเงียบคนเดียวบนชานเรือนยามพลบค่ำ มองไปทางลำคลอง
 
-⬜ ยังไม่มีภาพ · tag: `event:adult.heavy_heart`
+✅ มีภาพแล้ว · tag: `event:adult.heavy_heart`
 
 lore: `attire.commoner_men_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -403,7 +403,7 @@ Dusk on the veranda of a timber house: a Siamese man in his thirties seated alon
 
 ### scene.court_boat — หนุ่มสาวสองคนในเรือขุดลำเล็กพายเลียบคลองยามเย็น ห่างตาผู้ใหญ่
 
-⬜ ยังไม่มีภาพ · tag: `event:intent.court.boat`
+✅ มีภาพแล้ว · tag: `event:intent.court.boat`
 
 lore: `kinship.courtship_liberty_1680s` (attested, verified), `attire.women_1680s` (attested)
 
@@ -415,7 +415,7 @@ Early evening on a narrow canal: a young Siamese man and a young woman in a smal
 
 ### scene.bedside_first — ชายหญิงนั่งเคียงกันบนแท่นนอนในห้องเล็ก ชายจับมือหญิง ตะเกียงดวงเดียว
 
-⬜ ยังไม่มีภาพ · tag: `event:marriage.visit_first`
+✅ มีภาพแล้ว · tag: `event:marriage.visit_first`
 
 lore: `material.houses_1680s` (attested, verified), `attire.women_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -427,7 +427,7 @@ Interior of a small timber bedchamber at night, lit by a single small oil lamp s
 
 ### scene.bedside_pregnant — หญิงท้องแก่พิงหมอนบนแท่นนอน ชายนั่งจับมือนางอยู่ข้างๆ
 
-⬜ ยังไม่มีภาพ · tag: `event:marriage.visit_pregnant`
+✅ มีภาพแล้ว · tag: `event:marriage.visit_pregnant`
 
 lore: `material.houses_1680s` (attested, verified), `attire.women_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
 
@@ -439,7 +439,7 @@ Interior of a small timber bedchamber at night, lit by a single small oil lamp o
 
 ### scene.bedside_cold — หญิงนั่งกอดเข่าหันข้างอยู่ปลายแท่นนอน ชายถือของฝากนั่งมองนางอย่างลังเล
 
-⬜ ยังไม่มีภาพ · tag: `event:marriage.visit_cold`
+✅ มีภาพแล้ว · tag: `event:marriage.visit_cold`
 
 lore: `material.houses_1680s` (attested, verified), `attire.women_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -451,7 +451,7 @@ Interior of a small timber bedchamber at night, lit by a single small oil lamp o
 
 ### scene.court_minor — ชายยืนที่โคนบันไดยื่นพานหมากขึ้นไป หญิงยืนกอดอกบนชาน พ่อแม่นั่งฟังอยู่ในประตู
 
-⬜ ยังไม่มีภาพ · tag: `event:intent.court.minor`
+✅ มีภาพแล้ว · tag: `event:intent.court.minor`
 
 lore: `kinship.courtship_liberty_1680s` (attested, verified), `attire.women_1680s` (attested), `material.houses_1680s` (attested, verified)
 
@@ -463,7 +463,7 @@ Dusk at the foot of a small bamboo stilt house: a Siamese man in his thirties, b
 
 ### scene.river_rescue — ชายยืนในน้ำถึงเอวอุ้มเด็กไว้จุกขึ้นฝั่ง ชาวบ้านวิ่งมา
 
-⬜ ยังไม่มีภาพ · tag: `event:life.drowning`
+✅ มีภาพแล้ว · tag: `event:life.drowning`
 
 lore: `material.houses_1680s` (attested, verified), `material.boats_1680s` (attested)
 
@@ -475,7 +475,7 @@ A muddy canal landing just after rain: a bare-chested Siamese man in a knee-leng
 
 ### scene.war_news — ข่าวศึกที่ท่าน้ำและตลาด
 
-⬜ ยังไม่มีภาพ · tag: `event:war.news_tenasserim` `event:war2328.news` `place:market`
+✅ มีภาพแล้ว · tag: `event:war.news_tenasserim` `event:war2328.news` `place:market` `event:riot2391.news`
 
 lore: 
 
@@ -487,7 +487,7 @@ A busy river landing and market at midday: a travelling boatman, still standing 
 
 ### scene.war_refugees — ผู้คนหนีภัยสงครามจากหัวเมืองตะวันตกเดินทางมาถึงท่าน้ำริมกรุง
 
-⬜ ยังไม่มีภาพ · tag: `event:war.west_falls`
+✅ มีภาพแล้ว · tag: `event:war.west_falls`
 
 lore: 
 
@@ -499,7 +499,7 @@ Late afternoon at a canal landing on the edge of a city: a long low boat just to
 
 ### scene.war_levy — การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง
 
-⬜ ยังไม่มีภาพ · tag: `event:war.levy` `event:war2328.levy` `event:war2328.levy_f` `event:war2328.levy_old` `event:war2328.front` `event:war2330.levy` `event:war2330.levy_f` `event:war2330.levy_old` `event:war2330.front`
+✅ มีภาพแล้ว · tag: `event:war.levy` `event:war2328.levy` `event:war2328.levy_f` `event:war2328.levy_old` `event:war2328.front` `event:war2330.levy` `event:war2330.levy_f` `event:war2330.levy_old` `event:war2330.front` `event:war2336.levy` `event:war2336.levy_f` `event:war2336.levy_old` `event:war2376.levy` `event:war2376.levy_f` `event:war2376.levy_old`
 
 lore: 
 
@@ -511,7 +511,7 @@ Morning in the open yard of a pillared hall at a district office: a row of villa
 
 ### scene.war_bury — ฝังเงินทองและของมีค่าใต้ถุนเรือนตอนกลางคืน
 
-⬜ ยังไม่มีภาพ · tag: `event:war.prepare`
+✅ มีภาพแล้ว · tag: `event:war.prepare`
 
 lore: 
 
@@ -523,7 +523,7 @@ Night under a raised timber house: by the light of a single clay oil lamp held b
 
 ### scene.war_leave — ครอบครัวขนของลงเรือออกจากพระนครยามเช้ามืด
 
-⬜ ยังไม่มีภาพ · tag: `event:war.decide_leave`
+✅ มีภาพแล้ว · tag: `event:war.decide_leave`
 
 lore: 
 
@@ -535,7 +535,7 @@ Grey dawn at the family landing below a raised house: a family loading a long co
 
 ### scene.war_siege — ชาวกรุงตั้งรับการล้อมบนกำแพงเมืองฉาบปูน ผู้หญิงและเด็กขนดินและน้ำขึ้นเนินดินด้านในกำแพง
 
-⬜ ยังไม่มีภาพ · tag: `event:war.siege_begins`
+✅ มีภาพแล้ว · tag: `event:war.siege_begins`
 
 lore: `place.ayutthaya_city_wall_1690` (attested, verified), `place.ayutthaya_city_wall_look` (inferred), `event.fall_of_ayutthaya_2310` (attested, verified)
 
@@ -547,7 +547,7 @@ Inside the walled city of Ayutthaya on an overcast day during the long siege of 
 
 ### scene.war_hunger — ครอบครัวนั่งล้อมยุ้งข้าวที่แทบว่าง แม่เทเมล็ดข้าวสุดท้ายลงหม้อ
 
-⬜ ยังไม่มีภาพ · tag: `event:thonburi.rice_dole` `event:war.rice_gone` `event:war2328.rice_dear`
+✅ มีภาพแล้ว · tag: `event:thonburi.rice_dole` `event:war.rice_gone` `event:war2328.rice_dear`
 
 lore: 
 
@@ -559,7 +559,7 @@ Inside a house at evening: an empty woven rice bin standing open on the floor, a
 
 ### scene.war_breakout — ขบวนคนถือคบเพลิงฝ่าช่องกำแพงที่ไฟลุกออกไปกลางคืน
 
-⬜ ยังไม่มีภาพ · tag: `event:war.taksin_breakout`
+✅ มีภาพแล้ว · tag: `event:war.taksin_breakout`
 
 lore: `event.fall_of_ayutthaya_2310` (attested, verified)
 
@@ -571,7 +571,7 @@ Night: a gap in a burning-edged city wall seen from a distance, a long column of
 
 ### scene.war_captives — ขบวนผู้ถูกกวาดต้อนถูกผูกเชือกเดินตามถนนแห้ง มีควันไฟจากกรุงอยู่ไกลๆ
 
-⬜ ยังไม่มีภาพ · tag: `history:captive_after_fall`
+✅ มีภาพแล้ว · tag: `history:captive_after_fall`
 
 lore: `event.fall_of_ayutthaya_2310` (attested, verified)
 
@@ -583,31 +583,31 @@ A long line of roped-together civilians — men, women and children, thin and du
 
 ### scene.plague_news — ท่าน้ำริมคลองบางกอก พ่อค้าเรือเล่าข่าวไข้ป่วงใหญ่ ชาวบ้านมุงฟังหน้าเครียด บางเรือนขนของลงเรือ
 
-⬜ ยังไม่มีภาพ · tag: `event:plague.news`
+✅ มีภาพแล้ว · tag: `event:plague.news`
 
 lore: `event.cholera_2363` (attested, verified), `event.plague_response_options` (invented)
 
 ```
-Historical illustration of everyday life in Siam (Ayutthaya kingdom), early-to-mid 19th century (about 1830 to 1855). Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese men and women crop the hair short, only an inch or two long, standing up like a brush; men keep a round patch about four inches across on the crown where the hair is only slightly longer, and women a smaller such patch, all in the same upright brush-like texture and never tied up into a bun or knot, with no contrast between shaved sides and a longer top, so from behind a woman can be hard to tell from a man; faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. A woman wears a wrap skirt and a long scarf draped diagonally over one shoulder and passing under the opposite arm; a lower-class woman may instead wear a plain tight long-sleeved white cotton jacket. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, long loose hair, bob haircuts, a bun, topknot or long hair on adults, a high-fade, undercut or mohawk hairstyle, a pompadour, black lips, dark lipstick, black-painted mouth, open-mouth grin, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+Historical illustration of everyday life in Siam in the early Bangkok (Rattanakosin) period, early-to-mid 19th century (about 1830 to 1855), not the Ayutthaya kingdom. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese men and women crop the hair short, only an inch or two long, standing up like a brush; men keep a round patch about four inches across on the crown where the hair is only slightly longer, and women a smaller such patch, all in the same upright brush-like texture and never tied up into a bun or knot, with no contrast between shaved sides and a longer top, so from behind a woman can be hard to tell from a man; faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. A woman wears a wrap skirt and a long scarf draped diagonally over one shoulder and passing under the opposite arm; a lower-class woman may instead wear a plain tight long-sleeved white cotton jacket. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, long loose hair, bob haircuts, a bun, topknot or long hair on adults, a high-fade, undercut or mohawk hairstyle, a pompadour, black lips, dark lipstick, black-painted mouth, open-mouth grin, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Set in early Bangkok (about 1820 to 1850), not Ayutthaya. A wooden landing on a Bangkok canal at morning: a trader standing in his long boat moored at the steps, telling news and pointing back downriver; a small crowd of townspeople on the landing listening with worried faces, a woman pulling a child close, two men whispering to each other; behind them a few market stalls on the bank half empty, baskets covered; further along the canal one family loading rolled mats, pots and bundles into a small boat as if to leave. Overcast hot-season light, uneasy quiet mood. No sick or dead people shown, no bodies.
+Set in early Bangkok (about 1820 to 1850), not Ayutthaya. A wooden landing on a Bangkok canal at morning: a trader standing in his long boat moored at the steps, telling news and pointing back downriver; a small crowd of townspeople on the landing listening with worried faces, a woman pulling a child close, two men whispering to each other; behind them a few market stalls on the bank half empty, baskets covered; further along the canal one family loading rolled mats, pots and bundles into a small boat as if to leave. Overcast hot-season light, uneasy quiet mood. No sick or dead people shown, no bodies. Hair: Every Siamese adult, man or woman, including small background figures, crops the hair short all over, only an inch or two long and standing up like a brush; men keep a round patch about four inches across on the crown where it is only slightly longer, women a smaller such patch, all in the same upright brush-like texture; no shaved sides under a longer top, never tied up, no one bald except Buddhist monks; small children have shaved heads with a small topknot. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair on adults, long hair, a fully shaved bald head on laymen.
 ```
 
 ### scene.inoculation — ศาลาโล่งในหมู่บ้าน พ่อแม่อุ้มลูกเล็กนั่งรอหมอหลวงที่มาปลูกฝี เด็กบางคนกอดแม่แน่นอย่างกลัว
 
-⬜ ยังไม่มีภาพ · tag: `event:health.inoculation`
+✅ มีภาพแล้ว · tag: `event:health.inoculation`
 
 lore: `health.smallpox_endemic` (attested, verified), `health.inoculation_choice` (invented)
 
 ```
-Historical illustration of everyday life in Siam (Ayutthaya kingdom), early-to-mid 19th century (about 1830 to 1855). Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese men and women crop the hair short, only an inch or two long, standing up like a brush; men keep a round patch about four inches across on the crown where the hair is only slightly longer, and women a smaller such patch, all in the same upright brush-like texture and never tied up into a bun or knot, with no contrast between shaved sides and a longer top, so from behind a woman can be hard to tell from a man; faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. A woman wears a wrap skirt and a long scarf draped diagonally over one shoulder and passing under the opposite arm; a lower-class woman may instead wear a plain tight long-sleeved white cotton jacket. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, long loose hair, bob haircuts, a bun, topknot or long hair on adults, a high-fade, undercut or mohawk hairstyle, a pompadour, black lips, dark lipstick, black-painted mouth, open-mouth grin, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+Historical illustration of everyday life in Siam in the early Bangkok (Rattanakosin) period, early-to-mid 19th century (about 1830 to 1855), not the Ayutthaya kingdom. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese men and women crop the hair short, only an inch or two long, standing up like a brush; men keep a round patch about four inches across on the crown where the hair is only slightly longer, and women a smaller such patch, all in the same upright brush-like texture and never tied up into a bun or knot, with no contrast between shaved sides and a longer top, so from behind a woman can be hard to tell from a man; faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. A woman wears a wrap skirt and a long scarf draped diagonally over one shoulder and passing under the opposite arm; a lower-class woman may instead wear a plain tight long-sleeved white cotton jacket. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, long loose hair, bob haircuts, a bun, topknot or long hair on adults, a high-fade, undercut or mohawk hairstyle, a pompadour, black lips, dark lipstick, black-painted mouth, open-mouth grin, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
-Set in early Bangkok times (about 1840), not Ayutthaya. An open-sided wooden sala with a thatched roof at the edge of a village, dry-season daylight: an older man of some standing, the royal physician, seated cross-legged on a mat at the far end with a closed cloth bundle beside him, speaking calmly to a father; in the foreground several mothers and fathers sitting on the floor waiting their turn with small children on their laps, one child clinging to his mother's neck in fear, another looking curiously toward the physician; villagers watching from outside. The procedure itself is not shown: no blades, no wounds, no needles.
+Set in early Bangkok times (about 1840), not Ayutthaya. An open-sided wooden sala with a thatched roof at the edge of a village, dry-season daylight: an older man of some standing, the royal physician, seated cross-legged on a mat at the far end with a closed cloth bundle beside him, speaking calmly to a father; in the foreground several mothers and fathers sitting on the floor waiting their turn with small children on their laps, one child clinging to his mother's neck in fear, another looking curiously toward the physician; villagers watching from outside. The procedure itself is not shown: no blades, no wounds, no needles. Hair: Every Siamese adult, man or woman, including small background figures, crops the hair short all over, only an inch or two long and standing up like a brush; men keep a round patch about four inches across on the crown where it is only slightly longer, women a smaller such patch, all in the same upright brush-like texture; no shaved sides under a longer top, never tied up, no one bald except Buddhist monks; small children have shaved heads with a small topknot. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair on adults, long hair, a fully shaved bald head on laymen.
 ```
 
 ### scene.gift_offered — คู่ความหมอบนำของกำนัลมาให้ขุนนางที่ชานเรือน
 
-⬜ ยังไม่มีภาพ · tag: `event:career.gift_offered`
+✅ มีภาพแล้ว · tag: `event:career.gift_offered`
 
 lore: `social.officers_no_salary_1680s` (attested, verified), `attire.officials_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -619,7 +619,7 @@ Morning on the front veranda of a minor official's timber house: the official, a
 
 ### scene.rival_accuses — ขุนนางกรมเดียวกันกล่าวโทษอีกคนต่อหน้าเจ้ากรม
 
-⬜ ยังไม่มีภาพ · tag: `event:career.rival_accuses`
+✅ มีภาพแล้ว · tag: `event:career.rival_accuses`
 
 lore: `social.court_punishments_1680s` (attested, verified), `attire.officials_1680s` (attested)
 
@@ -631,7 +631,7 @@ Inside an open-sided timber pavilion of a government department: an elderly depa
 
 ### scene.punished — ขุนนางถูกใส่คานั่งก้มหน้าอยู่หน้ากำแพงที่ทำการ
 
-⬜ ยังไม่มีภาพ · tag: `event:career.punished`
+✅ มีภาพแล้ว · tag: `event:career.punished` `event:career.removed`
 
 lore: `social.court_punishments_1680s` (attested, verified), `attire.officials_1680s` (attested)
 
@@ -643,7 +643,7 @@ A packed-earth yard outside the whitewashed wall of a government compound: a mid
 
 ### scene.promotion — ขุนนางหมอบรับเครื่องยศที่ได้พระราชทาน
 
-⬜ ยังไม่มีภาพ · tag: `event:career.promotion`
+✅ มีภาพแล้ว · tag: `event:career.promotion`
 
 lore: `social.officers_no_salary_1680s` (attested, verified), `attire.officials_1680s` (attested)
 
@@ -655,7 +655,7 @@ Inside a department pavilion: an official in his forties in an open-front collar
 
 ### scene.petition — ชายหนุ่มกับญาติผู้ใหญ่หมอบฝากตัวกับเจ้ากรมพร้อมของกำนัล
 
-⬜ ยังไม่มีภาพ · tag: `event:career.petition`
+✅ มีภาพแล้ว · tag: `event:career.petition`
 
 lore: `social.protection_patronage` (inferred), `social.officers_no_salary_1680s` (attested, verified), `attire.officials_1680s` (attested)
 
@@ -667,7 +667,7 @@ Late morning at the veranda of a senior official's large timber house: a young m
 
 ### scene.sick_child — แม่อุ้มลูกตัวร้อน หมอขวัญผูกด้ายขาวที่ข้อมือเด็ก
 
-⬜ ยังไม่มีภาพ · tag: `event:family.child_grave_illness` `event:family.hard_to_raise`
+✅ มีภาพแล้ว · tag: `event:family.child_grave_illness` `event:family.hard_to_raise`
 
 lore: `psyche.riak_khwan_ritual` (inferred), `psyche.hard_to_raise_child` (inferred, verified), `psyche.khwan_doctor` (inferred)
 
@@ -675,6 +675,42 @@ lore: `psyche.riak_khwan_ritual` (inferred), `psyche.hard_to_raise_child` (infer
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
 Night inside a timber house lit only by a shallow open clay saucer lamp with a small bare flame on the floor, with no glass chimney and no lantern: a mother kneeling on a reed mat holds a feverish child of about four in her lap, the child with a shaved head and a small topknot, bare-chested and wearing a small white lower cloth clearly visible at the hips, not hidden by the mother's arms or a blanket, limp and flushed, a damp cloth on the forehead; beside them an older woman, the khwan doctor, ties a loop of white raw cotton thread around the child's wrist, a brass bowl covered with a cloth, a ladle and a small silver bracelet on a tray in front of her; the father sits behind with a worried face. Quiet, anxious mood; mouths closed. Hair: The mother wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): black hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up; the khwan doctor wears the traditional old Siamese women's short hairstyle (ทรงผมไทยโบราณ): grey hair cropped short all over, standing up like a low soft brush only about 2 to 3 cm high that follows the round shape of the head, never tied up; the father wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair about 2 to 3 cm long on top of the head like a small cap, the sides and back below it shaved close; not a bald head and not an undercut. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair except small children, and no adult is bald except Buddhist monks; background women wear only a breast-cloth or nothing above the waist, never sleeves or a jacket. Avoid: an undercut, slicked-back or combed-back hair, a quiff, pompadour or high fade, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults, a tall flat-topped or block-shaped crest.
+```
+
+### scene.tavoy_hunger — ค่ายทหารกลางป่าระหว่างเดินทัพไปทวาย ทหารผอมโซต้มหน่อไม้ในหม้อดิน คนหนึ่งนอนจับไข้บนใบไม้
+
+✅ มีภาพแล้ว · tag: `event:war2336.march`
+
+lore: `event.tavoy_campaign_2336` (inferred, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Set in 1793, a generation after Ayutthaya fell, with the same dress and hairstyles as the late Ayutthaya era. A forest camp of a Siamese army marching through the hills toward Tavoy, late afternoon under tall trees: gaunt, exhausted foot soldiers with ribs showing and hollow cheeks, bare-chested in knee-length pleated lower cloths, sit around a small fire where bamboo shoots and wild yam boil in a blackened clay pot; one soldier pours the last handful of rice from a cloth bag into his palm and stares at it; another lies on a bed of leaves shivering with fever while a comrade lays a damp cloth on his forehead; spears and empty shoulder bags lean against a tree trunk; far away between the trees, the thatched granaries of a hill village. Exhausted, quiet mood; no fighting, no corpses; mouths closed. Hair: Every soldier wears the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut): a round patch of short dark hair only 2 to 3 cm long sitting on top of the head like a small skullcap, standing up or lying flat but never combed back or to the side and never longer than 3 cm; around it the head is shaved close, and the edge between the patch and the shaved skin is soft and natural, not a sharp barber's fade line. Not bald, not an undercut, not slicked back. Everyone else in the scene, including small background figures, also wears traditional old Siamese hairstyles (ทรงผมไทยโบราณ): no one has a bun, topknot or tied-up hair, and no adult is bald except Buddhist monks. Avoid: an undercut, a high fade, slicked-back, combed-back or side-parted hair, longer hair on top, a quiff or pompadour, a fully shaved bald head on laymen, a bun, man-bun, ponytail or any tied-up hair on adults.
+```
+
+### scene.palace_watch — กลางคืนในวัง ขุนนางผู้น้อยนั่งเรียงประจำซองข้างกำแพง บางคนสัปหงก ตะเกียงดินเผาดวงเล็ก
+
+✅ มีภาพแล้ว · tag: `event:court2394.watch`
+
+lore: `event.rama4_accession_2394` (attested, verified), `attire.officials_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam in the early Bangkok (Rattanakosin) period, early-to-mid 19th century (about 1830 to 1855), not the Ayutthaya kingdom. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese men and women crop the hair short, only an inch or two long, standing up like a brush; men keep a round patch about four inches across on the crown where the hair is only slightly longer, and women a smaller such patch, all in the same upright brush-like texture and never tied up into a bun or knot, with no contrast between shaved sides and a longer top, so from behind a woman can be hard to tell from a man; faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. A woman wears a wrap skirt and a long scarf draped diagonally over one shoulder and passing under the opposite arm; a lower-class woman may instead wear a plain tight long-sleeved white cotton jacket. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, long loose hair, bob haircuts, a bun, topknot or long hair on adults, a high-fade, undercut or mohawk hairstyle, a pompadour, black lips, dark lipstick, black-painted mouth, open-mouth grin, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Set in Bangkok in 1851, not Ayutthaya. Night in an outer courtyard of the royal palace: a long open-fronted wooden guard shed against a high whitewashed palace wall; minor officials in open-front collarless white muslin over-shirts with wide long sleeves and silk lower cloths sit in a row on reed mats along the shed, some dozing upright, one awake and staring into the dark, a lacquered betel box passed from hand to hand; small open clay saucer lamps with bare flames on the floor, no glass chimneys and no lanterns; two guards with long spears stand at a gateway; the dark tiered roofs of palace halls rise behind the wall against the night sky. Tense, sleepless, watchful mood, nothing happening. No king or royal figure visible; mouths closed. Hair: Every man crops his hair short all over, only an inch or two long and standing up like a brush, with a round patch about four inches across on the crown where it is only slightly longer, in the same upright brush-like texture; no shaved sides under a longer top, not an undercut, not bald, never tied up. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair, a fully shaved bald head.
+```
+
+### scene.annam_landing — ทัพเรือไทยขึ้นบกที่ปากน้ำบันทายมาศ ทหารลุยน้ำจากเรือยาวเข้าหาค่ายดินริมคลอง
+
+✅ มีภาพแล้ว · tag: `event:war2376.front`
+
+lore: `event.annam_war_2376` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam in the early Bangkok (Rattanakosin) period, early-to-mid 19th century (about 1830 to 1855), not the Ayutthaya kingdom. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Siamese men and women crop the hair short, only an inch or two long, standing up like a brush; men keep a round patch about four inches across on the crown where the hair is only slightly longer, and women a smaller such patch, all in the same upright brush-like texture and never tied up into a bun or knot, with no contrast between shaved sides and a longer top, so from behind a woman can be hard to tell from a man; faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. A woman wears a wrap skirt and a long scarf draped diagonally over one shoulder and passing under the opposite arm; a lower-class woman may instead wear a plain tight long-sleeved white cotton jacket. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, long loose hair, bob haircuts, a bun, topknot or long hair on adults, a high-fade, undercut or mohawk hairstyle, a pompadour, black lips, dark lipstick, black-painted mouth, open-mouth grin, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Set in 1833, early Bangkok period, not Ayutthaya. The mouth of a muddy river on the Cambodian coast at Banteay Meas, overcast morning: several long Siamese war boats with rows of paddlers run onto the shallow bank; foot soldiers, bare-chested in knee-length pleated lower cloths, with spears, swords and round rattan shields, jump into knee-deep water and wade toward an earthen stockade with a wooden palisade on the far bank half hidden by smoke from a cannon on a boat's bow; an officer in an open-front white jacket points the way from the lead boat. Tense, determined mood; no blood, no one shown dying; mouths closed. Hair: Every man, including small background figures, crops his hair short all over, only an inch or two long and standing up like a brush, with a round patch about four inches across on the crown where it is only slightly longer, in the same upright brush-like texture; no shaved sides under a longer top, not an undercut, not bald, never tied up. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair, a fully shaved bald head.
 ```
 
 ## ภาพตำนาน (Chronicle)
@@ -693,7 +729,7 @@ A lone warrior with a sword cutting down several enemy soldiers in a battle scen
 
 ### legend.duel — ภาพจิตรกรรม: สองคนประลองดาบต่อหน้าผู้คน
 
-⬜ ยังไม่มีภาพ · tag: `place:duel_ground`
+✅ มีภาพแล้ว · tag: `place:duel_ground`
 
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
@@ -705,7 +741,7 @@ Two men dueling with swords and shields on an open ground, a crowd of onlookers 
 
 ### legend.court — ภาพจิตรกรรม: ขุนนางหมอบรับความชอบในวัง
 
-⬜ ยังไม่มีภาพ · tag: `place:court`
+✅ มีภาพแล้ว · tag: `place:court`
 
 lore: `attire.wat_ko_kaeo_reference` (attested), `attire.officials_1680s` (attested)
 
@@ -717,7 +753,7 @@ A palace scene: an official in a tall pointed hat prostrating to receive a rewar
 
 ### legend.spirit — ภาพจิตรกรรม: ผีบรรพบุรุษคุ้มครองลูกหลาน
 
-⬜ ยังไม่มีภาพ · tag: `supernatural:guardian_spirit` `supernatural:phi`
+✅ มีภาพแล้ว · tag: `supernatural:guardian_spirit` `supernatural:phi`
 
 lore: `attire.wat_ko_kaeo_reference` (attested), `belief.spirits_1680s` (inferred, verified)
 
@@ -729,7 +765,7 @@ An ancestral spirit drawn as a pale floating figure above a house, shielding a s
 
 ### legend.omen — ภาพจิตรกรรม: นิมิตประหลาดบนฟ้า
 
-⬜ ยังไม่มีภาพ · tag: `supernatural:omen`
+✅ มีภาพแล้ว · tag: `supernatural:omen`
 
 lore: `attire.wat_ko_kaeo_reference` (attested), `belief.chronicle_omens` (inferred, verified)
 
@@ -741,7 +777,7 @@ A strange omen in the sky: a comet and a ring around the sun above a town wall, 
 
 ### history.fall_of_ayutthaya — ภาพจิตรกรรม: กรุงถูกไฟไหม้ ข้าศึกบุกเข้าประตูเมือง ผู้คนหนีลงเรือ
 
-⬜ ยังไม่มีภาพ · tag: `history:fall_of_ayutthaya`
+✅ มีภาพแล้ว · tag: `history:fall_of_ayutthaya`
 
 lore: `event.fall_of_ayutthaya_2310` (attested, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -753,7 +789,7 @@ A walled royal city burning at night: flames rising from tiered-roof pavilions a
 
 ### history.famine — ภาพจิตรกรรม: ชาวบ้านผอมโซเข้าแถวรับข้าวที่หน้าวัด
 
-⬜ ยังไม่มีภาพ · tag: `history:famine_after_fall` `historykind:famine`
+✅ มีภาพแล้ว · tag: `history:famine_after_fall` `historykind:famine`
 
 lore: `event.famine_2310_2313` (attested, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -765,7 +801,7 @@ A village in time of famine: thin villagers in plain lower cloths sitting and st
 
 ### history.plague — ภาพจิตรกรรม: คนป่วยนอนบนเสื่อริมท่า พระสวด ศพห่อผ้าขาวถูกหามไปวัด
 
-⬜ ยังไม่มีภาพ · tag: `historykind:plague`
+✅ มีภาพแล้ว · tag: `historykind:plague`
 
 lore: `event.cholera_2363` (attested, verified), `attire.wat_ko_kaeo_reference` (attested), `attire.monks_1680s` (attested)
 
@@ -777,7 +813,7 @@ A river landing during an epidemic: sick people lying on mats under a shelter on
 
 ### history.war — ภาพจิตรกรรม: กองทัพเคลื่อนพลตามช้างศึก ธงและกลองนำหน้า
 
-⬜ ยังไม่มีภาพ · tag: `historykind:war`
+✅ มีภาพแล้ว · tag: `historykind:war`
 
 lore: `event.nine_armies_2328` (inferred, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -789,7 +825,7 @@ An army marching to war: a column of soldiers with spears, swords and shields fo
 
 ### history.succession — ภาพจิตรกรรม: คืนผลัดแผ่นดิน ทหารเฝ้าประตูวัง ขุนนางหมอบรอฟังข่าว
 
-⬜ ยังไม่มีภาพ · tag: `historykind:succession`
+✅ มีภาพแล้ว · tag: `historykind:succession`
 
 lore: `event.thonburi_succession_2325` (attested, verified), `event.rama1_succession_2352` (inferred, verified), `event.rama3_accession_2367` (inferred, verified), `event.rama4_accession_2394` (attested, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -813,7 +849,7 @@ A war fleet setting out by river: long narrow war boats packed with oarsmen in t
 
 ### history.flood — ภาพจิตรกรรม: น้ำท่วมใหญ่ ผู้คนอพยพขึ้นเรือและขึ้นที่สูง
 
-⬜ ยังไม่มีภาพ · tag: `fiction:great_flood`
+✅ มีภาพแล้ว · tag: `fiction:great_flood`
 
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
@@ -825,7 +861,7 @@ A great flood: water covering the fields and rising to the floors of raised hous
 
 ### history.fire — ภาพจิตรกรรม: ไฟไหม้เรือนหนาแน่นริมน้ำ ผู้คนวิ่งหนีและตักน้ำ
 
-⬜ ยังไม่มีภาพ · tag: `fiction:city_fire`
+✅ มีภาพแล้ว · tag: `fiction:city_fire`
 
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
@@ -837,7 +873,7 @@ A fire in a crowded riverside quarter: flames and curling smoke rising from rows
 
 ### history.drought — ภาพจิตรกรรม: แล้งจัด ชาวบ้านตักน้ำก้นบ่อและทำพิธีขอฝน
 
-⬜ ยังไม่มีภาพ · tag: `fiction:drought`
+✅ มีภาพแล้ว · tag: `fiction:drought`
 
 lore: `attire.wat_ko_kaeo_reference` (attested)
 
@@ -849,7 +885,7 @@ A year of drought: cracked dry rice fields and a nearly empty canal, villagers c
 
 ### history.good_harvest — ภาพจิตรกรรม: ปีข้าวดี เก็บเกี่ยวรวงข้าวหนักเต็มท้องนา
 
-⬜ ยังไม่มีภาพ · tag: `fiction:good_harvest` `fiction:royal_grace` `historykind:boon`
+⬜ ยังไม่มีภาพ · tag: `fiction:good_harvest` `fiction:royal_grace`
 
 lore: `event.famine_2310_2313` (attested, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -875,7 +911,7 @@ A busy river port in a good trading year: many cargo boats moored in rows with s
 
 ### portrait.m.child.commoner — เด็กชายชาวบ้านหัวโกนไว้จุก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:m` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `ritual.month_old_tham_khwan` (inferred), `ritual.topknot_cutting` (inferred, verified), `attire.commoner_men_1680s` (attested)
 
@@ -887,7 +923,7 @@ Medium portrait from the waist up: a young Siamese commoner boy of about eight y
 
 ### portrait.m.child.noble — เด็กชายลูกขุนนางหัวโกนไว้จุก สวมกำไลทอง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:child` `estate:noble` `estate:merchant` `estate:royal`
+✅ มีภาพแล้ว · tag: `sex:m` `age:child` `estate:noble` `estate:merchant` `estate:royal`
 
 lore: `attire.children_1680s` (attested), `ritual.topknot_cutting` (inferred, verified), `attire.indian_chintz_royal` (inferred)
 
@@ -899,7 +935,7 @@ Medium portrait from the waist up: a young well-born Siamese boy of about eight 
 
 ### portrait.m.youth.commoner — ชายหนุ่มชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-commoner-man.jpg` · tag: `sex:m` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -911,7 +947,7 @@ Medium portrait from the waist up: a Siamese commoner young man of about eightee
 
 ### portrait.m.youth.noble — ชายหนุ่มลูกขุนนางในเรือนไม้
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `estate:noble` `estate:merchant`
 
 lore: `attire.hair_1680s` (attested), `attire.indian_chintz_royal` (inferred)
 
@@ -923,7 +959,7 @@ Medium portrait from the waist up: a well-born Siamese young man of about eighte
 
 ### portrait.m.youth.page — มหาดเล็กหนุ่มสวมเสื้อมัสลินขาวผ่าหน้า หมอบรับใช้ในวัง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `age:adult` `estate:noble` `role:page`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `age:adult` `estate:noble` `role:page`
 
 lore: `social.royal_pages_1680s` (inferred, verified), `attire.officials_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -935,7 +971,7 @@ Medium portrait: a young Siamese royal page of about nineteen with warm olive-br
 
 ### portrait.m.youth.monk — พระภิกษุหนุ่มครองจีวรเหลือง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:youth` `age:adult` `estate:monk` `role:monk`
+✅ มีภาพแล้ว · tag: `sex:m` `age:youth` `age:adult` `estate:monk` `role:monk`
 
 lore: `attire.monks_1680s` (attested), `ritual.ordination` (inferred, verified)
 
@@ -947,7 +983,7 @@ Medium portrait from the waist up: a young Siamese Buddhist monk in his early tw
 
 ### portrait.m.adult.commoner — ชายผู้ใหญ่ชาวบ้านเปลือยท่อนบน นุ่งผ้าโจง
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-commoner-man.jpg` · tag: `sex:m` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -959,7 +995,7 @@ Medium portrait from the waist up: a Siamese commoner man in his thirties with a
 
 ### portrait.m.adult.noble — ชายผู้ใหญ่เจ้าเรือนผู้มีฐานะ นั่งข้างเชี่ยนหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:adult` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `estate:merchant`
 
 lore: `attire.hair_1680s` (attested), `attire.indian_chintz_royal` (inferred), `material.household_objects_1680s` (attested)
 
@@ -971,7 +1007,7 @@ Medium portrait: a well-to-do Siamese household head in his thirties with warm o
 
 ### portrait.m.adult.official_patrol — ขุนนางกรมกองกระเวนสวมเสื้อมัสลินและลอมพอก
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-official-lomphok.jpg` · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_patrol`
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_patrol`
 
 lore: `attire.officials_1680s` (attested), `social.patrol_department_ladder` (attested, verified)
 
@@ -983,7 +1019,7 @@ Medium portrait: a Siamese patrol-department official in his thirties with warm 
 
 ### portrait.m.adult.official_palace — ขุนนางกรมชาวที่สวมลอมพอก ข้างพานเครื่องทอง
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-official-lomphok.jpg` · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace`
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace`
 
 lore: `attire.officials_1680s` (attested), `social.royal_chamber_department_ladder` (attested, verified)
 
@@ -995,7 +1031,7 @@ Medium portrait: a Siamese palace-chamber official in his thirties with warm oli
 
 ### portrait.m.adult.official_scholar — ขุนนางกรมราชบัณฑิตยสวมลอมพอก ข้างสมุดไทยดำ
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-official-lomphok.jpg` · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar`
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar`
 
 lore: `attire.officials_1680s` (attested), `social.royal_scholars_department_ladder` (attested, verified)
 
@@ -1007,7 +1043,7 @@ Medium portrait: a Siamese royal-scholar official in his thirties with warm oliv
 
 ### portrait.m.elder.commoner — ชายชราชาวบ้านผมหงอก เปลือยท่อนบน
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.commoner_men_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1019,7 +1055,7 @@ Medium portrait from the waist up: an elderly Siamese commoner man in his sixtie
 
 ### portrait.m.elder.noble — ชายชราเจ้าเรือนผู้มีฐานะ ผมหงอก นั่งข้างเชี่ยนหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `estate:merchant`
 
 lore: `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -1031,7 +1067,7 @@ Medium portrait: an elderly well-to-do Siamese household patriarch in his sixtie
 
 ### portrait.m.elder.official — ขุนนางอาวุโสวัยชราสวมเสื้อมัสลินและลอมพอก
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `role:official`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `role:official`
 
 lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1043,7 +1079,7 @@ Medium portrait: an elderly senior Siamese official in his sixties with a deeply
 
 ### portrait.m.elder.monk — พระเถระชราครองจีวรเหลือง ถือตาลปัตร
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:monk` `role:monk`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:monk` `role:monk`
 
 lore: `attire.monks_1680s` (attested)
 
@@ -1055,7 +1091,7 @@ Medium portrait: an elderly Siamese Buddhist monk in his sixties with a serene d
 
 ### portrait.f.child.commoner — เด็กหญิงชาวบ้านหัวโกนไว้จุก
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:child` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `ritual.month_old_tham_khwan` (inferred), `ritual.topknot_cutting` (inferred, verified), `attire.children_1680s` (attested)
 
@@ -1067,7 +1103,7 @@ Medium portrait from the waist up: a young Siamese commoner girl of about eight 
 
 ### portrait.f.child.noble — เด็กหญิงลูกขุนนางหัวโกนไว้จุก สวมกำไลและต่างหูทอง
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:child` `estate:noble` `estate:merchant` `estate:royal`
+✅ มีภาพแล้ว · tag: `sex:f` `age:child` `estate:noble` `estate:merchant` `estate:royal`
 
 lore: `attire.children_1680s` (attested), `ritual.topknot_cutting` (inferred, verified), `attire.women_1680s` (attested)
 
@@ -1079,7 +1115,7 @@ Medium portrait from the waist up: a young well-born Siamese girl of about eight
 
 ### portrait.f.youth.commoner — หญิงสาวชาวบ้านตัดผมสั้นระดับใบหู
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1091,7 +1127,7 @@ Portrait cropped from the upper shoulders up in three-quarter view: a young Siam
 
 ### portrait.f.youth.noble — หญิงสาวตระกูลขุนนางห่มผ้าขาวพาดสองไหล่
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:youth` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `estate:noble` `estate:merchant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1103,7 +1139,7 @@ Medium portrait: a young well-to-do Siamese woman of about eighteen with warm ol
 
 ### portrait.f.adult.commoner — หญิงผู้ใหญ่ชาวบ้านตัดผมสั้น ฟันดำจากหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1115,7 +1151,7 @@ Portrait cropped from the upper shoulders up in three-quarter view: an adult Sia
 
 ### portrait.f.adult.noble — ภรรยาเอกขุนนางห่มผ้าขาวพาดสองไหล่ นั่งข้างเชี่ยนหมาก
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1127,7 +1163,7 @@ Medium portrait: a well-to-do Siamese noble wife in her thirties with warm olive
 
 ### portrait.f.adult.minor_wife — เมียกลางนอกห่มผ้าพาดสองไหล่ นั่งพับเพียบสำรวม
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:phrai_luang` `estate:phrai_som` `role:minor_wife`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:phrai_luang` `estate:phrai_som` `role:minor_wife`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1139,7 +1175,7 @@ Medium portrait: a young Siamese minor wife in her twenties with warm olive-brow
 
 ### portrait.f.adult.head — เจ้าเรือนหญิงผู้นำตระกูล นั่งข้างหีบไม้และเชี่ยนหมาก
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-wellborn-woman.jpg` · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant` `role:household_head`
+✅ มีภาพแล้ว · tag: `sex:f` `age:adult` `estate:noble` `estate:merchant` `role:household_head`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -1151,7 +1187,7 @@ Medium portrait: a dignified Siamese female household head in her thirties with 
 
 ### portrait.f.elder.commoner — หญิงชราชาวบ้านผมหงอก ฟันดำ
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-elder-woman-portrait.jpg` · tag: `sex:f` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
+✅ มีภาพแล้ว · tag: `sex:f` `age:elder` `estate:phrai_luang` `estate:phrai_som` `estate:that`
 
 lore: `attire.hair_1680s` (attested), `attire.women_1680s` (attested)
 
@@ -1163,7 +1199,7 @@ Portrait from the shoulders up: an elderly Siamese village woman in her sixties 
 
 ### portrait.f.elder.noble — แม่เฒ่าเจ้าเรือนผู้ดี ผมหงอก ห่มผ้าขาวพาดสองไหล่
 
-🟡 ใช้ภาพชั่วคราว `art/approved/reality-elder-woman-portrait.jpg` · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested)
 
@@ -1175,7 +1211,7 @@ Medium portrait: an elderly well-to-do Siamese matriarch in her sixties with a l
 
 ### portrait.f.pregnant.commoner — หญิงชาวบ้านกำลังตั้งครรภ์
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that` `role:pregnant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `age:adult` `estate:phrai_luang` `estate:phrai_som` `estate:that` `role:pregnant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
 
@@ -1187,7 +1223,7 @@ Medium portrait in three-quarter profile: a visibly pregnant Siamese village wom
 
 ### portrait.f.pregnant.noble — หญิงตระกูลขุนนางกำลังตั้งครรภ์ ห่มผ้าขาวพาดสองไหล่
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:merchant` `role:pregnant`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `age:adult` `estate:noble` `estate:merchant` `role:pregnant`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `ritual.yu_fai_placenta` (inferred)
 
@@ -1199,7 +1235,7 @@ Medium portrait: a visibly pregnant well-to-do Siamese woman in her twenties wit
 
 ### portrait.f.elder.head — แม่เรือนสูงวัยผู้นำตระกูล นั่งตัวตรงข้างหีบไม้และเชี่ยนหมาก
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant` `role:household_head`
+✅ มีภาพแล้ว · tag: `sex:f` `age:elder` `estate:noble` `estate:merchant` `role:household_head`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -1211,7 +1247,7 @@ Medium portrait: a dignified elderly Siamese matriarch in her sixties who heads 
 
 ### portrait.f.youth.head — หญิงสาวที่ต้องขึ้นเป็นเจ้าเรือน นั่งข้างหีบไม้และเชี่ยนหมาก สีหน้าจริงจัง
 
-⬜ ยังไม่มีภาพ · tag: `sex:f` `age:youth` `estate:noble` `estate:merchant` `role:household_head`
+✅ มีภาพแล้ว · tag: `sex:f` `age:youth` `estate:noble` `estate:merchant` `role:household_head`
 
 lore: `attire.women_1680s` (attested), `attire.hair_1680s` (attested), `material.household_objects_1680s` (attested)
 
@@ -1223,7 +1259,7 @@ Medium portrait: a young well-to-do Siamese woman of about twenty who has had to
 
 ### portrait.m.elder.official_patrol — ขุนนางกรมกระเวนสูงวัย ดาบวางบนที่วางข้างตัว
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_patrol`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_patrol`
 
 lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested), `social.patrol_department_ladder` (attested, verified)
 
@@ -1235,7 +1271,7 @@ Medium portrait: an elderly senior Siamese patrol-department official in his six
 
 ### portrait.m.elder.official_palace — ขุนนางกรมชาวที่สูงวัย ข้างพานเครื่องทอง
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_palace`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_palace`
 
 lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested), `social.royal_chamber_department_ladder` (attested, verified)
 
@@ -1247,7 +1283,7 @@ Medium portrait: an elderly senior Siamese palace-chamber official in his sixtie
 
 ### portrait.m.elder.official_scholar — ราชบัณฑิตสูงวัย ข้างสมุดไทยดำและเครื่องเขียน
 
-⬜ ยังไม่มีภาพ · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_scholar`
+✅ มีภาพแล้ว · tag: `sex:m` `age:elder` `estate:noble` `role:official` `role:official_scholar`
 
 lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested), `social.royal_scholars_department_ladder` (attested, verified)
 
@@ -1255,4 +1291,136 @@ lore: `attire.officials_1680s` (attested), `attire.hair_1680s` (attested), `soci
 Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
 
 Medium portrait: an elderly senior Siamese royal-scholar official in his sixties with a deeply lined face, warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose, and a slightly square jaw, grey hair visible beneath a tall brimless white conical cloth hat (lomphok) with gold bands near the base and a chin cord; wearing an open-front collarless white muslin over-shirt with wide sleeves over a patterned silk lower cloth, seated cross-legged on a reed mat, an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him. Avoid: hat brim, wide-brimmed hat.
+```
+
+### portrait.m.adult.official_patrol_low — ขุนนางกรมกองกระเวนขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_patrol` `rank:low`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.patrol_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese patrol-department official throughout his career, here in his late twenties, with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a plain block-printed cotton lower cloth with a simple small pattern, and a tall brimless white conical cloth hat (lomphok) with no bands at all, plain white with a chin cord; a plain wooden betel box and a sheathed sword resting on a wooden stand beside him, the plain timber hall of the patrol office behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_patrol_mid — ขุนนางกรมกองกระเวนขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_patrol` `rank:mid`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.patrol_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese patrol-department official throughout his career, here in his early thirties, with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a finely painted cotton lower cloth with a plain coloured border, and a tall brimless white conical cloth hat (lomphok) with one thin silver band near the base and a chin cord; a black lacquered betel box and a sheathed sword resting on a wooden stand beside him, the plain timber hall of the patrol office behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_patrol_head — ขุนนางกรมกองกระเวนขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_patrol` `rank:head`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.patrol_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese patrol-department official throughout his career, here in his forties, with warm olive-brown skin, broad cheekbones, calm dark eyes, straight nose and a slightly square jaw; seated cross-legged on a reed mat, wearing an open-front collarless over-shirt of cream satin richly embroidered with gold thread, with wide sleeves over a fine royal-gift lower cloth of Indian-style painted chintz with dense floral patterns, and a tall brimless white conical cloth hat (lomphok) with several gold bands from the base upward and a chin cord; a gold betel set on a footed gold tray, his insignia of rank and a sheathed sword resting on a wooden stand beside him, the plain timber hall of the patrol office behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_palace_low — ขุนนางกรมชาวที่ขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace` `rank:low`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_chamber_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his late twenties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a plain block-printed cotton lower cloth with a simple small pattern, and a tall brimless white conical cloth hat (lomphok) with no bands at all, plain white with a chin cord; a plain wooden betel box and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_palace_mid — ขุนนางกรมชาวที่ขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace` `rank:mid`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_chamber_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his early thirties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a finely painted cotton lower cloth with a plain coloured border, and a tall brimless white conical cloth hat (lomphok) with one thin silver band near the base and a chin cord; a black lacquered betel box and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_palace_high — ขุนนางกรมชาวที่ขั้นขั้นกลาง: ลอมพอกวงทองสองวง ผ้าไหมขอบทอง
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace` `rank:high`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_chamber_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his late thirties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a silk lower cloth with a narrow gold border, and a tall brimless white conical cloth hat (lomphok) with two gold bands near the base and a chin cord; a silver betel box and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_palace_head — ขุนนางกรมชาวที่ขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_palace` `rank:head`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_chamber_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese palace-chamber official throughout his career, here in his forties, with warm olive-brown skin, a rounder face, gentle dark eyes under heavy brows, a broad nose and full cheeks; seated cross-legged on a reed mat, wearing an open-front collarless over-shirt of cream satin richly embroidered with gold thread, with wide sleeves over a fine royal-gift lower cloth of Indian-style painted chintz with dense floral patterns, and a tall brimless white conical cloth hat (lomphok) with several gold bands from the base upward and a chin cord; a gold betel set on a footed gold tray, his insignia of rank and folded mats and a footed tray beside him, the polished timber floor of a palace hall behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_scholar_low — ขุนนางกรมราชบัณฑิตขั้นหมื่น: ลอมพอกไม่มีวง ผ้าลายพิมพ์ธรรมดา
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar` `rank:low`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_scholars_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his late twenties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a plain block-printed cotton lower cloth with a simple small pattern, and a tall brimless white conical cloth hat (lomphok) with no bands at all, plain white with a chin cord; a plain wooden betel box and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_scholar_mid — ขุนนางกรมราชบัณฑิตขั้นขุน: ลอมพอกวงเงินหนึ่งวง ผ้าลายละเอียดมีขอบ
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar` `rank:mid`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_scholars_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his early thirties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a finely painted cotton lower cloth with a plain coloured border, and a tall brimless white conical cloth hat (lomphok) with one thin silver band near the base and a chin cord; a black lacquered betel box and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_scholar_high — ขุนนางกรมราชบัณฑิตขั้นขั้นกลาง: ลอมพอกวงทองสองวง ผ้าไหมขอบทอง
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar` `rank:high`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_scholars_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his late thirties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless white muslin over-shirt with wide sleeves over a silk lower cloth with a narrow gold border, and a tall brimless white conical cloth hat (lomphok) with two gold bands near the base and a chin cord; a silver betel box and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
+```
+
+### portrait.m.adult.official_scholar_head — ขุนนางกรมราชบัณฑิตขั้นเจ้ากรม: ลอมพอกวงทองหลายวง เสื้อต่วนปักทอง ผ้าลายอย่างพระราชทาน
+
+✅ มีภาพแล้ว · tag: `sex:m` `age:adult` `estate:noble` `role:official` `role:official_scholar` `rank:head`
+
+lore: `attire.officials_1680s` (attested), `attire.rank_visual_ladder` (invented), `social.royal_scholars_department_ladder` (attested, verified)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Medium portrait, head to waist: the same Siamese royal-scholar official throughout his career, here in his forties, with warm olive-brown skin, a long narrow face, thoughtful dark eyes, a thin straight nose and a pointed chin; seated cross-legged on a reed mat, wearing an open-front collarless over-shirt of cream satin richly embroidered with gold thread, with wide sleeves over a fine royal-gift lower cloth of Indian-style painted chintz with dense floral patterns, and a tall brimless white conical cloth hat (lomphok) with several gold bands from the base upward and a chin cord; a gold betel set on a footed gold tray, his insignia of rank and an accordion-folded black khoi-paper manuscript (samut thai dam) and a white steatite stylus on a low tray before him, shelves of folded manuscripts behind. Calm, dignified expression. Hair, visible below the hat: the traditional old Siamese men's hairstyle (ทรงผมไทยโบราณ, the Mahatthai cut) — the sides and back below the hat shaved close with a soft natural edge, no long hair, not an undercut, not a fade line, no sideburns. Mouth closed. Avoid: hat brim, wide-brimmed hat, crown, pointed golden headdress, epaulettes, buttons down a fitted jacket, modern uniform.
 ```
