@@ -23,7 +23,7 @@ import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
-import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick } from './mortality';
+import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick, unattendedChildIllness } from './mortality';
 import { kinDeathEvent } from './mourning';
 import { feudEvent } from './feud';
 
@@ -172,7 +172,14 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     if (S.meta.childIllness) {
       const kid = S.characters[S.meta.childIllness];
       delete S.meta.childIllness;
-      if (player && isAlive(player) && kid && isAlive(kid)) out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_grave_illness', { actor: player.id, child: kid.id }) });
+      if (kid && isAlive(kid)) {
+        if (player && isAlive(player)) out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_grave_illness', { actor: player.id, child: kid.id }) });
+        else {
+          // ผู้เล่นตายรอบทอยเดียวกัน → ไม่มีใครเลือกรักษา ทอยด้วยค่าเฉลี่ยของตัวเลือกแทน (งานศพ/มรดกจัดใน settleDeathsToday ด้านล่าง)
+          const line = unattendedChildIllness(ctx, kid);
+          if (line) out.push({ type: 'log', kind: 'death', line });
+        }
+      }
     }
     if (S.meta.graveIllness) {
       delete S.meta.graveIllness;

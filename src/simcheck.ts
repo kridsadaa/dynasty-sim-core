@@ -2252,8 +2252,32 @@ if (LONG) {
     }
   }
   if (!paid) problems.push('ตามหมอยาแล้วเงินไม่ลด 3 ตำลึง');
+  // ผู้เล่นตายในรอบทอยเดียวกับที่ลูกได้ event → ไม่มีใครเลือก ลูกต้องทอยตายด้วยค่าเฉลี่ยของตัวเลือก (0.5) ไม่รอดฟรี
+  let orphanDeaths = 0, orphanLogs = 0, orphanStuck = 0;
+  const ORPHAN_N = 200;
+  for (let i = 0; i < ORPHAN_N; i++) {
+    const ctx = makeCtx(emptyState(900 + i), content);
+    const hero = bootstrapScenario(ctx);
+    ctx.state.meta.day = yearStart(ctx, 2300) - 1;
+    const kid = spawnCharacter(ctx, { name: 'ลูกป่วย', sex: 'f', birthYear: 2297, estate: 'noble', father: hero, dynastyId: hero.dynastyId, householdId: hero.householdId });
+    kid.deathGraceUntil = ctx.state.meta.day + 400; // กันลูกเต๋ารายปีฆ่าก่อน — วัดเฉพาะทางที่ส่ง event ไม่ได้
+    ctx.state.meta.childIllness = kid.id;
+    markDead(ctx, hero, 'situation:illness');
+    const out = advanceDay(ctx);
+    if (ctx.state.meta.childIllness) problems.push('ค้าง meta.childIllness หลังผู้เล่นตาย');
+    if (out.some((o) => o.type === 'event' && o.prepared.def.id === 'family.child_grave_illness')) problems.push('ส่ง event ลูกไข้หนักทั้งที่ผู้เล่นตายแล้ว');
+    if (!isAlive(kid)) {
+      orphanDeaths++;
+      if (out.some((o) => o.type === 'log' && o.line.startsWith(`${kid.name}เจ็บไข้ตาย`))) orphanLogs++;
+      if (Object.values(ctx.state.households).some((h) => h.memberIds.includes(kid.id))) orphanStuck++;
+    }
+  }
+  const orphanRate = orphanDeaths / ORPHAN_N;
+  if (orphanRate < 0.38 || orphanRate > 0.62) problems.push(`ลูกไข้หนักที่ผู้เล่นตายไปก่อน ตาย ${(orphanRate * 100).toFixed(0)}% (ควรราว 50% เท่าเลือกสุ่ม)`);
+  if (orphanLogs !== orphanDeaths) problems.push(`ลูกไข้หนักที่ตายเพราะไม่มีคนรักษา ไม่ขึ้น log ${orphanDeaths - orphanLogs} คน`);
+  if (orphanStuck) problems.push(`ลูกไข้หนักที่ตายเพราะไม่มีคนรักษา ยังค้างในเรือน ${orphanStuck} คน`);
   check('ลูกไข้หนัก', problems);
-  if (failed === before) console.log(`  ✓ ลูกของผู้เล่น: event ${events} · ตายด้วยลูกเต๋า ${diceDeaths} (จาก 60, ความเสี่ยงที่ตั้งไว้สูง) · หลานไม่ได้ event · ตัวเลือก 4 แบบมีคำใบ้ · หมอยาเสียเงิน · ตายแล้วออกจากเรือนทันที`);
+  if (failed === before) console.log(`  ✓ ลูกของผู้เล่น: event ${events} · ตายด้วยลูกเต๋า ${diceDeaths} (จาก 60, ความเสี่ยงที่ตั้งไว้สูง) · หลานไม่ได้ event · ตัวเลือก 4 แบบมีคำใบ้ · หมอยาเสียเงิน · ตายแล้วออกจากเรือนทันที · ผู้เล่นตายก่อน ลูกยังเสี่ยง ${(orphanRate * 100).toFixed(0)}% (n=${ORPHAN_N})`);
 }
 
 // [5m] ชั้น 2c: ปลูกฝีให้ลูก (ตั้งแต่ 2382) — เสนอครั้งเดียวต่อเด็กที่ยังไม่เคยเป็นไข้ทรพิษ; ปลูกแล้วภูมิคุ้มกัน; เสี่ยงตายต่ำ

@@ -92,6 +92,20 @@ export function mortalityYearTick(ctx: Ctx): string[] {
   return out;
 }
 
+/**
+ * ลูกที่ทอยได้ event ลูกไข้หนักแต่ส่ง event ไม่ได้ (ผู้เล่นตายในรอบทอยเดียวกัน) — ทอยตายด้วยค่าเฉลี่ยของตัวเลือก
+ * เหมือนผู้เล่นเลือกสุ่ม ไม่ให้ลูกรอดฟรี (ตายรวมของลูกคงเดิม docs/design-sick-child.md) · คืนบรรทัด log เมื่อตาย
+ */
+export function unattendedChildIllness(ctx: Ctx, kid: Character): string | null {
+  const opts = ctx.content.events['family.child_grave_illness']?.options ?? [];
+  const risks = opts.map((o) => o.risk?.base ?? 0);
+  const mean = risks.length ? risks.reduce((a, r) => a + r, 0) / risks.length : 0;
+  if (!ctx.rng.chance(mean)) return null;
+  const age = ageOf(ctx, kid, ctx.state.meta.day - 1);
+  markDead(ctx, kid, 'situation:illness');
+  return `${kid.name}เจ็บไข้ตาย ${age < 1 ? 'ยังไม่ทันขวบ' : `อายุ ${age} ขวบ`}`;
+}
+
 /** ลูกของผู้เล่นที่ยังอยู่เรือนเดียวกับผู้เล่น (พ่อหรือแม่คือผู้เล่น) */
 function isPlayersChildAtHome(ctx: Ctx, ch: Character, player: Character | undefined): boolean {
   if (!player || !isAlive(player) || ch.id === player.id || !ch.householdId || ch.householdId !== player.householdId) return false;
