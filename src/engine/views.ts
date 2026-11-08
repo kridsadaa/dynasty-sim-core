@@ -1,5 +1,5 @@
 import { formatLunar, formatSolar } from '../core/calendar';
-import { ageOf, isAlive, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, isNovice, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
 import type { CapabilityId, Character, FamilyNode, Item, Parentage, Personality, Trait } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, knownLocals, localOrigin, relationStrength, tradeOf } from '../systems/acquaintance';
 import { capability } from '../systems/body';
@@ -256,7 +256,10 @@ function lifestyleText(labor: number, monthlyCost: number, target: Character, le
 function lifestyleView(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: string; intent: IntentStatusView | null } {
   const r = lifestyleAtHome(ctx, ch, text);
   // ไปทัพเอง (campaign.ts atWar): ไม่อยู่บ้านจนศึกจบ — ความตั้งใจที่ค้างอยู่หยุดเดินไว้ก่อน (world.ts)
-  return atWar(ctx, ch) ? { ...r, lifestyle: `ไปทัพ ไม่ได้อยู่บ้านจนกว่าทัพจะกลับ${r.intent ? ' · เรื่องที่ตั้งใจไว้ต้องรอกลับมาก่อน' : ''}` } : r;
+  if (atWar(ctx, ch)) return { ...r, lifestyle: `ไปทัพ ไม่ได้อยู่บ้านจนกว่าทัพจะกลับ${r.intent ? ' · เรื่องที่ตั้งใจไว้ต้องรอกลับมาก่อน' : ''}` };
+  // เป็นเณร (core/ctx isNovice): อยู่วัดจนสึก — งานบ้านและงานบุญกับครอบครัวงดไว้ก่อน
+  if (isNovice(ctx, ch)) return { ...r, lifestyle: `เป็นเณรเรียนหนังสืออยู่ที่วัด จะสึกกลับเรือนปี ${ch.noviceUntilYear}` };
+  return r;
 }
 
 function lifestyleAtHome(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: string; intent: IntentStatusView | null } {

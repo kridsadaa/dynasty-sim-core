@@ -1,5 +1,5 @@
 import { yearsToDays } from '../core/calendar';
-import { ageOf, isAlive, must, newId, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, isNovice, must, newId, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Estate, Intent, IntentApproachDef, IntentDef, IntentKindId } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, relationStrength, setRelation, spawnLocal, tradeOf } from './acquaintance';
@@ -63,6 +63,7 @@ export function awayLabor(ctx: Ctx, ch: Character): number {
   const target = i && ctx.state.characters[i.targetId];
   const intentLabor = i && target?.local ? approachOf(ctx, i).ap.by[target.local.distance]?.labor ?? 0 : 0;
   if (atWar(ctx, ch)) return 1; // ไปทัพเอง — ไม่อยู่บ้านเลย (campaign.ts)
+  if (isNovice(ctx, ch)) return 1; // เป็นเณรอยู่ที่วัด (world.ts lifeMilestones)
   return Math.max(intentLabor, serviceLabor(ch), officeLabor(ctx, ch));
 }
 

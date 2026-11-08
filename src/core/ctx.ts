@@ -53,3 +53,6 @@ export const ageOf = (ctx: Ctx, ch: Character, day: Day = ctx.state.meta.day): n
 export type Living = Character & { deathDay: null };
 
 export const isAlive = (ch: Character | undefined): ch is Living => !!ch && ch.deathDay === null;
+/** กำลังเป็นเณรอยู่ที่วัด (world.ts lifeMilestones) — ไม่อยู่เรือน: งดงานบ้าน เทศกาล เรื่องสุ่มในบ้าน */
+export const isNovice = (ctx: Ctx, ch: Character): boolean =>
+  ch.noviceUntilYear !== undefined && yearOf(ctx, ctx.state.meta.day) < ch.noviceUntilYear;

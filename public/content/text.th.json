@@ -838,5 +838,22 @@
   "event.barge_watch.together": "ชวน{stranger}ที่จอดเรืออยู่ใกล้ ๆ ให้ช่วยกันจับเรือไว้ไม่ให้ลอยออกไป",
   "event.barge_watch.child": "อุ้ม{child}ขึ้นให้เห็นเรือ แล้วบอกให้ก้มลงหมอบตอนเรือพระที่นั่งผ่าน",
   "event.barge_watch.porch": "นั่งหมอบดูอยู่หน้าเรือน",
-  "event.barge_watch.work": "ไม่ไป ทำงานที่ค้างอยู่ต่อ"
+  "event.barge_watch.work": "ไม่ไป ทำงานที่ค้างอยู่ต่อ",
+  "event.novice_lessons.title": "เรียนหนังสือกับพระอาจารย์",
+  "event.novice_lessons": "ฉันเช้าแล้ว พระอาจารย์เรียก{actor}กับเณรอีกสองสามรูปมานั่งหน้ากุฏิ เขียนตัวอักษรให้ดูทีละตัวแล้วให้อ่านตาม",
+  "event.novice_lessons.letters": "ตั้งใจเขียนตามจนจำตัวอักษรได้ครบ",
+  "event.novice_lessons.pali": "ขอท่องบทสวดภาษาบาลีกับเณรรุ่นพี่",
+  "event.novice_lessons.sums": "ขอให้พระอาจารย์สอนนับเลขคิดเลข",
+  "event.novice_lessons.daydream": "นั่งสัปหงก แอบมองนกบนต้นโพธิ์",
+  "event.novice_food.title": "ที่บ้านส่งอาหาร",
+  "event.novice_food": "{caregiver}หิ้วอาหารมาส่งที่วัดเหมือนทุกเช้า วันนี้นั่งรอดู{actor}ฉันอยู่นาน แล้วถามว่าอยู่วัดลำบากไหม",
+  "event.novice_food.fine": "บอกว่าอยู่สบาย พระอาจารย์สอนหนังสือให้ทุกวัน",
+  "event.novice_food.homesick": "บอกว่าคิดถึงบ้าน แล้วนั่งพิงอยู่ข้าง{caregiver}จนเกือบสาย",
+  "event.novice_food.share": "แบ่งอาหารให้เณรที่ไม่มีใครมาส่ง",
+  "event.novice_food.go_home": "ขอลาสึกกลับไปอยู่บ้าน",
+  "event.novice_alms.title": "ตามพระออกบิณฑบาต",
+  "event.novice_alms": "เช้ามืด{actor}ถือบาตรเดินตามพระอาจารย์ออกบิณฑบาต ไปหยุดยืนนิ่งหน้าบ้านทีละหลัง เด็กที่เคยวิ่งเล่นด้วยกันมายืนดูอยู่ริมทาง",
+  "event.novice_alms.composed": "สำรวมตา ยืนนิ่งรอจนเจ้าของบ้านใส่บาตรเสร็จ",
+  "event.novice_alms.carry": "ช่วยพระอาจารย์ถือของที่ชาวบ้านถวายจนเต็มมือ",
+  "event.novice_alms.grin": "อดไม่ได้ ยิ้มให้เพื่อนที่ริมทาง"
 }

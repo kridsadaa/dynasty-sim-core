@@ -1,5 +1,5 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
-import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
+import { ageOf, dayOfYear, isAlive, isNovice, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef, TagId } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type EventReport, type PreparedEvent } from './events';
@@ -63,6 +63,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   const year = yearOf(ctx, S.meta.day);
   // ไปทัพเอง (campaign.ts atWar) — ตัวละครไม่อยู่บ้าน: งด event ที่ต้องอยู่เรือน/ในหมู่บ้าน จนศึกจบ
   const away = !!player && isAlive(player) && !!atWar(ctx, player);
+  // เป็นเณรอยู่ที่วัด (core/ctx isNovice) — ไม่มีงานบ้าน (awayLabor) และเทศกาล · เรื่องสุ่มเหลือเฉพาะเรื่องที่วัด (trigger.novice ใน pickEvent)
+  const atTemple = !!player && isAlive(player) && isNovice(ctx, player);
 
   // รายวัน: แผล
   const wounded = new Set(Object.values(S.wounds).map((w) => w.characterId));
@@ -250,7 +252,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   // ขบวนเรือหลวงเดือน 12 (barge.ts) — ผ่านทางเดียวกับงานบุญ: festival.barge_watch ทำจนเป็นนิสัยแล้วเลือกให้เอง
   const barge = bargeToday(ctx);
   for (const line of barge.lines) out.push({ type: 'log', kind: 'family', line });
-  for (const req of [...(player && !away ? tickFestivals(ctx, awayLabor(ctx, player)) : []), ...barge.events]) {
+  for (const req of [...(player && !away && !atTemple ? tickFestivals(ctx, awayLabor(ctx, player)) : []), ...barge.events]) {
     const prepared = prepareEvent(ctx, req.event, req.bindings, req.vars);
     const habit = habitOption(ctx, player!, prepared);
     if (!habit) {
@@ -322,6 +324,7 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
     const t = def.trigger;
     if (t.ageRange && (age < t.ageRange[0] || age > t.ageRange[1])) continue;
     if (t.estates && !t.estates.includes(actor.social.estate)) continue;
+    if (!!t.novice !== isNovice(ctx, actor)) continue; // เป็นเณรอยู่ → เฉพาะเรื่องที่วัด (novice.*) · ไม่ได้เป็น → ไม่เจอเรื่องที่วัด
     if (t.office) {
       const rank = officeRank(ctx, actor);
       if (rank === undefined || rank < (t.office.minRank ?? 0) || rank > (t.office.maxRank ?? Infinity)) continue;
@@ -368,7 +371,8 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
 
 function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Character | undefined {
   // ย้ายไปอยู่ใกล้บ้านคนที่หมายปอง → เรื่องในเรือนกับพ่อแม่/คนเลี้ยงไม่เกิด
-  if ((rel === 'caregiver' || rel === 'parent') && awayLabor(ctx, actor) >= 1) return undefined;
+  //  เณรยกเว้น: พ่อแม่/คนเลี้ยงยังไปหาที่วัด ส่งอาหารทุกวัน (lore ritual.novice_schooling_1680s)
+  if ((rel === 'caregiver' || rel === 'parent') && awayLabor(ctx, actor) >= 1 && !isNovice(ctx, actor)) return undefined;
   if (rel === 'caregiver') return actor.caregiverIds.map((id) => ctx.state.characters[id]).find(isAlive);
   if (rel === 'rival' || rel === 'patron') return findCourtier(ctx, actor, rel);
   if (rel === 'elder_acquaintance') {
@@ -410,9 +414,17 @@ export function lifeMilestones(
     const spouse = livingSpouse(ctx, ch);
 
     // เป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) → อ่านออกเขียนได้ จดตำนานลงสมุดข่อยได้ตอนสืบทอด
+    //  อยู่วัด noviceYears ปีแล้วสึก — ระหว่างนั้นไม่อยู่เรือน (isNovice): งดงานบ้าน เทศกาล ไปเที่ยว เรื่องสุ่มในบ้าน และไม่ตามผู้ใหญ่ไปงาน
+    //  เณรโกนหัว → นับว่าพ้นการไว้จุกแล้ว ไม่มีพิธีโกนจุกตามมา
+    if (ch.noviceUntilYear !== undefined && year >= ch.noviceUntilYear) {
+      delete ch.noviceUntilYear;
+      out.push(`${ch.name}สึกจากเณรกลับมาอยู่เรือน`);
+    }
     if (ch.sex === 'm' && age === W.noviceAge && ctx.rng.chance(W.noviceChance)) {
       ch.skills['literacy'] = Math.max(ch.skills['literacy'] ?? 0, 40);
-      out.push(`${ch.name}ไปเป็นเณรเรียนหนังสือที่วัด`);
+      ch.noviceUntilYear = year + W.noviceYears;
+      ch.topknotCutYear ??= year;
+      out.push(`${ch.name}โกนหัวไปเป็นเณรเรียนหนังสือที่วัด`);
     }
     // บวชเรียนหนึ่งพรรษา (lore: ritual.ordination) — พ่อแม่ได้บุญ; ผู้เล่นตัดสินใจเองผ่าน ordinationEvent
     const O = ctx.content.balance.ordination;

@@ -255,6 +255,8 @@ export interface Character {
   formerOffice?: { postId: string; deptId?: string; name?: string; title: string | null };
   /** ปีที่บวชเรียน (อย่างน้อยหนึ่งพรรษาแล้วลาสิกขา) — ไม่มี = ยังไม่บวช */
   ordainedYear?: number;
+  /** เป็นเณรอยู่ที่วัดจนถึงปีนี้ (1 ม.ค. ปีนี้สึกกลับเรือน) — ไม่มี = ไม่ได้เป็นเณรอยู่ (isNovice ใน core/ctx) */
+  noviceUntilYear?: number;
   /** minor = เมียกลางนอก (เมียน้อย) — ลูกเป็นบุตรภรรยาน้อย; ไม่มี = เมียหลวง/ไม่ใช่เมียใคร */
   wifeRank?: 'minor';
   /** วันครบกำหนดคลอด (ถ้ากำลังตั้งครรภ์) */
@@ -724,6 +726,8 @@ export type Effect =
   | { op: 'divorce'; role: string; with: string }
   /** โกนจุกคนใน role แล้ว (หรือปล่อยผ่าน) */
   | { op: 'topknot'; role: string }
+  /** เณรขอลาสึกก่อนครบกำหนด (lore ritual.novice_schooling_1680s: ออกได้ไม่เสียหน้า) */
+  | { op: 'disrobe'; role: string }
   /** role ดูแล toward ที่ป่วยหนักหรือไม่ — neglected = ไม่ได้รักษาไข้ */
   | { op: 'nurse'; role: string; toward: string; neglected: boolean }
   | { op: 'prestige'; role: string; delta: number }
@@ -809,6 +813,8 @@ export interface GameEventDef {
     ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number;
     /** เกิดเฉพาะคนที่รับราชการอยู่ในระดับนี้ (0 = มหาดเล็ก) */
     office?: { minRank?: number; maxRank?: number; dept?: string };
+    /** true = เกิดเฉพาะตอนเป็นเณรอยู่ที่วัด · ไม่ใส่ = เกิดเฉพาะตอนไม่ได้เป็นเณร (เณรไม่เจอเรื่องในเรือน) */
+    novice?: boolean;
     /** เงื่อนไขที่ต้องผ่านก่อนเกิด (ตรวจกับ actor หลังได้คนครบทุก role) — ใช้ทำสายเรื่องและ event ครั้งเดียว */
     requires?: Condition[];
   };
@@ -1217,6 +1223,8 @@ export interface Balance {
     /** เด็กชายไปเป็นเณรเรียนหนังสือที่วัด (lore: ritual.novice_schooling_1680s) */
     noviceAge: number;
     noviceChance: Unit;
+    /** อยู่วัดกี่ปีก่อนสึก — lore ไม่บอกระยะเวลา ตัวเลขของเกม */
+    noviceYears: number;
   };
   /** งานบ้านของเด็ก — ตัวเลขเป็นของเกม */
   chores: {

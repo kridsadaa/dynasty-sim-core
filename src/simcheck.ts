@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
-import { ageOf, commitRng, dayOfYear, isAlive, lunarOf, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
+import { ageOf, commitRng, dayOfYear, isAlive, isNovice, lunarOf, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
 import { bargeToday, bargeYear } from './systems/barge';
 import type { Character, ContentDB, GameEventDef } from './core/types';
 import { inflictWound, selectPart, tickWounds } from './systems/body';
@@ -21,13 +21,13 @@ import { activeIntent, planIntent, startIntent, targetProblem } from './systems/
 import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
 import { applyCareer, careerSkill, careerYearTick, officeRank, officeStatus, officeTier } from './systems/career';
-import { habitOption } from './systems/festivals';
+import { companions, habitOption } from './systems/festivals';
 import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
 import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlave, houseCapacity, householdMonth } from './systems/servants';
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
-import { advanceDay } from './systems/world';
+import { advanceDay, lifeMilestones } from './systems/world';
 import { eraConditions, eventView, playerView } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
@@ -1935,6 +1935,93 @@ if (LONG) {
   if (pay < N * 0.2) problems.push(`เรือนที่จ่ายแทนตั้งครรภ์แค่ ${pay}/${N} (ควรราว 35%) — ตัวตรวจไม่ได้ตรวจอะไร`);
   check('เมียไม่ตั้งครรภ์ระหว่างผัวไปทัพ', problems);
   if (failed === before) console.log(`  ✓ ไปเอง ${serve}/${N} · ถูกส่งไปแทน ${sent}/${N} · จ่ายแทน (อยู่บ้าน) ${pay}/${N}`);
+}
+
+// [5h4g] เณรอยู่วัด (ผู้ใช้ลองเล่น 2026-11-07 → PLAN ข้อ 5): ระหว่างเป็นเณรไม่มีงานบ้าน เทศกาล ไปเที่ยว เรื่องสุ่มในเรือน · สึกแล้วกลับมามีตามปกติ
+//  เทียบกับเด็กคนเดียวกันที่ไม่ได้เป็นเณร — ต้องมี event บ้านเกิดบ้าง ไม่งั้นตัวตรวจนี้ไม่ได้ตรวจอะไร
+{
+  const before = failed;
+  console.log('เณรอยู่วัด:');
+  const problems: string[] = [];
+  const W = content.balance.world;
+  const run = (seed: number, novice: boolean) => {
+    const ctx = makeCtx(emptyState(seed), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = 'm';
+    ctx.state.meta.day = yearStart(ctx, 2340);
+    hero.birthDay = ctx.state.meta.day - yearsToDays(9) - 100;
+    if (novice) hero.noviceUntilYear = 2340 + W.noviceYears;
+    const during: string[] = [];
+    let after = 0;
+    let disrobed = 0;
+    let wrongSpan = 0;
+    while (ctx.state.meta.day < yearStart(ctx, 2340 + W.noviceYears + 2) && isAlive(hero) && ctx.state.meta.playerCharacterId === hero.id) {
+      const sigs = advanceDay(ctx);
+      const inWindow = ctx.state.meta.day < yearStart(ctx, 2340 + W.noviceYears);
+      if (novice && isNovice(ctx, hero) !== inWindow) wrongSpan++;
+      for (const s of sigs) {
+        if (s.type === 'log' && s.line === `${hero.name}สึกจากเณรกลับมาอยู่เรือน`) disrobed++;
+        if (s.type !== 'event' && s.type !== 'habit') continue;
+        if (inWindow) during.push(s.prepared.def.id);
+        else after++;
+      }
+    }
+    return { during, after, disrobed, wrongSpan, lived: isAlive(hero) && ctx.state.meta.playerCharacterId === hero.id };
+  };
+  const leak = new Set<string>();
+  let back = 0;
+  let control = 0;
+  let atTempleEvents = 0;
+  for (let i = 0; i < 30; i++) {
+    const n = run(1500 + i, true);
+    // ที่ยังเกิดได้: ป่วย/บาดเจ็บของตัวเอง และงานศพคนในตระกูล (เณรกลับมาร่วมงานศพได้) — ที่เหลือคือรั่ว
+    for (const id of n.during) if (!/^(body\.|family\.death$|novice\.)/.test(id)) leak.add(id);
+    atTempleEvents += n.during.filter((id) => id.startsWith('novice.')).length;
+    if (n.wrongSpan) problems.push(`seed ${1500 + i}: isNovice ไม่ตรงช่วงปีที่เป็นเณร ${n.wrongSpan} วัน`);
+    if (n.lived && n.disrobed !== 1) problems.push(`seed ${1500 + i}: บรรทัดสึกจากเณรออก ${n.disrobed} ครั้ง (ควร 1)`); // เด็กตายก่อนสึก (ไข้ ฯลฯ) ไม่นับ
+    back += n.after;
+    const c = run(1500 + i, false);
+    control += c.during.length;
+    if ([...c.during].some((id) => id.startsWith('novice.'))) problems.push(`seed ${1500 + i}: ไม่ได้เป็นเณรแต่ได้ event เณร`);
+  }
+  if (leak.size) problems.push(`เป็นเณรอยู่แต่ได้ event ที่บ้าน: ${[...leak].join(', ')}`);
+  if (back === 0) problems.push('สึกแล้วไม่กลับมามี event ที่บ้านเลย');
+  if (atTempleEvents < 30) problems.push(`ช่วงเป็นเณรได้ event เณรแค่ ${atTempleEvents} เรื่องใน 30 seed`);
+  // ขอลาสึกก่อนกำหนด → ไม่เป็นเณรทันที ไม่มีบรรทัดสึกซ้ำตอนปีใหม่
+  {
+    const ctx = makeCtx(emptyState(11), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = 'm';
+    ctx.state.meta.day = yearStart(ctx, 2340) + 100;
+    hero.birthDay = ctx.state.meta.day - yearsToDays(9);
+    hero.noviceUntilYear = 2340 + W.noviceYears;
+    const cg = hero.caregiverIds.map((id) => ctx.state.characters[id]).find(isAlive);
+    if (!cg) problems.push('ตัวตรวจลาสึก: ไม่มีคนเลี้ยง');
+    else {
+      const p = prepareEvent(ctx, 'novice.food', { actor: hero.id, caregiver: cg.id });
+      const r = chooseOption(ctx, p, 'go_home');
+      if (isNovice(ctx, hero) || !r.notes.some((l) => l.includes('ลาสึก'))) problems.push('ขอลาสึกแล้วยังเป็นเณร/ไม่มีบรรทัดบอก');
+      if (!eventView(ctx, p, load('text.th.json') as Record<string, string>).text) problems.push('ข้อความ novice.food ว่าง');
+    }
+  }
+  if (control === 0) problems.push('เด็กที่ไม่ได้เป็นเณรไม่ได้ event เลยในช่วงเดียวกัน — ตัวตรวจไม่ได้ตรวจอะไร');
+  // เข้าเป็นเณรตอน 8 ขวบ: ตั้งปีสึก นับว่าโกนจุกแล้ว · ลูกที่เป็นเณรไม่ตามผู้ใหญ่ไปงานบุญ
+  {
+    const ctx = makeCtx(emptyState(9), content);
+    const dad = bootstrapScenario(ctx);
+    ctx.state.meta.day = yearStart(ctx, 2340);
+    const boy = spawnCharacter(ctx, { name: 'เณรน้อย', sex: 'm', birthYear: 2332, estate: dad.social.estate, father: dad.sex === 'm' ? dad : undefined, mother: dad.sex === 'f' ? dad : undefined });
+    const was = companions(ctx, dad).child === boy.id;
+    const chance = W.noviceChance;
+    W.noviceChance = 1;
+    lifeMilestones(ctx);
+    W.noviceChance = chance;
+    if (boy.noviceUntilYear !== 2340 + W.noviceYears || boy.topknotCutYear === undefined) problems.push(`เข้าเป็นเณรแล้วไม่ตั้งปีสึก/ไม่นับว่าโกนจุก (${boy.noviceUntilYear}, ${boy.topknotCutYear})`);
+    if (!was) problems.push('ก่อนเป็นเณร ลูกไม่ได้ตามไปงานบุญ — ตัวตรวจไม่ได้ตรวจอะไร');
+    if (companions(ctx, dad).child === boy.id) problems.push('ลูกที่เป็นเณรยังตามพ่อแม่ไปงานบุญ');
+  }
+  check('เณรอยู่วัด', problems);
+  if (failed === before) console.log(`  ✓ เป็นเณร ${W.noviceYears} ปี 30 seed ไม่มีงานบ้าน/เทศกาล/เรื่องสุ่มในเรือน ได้เรื่องที่วัด ${atTempleEvents} เรื่อง (เด็กไม่ได้เป็นเณรช่วงเดียวกัน ${control} เรื่อง) · ลาสึกก่อนกำหนดได้ · สึกแล้วมี ${back} เรื่อง · ลูกเณรไม่ตามไปงานบุญ`);
 }
 
 // [5h4f] ขบวนเรือหลวงเดือน 12 (docs/design-barge-procession.md, PLAN ข้อ 15): ปีที่มี/งด · หมายฝีพายเฉพาะไพร่ชาย · ปีละเรื่องเดียวตามฐานะ · ข้อความครบ · โอกาสตามที่ตั้ง

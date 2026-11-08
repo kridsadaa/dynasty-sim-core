@@ -17,7 +17,7 @@ import { adjustBond, resistance, riskChance, type Resistance } from './will';
 import { appointLivingHead, markDead, settleDeath } from './handover';
 import { divorce, takeMinorWife } from './wives';
 import { recordHabit } from './festivals';
-import { markNursing, markTopknot } from './lifeEvents';
+import { disrobeNovice, markNursing, markTopknot } from './lifeEvents';
 import { eraAt } from './eras';
 
 // ============================================================================
@@ -417,6 +417,11 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       case 'topknot':
         report.notes.push(markTopknot(ctx, ch));
         break;
+      case 'disrobe': {
+        const note = disrobeNovice(ch);
+        if (note) report.notes.push(note);
+        break;
+      }
       case 'nurse': {
         const other = who(e.toward);
         if (other) report.notes.push(...markNursing(ctx, ch, other, e.neglected));

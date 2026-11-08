@@ -30,6 +30,13 @@ export function markTopknot(ctx: Ctx, kid: Character): string {
   return `${kid.name}โกนจุกแล้ว`;
 }
 
+/** effect disrobe: เณรขอลาสึกกลับเรือนก่อนครบกำหนด (world.ts lifeMilestones ตั้ง noviceUntilYear) */
+export function disrobeNovice(ch: Character): string {
+  if (ch.noviceUntilYear === undefined) return '';
+  delete ch.noviceUntilYear;
+  return `${ch.name}ลาสึกจากเณร กลับมาอยู่เรือน`;
+}
+
 /** พ่อหรือแม่ของผู้เล่นที่แก่แล้วป่วยหนัก */
 export function parentIllnessEvent(ctx: Ctx): PreparedEvent | null {
   const B = ctx.content.balance.life;

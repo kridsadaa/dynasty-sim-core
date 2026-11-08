@@ -168,7 +168,8 @@ test('ภาพคะแนนเท่ากันสลับตาม seed �
 });
 
 // event ที่ยังรอภาพใหม่ — สร้างภาพแล้วให้ลบออกจากรายการนี้ (ว่างได้)
-const AWAITING_ART = new Set<string>([]);
+// ชีวิตเณร (PLAN ข้อ 5) — ภาพเณรยังไม่ได้ทำ
+const AWAITING_ART = new Set<string>(['novice.lessons', 'novice.food', 'novice.alms']);
 
 test('ทุก event มีภาพฉาก ยกเว้นที่จดไว้ว่ารอภาพ — event ใหม่ต้องวางภาพไว้ด้วย', () => {
   const real = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as ArtManifest;
