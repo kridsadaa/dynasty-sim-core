@@ -1,10 +1,11 @@
 import { yearsToDays } from '../core/calendar';
-import { ageOf, isAlive, isNovice, lunarOf, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, lunarOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId } from '../core/types';
 import { setRelation, singlePeer, spawnLocal } from './acquaintance';
 import type { ChoreEventRequest } from './chores';
 import { requirementsMet, type PreparedEvent } from './events';
 import { livingChildren, livingParents, livingSpouse } from './factory';
+import { whereabouts } from './whereabouts';
 
 // ============================================================================
 // Festivals — งานบุญและงานประจำปีของผู้เล่น (ทุกวัยตั้งแต่ minAge)
@@ -84,7 +85,7 @@ export function companions(ctx: Ctx, ch: Character): { beloved?: CharacterId; ch
   const beloved = [livingSpouse(ctx, ch)?.id, ch.betrothal?.toId, ch.eloped?.withId, court?.targetId]
     .map((id) => (id ? S.characters[id] : undefined)).find(isAlive);
   const child = livingChildren(ctx, ch)
-    .filter((k) => k.householdId && k.householdId === ch.householdId && ageOf(ctx, k) >= 3 && ageOf(ctx, k) <= 12 && !isNovice(ctx, k))
+    .filter((k) => k.householdId && k.householdId === ch.householdId && ageOf(ctx, k) >= 3 && ageOf(ctx, k) <= 12 && whereabouts(ctx, k) === 'home')
     .sort((a, b) => b.birthDay - a.birthDay)[0];
   return { ...(beloved ? { beloved: beloved.id } : {}), ...(child ? { child: child.id } : {}) };
 }

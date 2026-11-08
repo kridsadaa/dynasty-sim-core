@@ -1,12 +1,13 @@
-import { ageOf, isAlive, isNovice, lunarOf, yearOf, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, lunarOf, yearOf, type Ctx } from '../core/ctx';
 import type { Character, CharacterId, Effect } from '../core/types';
 import { singlePeer } from './acquaintance';
-import { atWar, campaignBindings } from './campaign';
+import { campaignBindings } from './campaign';
 import type { ChoreEventRequest } from './chores';
 import { deptOf, officeRank, officeTier } from './career';
 import { institutionActive } from './eras';
 import { canCourt, companions } from './festivals';
 import { adjustBond } from './will';
+import { whereabouts } from './whereabouts';
 
 // ============================================================================
 // ขบวนเรือหลวงต้นเดือน 12 (docs/design-barge-procession.md, PLAN ข้อ 15)
@@ -54,7 +55,7 @@ export function bargeToday(ctx: Ctx): BargeTick {
   const B = ctx.content.balance.barge;
   const out: BargeTick = { events: [], lines: [] };
   const player = S.characters[S.meta.playerCharacterId];
-  if (!player || !isAlive(player) || player.social.estate === 'monk' || atWar(ctx, player) || isNovice(ctx, player)) return out;
+  if (!player || !isAlive(player) || whereabouts(ctx, player) !== 'home') return out; // ไปทัพ เป็นเณร/พระ (whereabouts.ts)
   const year = yearOf(ctx, S.meta.day);
   const levyDay = isLunar(ctx, B.levyMonth, false, B.levyDay);
   const procession = isLunar(ctx, B.month, true, B.day);

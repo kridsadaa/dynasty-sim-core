@@ -1563,6 +1563,53 @@
       "alt": "ชาวบ้านริมน้ำหมอบดู เรือปิดทองหัวรูปสัตว์แล่นผ่านไปกลางแม่น้ำ",
       "width": 1024,
       "height": 572
+    },
+    {
+      "id": "portrait.m.child.novice",
+      "file": "art/portrait.m.child.novice.webp",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:child",
+        "age:youth",
+        "role:novice"
+      ],
+      "alt": "เณรน้อยหัวโกนห่มจีวรเหลือง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.novice_lessons",
+      "file": "art/scene.novice_lessons.webp",
+      "style": "reality",
+      "tags": [
+        "event:novice.lessons"
+      ],
+      "alt": "พระอาจารย์สอนเณรน้อยสามรูปอ่านเขียนหน้ากุฏิ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.novice_food",
+      "file": "art/scene.novice_food.webp",
+      "style": "reality",
+      "tags": [
+        "event:novice.food"
+      ],
+      "alt": "แม่นำอาหารมาส่งลูกที่บวชเณรอยู่ในวัดตอนเช้า",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.novice_alms",
+      "file": "art/scene.novice_alms.webp",
+      "style": "reality",
+      "tags": [
+        "event:novice.alms"
+      ],
+      "alt": "เณรน้อยเดินตามพระออกบิณฑบาต ยืนนิ่งหน้าเรือนชาวบ้าน เด็กในหมู่บ้านยืนดู",
+      "width": 1024,
+      "height": 572
     }
   ]
 }

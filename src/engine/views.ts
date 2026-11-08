@@ -8,7 +8,7 @@ import { displayName, livingChildren, livingParents, livingSpouse, singleLabel }
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, offenceMultiple, officeRank, officeStatus, officeTier } from '../systems/career';
 import { warBadges } from '../systems/war';
-import { atWar } from '../systems/campaign';
+import { whereabouts } from '../systems/whereabouts';
 import { activeFiction, isFictionYear } from '../systems/fiction';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
@@ -150,6 +150,7 @@ function skillsView(ctx: Ctx, ch: Character): SkillsView {
 function characterRoles(ctx: Ctx, ch: Character, node?: FamilyNode): string[] {
   const roles: string[] = [];
   if (ch.social.estate === 'monk') roles.push('monk');
+  if (isNovice(ctx, ch)) roles.push('novice'); // ภาพเณร (หัวโกน ห่มจีวร) — โกนจุกแล้วจึงนับเป็น age:youth ภาพเณรจึงติดทั้งสองวัย
   const rank = officeRank(ctx, ch);
   if (rank === 0) roles.push('page');
   else if (rank !== undefined && rank > 0) {
@@ -255,10 +256,10 @@ function lifestyleText(labor: number, monthlyCost: number, target: Character, le
 
 function lifestyleView(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: string; intent: IntentStatusView | null } {
   const r = lifestyleAtHome(ctx, ch, text);
-  // ไปทัพเอง (campaign.ts atWar): ไม่อยู่บ้านจนศึกจบ — ความตั้งใจที่ค้างอยู่หยุดเดินไว้ก่อน (world.ts)
-  if (atWar(ctx, ch)) return { ...r, lifestyle: `ไปทัพ ไม่ได้อยู่บ้านจนกว่าทัพจะกลับ${r.intent ? ' · เรื่องที่ตั้งใจไว้ต้องรอกลับมาก่อน' : ''}` };
-  // เป็นเณร (core/ctx isNovice): อยู่วัดจนสึก — งานบ้านและงานบุญกับครอบครัวงดไว้ก่อน
-  if (isNovice(ctx, ch)) return { ...r, lifestyle: `เป็นเณรเรียนหนังสืออยู่ที่วัด จะสึกกลับเรือนปี ${ch.noviceUntilYear}` };
+  // ที่อยู่ตอนนี้ (whereabouts.ts): ไม่อยู่เรือน — งานบ้านและงานบุญกับครอบครัวงดไว้ก่อน ความตั้งใจที่ค้างอยู่หยุดเดินไว้
+  const where = whereabouts(ctx, ch);
+  if (where === 'army') return { ...r, lifestyle: `ไปทัพ ไม่ได้อยู่บ้านจนกว่าทัพจะกลับ${r.intent ? ' · เรื่องที่ตั้งใจไว้ต้องรอกลับมาก่อน' : ''}` };
+  if (where === 'temple' && ch.noviceUntilYear !== undefined) return { ...r, lifestyle: `เป็นเณรเรียนหนังสืออยู่ที่วัด จะสึกกลับเรือนปี ${ch.noviceUntilYear}` };
   return r;
 }
 

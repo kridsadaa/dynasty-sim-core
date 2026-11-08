@@ -106,13 +106,16 @@ test('ขุนนางทุกกรม × ทุกขั้นยศได�
   // มหาดเล็กยังได้ภาพมหาดเล็ก · คนไม่มีตำแหน่งไม่ได้ภาพขั้นยศ · ขุนนางชราใช้ภาพชราเดิม
   assert.equal(pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 20, estate: 'noble', roles: ['page'], rank: 'page' }))?.id, 'portrait.m.youth.page');
   assert.ok(!pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 35, estate: 'noble' }))?.tags.some((t) => t.startsWith('rank:')));
+  // เณร (โกนจุกแล้ว → age:youth) ได้ภาพเณร · เด็กชายที่ไม่ได้เป็นเณรไม่ได้ภาพเณร
+  assert.equal(pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 9, topknotCut: true, estate: 'commoner', roles: ['novice'] }))?.id, 'portrait.m.child.novice');
+  assert.notEqual(pickArt(all, 'portrait', portraitArtTags({ sex: 'm', age: 9, estate: 'commoner' }))?.id, 'portrait.m.child.novice');
 });
 
 const PORTRAIT_TAGS = new Set([
   'sex:m', 'sex:f',
   'age:child', 'age:youth', 'age:adult', 'age:elder',
   'role:page', 'role:official', 'role:official_patrol', 'role:official_palace', 'role:official_scholar',
-  'role:monk', 'role:principal_wife', 'role:minor_wife', 'role:household_head', 'role:pregnant',
+  'role:monk', 'role:novice', 'role:principal_wife', 'role:minor_wife', 'role:household_head', 'role:pregnant',
   'rank:page', 'rank:low', 'rank:mid', 'rank:high', 'rank:head',
 ]);
 
@@ -168,8 +171,7 @@ test('ภาพคะแนนเท่ากันสลับตาม seed �
 });
 
 // event ที่ยังรอภาพใหม่ — สร้างภาพแล้วให้ลบออกจากรายการนี้ (ว่างได้)
-// ชีวิตเณร (PLAN ข้อ 5) — ภาพเณรยังไม่ได้ทำ
-const AWAITING_ART = new Set<string>(['novice.lessons', 'novice.food', 'novice.alms']);
+const AWAITING_ART = new Set<string>([]);
 
 test('ทุก event มีภาพฉาก ยกเว้นที่จดไว้ว่ารอภาพ — event ใหม่ต้องวางภาพไว้ด้วย', () => {
   const real = JSON.parse(readFileSync('public/art/manifest.json', 'utf8')) as ArtManifest;

@@ -28,6 +28,7 @@ import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlav
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay, lifeMilestones } from './systems/world';
+import { allowedAt, whereabouts } from './systems/whereabouts';
 import { eraConditions, eventView, playerView } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
@@ -186,6 +187,20 @@ function demographyReport(): void {
   console.log(`  ร่างกายแต่กำเนิดเฉลี่ย: ตายก่อน 5 ขวบ ${mean(constitutionAt.young)} · ตายอายุ 50 ขึ้นไป ${mean(constitutionAt.old)} · event เด็กเลี้ยงยาก ${hardToRaise} ครั้ง`);
 }
 
+// event ที่ส่งถึงผู้เล่นต้องเกิดในที่ที่ actor อยู่ (whereabouts.ts, trigger.at) — ตรวจหลังรันโลก ([5h4h])
+const misplaced = new Map<string, number>();
+const awayEvents = { army: 0, temple: 0 };
+const checkWhereabouts = (ctx: Ctx, signals: ReturnType<typeof advanceDay>) => {
+  for (const sig of signals) {
+    if (sig.type !== 'event' && sig.type !== 'habit') continue;
+    const actor = ctx.state.characters[sig.prepared.instance.bindings.actor ?? ''];
+    if (!actor || !isAlive(actor)) continue;
+    const where = whereabouts(ctx, actor);
+    if (where !== 'home') awayEvents[where]++;
+    if (!allowedAt(sig.prepared.def, where)) misplaced.set(`${sig.prepared.def.id}@${where}`, (misplaced.get(`${sig.prepared.def.id}@${where}`) ?? 0) + 1);
+  }
+};
+
 // [1] รันโลก
 for (let seed = 1; seed <= SEEDS; seed++) {
   const ctx = makeCtx(emptyState(seed), content);
@@ -224,6 +239,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
       }
     }
     const signals = advanceDay(ctx);
+    checkWhereabouts(ctx, signals);
     // event ที่ส่งถึงผู้เล่นต้องอ้างถึงตัวละครที่ยังอยู่ในโลก — ไม่งั้นข้อความขึ้นชื่อ role ดิบ (เช่น "แต่งกับspouse")
     for (const sig of signals) {
       if (sig.type !== 'event') continue;
@@ -1875,6 +1891,7 @@ if (LONG) {
     const last = yearStart(ctx, end.year) + end.day;
     while (ctx.state.meta.day < last - 1 && isAlive(hero) && ctx.state.meta.playerCharacterId === hero.id) {
       const sigs = advanceDay(ctx);
+      checkWhereabouts(ctx, sigs);
       if (atWar(ctx, hero)) awayDays++;
       for (const s of sigs) {
         if (s.type !== 'event' && s.type !== 'habit') continue;
@@ -1957,6 +1974,7 @@ if (LONG) {
     let wrongSpan = 0;
     while (ctx.state.meta.day < yearStart(ctx, 2340 + W.noviceYears + 2) && isAlive(hero) && ctx.state.meta.playerCharacterId === hero.id) {
       const sigs = advanceDay(ctx);
+      checkWhereabouts(ctx, sigs);
       const inWindow = ctx.state.meta.day < yearStart(ctx, 2340 + W.noviceYears);
       if (novice && isNovice(ctx, hero) !== inWindow) wrongSpan++;
       for (const s of sigs) {
@@ -2022,6 +2040,21 @@ if (LONG) {
   }
   check('เณรอยู่วัด', problems);
   if (failed === before) console.log(`  ✓ เป็นเณร ${W.noviceYears} ปี 30 seed ไม่มีงานบ้าน/เทศกาล/เรื่องสุ่มในเรือน ได้เรื่องที่วัด ${atTempleEvents} เรื่อง (เด็กไม่ได้เป็นเณรช่วงเดียวกัน ${control} เรื่อง) · ลาสึกก่อนกำหนดได้ · สึกแล้วมี ${back} เรื่อง · ลูกเณรไม่ตามไปงานบุญ`);
+}
+
+// [5h4h] ที่อยู่ตอนนี้ (PLAN ข้อ 5b): ทุก event ที่ส่งถึงผู้เล่นใน [1] [5h4d] [5h4g] เกิดในที่ที่ actor อยู่ตาม trigger.at
+//  ต้องมี event ที่เกิดตอนอยู่ในทัพและที่วัดบ้าง ไม่งั้นตัวตรวจนี้ไม่ได้ตรวจอะไร
+{
+  const before = failed;
+  console.log('event เกิดตรงที่อยู่:');
+  const problems: string[] = [];
+  if (misplaced.size) problems.push(`เกิดผิดที่: ${[...misplaced].map(([k, n]) => `${k} ×${n}`).join(', ')}`);
+  if (!awayEvents.army || !awayEvents.temple) problems.push(`ไม่มี event ตอนอยู่ในทัพ (${awayEvents.army}) หรือที่วัด (${awayEvents.temple}) — ตัวตรวจไม่ได้ตรวจอะไร`);
+  for (const def of Object.values(content.events)) {
+    for (const w of def.trigger.at ?? []) if (!['home', 'army', 'temple'].includes(w)) problems.push(`${def.id}: trigger.at ไม่รู้จัก "${w}"`);
+  }
+  check('event เกิดตรงที่อยู่', problems);
+  if (failed === before) console.log(`  ✓ ทุก event อยู่ในที่ที่เกิดได้ · ตอนอยู่ในทัพ ${awayEvents.army} เรื่อง · ที่วัด ${awayEvents.temple} เรื่อง`);
 }
 
 // [5h4f] ขบวนเรือหลวงเดือน 12 (docs/design-barge-procession.md, PLAN ข้อ 15): ปีที่มี/งด · หมายฝีพายเฉพาะไพร่ชาย · ปีละเรื่องเดียวตามฐานะ · ข้อความครบ · โอกาสตามที่ตั้ง

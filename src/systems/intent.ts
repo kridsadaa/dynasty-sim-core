@@ -1,5 +1,5 @@
 import { yearsToDays } from '../core/calendar';
-import { ageOf, isAlive, isNovice, must, newId, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, must, newId, type Ctx } from '../core/ctx';
 import { clamp01 } from '../core/rng';
 import type { Character, Estate, Intent, IntentApproachDef, IntentDef, IntentKindId } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, relationStrength, setRelation, spawnLocal, tradeOf } from './acquaintance';
@@ -11,7 +11,7 @@ import { officeLabor } from './career';
 import { serviceLabor } from './marriage';
 import { hasPerk } from './skills';
 import { adjustBond } from './will';
-import { atWar } from './campaign';
+import { whereabouts } from './whereabouts';
 
 // ============================================================================
 // Intent — ความตั้งใจระยะยาวต่อคนหนึ่งคน (แบบ scheme ของเกมกลยุทธ์ราชวงศ์ ปรับให้เป็นชีวิตชาวบ้านอยุธยา)
@@ -62,8 +62,7 @@ export function awayLabor(ctx: Ctx, ch: Character): number {
   const i = activeIntent(ctx, ch.id);
   const target = i && ctx.state.characters[i.targetId];
   const intentLabor = i && target?.local ? approachOf(ctx, i).ap.by[target.local.distance]?.labor ?? 0 : 0;
-  if (atWar(ctx, ch)) return 1; // ไปทัพเอง — ไม่อยู่บ้านเลย (campaign.ts)
-  if (isNovice(ctx, ch)) return 1; // เป็นเณรอยู่ที่วัด (world.ts lifeMilestones)
+  if (whereabouts(ctx, ch) !== 'home') return 1; // ไปทัพ/เป็นเณร — ไม่อยู่เรือนเลย (whereabouts.ts)
   return Math.max(intentLabor, serviceLabor(ch), officeLabor(ctx, ch));
 }
 

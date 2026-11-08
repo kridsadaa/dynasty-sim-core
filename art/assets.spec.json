@@ -1841,6 +1841,62 @@
         "ritual.royal_balons_1680s",
         "ritual.barge_procession_bangkok_1822"
       ]
+    },
+    {
+      "id": "portrait.m.child.novice",
+      "style": "portrait",
+      "tags": [
+        "sex:m",
+        "age:child",
+        "age:youth",
+        "role:novice"
+      ],
+      "alt": "เณรน้อยหัวโกนห่มจีวรเหลือง",
+      "subject": "Medium portrait from the waist up: a Siamese boy of about nine, a temple novice, with warm olive-brown skin, a round face and bright attentive dark eyes; completely shaved head and shaved eyebrows, no topknot and no hair at all; wearing a small patched ochre-yellow robe leaving the right shoulder bare and a yellow waist sash, palms resting together in his lap, seated on a mat inside a quiet monastery hall with dark wooden posts; mouth closed.",
+      "loreRefs": [
+        "attire.monks_1680s",
+        "ritual.novice_schooling_1680s"
+      ]
+    },
+    {
+      "id": "scene.novice_lessons",
+      "style": "reality",
+      "tags": [
+        "event:novice.lessons"
+      ],
+      "alt": "พระอาจารย์สอนเณรน้อยสามรูปอ่านเขียนหน้ากุฏิ",
+      "subject": "Morning on the open veranda of a simple wooden monastery dwelling in Siam: an older Buddhist monk with a shaved head and shaved eyebrows, in a patched ochre-yellow robe leaving the right shoulder bare, sits cross-legged and points to letters he has written on a board, while three small novices sit in a row on a mat before him — boys of eight to ten, each with a completely shaved head and shaved eyebrows (no topknot, no hair at all), wearing a small patched ochre-yellow robe leaving the right shoulder bare and a yellow waist sash — one copying the letters carefully, one reciting with palms together, one drowsy and glancing up at birds in a large bodhi tree beside the veranda. Quiet, warm, unhurried; mouths closed.",
+      "loreRefs": [
+        "ritual.novice_schooling_1680s",
+        "attire.monks_1680s"
+      ]
+    },
+    {
+      "id": "scene.novice_food",
+      "style": "reality",
+      "tags": [
+        "event:novice.food"
+      ],
+      "alt": "แม่นำอาหารมาส่งลูกที่บวชเณรอยู่ในวัดตอนเช้า",
+      "subject": "Early morning at the edge of a temple compound in Siam, under a large shady tree: a commoner mother in a breast-cloth kneels on a mat, having brought food in small covered bowls and a lidded basket; beside her sits her small son, a temple novice boy of about nine with a completely shaved head and shaved eyebrows (no topknot, no hair at all), wearing a small patched ochre-yellow robe leaving the right shoulder bare and a yellow waist sash, eating; she watches him with quiet concern, one hand resting near his shoulder without touching the robe; in the background another small novice sits alone on the steps of a plain wooden monastery building with a steep roof. Tender, quiet, ordinary; mouths closed.",
+      "loreRefs": [
+        "ritual.novice_schooling_1680s",
+        "attire.monks_1680s"
+      ]
+    },
+    {
+      "id": "scene.novice_alms",
+      "style": "reality",
+      "tags": [
+        "event:novice.alms"
+      ],
+      "alt": "เณรน้อยเดินตามพระออกบิณฑบาต ยืนนิ่งหน้าเรือนชาวบ้าน เด็กในหมู่บ้านยืนดู",
+      "subject": "Dawn on a narrow earthen path along a canal in a Siamese village: a monk with a shaved head and shaved eyebrows, in a patched ochre-yellow robe, barefoot, holding an iron alms bowl in a cloth shoulder sling, stands silently with eyes lowered before a raised bamboo house while a kneeling woman places food into the bowl; behind him stands a temple novice boy of about nine with a completely shaved head and shaved eyebrows (no topknot, no hair at all), wearing a small patched ochre-yellow robe leaving the right shoulder bare and a yellow waist sash, carrying his own small bowl and a bundle of offerings, eyes lowered; at the side of the path two village boys of the same age, with shaved heads and a small topknot on the crown, watch him, one smiling with closed lips. Soft early light, mist over the water; nobody speaks; mouths closed.",
+      "loreRefs": [
+        "ritual.alms_round_1680s",
+        "ritual.novice_schooling_1680s",
+        "attire.monks_1680s"
+      ]
     }
   ]
 }

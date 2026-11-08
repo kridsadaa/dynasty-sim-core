@@ -800,6 +800,9 @@ export interface EventOption {
   params?: Record<string, string>;
 }
 
+/** ที่อยู่ตอนนี้ของตัวละคร (systems/whereabouts.ts) */
+export type Whereabouts = 'home' | 'army' | 'temple';
+
 export interface GameEventDef {
   id: EventDefId;
   textKey: string;
@@ -813,8 +816,8 @@ export interface GameEventDef {
     ageRange?: [number, number]; estates?: Estate[]; weight: number; cooldownDays?: number;
     /** เกิดเฉพาะคนที่รับราชการอยู่ในระดับนี้ (0 = มหาดเล็ก) */
     office?: { minRank?: number; maxRank?: number; dept?: string };
-    /** true = เกิดเฉพาะตอนเป็นเณรอยู่ที่วัด · ไม่ใส่ = เกิดเฉพาะตอนไม่ได้เป็นเณร (เณรไม่เจอเรื่องในเรือน) */
-    novice?: boolean;
+    /** ที่ที่ actor ต้องอยู่ถึงจะเกิดได้ (systems/whereabouts.ts) — ไม่ใส่ = เฉพาะที่เรือน */
+    at?: Whereabouts[];
     /** เงื่อนไขที่ต้องผ่านก่อนเกิด (ตรวจกับ actor หลังได้คนครบทุก role) — ใช้ทำสายเรื่องและ event ครั้งเดียว */
     requires?: Condition[];
   };

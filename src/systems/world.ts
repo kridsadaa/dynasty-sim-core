@@ -1,5 +1,5 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
-import { ageOf, dayOfYear, isAlive, isNovice, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
+import { ageOf, dayOfYear, isAlive, lunarOf, must, yearOf, yearsBetween, type Ctx } from '../core/ctx';
 import type { Character, GameEventDef, TagId } from '../core/types';
 import { tickWounds, type WoundOutcome } from './body';
 import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type EventReport, type PreparedEvent } from './events';
@@ -21,7 +21,8 @@ import { drowningEvent, elderPreceptsEvent, parentIllnessEvent, topknotEvent, ki
 import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
-import { atWar, withArmy } from './campaign';
+import { withArmy } from './campaign';
+import { allowedAt, whereabouts } from './whereabouts';
 import { bargeToday } from './barge';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
@@ -61,10 +62,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
 
   S.meta.day++;
   const year = yearOf(ctx, S.meta.day);
-  // ไปทัพเอง (campaign.ts atWar) — ตัวละครไม่อยู่บ้าน: งด event ที่ต้องอยู่เรือน/ในหมู่บ้าน จนศึกจบ
-  const away = !!player && isAlive(player) && !!atWar(ctx, player);
-  // เป็นเณรอยู่ที่วัด (core/ctx isNovice) — ไม่มีงานบ้าน (awayLabor) และเทศกาล · เรื่องสุ่มเหลือเฉพาะเรื่องที่วัด (trigger.novice ใน pickEvent)
-  const atTemple = !!player && isAlive(player) && isNovice(ctx, player);
+  // ที่อยู่ตอนนี้ (whereabouts.ts): ไปทัพ/เป็นเณร → ไม่อยู่เรือน งดเรื่องที่ต้องอยู่เรือน/ในหมู่บ้าน (เกี้ยว แต่งงาน งานบุญ งานศพ ฯลฯ)
+  //  เรื่องสุ่มกรองตาม trigger.at ใน pickEvent (เณรได้เรื่องที่วัด)
+  const where = player && isAlive(player) ? whereabouts(ctx, player) : 'home';
+  const atHome = where === 'home';
 
   // รายวัน: แผล
   const wounded = new Set(Object.values(S.wounds).map((w) => w.characterId));
@@ -89,7 +90,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   // รายเดือน (ขึ้น 1 ค่ำ): ความตั้งใจของผู้เล่น (เกี้ยว ผูกมิตร) เดินหน้า กินแรงงานที่บ้าน และอาจมี event แทรก
   if (lunarOf(ctx).day === 1) {
     // ไปทัพ: ความตั้งใจหยุดเดินไว้ก่อน (กลับมาแล้วทำต่อ)
-    const r = away ? { lines: [], events: [] } : tickIntents(ctx);
+    const r = !atHome ? { lines: [], events: [] } : tickIntents(ctx);
     for (const line of r.lines) out.push({ type: 'log', kind: 'people', line });
     for (const prepared of r.events) out.push({ type: 'event', prepared });
     // งานบ้านของเด็ก: ถูกเรียกไปช่วย หัดขั้นใหม่ หรือนิสัยตัดสินเอง
@@ -98,14 +99,14 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const req of chores.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
     for (const req of player ? tickOutings(ctx, awayLabor(ctx, player)) : []) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings, req.vars) });
     // หมั้นถึงวันนัด / ถูกทวงค่าน้ำนม / ช่วยงานบ้านพ่อตาแม่ยาย
-    const m = away ? { lines: [], events: [] } : tickMarriage(ctx);
+    const m = !atHome ? { lines: [], events: [] } : tickMarriage(ctx);
     for (const line of m.lines) out.push({ type: 'log', kind: 'family', line });
     for (const req of m.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
   }
 
   // เด็กเกิด: ผู้เล่นตั้งชื่อลูกเอง (namingEvent)
   const onBirth = (kid: Character, parent: Character, spouse: Character) => {
-    if (away) return false; // ไปทัพ — คนที่บ้านตั้งชื่อให้
+    if (!atHome) return false; // ไม่อยู่เรือน — คนที่บ้านตั้งชื่อให้
     const naming = namingEvent(ctx, kid, parent, spouse);
     if (naming) out.push({ type: 'event', prepared: naming });
     return !!naming;
@@ -173,8 +174,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     for (const line of mortalityYearTick(ctx)) out.push({ type: 'log', kind: 'death', line });
     kinYearTick(ctx);
     for (const line of skillsYearTick(ctx)) out.push({ type: 'log', kind: 'household', line });
-    // เรื่องในเรือนที่ต้องอยู่บ้านถึงจะเลือกได้ — ไปทัพอยู่ก็ข้ามไป (atWar)
-    const home = (make: () => PreparedEvent | null) => (away ? null : make());
+    // เรื่องในเรือนที่ต้องอยู่บ้านถึงจะเลือกได้ — ไม่อยู่เรือนก็ข้ามไป (whereabouts)
+    const home = (make: () => PreparedEvent | null) => (atHome ? make() : null);
     const frail = home(() => hardToRaiseEvent(ctx));
     if (frail) out.push({ type: 'event', prepared: frail });
     const inoc = home(() => inoculationEvent(ctx));
@@ -185,7 +186,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
       const kid = S.characters[S.meta.childIllness];
       delete S.meta.childIllness;
       if (kid && isAlive(kid)) {
-        if (player && isAlive(player) && !away) out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_grave_illness', { actor: player.id, child: kid.id }) });
+        if (player && isAlive(player) && atHome) out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_grave_illness', { actor: player.id, child: kid.id }) });
         else {
           // ผู้เล่นตายรอบทอยเดียวกัน หรือไปทัพอยู่ → ไม่ได้เลือกรักษาเอง ทอยด้วยค่าเฉลี่ยของตัวเลือกแทน (งานศพ/มรดกจัดใน settleDeathsToday ด้านล่าง)
           const line = unattendedChildIllness(ctx, kid);
@@ -203,7 +204,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     }
     for (const line of lifeMilestones(ctx, (child, spouse) => {
       // ลูกออกเรือน: ผู้เล่นได้เห็นหน้าลูกเขย/สะใภ้และตัดสินใจ (หนึ่งคนต่อปี คนอื่นแต่งตามปกติ)
-      if (!player || !isAlive(player) || away || out.some((o) => o.type === 'event' && o.prepared.def.id === 'family.child_wedding')) return false;
+      if (!player || !isAlive(player) || !atHome || out.some((o) => o.type === 'event' && o.prepared.def.id === 'family.child_wedding')) return false;
       out.push({ type: 'event', prepared: prepareEvent(ctx, 'family.child_wedding', { actor: player.id, child: child.id, spouse: spouse.id }) });
       return true;
     })) out.push({ type: 'log', kind: 'family', line });
@@ -215,7 +216,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const minorWife = home(() => minorWifeEvent(ctx));
     if (minorWife) out.push({ type: 'event', prepared: minorWife });
     // วัยผู้ใหญ่และวัยชรา: โกนจุกลูก พ่อแม่ป่วยหนัก ถือศีลวันพระ
-    for (const life of away ? [] : [topknotEvent(ctx), parentIllnessEvent(ctx), elderPreceptsEvent(ctx), drowningEvent(ctx)]) {
+    for (const life of !atHome ? [] : [topknotEvent(ctx), parentIllnessEvent(ctx), elderPreceptsEvent(ctx), drowningEvent(ctx)]) {
       if (life) out.push({ type: 'event', prepared: life });
     }
     const jealous = home(() => jealousyEvent(ctx));
@@ -223,7 +224,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const split = home(() => divorceEvent(ctx));
     if (split) out.push({ type: 'event', prepared: split });
     // ความลับตำนานแตก: ญาติที่ทันเห็นเรื่องจริงเล่าให้ฟัง — ส่งข้อความตำนานทั้งสองแบบเป็นตัวแปรของ event
-    const truth = player && isAlive(player) && !away ? legendTruthEvent(ctx) : null;
+    const truth = player && isAlive(player) && atHome ? legendTruthEvent(ctx) : null;
     if (truth) {
       out.push({
         type: 'event',
@@ -238,7 +239,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
     const career = careerYearTick(ctx);
     for (const line of career.lines) out.push({ type: 'log', kind: 'career', line });
     // ไปทัพอยู่: ถวายตัว/ฝากตัว/เข้าเฝ้ารับยศรอปีหน้า (careerYearTick ทอยใหม่ทุกปี)
-    for (const req of away ? [] : career.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
+    for (const req of !atHome ? [] : career.events) out.push({ type: 'event', prepared: prepareEvent(ctx, req.event, req.bindings) });
     // ญาติใกล้ชิดของผู้เล่นตายปีนี้ → งานศพ (คนที่ใกล้ที่สุด)
     const mourning = home(() => kinDeathEvent(ctx));
     if (mourning) out.push({ type: 'event', prepared: mourning });
@@ -252,7 +253,7 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   // ขบวนเรือหลวงเดือน 12 (barge.ts) — ผ่านทางเดียวกับงานบุญ: festival.barge_watch ทำจนเป็นนิสัยแล้วเลือกให้เอง
   const barge = bargeToday(ctx);
   for (const line of barge.lines) out.push({ type: 'log', kind: 'family', line });
-  for (const req of [...(player && !away && !atTemple ? tickFestivals(ctx, awayLabor(ctx, player)) : []), ...barge.events]) {
+  for (const req of [...(player && atHome ? tickFestivals(ctx, awayLabor(ctx, player)) : []), ...barge.events]) {
     const prepared = prepareEvent(ctx, req.event, req.bindings, req.vars);
     const habit = habitOption(ctx, player!, prepared);
     if (!habit) {
@@ -266,7 +267,8 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   }
 
   // เหตุการณ์ของผู้เล่น
-  if (isAlive(player) && !away && ctx.rng.chance(B.world.eventsPerYear / DAYS_PER_YEAR)) {
+  // ในทัพไม่มีเรื่องสุ่มเลย (ข้ามก่อนทอย ลำดับสุ่มเหมือนก่อนมี whereabouts) · ที่อื่นกรองตาม trigger.at ใน pickEvent
+  if (isAlive(player) && where !== 'army' && ctx.rng.chance(B.world.eventsPerYear / DAYS_PER_YEAR)) {
     const prepared = pickEvent(ctx, player);
     if (prepared) out.push({ type: 'event', prepared });
   }
@@ -317,6 +319,7 @@ function namingEvent(ctx: Ctx, kid: Character, parent: Character, spouse: Charac
 /** สุ่ม event ที่ trigger ผ่าน + ผูก role ได้ครบ + พ้น cooldown */
 function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
   const age = ageOf(ctx, actor);
+  const where = whereabouts(ctx, actor);
   const day = ctx.state.meta.day;
   // คนในราชการที่ยังไม่เคยพบ → สร้างหลังสุ่มได้ event นั้นแล้ว (ไม่สร้างคนทิ้งไว้ทุกครั้งที่ไล่หา)
   const bound: Array<{ def: GameEventDef; bindings: Record<string, Character['id']>; meet: Array<[string, 'rival' | 'patron']> }> = [];
@@ -324,7 +327,7 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
     const t = def.trigger;
     if (t.ageRange && (age < t.ageRange[0] || age > t.ageRange[1])) continue;
     if (t.estates && !t.estates.includes(actor.social.estate)) continue;
-    if (!!t.novice !== isNovice(ctx, actor)) continue; // เป็นเณรอยู่ → เฉพาะเรื่องที่วัด (novice.*) · ไม่ได้เป็น → ไม่เจอเรื่องที่วัด
+    if (!allowedAt(def, where)) continue; // ที่อยู่ตอนนี้ (whereabouts.ts): เณรได้เฉพาะเรื่องที่วัด · อยู่เรือนไม่เจอเรื่องที่วัด
     if (t.office) {
       const rank = officeRank(ctx, actor);
       if (rank === undefined || rank < (t.office.minRank ?? 0) || rank > (t.office.maxRank ?? Infinity)) continue;
@@ -371,8 +374,8 @@ function pickEvent(ctx: Ctx, actor: Character): PreparedEvent | null {
 
 function resolveRole(ctx: Ctx, actor: Character, rel: string | undefined): Character | undefined {
   // ย้ายไปอยู่ใกล้บ้านคนที่หมายปอง → เรื่องในเรือนกับพ่อแม่/คนเลี้ยงไม่เกิด
-  //  เณรยกเว้น: พ่อแม่/คนเลี้ยงยังไปหาที่วัด ส่งอาหารทุกวัน (lore ritual.novice_schooling_1680s)
-  if ((rel === 'caregiver' || rel === 'parent') && awayLabor(ctx, actor) >= 1 && !isNovice(ctx, actor)) return undefined;
+  //  อยู่วัดยกเว้น: พ่อแม่/คนเลี้ยงยังไปหาที่วัด ส่งอาหารทุกวัน (lore ritual.novice_schooling_1680s)
+  if ((rel === 'caregiver' || rel === 'parent') && awayLabor(ctx, actor) >= 1 && whereabouts(ctx, actor) !== 'temple') return undefined;
   if (rel === 'caregiver') return actor.caregiverIds.map((id) => ctx.state.characters[id]).find(isAlive);
   if (rel === 'rival' || rel === 'patron') return findCourtier(ctx, actor, rel);
   if (rel === 'elder_acquaintance') {
