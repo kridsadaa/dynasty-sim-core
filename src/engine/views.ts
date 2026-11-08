@@ -8,6 +8,7 @@ import { displayName, livingChildren, livingParents, livingSpouse, singleLabel }
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
 import { careerHint, offenceMultiple, officeRank, officeStatus, officeTier } from '../systems/career';
 import { warBadges } from '../systems/war';
+import { atWar } from '../systems/campaign';
 import { activeFiction, isFictionYear } from '../systems/fiction';
 import { livingWives } from '../systems/wives';
 import { estateHeirs, heirCandidates, PARENTAGE_TH, RELATION_TH } from '../systems/handover';
@@ -253,6 +254,12 @@ function lifestyleText(labor: number, monthlyCost: number, target: Character, le
 }
 
 function lifestyleView(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: string; intent: IntentStatusView | null } {
+  const r = lifestyleAtHome(ctx, ch, text);
+  // ไปทัพเอง (campaign.ts atWar): ไม่อยู่บ้านจนศึกจบ — ความตั้งใจที่ค้างอยู่หยุดเดินไว้ก่อน (world.ts)
+  return atWar(ctx, ch) ? { ...r, lifestyle: `ไปทัพ ไม่ได้อยู่บ้านจนกว่าทัพจะกลับ${r.intent ? ' · เรื่องที่ตั้งใจไว้ต้องรอกลับมาก่อน' : ''}` } : r;
+}
+
+function lifestyleAtHome(ctx: Ctx, ch: Character, text: TextTable): { lifestyle: string; intent: IntentStatusView | null } {
   const st = intentStatus(ctx, ch);
   const host = ch.service && ctx.state.characters[ch.service.hostId];
   // ไปช่วยงานบ้านพ่อตาแม่ยายชดใช้สินสอด/ค่าน้ำนม — กินแรงงานเหมือนความตั้งใจที่ต้องไปช่วยงานบ้านคนอื่น

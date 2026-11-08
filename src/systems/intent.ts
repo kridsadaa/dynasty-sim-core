@@ -11,6 +11,7 @@ import { officeLabor } from './career';
 import { serviceLabor } from './marriage';
 import { hasPerk } from './skills';
 import { adjustBond } from './will';
+import { atWar } from './campaign';
 
 // ============================================================================
 // Intent — ความตั้งใจระยะยาวต่อคนหนึ่งคน (แบบ scheme ของเกมกลยุทธ์ราชวงศ์ ปรับให้เป็นชีวิตชาวบ้านอยุธยา)
@@ -61,6 +62,7 @@ export function awayLabor(ctx: Ctx, ch: Character): number {
   const i = activeIntent(ctx, ch.id);
   const target = i && ctx.state.characters[i.targetId];
   const intentLabor = i && target?.local ? approachOf(ctx, i).ap.by[target.local.distance]?.labor ?? 0 : 0;
+  if (atWar(ctx, ch)) return 1; // ไปทัพเอง — ไม่อยู่บ้านเลย (campaign.ts)
   return Math.max(intentLabor, serviceLabor(ch), officeLabor(ctx, ch));
 }
 

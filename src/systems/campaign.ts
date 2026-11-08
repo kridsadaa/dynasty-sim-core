@@ -1,4 +1,4 @@
-import { ageOf, isAlive, type Ctx } from '../core/ctx';
+import { ageOf, isAlive, yearStart, type Ctx } from '../core/ctx';
 import type { Character, CampaignState, CharacterId, Condition, Effect } from '../core/types';
 import { adjustFavor } from './career';
 import { livingChildren } from './factory';
@@ -49,6 +49,23 @@ const stateOf = (ctx: Ctx, key: string): CampaignState => {
   const all = (ctx.state.meta.campaigns ??= {});
   return (all[key] ??= {});
 };
+
+/**
+ * ศึกที่ ch ไปทัพเองอยู่ตอนนี้ — ตั้งแต่รับหมายว่าไปเอง (หรือรับหมายคุมพล) จนถึงวันศึกจบตามตาราง `resolve` ใน rules.json
+ * ระหว่างนี้ตัวละครไม่อยู่บ้าน: ไม่ได้ event งานบ้าน งานวัด เกี้ยว ผูกมิตร ทาบทาม เฝ้าไข้ งานศพ (world.ts, intent.ts awayLabor)
+ * ใช้วันในตารางแทนการเก็บสถานะ "กลับแล้ว" — เซฟเก่าที่ศึกผ่านไปแล้วจึงไม่ค้างว่าอยู่ในทัพ
+ */
+export function atWar(ctx: Ctx, ch: Character): CampaignKey | undefined {
+  const all = ctx.state.meta.campaigns;
+  if (!all) return undefined;
+  const today = ctx.state.meta.day;
+  return (Object.keys(CAMPAIGNS) as CampaignKey[]).find((key) => {
+    const st = all[key];
+    if (st?.mode !== 'self' || st.soldier !== ch.id) return false;
+    const end = ctx.content.historyEvents.find((s) => s.resolve === key);
+    return !!end && today < yearStart(ctx, end.year) + end.day;
+  });
+}
 
 /** ข้ามทอยตาย/ถูกกวาดต้อนของ history shock ที่เป็นศึกนี้ ถ้าเป็นคนในเรือนผู้เล่นที่ถูกเกณฑ์แล้ว (ตายได้เฉพาะตัวเลือก) */
 export function campaignShockExempt(ctx: Ctx, c: Character, tag: string): boolean {

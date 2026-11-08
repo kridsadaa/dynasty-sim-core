@@ -13,7 +13,7 @@ import { chooseOption, prepareEvent, prepareFollowUp, requirementsMet, type Prep
 import { emptyState, marry, spawnCharacter } from './systems/factory';
 import { applyHistoricalShocks, estateHeirs, heirCandidates, markDead, performHandover, settleDeath } from './systems/handover';
 import { CAPTIVE_TAG } from './systems/war';
-import { campaignBindings, resolveCampaign, SUBSTITUTE_DEATH, SUBSTITUTE_FLOOR, substituteDeathChance } from './systems/campaign';
+import { atWar, campaignBindings, resolveCampaign, SUBSTITUTE_DEATH, SUBSTITUTE_FLOOR, substituteDeathChance } from './systems/campaign';
 import { knownLocals, setRelation, spawnLocal } from './systems/acquaintance';
 import { applyMarriageStep, purse } from './systems/marriage';
 import { activeIntent, planIntent, startIntent, targetProblem } from './systems/intent';
@@ -1852,6 +1852,54 @@ if (LONG) {
   }
   check('ชั้นยุค', problems);
   if (failed === before) console.log(`  ✓ ${eras.length} ยุคต่อกัน · เงื่อนไขปี/ยุค · สถาบันยังเปิด · ข้าวแจกเฉพาะ 2311–2312 · เลือกข้างก่อน shock · ฝ่ายพระยาสรรค์ถูกกวาดล้าง ${purged}/${N}`);
+}
+
+// [5h4d] ไปทัพเองไม่อยู่บ้าน (BACKLOG 2026-11-07 → PLAN ข้อ 5): ตั้งแต่รับหมายว่าไปเองจนศึกจบ ไม่มี event งานบ้าน งานวัด ทาบทาม เฝ้าไข้
+//  เทียบกับเรือนที่จ่ายแทน (อยู่บ้าน) ในช่วงวันเดียวกัน — ต้องมี event บ้านเกิดบ้าง ไม่งั้นตัวตรวจนี้ไม่ได้ตรวจอะไร
+{
+  const before = failed;
+  console.log('ไปทัพเองไม่อยู่บ้าน:');
+  const problems: string[] = [];
+  const end = content.historyEvents.find((h) => h.resolve === 'nine_armies')!;
+  const run = (seed: number, mode: 'serve' | 'pay') => {
+    const ctx = makeCtx(emptyState(seed), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = 'm';
+    hero.social.wealth = 500;
+    ctx.state.meta.day = yearStart(ctx, 2328) + 335;
+    hero.birthDay = ctx.state.meta.day - yearsToDays(25);
+    chooseOption(ctx, prepareEvent(ctx, 'war2328.levy', { actor: hero.id }), mode);
+    const home: string[] = [];
+    let awayDays = 0;
+    const last = yearStart(ctx, end.year) + end.day;
+    while (ctx.state.meta.day < last - 1 && isAlive(hero) && ctx.state.meta.playerCharacterId === hero.id) {
+      const sigs = advanceDay(ctx);
+      if (atWar(ctx, hero)) awayDays++;
+      for (const s of sigs) {
+        if (s.type !== 'event' && s.type !== 'habit') continue;
+        const id = s.prepared.def.id;
+        if (!/^(war2328\.|body\.)/.test(id)) home.push(id);
+      }
+    }
+    // วันศึกจบแล้วต้องกลับบ้าน
+    ctx.state.meta.day = last;
+    const back = !atWar(ctx, hero);
+    return { home, awayDays, back };
+  };
+  let leak: string[] = [];
+  let stayHome = 0;
+  for (let i = 0; i < 40; i++) {
+    const a = run(700 + i, 'serve');
+    leak.push(...a.home);
+    if (a.awayDays === 0) problems.push(`seed ${700 + i}: ไปเองแล้วไม่นับว่าอยู่ในทัพ`);
+    if (!a.back) problems.push(`seed ${700 + i}: ศึกจบแล้วยังนับว่าอยู่ในทัพ`);
+    stayHome += run(700 + i, 'pay').home.length;
+  }
+  leak = [...new Set(leak)];
+  if (leak.length) problems.push(`ไปทัพอยู่แต่ได้ event ที่บ้าน: ${leak.join(', ')}`);
+  if (stayHome === 0) problems.push('เรือนที่จ่ายแทนไม่ได้ event บ้านเลยในช่วงนี้ — ตัวตรวจไม่ได้ตรวจอะไร');
+  check('ไปทัพเองไม่อยู่บ้าน', problems);
+  if (failed === before) console.log(`  ✓ ไปทัพ 40 seed ไม่มี event บ้าน · อยู่บ้าน (จ่ายแทน) ช่วงเดียวกันได้ ${stayHome} เรื่อง · ศึกจบแล้วกลับบ้าน`);
 }
 
 // [5h4c] ข้าหลวงเดิม 2367 (docs/design-eras.md หัวข้อ 7b): มาหลัง shock ผลัดแผ่นดิน · เฉพาะผู้มีตำแหน่ง · ฝากตัวเลื่อนขั้นราว 45% · ข้อความครบ
