@@ -1,6 +1,6 @@
 {
   "name": "dynasty-sim-core",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "license": "SEE LICENSE IN LICENSE",
   "private": true,
   "type": "module",
