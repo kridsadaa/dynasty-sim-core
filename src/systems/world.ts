@@ -21,7 +21,7 @@ import { drowningEvent, elderPreceptsEvent, parentIllnessEvent, topknotEvent, ki
 import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
-import { atWar } from './campaign';
+import { atWar, withArmy } from './campaign';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
 import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick, unattendedChildIllness } from './mortality';
@@ -447,8 +447,11 @@ export function lifeMilestones(
     const mothers = ch.sex === 'f' ? (spouse ? [ch] : []) : livingWives(ctx, ch);
     // ตั้งครรภ์ปีนี้ → คลอดเมื่อครบกำหนด (deliverBirths ทุกวัน) — ระหว่างนั้นภาพตัวละครเป็นหญิงมีครรภ์
     for (const mother of mothers) {
-      if (ch.marriedDay === undefined || mother.pregnancy || !conceives(ctx, ch, mother, year)) continue;
       const partner = ch.sex === 'f' ? spouse! : mother;
+      // ผัวอยู่ในทัพวันทอย (ไปเองหรือถูกส่งไปแทน) — ปีนั้นไม่ตั้งครรภ์ (ทอยปีละครั้ง จึงเสียโอกาสทั้งปี)
+      const husband = ch.sex === 'm' ? ch : partner;
+      // ทอยก่อนแล้วค่อยดูว่าผัวอยู่ไหม — ลำดับสุ่มเท่าเดิม ผลต่างจากเดิมแค่ปีที่ผัวไปทัพ
+      if (ch.marriedDay === undefined || mother.pregnancy || !conceives(ctx, ch, mother, year) || withArmy(ctx, husband)) continue;
       const dueDay = day + Math.round(ctx.rng.range(W.births.dueDays[0], W.births.dueDays[1]));
       mother.pregnancy = { memberId: ch.id, partnerId: partner.id, dueDay };
       mother.pregnantUntilDay = dueDay;

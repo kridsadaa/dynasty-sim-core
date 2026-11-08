@@ -56,12 +56,21 @@ const stateOf = (ctx: Ctx, key: string): CampaignState => {
  * ใช้วันในตารางแทนการเก็บสถานะ "กลับแล้ว" — เซฟเก่าที่ศึกผ่านไปแล้วจึงไม่ค้างว่าอยู่ในทัพ
  */
 export function atWar(ctx: Ctx, ch: Character): CampaignKey | undefined {
+  return inArmy(ctx, ch, ['self']);
+}
+
+/** อยู่ในทัพตอนนี้ — ทั้งผู้เล่นที่ไปเองและลูก/ญาติที่ถูกส่งไปแทน (ใช้กันเมียตั้งครรภ์ระหว่างผัวไม่อยู่ world.ts conceives) */
+export function withArmy(ctx: Ctx, ch: Character): CampaignKey | undefined {
+  return inArmy(ctx, ch, ['self', 'send']);
+}
+
+function inArmy(ctx: Ctx, ch: Character, modes: ReadonlyArray<CampaignState['mode']>): CampaignKey | undefined {
   const all = ctx.state.meta.campaigns;
   if (!all) return undefined;
   const today = ctx.state.meta.day;
   return (Object.keys(CAMPAIGNS) as CampaignKey[]).find((key) => {
     const st = all[key];
-    if (st?.mode !== 'self' || st.soldier !== ch.id) return false;
+    if (!modes.includes(st?.mode) || st!.soldier !== ch.id) return false;
     const end = ctx.content.historyEvents.find((s) => s.resolve === key);
     return !!end && today < yearStart(ctx, end.year) + end.day;
   });

@@ -1902,6 +1902,40 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ ไปทัพ 40 seed ไม่มี event บ้าน · อยู่บ้าน (จ่ายแทน) ช่วงเดียวกันได้ ${stayHome} เรื่อง · ศึกจบแล้วกลับบ้าน`);
 }
 
+// [5h4e] ผัวอยู่ในทัพวันทอยตั้งครรภ์ (1 ม.ค.) → เมียไม่ตั้งครรภ์ปีนั้น — ไปเองและส่งไปแทน · เรือนที่จ่ายแทนยังตั้งครรภ์ตามปกติ
+{
+  const before = failed;
+  console.log('เมียไม่ตั้งครรภ์ระหว่างผัวไปทัพ:');
+  const problems: string[] = [];
+  const N = 300;
+  const trial = (seed: number, mode: 'serve' | 'pay' | 'sent') => {
+    const ctx = makeCtx(emptyState(seed), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = 'm';
+    hero.social.wealth = 500;
+    ctx.state.meta.day = yearStart(ctx, 2328) + 335;
+    hero.birthDay = ctx.state.meta.day - yearsToDays(28);
+    for (const w of livingWives(ctx, hero)) markDead(ctx, w, 'situation:illness');
+    const wife = spawnCharacter(ctx, { name: 'เมีย', sex: 'f', birthYear: 2306, estate: hero.social.estate, dynastyId: null, householdId: null });
+    marry(ctx, hero, wife, ctx.state.meta.day - yearsToDays(3));
+    hero.marriedDay = ctx.state.meta.day - yearsToDays(3); // marry() ไม่ตั้งวันแต่ง (applyMarriageStep ตั้ง)
+    if (mode === 'sent') ctx.state.meta.campaigns = { nine_armies: { mode: 'send', soldier: hero.id } }; // ผัวเป็นคนที่ถูกส่งไปแทน (ทางเดียวกับลูก/ญาติ)
+    else chooseOption(ctx, prepareEvent(ctx, 'war2328.levy', { actor: hero.id }), mode);
+    ctx.state.meta.day = yearStart(ctx, 2329) - 1;
+    advanceDay(ctx); // 1 ม.ค. 2329 — วันทอยตั้งครรภ์ ศึกยังไม่จบ (จบวันที่ 47)
+    return wife.pregnancy?.memberId === hero.id;
+  };
+  const count = (mode: 'serve' | 'pay' | 'sent') => Array.from({ length: N }, (_, i) => trial(900 + i, mode)).filter(Boolean).length;
+  const serve = count('serve');
+  const sent = count('sent');
+  const pay = count('pay');
+  if (serve > 0) problems.push(`ผัวไปทัพเองแต่เมียตั้งครรภ์ ${serve}/${N}`);
+  if (sent > 0) problems.push(`ผัวถูกส่งไปแทนแต่เมียตั้งครรภ์ ${sent}/${N}`);
+  if (pay < N * 0.2) problems.push(`เรือนที่จ่ายแทนตั้งครรภ์แค่ ${pay}/${N} (ควรราว 35%) — ตัวตรวจไม่ได้ตรวจอะไร`);
+  check('เมียไม่ตั้งครรภ์ระหว่างผัวไปทัพ', problems);
+  if (failed === before) console.log(`  ✓ ไปเอง ${serve}/${N} · ถูกส่งไปแทน ${sent}/${N} · จ่ายแทน (อยู่บ้าน) ${pay}/${N}`);
+}
+
 // [5h4c] ข้าหลวงเดิม 2367 (docs/design-eras.md หัวข้อ 7b): มาหลัง shock ผลัดแผ่นดิน · เฉพาะผู้มีตำแหน่ง · ฝากตัวเลื่อนขั้นราว 45% · ข้อความครบ
 {
   const before = failed;
