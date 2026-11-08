@@ -56,6 +56,9 @@
       /* แท็บ */
       .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: -1px; flex-shrink: 0; position: relative; z-index: 1; }
       .tabs button { border-radius: 6px 6px 0 0; border-bottom-color: transparent; background: transparent; }
+      /* วิชาพร้อมปลดล็อก (ความเห็นผู้เล่น 2026-11-07) — ป้ายบนแท็บ ปุ่มในแผงตัวละคร และบรรทัดในบันทึก */
+      .tabs button.ready, button.ready { color: var(--accent); font-weight: 600; border-color: var(--accent); }
+      #log p[data-kind="skill"] { border-left: 3px solid var(--accent); padding-left: 8px; font-weight: 600; }
       .tabs button[aria-selected="true"] { background: var(--panel); border-color: var(--line); border-bottom-color: var(--panel); font-weight: 600; }
       .tab { border-top-left-radius: 0; }
       .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 13px; color: var(--muted); margin-bottom: 8px; flex-shrink: 0; }

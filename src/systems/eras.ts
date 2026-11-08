@@ -12,5 +12,5 @@ export function eraAt(ctx: Ctx, year = yearOf(ctx, ctx.state.meta.day)): EraDef 
 /** สถาบันนี้ยังมีอยู่ในปีนี้ไหม (เช่น ทาส การเกณฑ์ไพร่ รายได้ตามศักดินา นามสกุล การปลูกฝี) */
 export function institutionActive(ctx: Ctx, id: InstitutionId, year = yearOf(ctx, ctx.state.meta.day)): boolean {
   const def = ctx.content.institutions[id];
-  return year >= (def.from ?? -Infinity) && year <= (def.until ?? Infinity);
+  return year >= (def.from ?? -Infinity) && year <= (def.until ?? Infinity) && !(def.gaps ?? []).some(([a, b]) => year >= a && year <= b);
 }

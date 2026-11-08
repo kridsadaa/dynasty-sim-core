@@ -54,7 +54,7 @@ export function interactionsFor(ctx: Ctx, me: Character, target: Character): Int
   const busy = (kind: string) => activeIntent(ctx, me.id)?.targetId === target.id && activeIntent(ctx, me.id)?.kind === kind ? 'กำลังทำอยู่' : undefined;
 
   if (target.local && intents['befriend']) {
-    out.push({ id: 'befriend', label: 'ตีสนิท', problem: busy('befriend') ?? reason(targetProblem(ctx, intents['befriend'], me, target)) });
+    out.push({ id: 'befriend', label: 'ผูกมิตร', problem: busy('befriend') ?? reason(targetProblem(ctx, intents['befriend'], me, target)) });
   }
   if (target.local && intents['court'] && target.sex !== me.sex) {
     const married = !!livingSpouse(ctx, me);

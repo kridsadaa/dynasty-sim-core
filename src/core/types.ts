@@ -605,11 +605,13 @@ export interface EraDef {
   loreRefs?: string[];
 }
 
-export type InstitutionId = 'slavery' | 'corvee' | 'sakdinaIncome' | 'surnames' | 'inoculation';
+export type InstitutionId = 'slavery' | 'corvee' | 'sakdinaIncome' | 'surnames' | 'inoculation' | 'royalBargeProcession';
 /** มีผลตั้งแต่ปี from ถึงปี until (รวมทั้งสองข้าง) — ไม่มี = ไม่จำกัดด้านนั้น */
 export interface InstitutionDef {
   from?: number;
   until?: number;
+  /** ช่วงปีที่งด (รวมทั้งสองข้าง) — เช่น ขบวนเรือหลวงงด 2308–2324 */
+  gaps?: Array<[number, number]>;
   note?: string;
   loreRefs?: string[];
 }
@@ -738,7 +740,10 @@ export type Effect =
   /** ออกจากกรุง: ทิศ + พาใคร (all = ทั้งเรือน, nuclear = คู่ครองและลูกในเรือน, alone = ไปคนเดียว) */
   | { op: 'war'; role: string; action: 'leave'; dir: 'east' | 'forest' | 'camp'; party: 'all' | 'nuclear' | 'alone' }
   /** ตามพระยาตากฝ่าวงล้อมออกไปทางตะวันออกคนเดียว — ตระกูลนับเป็นฝ่ายพระเจ้าตากแต่เนิ่น (ได้ความโปรดปรานในราชการ 2311–2324) */
-  | { op: 'war'; role: string; action: 'taksin' };
+  | { op: 'war'; role: string; action: 'taksin' }
+  /** หมายฝีพายขบวนเรือหลวง (systems/barge.ts): serve/pay/dodge · send = ส่งคนใน role rower ไปพายแทน */
+  | { op: 'barge'; role: string; action: 'serve' | 'pay' | 'dodge' }
+  | { op: 'barge'; role: string; action: 'send'; rower: string };
 
 /**
  * แรงต้านในใจตัวละครต่อตัวเลือก — บวกกันทุกข้อ (เฉพาะส่วนที่เป็นบวก)
@@ -989,6 +994,13 @@ export interface TradeDef {
  * การเกณฑ์ทัพของเรือนผู้เล่นในศึกหนึ่ง — mode ตั้งเมื่อหมายเกณฑ์มาถึงและผู้เล่นตัดสินใจแล้ว (ไม่มี mode = เรือนนี้ไม่ได้ถูกเกณฑ์ → คนในเรือนยังเสี่ยงตามสุ่มเดิม)
  *  self = ผู้เล่นไปเอง · send = ส่งญาติชาย (soldier) · servant = ส่งบ่าวชาย · pay = จ่ายเงินแทน · dodge = หลบ
  */
+/** หมายฝีพายขบวนเรือหลวงของปีหนึ่ง (docs/design-barge-procession.md) */
+export interface BargeState {
+  year: number;
+  mode?: 'self' | 'send' | 'pay' | 'dodge';
+  rower?: CharacterId;
+}
+
 export interface CampaignState {
   mode?: 'self' | 'send' | 'servant' | 'pay' | 'dodge';
   soldier?: CharacterId;
@@ -1226,6 +1238,18 @@ export interface Balance {
    * งานบุญ/งานประจำปีของผู้เล่น — เดือนและวันพระตามปฏิทินจันทรคติ (core/calendar.ts)
    * (lore: ritual.holy_days_1680s, ritual.temple_festival_1680s, ritual.floating_lanterns_1680s, ritual.fifth_month_bathing_1680s)
    */
+  /** ขบวนเรือหลวงเดือน 12 (docs/design-barge-procession.md) — ตัวเลขทุกตัวเป็นของเกม */
+  barge: {
+    /** หมายฝีพายมาวันแรม levyDay ค่ำ เดือน levyMonth · ขบวนวันขึ้น day ค่ำ เดือน month */
+    levyMonth: number;
+    levyDay: number;
+    month: number;
+    day: number;
+    levyAge: [number, number];
+    levyChance: number;
+    watchMinAge: number;
+    watchChance: number;
+  };
   festivals: {
     minAge: number;
     /** ต่อปี: วันพระที่ขึ้นเป็น event (จากวันเพ็ญและวันดับราว 25 วัน) */
@@ -1501,6 +1525,8 @@ export interface GameState {
     war?: { prep: number; stance?: 'stay' | 'leave'; dir?: 'east' | 'forest' | 'camp'; party?: CharacterId[]; taksin?: boolean };
     /** ศึกหลัง 2310 ที่เกณฑ์คนในเรือนผู้เล่น คีย์ตามศึก (nine_armies, tha_din_daeng) — docs/design-war-2328.md; เซฟเก่าไม่มี */
     campaigns?: Record<string, CampaignState>;
+    /** ขบวนเรือหลวงเดือน 12 ของปีนี้ (systems/barge.ts) — หมายฝีพายที่ผู้เล่นได้และตัดสินใจ; เซฟเก่าไม่มี */
+    barge?: BargeState;
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;

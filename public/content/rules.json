@@ -107,6 +107,7 @@
     "corvee": { "loreRefs": ["social.corvee"] },
     "sakdinaIncome": { "loreRefs": ["social.sakdina_civil_list"] },
     "surnames": { "from": 2456, "loreRefs": ["naming.no_surname_pre_2456"] },
+    "royalBargeProcession": { "gaps": [[2308, 2324]], "note": "ขบวนเรือหลวงต้นเดือน 12 — งดช่วงศึกพม่า เสียกรุง ธนบุรี (ไม่มีหลักฐานช่วงนี้ ผู้ใช้ตัดสิน 2026-11-08)", "loreRefs": ["ritual.royal_balons_1680s", "ritual.kathin_water_procession_rama4", "event.barge_procession_options"] },
     "inoculation": { "from": 2382, "note": "2381–82 หมอหลวงเรียนปลูกฝี", "loreRefs": ["health.smallpox_endemic"] }
   },
   "history": [

@@ -1004,5 +1004,46 @@
     "url": "https://commons.wikimedia.org/wiki/File:Gezicht_op_Iudea_(Ayutthaya),_de_hoofdstad_van_Siam_Rijksmuseum_SK-A-4477.jpg",
     "license": "สมบัติสาธารณะ (ภาพเขียน ค.ศ. 1662–63; Wikimedia Commons ระบุ Public domain) — ป้อนเครื่องมือสร้างภาพได้ (input-ok)",
     "notes": "วาดที่อัมสเตอร์ดัมสำหรับ VOC จากภาพร่าง/แผนที่ ไม่ได้วาดในที่ — มีภูเขาฉากหลังที่ไม่มีจริง ใช้ได้เฉพาะลักษณะใหญ่ๆ (สีและแนวกำแพง ป้อม เรือนริมน้ำ) ไม่ใช่รายละเอียด; ภาพเล็กเกินจะเห็นรูปทรงใบกำแพง"
+  },
+  {
+    "id": "src.finlayson_1826",
+    "title": "The Mission to Siam, and Hué the Capital of Cochin China, in the Years 1821-2",
+    "author": "George Finlayson",
+    "kind": "primary",
+    "composedYear": 2369,
+    "describesPeriod": [
+      2364,
+      2365
+    ],
+    "reliability": 4,
+    "url": "https://distantreader.org/stacks/trust/uc2/uc2_ark+=13960=t3pv6nd5c.txt",
+    "notes": "บันทึกของศัลยแพทย์ในคณะทูตครอว์เฟิร์ด (สมัย ร.2) พิมพ์หลังผู้เขียนตาย 1826 โดย Raffles; ไฟล์ข้อความจาก OCR ของ HathiTrust (uc2) อ่านได้แต่ตัวสะกดเพี้ยนบ้าง — เลขหน้าในหัวกระดาษ"
+  },
+  {
+    "id": "src.prachum_phongsawadan_69",
+    "title": "ประชุมพงศาวดาร ภาคที่ ๖๙ เรื่องเกี่ยวกับกรุงเก่า ตอนที่ ๑ (หมายรับสั่งและหมายประกาศ)",
+    "author": "กรมศิลปากร (รวบรวม)",
+    "kind": "primary",
+    "composedYear": 2408,
+    "describesPeriod": [
+      2325,
+      2408
+    ],
+    "reliability": 4,
+    "url": "https://th.wikisource.org/wiki/ประชุมพงศาวดาร_ภาคที่_๖๙",
+    "notes": "หมายรับสั่งตัวจริงจากหอสมุดแห่งชาติ รัชกาลที่ 1–4 — composedYear ใช้ปีหมายล่าสุดในเล่ม (ตัวหมายเขียนตามวันที่ในหมาย) พิมพ์รวมโดยกรมศิลปากร 2481 — ตัวหมายเป็นชั้นต้น; หมายเรื่องกฐินทางชลมารคที่ใช้เป็นสมัย ร.4"
+  },
+  {
+    "id": "src.ramkhamhaeng_kap_he_ruea",
+    "title": "บทความเรื่องกาพย์เห่เรือและกาพย์ห่อโคลงประพาสธารทองแดงของเจ้าฟ้าธรรมธิเบศร (วารสาร มรภ. ใน TCI)",
+    "author": "(ดูในไฟล์)",
+    "kind": "secondary",
+    "describesPeriod": [
+      2294,
+      2298
+    ],
+    "reliability": 2,
+    "url": "https://so10.tci-thaijo.org/index.php/HSEdutrujo/article/download/1957/1581/17853",
+    "notes": "ใช้เฉพาะช่วงปีแต่งและโอกาส (ตามเสด็จไปพระพุทธบาท) — บอกช่วง 2294–2301 แต่เจ้าฟ้าธรรมธิเบศรสิ้นพระชนม์ 2298 (หัวเรื่องวิทยานิพนธ์จุฬาฯ ระบุพระชนม์ 2258–2298) จึงใช้ปลายช่วง 2298; ยังไม่ได้อ่านตัวบทความเต็ม"
   }
 ]

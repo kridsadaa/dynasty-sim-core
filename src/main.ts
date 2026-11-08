@@ -153,6 +153,7 @@ const KIND_TH: Record<LogKind, string> = {
   body: 'ร่างกาย',
   household: 'เรือน/ปม',
   daily: 'งานบ้าน',
+  skill: 'วิชา',
   people: 'ผู้คน',
   career: 'ราชการ',
   history: 'บ้านเมือง',
@@ -436,7 +437,8 @@ function renderSkillsAndLegacies() {
       : 'เลือกสายวิชาที่ต้องการฝึกฝนยามว่าง (ค่าครูเดือนละ 0.5 ตำลึง) เพื่อเพิ่มความชำนาญทุกเดือน และสะสมความก้าวหน้าปลดล็อกขั้นวิชา', 'muted'));
 
     const anyCanUnlock = s.tracks.some((t) => t.canUnlock);
-    $('tabBtnSkills').textContent = anyCanUnlock ? 'วิชา (★)' : 'วิชา';
+    $('tabBtnSkills').textContent = anyCanUnlock ? 'วิชา ★' : 'วิชา';
+    $('tabBtnSkills').classList.toggle('ready', anyCanUnlock);
 
     const grid = el('div', undefined, 'track-grid');
     for (const tr of s.tracks) {
@@ -554,7 +556,8 @@ function renderPlayer(v: CharacterView) {
   renderSkillsAndLegacies();
   const sHead = el('div', undefined, 'panelhead');
   sHead.style.marginTop = '8px';
-  sHead.append(el('h2', 'วิชาและความชำนาญ'), button('ฝึกวิชา', () => showTab('skills'), 'small'));
+  const perkReady = v.skills.tracks.some((t) => t.canUnlock);
+  sHead.append(el('h2', 'วิชาและความชำนาญ'), button(perkReady ? 'ปลดล็อกวิชาได้ ★' : 'ฝึกวิชา', () => showTab('skills'), perkReady ? 'small ready' : 'small'));
   box.append(sHead);
   const unlockedPerks = v.skills.tracks.flatMap((t) => t.perks.filter((p) => p.unlocked).map((p) => p.name));
   if (unlockedPerks.length) box.append(el('div', `สำเร็จวิชา: ${unlockedPerks.join(' · ')}`, 'lifestyle'));

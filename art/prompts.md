@@ -713,6 +713,42 @@ Historical illustration of everyday life in Siam in the early Bangkok (Rattanako
 Set in 1833, early Bangkok period, not Ayutthaya. The mouth of a muddy river on the Cambodian coast at Banteay Meas, overcast morning: several long Siamese war boats with rows of paddlers run onto the shallow bank; foot soldiers, bare-chested in knee-length pleated lower cloths, with spears, swords and round rattan shields, jump into knee-deep water and wade toward an earthen stockade with a wooden palisade on the far bank half hidden by smoke from a cannon on a boat's bow; an officer in an open-front white jacket points the way from the lead boat. Tense, determined mood; no blood, no one shown dying; mouths closed. Hair: Every man, including small background figures, crops his hair short all over, only an inch or two long and standing up like a brush, with a round patch about four inches across on the crown where it is only slightly longer, in the same upright brush-like texture; no shaved sides under a longer top, not an undercut, not bald, never tied up. Avoid: an undercut, high fade, slicked-back or combed-back hair, a pompadour, a bun or any tied-up hair, a fully shaved bald head.
 ```
 
+### scene.barge_rowers — กลางลำเรือดั้งยาว ฝีพายนั่งขัดสมาธิเป็นคู่จ้วงพายพร้อมกัน คนหัวเรือยกพายโห่
+
+⬜ ยังไม่มีภาพ · tag: `event:barge.rowing`
+
+lore: `ritual.royal_balons_1680s` (attested), `ritual.kathin_water_procession_rama4` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Morning on a wide brown river in Siam: view from inside a very long narrow dugout escort barge, carved from a single tree, rowers seated cross-legged in pairs side by side filling the width of the hull, all dipping short hand-held paddles (not fixed to the gunwale) into the water at the same instant, a single rower alone at the high prow raising his paddle high to call the stroke, the steersman standing at the stern with a very long paddle. Other long barges in two lines ahead; crowds on the riverbank and in small boats bowing low. Effort, rhythm, spray. No king or royal figure visible anywhere; the canopy of any royal barge is far away and empty-looking or curtained; mouths closed.
+```
+
+### scene.barge_official — ขุนนางนั่งใต้ร่มกลางเรือของตัว ฝีพายหยุดพายก้มหมอบ ขณะกระบวนเรือหลวงผ่านไปไกล ๆ
+
+⬜ ยังไม่มีภาพ · tag: `event:barge.official`
+
+lore: `ritual.royal_balons_1680s` (attested), `social.officer_rowers_from_band_1680s` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+A minor Siamese official sits on a low raised platform in the middle of his own long wooden barge under a single umbrella, wearing an open-front white muslin over-shirt and a silk lower cloth; his rowers, men from his own retinue, have stopped paddling and bow low over their paddles, the official himself lowering his head; the boat holds still near the bank while, far off across the water, a line of gilded barges with carved animal prows passes. Calm, formal, respectful stillness. No king or royal figure visible anywhere; the canopy of any royal barge is far away and empty-looking or curtained; mouths closed.
+```
+
+### scene.barge_watch — ชาวบ้านริมน้ำหมอบดู เรือปิดทองหัวรูปสัตว์แล่นผ่านไปกลางแม่น้ำ
+
+⬜ ยังไม่มีภาพ · tag: `event:festival.barge_watch`
+
+lore: `material.boats_1680s` (attested), `ritual.royal_balons_1680s` (attested), `ritual.barge_procession_bangkok_1822` (attested)
+
+```
+Historical illustration of everyday life in Siam (Ayutthaya kingdom), mid-18th century. Muted earthy watercolor and ink on textured paper, soft natural daylight, restrained palette of ochre, indigo, rust and off-white. Grounded, documentary, ordinary weathered faces without makeup. Unless stated otherwise, Men wear the traditional 'Mahatthai' hairstyle: short, slightly wavy hair is kept only on the top of the head (about 3-5 cm long) and combed to the side, while the sides and back of the head below the crown are shaved close to the skin with a sharp, straight, clean-edged perimeter line. Siamese women have short black hair on the top crown brushed straight up into a neat, flat-topped, brush-like crest about 4 to 5 cm high, the lower sides and back clipped very short, with very short thin sideburn wisps in front of the ears that end strictly at earlobe level. Faces are natural and unmade-up, with natural muted reddish-brown lips. Commoner men are bare-chested. Men's lower cloth is pulled between the legs and tucked in at the back, forming loose pleated breeches that end at the knee, lower legs bare. Commoner women are either bare-chested or wear only a tight horizontal breast-cloth wrapped around the chest, leaving both shoulders and both arms completely bare. Well-to-do women wear a horizontal breast-cloth wrapped snugly around the torso, optionally with a single-shoulder diagonal sash over the left shoulder only, leaving the right shoulder and both arms completely bare and uncovered. Commoner houses are small, of woven split-bamboo panels raised on tall bamboo piles, entered by a short bamboo ladder hanging from the doorway by ropes with its foot off the ground. Any children present are bare-chested and wear a small lower cloth; children under eleven have shaved heads with a small topknot of hair left on the crown. Avoid: black lips, dark lipstick, black-painted mouth, open-mouth grin, a shaved bald head, modern clothing or objects, tourist-poster look, fantasy costume, glossy digital rendering, glamour or model-like faces, makeup, buns or topknots on adult women, long loose hair, bob haircuts, a shawl covering both shoulders, fabric draping over the upper arms like sleeves, fitted blouses, sleeves of any kind, modern Thai costume, shirts on commoner men, a sarong, longyi or wrapped skirt on men, long trousers, tiled roofs or ornate gable finials on commoner houses, ladders leaning on the ground, shorts or shirts on children.
+
+Villagers of all ages, women, old people and children, crowd the riverbank and sit in small dugouts tied along the bank, bowing low with palms together, a child being gently pressed down to bow by its mother; in the middle of the wide river a procession of long gilded barges with high carved animal-shaped prows and rows of paddles rising together speeds past, spray at the bows. Festive but reverent mood, bright late-rainy-season day, high water. No king or royal figure visible anywhere; the canopy of any royal barge is far away and empty-looking or curtained; mouths closed.
+```
+
 ## ภาพตำนาน (Chronicle)
 
 ### legend.battle — ภาพจิตรกรรม: นักรบฟันข้าศึก
@@ -837,7 +873,7 @@ A tense night at a royal palace when one reign ends: high palace walls and gates
 
 ### history.war_naval — ภาพจิตรกรรม: กองเรือรบพายออกจากท่า ธงทิวและปืนบนเรือ
 
-⬜ ยังไม่มีภาพ · tag: `history:annam_war_2376` `history:thalang_war`
+✅ มีภาพแล้ว · tag: `history:annam_war_2376` `history:thalang_war`
 
 lore: `event.annam_war_2376` (attested, verified), `event.thalang_war_2352` (inferred, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -885,7 +921,7 @@ A year of drought: cracked dry rice fields and a nearly empty canal, villagers c
 
 ### history.good_harvest — ภาพจิตรกรรม: ปีข้าวดี เก็บเกี่ยวรวงข้าวหนักเต็มท้องนา
 
-⬜ ยังไม่มีภาพ · tag: `fiction:good_harvest` `fiction:royal_grace`
+✅ มีภาพแล้ว · tag: `fiction:good_harvest` `fiction:royal_grace`
 
 lore: `event.famine_2310_2313` (attested, verified), `attire.wat_ko_kaeo_reference` (attested)
 
@@ -897,7 +933,7 @@ A bountiful harvest: golden heavy-headed rice stalks across the fields, villager
 
 ### history.trade_boom — ภาพจิตรกรรม: ท่าน้ำคึกคัก เรือสินค้าเรียงเต็มและพ่อค้าซื้อขาย
 
-⬜ ยังไม่มีภาพ · tag: `fiction:trade_boom`
+✅ มีภาพแล้ว · tag: `fiction:trade_boom`
 
 lore: `social.chinese_mobility` (inferred), `attire.wat_ko_kaeo_reference` (attested)
 

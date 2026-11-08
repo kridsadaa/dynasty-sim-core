@@ -22,6 +22,7 @@ import { tickChores, tickOutings } from './chores';
 import { habitOption, tickFestivals } from './festivals';
 import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { atWar, withArmy } from './campaign';
+import { bargeToday } from './barge';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
 import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick, unattendedChildIllness } from './mortality';
@@ -34,7 +35,7 @@ import { feudEvent } from './feud';
 // ============================================================================
 
 /** หมวดของบรรทัดใน log — UI ใช้กรอง ('choice' มาจากฝั่ง UI/worker ตอนผู้เล่นเลือกหรือสั่งเอง) */
-export type LogKind = 'family' | 'death' | 'inherit' | 'body' | 'household' | 'daily' | 'people' | 'career' | 'history' | 'choice';
+export type LogKind = 'family' | 'death' | 'inherit' | 'body' | 'household' | 'daily' | 'skill' | 'people' | 'career' | 'history' | 'choice';
 
 export type WorldSignal =
   /** art: tag เลือกภาพจิตรกรรมให้บรรทัดนี้ (หัวเหตุการณ์ประวัติศาสตร์) */
@@ -111,7 +112,9 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   // ค่ากินอยู่ งานของทาส และการฝึกวิชาประจำเดือน — เดือนละครั้ง (ทุก 30 วัน)
   if (S.meta.day % 30 === 0) {
     for (const hh of Object.values(S.households)) householdMonthTick(ctx, hh.id);
-    for (const line of skillsMonthTick(ctx)) out.push({ type: 'log', kind: 'daily', line });
+    const sk = skillsMonthTick(ctx);
+    for (const line of sk.lines) out.push({ type: 'log', kind: 'daily', line });
+    for (const line of sk.ready) out.push({ type: 'log', kind: 'skill', line });
   }
 
   /** NPC ที่ตายวันนี้ → งานศพ มรดก ผู้สืบ และยุบคนตาย — ทำทุกวันที่มีคนตายจาก shock (1 ม.ค. หรือกลางปี) */
@@ -244,7 +247,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   for (const line of campaignResolutionsToday(ctx)) out.push({ type: 'log', kind: 'history', line });
   for (const prepared of historyEventsToday(ctx)) out.push({ type: 'event', prepared });
   // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่ — ที่ทำจนเป็นนิสัยแล้วเลือกให้เอง
-  for (const req of player && !away ? tickFestivals(ctx, awayLabor(ctx, player)) : []) {
+  // ขบวนเรือหลวงเดือน 12 (barge.ts) — ผ่านทางเดียวกับงานบุญ: festival.barge_watch ทำจนเป็นนิสัยแล้วเลือกให้เอง
+  const barge = bargeToday(ctx);
+  for (const line of barge.lines) out.push({ type: 'log', kind: 'family', line });
+  for (const req of [...(player && !away ? tickFestivals(ctx, awayLabor(ctx, player)) : []), ...barge.events]) {
     const prepared = prepareEvent(ctx, req.event, req.bindings, req.vars);
     const habit = habitOption(ctx, player!, prepared);
     if (!habit) {

@@ -78,7 +78,7 @@ function templeElder(ctx: Ctx, ch: Character): ChoreEventRequest[] | null {
  * คนที่ชวนไปงานด้วยได้: beloved = ผัว/เมีย คู่หมั้น คนที่หนีมาอยู่ด้วย หรือคนที่กำลังเกี้ยว
  * child = ลูกเล็ก (3–12 ปี) ที่อยู่เรือนเดียวกัน — คนเล็กสุดก่อน
  */
-function companions(ctx: Ctx, ch: Character): { beloved?: CharacterId; child?: CharacterId } {
+export function companions(ctx: Ctx, ch: Character): { beloved?: CharacterId; child?: CharacterId } {
   const S = ctx.state;
   const court = Object.values(S.intents).find((i) => i.actorId === ch.id && ctx.content.intents[i.kind]?.target === 'court');
   const beloved = [livingSpouse(ctx, ch)?.id, ch.betrothal?.toId, ch.eloped?.withId, court?.targetId]
@@ -89,7 +89,7 @@ function companions(ctx: Ctx, ch: Character): { beloved?: CharacterId; child?: C
   return { ...(beloved ? { beloved: beloved.id } : {}), ...(child ? { child: child.id } : {}) };
 }
 
-function canCourt(ctx: Ctx, ch: Character): boolean {
+export function canCourt(ctx: Ctx, ch: Character): boolean {
   const age = ageOf(ctx, ch);
   const [min, max] = ctx.content.balance.festivals.peerAge;
   return age >= min && age <= max && !livingSpouse(ctx, ch) && !ch.betrothal && !ch.eloped;

@@ -10,6 +10,7 @@ import { adjustFavor, applyCareer, offenceMultiple, officeRank } from './career'
 import { applyChore } from './chores';
 import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
 import { buryValuables, joinTaksin, leaveCity, stayInCity, warWhere } from './war';
+import { applyBarge } from './barge';
 import { applyCampaign, campaignIs } from './campaign';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
@@ -541,6 +542,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
       }
       case 'campaign':
         report.notes.push(...applyCampaign(ctx, ch, e, e.action === 'send' ? who(e.soldier) : undefined));
+        break;
+      case 'barge':
+        report.notes.push(...applyBarge(ctx, ch, e, e.action === 'send' ? who(e.rower) : undefined));
         break;
       case 'war':
         if (e.action === 'prep') ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };

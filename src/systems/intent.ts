@@ -285,7 +285,7 @@ export function tickIntents(ctx: Ctx): { lines: string[]; events: PreparedEvent[
     if (ctx.rng.chance(I.midEventChance)) {
       const age = ageOf(ctx, actor);
       const hasElder = !!elderOf(ctx, actor);
-      // เรื่องเดิมไม่วนกลับมาภายใน MID_EVENT_REPEAT_DAYS — เด็กตีสนิทเพื่อนหลายคนติดกันจะได้ไม่เจอแต่เรื่องขโมยมะม่วง
+      // เรื่องเดิมไม่วนกลับมาภายใน MID_EVENT_REPEAT_DAYS — เด็กผูกมิตรกับเพื่อนหลายคนติดกันจะได้ไม่เจอแต่เรื่องขโมยมะม่วง
       const seen = new Set(Object.values(S.eventLog)
         .filter((e) => e.bindings.actor === actor.id && S.meta.day - e.day < MID_EVENT_REPEAT_DAYS)
         .map((e) => e.defId));

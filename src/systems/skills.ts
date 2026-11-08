@@ -70,7 +70,7 @@ export const SKILL_TRACKS: SkillTrackDef[] = [
     perks: [
       {
         id: 'diplomacy_1', tier: 1, name: 'วาจาอ่อนหวาน',
-        desc: 'ทักษะการพูดจา +15 · การเกี้ยวพาราสีและตีสนิทก้าวหน้าเร็วขึ้น',
+        desc: 'ทักษะการพูดจา +15 · การเกี้ยวพาราสีและผูกมิตรก้าวหน้าเร็วขึ้น',
         skillBonus: { speech: 15 },
       },
       {
@@ -330,10 +330,12 @@ export function skillsYearTick(ctx: Ctx): string[] {
 }
 
 /** ทุก 30 วัน: ตัวละครที่เลือกฝึกวิชาจะได้ทักษะและสะสมแต้มความชำนาญ */
-export function skillsMonthTick(ctx: Ctx): string[] {
+/** ready: บรรทัด "ฝึกจนพร้อมสำเร็จวิชา" — UI แสดงเด่นในหมวดวิชา (ความเห็นผู้เล่น 2026-11-07: เพลินจนไม่รู้ว่าวิชาขึ้น) */
+export function skillsMonthTick(ctx: Ctx): { lines: string[]; ready: string[] } {
   const player = ctx.state.characters[ctx.state.meta.playerCharacterId];
-  if (!isAlive(player) || ageOf(ctx, player) < 12) return [];
   const log: string[] = [];
+  const ready: string[] = [];
+  if (!isAlive(player) || ageOf(ctx, player) < 12) return { lines: log, ready };
   // โบนัสมรดกตระกูลเมื่อเข้าวัยผู้ใหญ่ครั้งแรก
   if (ageOf(ctx, player) >= 14) {
     if (legacyLevel(ctx, player, 'warrior') >= 2 && !(player.seen?.['legacy.warrior_2'] ?? 0)) {
@@ -345,14 +347,14 @@ export function skillsMonthTick(ctx: Ctx): string[] {
       player.skills['literacy'] = Math.min(100, (player.skills['literacy'] ?? 0) + 15);
     }
   }
-  if (!player.focus) return log;
+  if (!player.focus) return { lines: log, ready };
   const track = SKILL_TRACKS.find((t) => t.id === player.focus);
-  if (!track) return log;
+  if (!track) return { lines: log, ready };
 
   // ค่าครูและค่าเสียเวลาจ้างคนแทนงานเรือน — เงินไม่พอก็หยุดฝึกเดือนนั้น
   if (purse(ctx, player) < FOCUS_MONTHLY_COST) {
     log.push(`${player.name}ไม่มีเงินจ่ายค่าครู เดือนนี้จึงหยุดฝึกวิชา`);
-    return log;
+    return { lines: log, ready };
   }
   spend(ctx, player, FOCUS_MONTHLY_COST);
 
@@ -372,8 +374,8 @@ export function skillsMonthTick(ctx: Ctx): string[] {
     player.skillXp = { ...player.skillXp, [track.id]: next };
     if (prev < 100 && next >= 100) {
       const nextPerk = track.perks.find((p) => !hasPerk(player, p.id));
-      if (nextPerk) log.push(`${player.name}ฝึกฝนจนพร้อมสำเร็จวิชา "${nextPerk.name}" (เปิดแท็บวิชาเพื่อปลดล็อก)`);
+      if (nextPerk) ready.push(`${player.name}ฝึกฝนจนพร้อมสำเร็จวิชา "${nextPerk.name}" (เปิดแท็บวิชาเพื่อปลดล็อก)`);
     }
   }
-  return log;
+  return { lines: log, ready };
 }

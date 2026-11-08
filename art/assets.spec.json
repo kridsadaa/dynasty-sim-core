@@ -1800,6 +1800,47 @@
       "loreRefs": [
         "event.annam_war_2376"
       ]
+    },
+    {
+      "id": "scene.barge_rowers",
+      "style": "reality",
+      "tags": [
+        "event:barge.rowing",
+        "event:barge.levy"
+      ],
+      "alt": "กลางลำเรือดั้งยาว ฝีพายนั่งขัดสมาธิเป็นคู่จ้วงพายพร้อมกัน คนหัวเรือยกพายโห่",
+      "subject": "Morning on a wide brown river in Siam: view from inside a very long narrow dugout escort barge, carved from a single tree, rowers seated cross-legged in pairs side by side filling the width of the hull, all dipping short hand-held paddles (not fixed to the gunwale) into the water at the same instant, a single rower alone at the high prow raising his paddle high to call the stroke, the steersman standing at the stern with a very long paddle. Other long barges in two lines ahead; crowds on the riverbank and in small boats bowing low. Effort, rhythm, spray. No king or royal figure visible anywhere; the canopy of any royal barge is far away and empty-looking or curtained; mouths closed.",
+      "loreRefs": [
+        "ritual.royal_balons_1680s",
+        "ritual.kathin_water_procession_rama4"
+      ]
+    },
+    {
+      "id": "scene.barge_official",
+      "style": "reality",
+      "tags": [
+        "event:barge.official"
+      ],
+      "alt": "ขุนนางนั่งใต้ร่มกลางเรือของตัว ฝีพายหยุดพายก้มหมอบ ขณะกระบวนเรือหลวงผ่านไปไกล ๆ",
+      "subject": "A minor Siamese official sits on a low raised platform in the middle of his own long wooden barge under a single umbrella, wearing an open-front white muslin over-shirt and a silk lower cloth; his rowers, men from his own retinue, have stopped paddling and bow low over their paddles, the official himself lowering his head; the boat holds still near the bank while, far off across the water, a line of gilded barges with carved animal prows passes. Calm, formal, respectful stillness. No king or royal figure visible anywhere; the canopy of any royal barge is far away and empty-looking or curtained; mouths closed.",
+      "loreRefs": [
+        "ritual.royal_balons_1680s",
+        "social.officer_rowers_from_band_1680s"
+      ]
+    },
+    {
+      "id": "scene.barge_watch",
+      "style": "reality",
+      "tags": [
+        "event:festival.barge_watch"
+      ],
+      "alt": "ชาวบ้านริมน้ำหมอบดู เรือปิดทองหัวรูปสัตว์แล่นผ่านไปกลางแม่น้ำ",
+      "subject": "Villagers of all ages, women, old people and children, crowd the riverbank and sit in small dugouts tied along the bank, bowing low with palms together, a child being gently pressed down to bow by its mother; in the middle of the wide river a procession of long gilded barges with high carved animal-shaped prows and rows of paddles rising together speeds past, spray at the bows. Festive but reverent mood, bright late-rainy-season day, high water. No king or royal figure visible anywhere; the canopy of any royal barge is far away and empty-looking or curtained; mouths closed.",
+      "loreRefs": [
+        "material.boats_1680s",
+        "ritual.royal_balons_1680s",
+        "ritual.barge_procession_bangkok_1822"
+      ]
     }
   ]
 }

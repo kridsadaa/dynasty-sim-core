@@ -67,6 +67,7 @@
     "outingAge": [13, 20],
     "outingsPerYear": 0.5
   },
+  "barge": { "levyMonth": 11, "levyDay": 8, "month": 12, "day": 5, "levyAge": [18, 50], "levyChance": 0.4, "watchMinAge": 5, "watchChance": 0.6 },
   "festivals": {
     "minAge": 5,
     "holyDaysPerYear": 1,

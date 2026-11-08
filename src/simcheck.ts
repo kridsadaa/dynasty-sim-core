@@ -4,7 +4,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildContentDB } from './content';
 import { epochJd, formatLunar, formatPortuguese, gregorianToJd, lunarFromJd, solarDate, yearsToDays } from './core/calendar';
-import { ageOf, commitRng, dayOfYear, isAlive, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
+import { ageOf, commitRng, dayOfYear, isAlive, lunarOf, makeCtx, yearOf, yearStart, type Ctx } from './core/ctx';
+import { bargeToday, bargeYear } from './systems/barge';
 import type { Character, ContentDB, GameEventDef } from './core/types';
 import { inflictWound, selectPart, tickWounds } from './systems/body';
 import { inoculationEvent, mortalityYearTick } from './systems/mortality';
@@ -1936,6 +1937,122 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ ไปเอง ${serve}/${N} · ถูกส่งไปแทน ${sent}/${N} · จ่ายแทน (อยู่บ้าน) ${pay}/${N}`);
 }
 
+// [5h4f] ขบวนเรือหลวงเดือน 12 (docs/design-barge-procession.md, PLAN ข้อ 15): ปีที่มี/งด · หมายฝีพายเฉพาะไพร่ชาย · ปีละเรื่องเดียวตามฐานะ · ข้อความครบ · โอกาสตามที่ตั้ง
+{
+  const before = failed;
+  console.log('ขบวนเรือหลวงเดือน 12:');
+  const problems: string[] = [];
+  const text = load('text.th.json') as Record<string, string>;
+  const B = content.balance.barge;
+  const probe = makeCtx(emptyState(1), content);
+  for (const y of [2308, 2315, 2324, 2328, 2329, 2335, 2336, 2376]) if (bargeYear(probe, y)) problems.push(`ปี ${y} ไม่ควรมีขบวน`);
+  for (const y of [2290, 2300, 2325, 2340, 2399]) if (!bargeYear(probe, y)) problems.push(`ปี ${y} ควรมีขบวน`);
+  const findDay = (ctx: Ctx, year: number, month: number, waxing: boolean, d: number) => {
+    for (let day = yearStart(ctx, year); day < yearStart(ctx, year + 1); day++) {
+      const l = lunarOf(ctx, day);
+      if (l.month === month && l.waxing === waxing && l.phaseDay === d) return day;
+    }
+    return -1;
+  };
+  const setup = (seed: number, opts: { sex?: 'm' | 'f'; age?: number; office?: boolean } = {}) => {
+    const ctx = makeCtx(emptyState(seed), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = opts.sex ?? 'm';
+    hero.social.wealth = 50;
+    ctx.state.meta.day = yearStart(ctx, 2340);
+    hero.birthDay = ctx.state.meta.day - yearsToDays(opts.age ?? 25);
+    if (opts.office) applyCareer(ctx, hero, 'enter_dept', 'patrol');
+    const levy = findDay(ctx, 2340, B.levyMonth, false, B.levyDay);
+    const proc = findDay(ctx, 2340, B.month, true, B.day);
+    return { ctx, hero, levy, proc };
+  };
+  const at = (ctx: Ctx, day: number) => { ctx.state.meta.day = day; return bargeToday(ctx); };
+  const viewOk = (ctx: Ctx, p: PreparedEvent) => {
+    const v = eventView(ctx, p, text);
+    return v.title !== p.def.id && !!v.text && !/[{}]/.test(v.text) && v.options.every((o) => !!o.text && !/[{}]|^(event|risk|outcome)\./.test(o.text));
+  };
+  {
+    const s = setup(5);
+    if (s.levy < 0 || s.proc < 0 || s.levy >= s.proc) problems.push(`วันหมาย/วันขบวนผิด (${s.levy}, ${s.proc})`);
+  }
+  // หมายฝีพาย: ไพร่ชายราว levyChance · หญิงและขุนนางไม่ได้
+  let levied = 0;
+  let female = 0;
+  let officialLevy = 0;
+  for (let i = 0; i < 200; i++) {
+    const m = setup(1000 + i);
+    if (at(m.ctx, m.levy).events.some((e) => e.event === 'barge.levy')) levied++;
+    const f = setup(1000 + i, { sex: 'f' });
+    if (at(f.ctx, f.levy).events.length) female++;
+    const o = setup(1000 + i, { office: true });
+    if (at(o.ctx, o.levy).events.length) officialLevy++;
+  }
+  if (Math.abs(levied / 200 - B.levyChance) > 0.1) problems.push(`ได้หมายฝีพาย ${levied}/200 (ควรราว ${B.levyChance * 100}%)`);
+  if (female || officialLevy) problems.push(`หญิงได้หมาย ${female} · ขุนนางได้หมาย ${officialLevy}`);
+  // วันขบวน: ปีละเรื่องเดียวตามฐานะ + ข้อความครบ
+  const kinds = new Map<string, number>();
+  let multi = 0;
+  let badText = 0;
+  for (let i = 0; i < 120; i++) {
+    const mode = (['official', 'rower', 'other'] as const)[i % 3];
+    const s = setup(2000 + i, { office: mode === 'official' });
+    if (mode === 'rower') {
+      s.ctx.state.meta.day = s.levy;
+      chooseOption(s.ctx, prepareEvent(s.ctx, 'barge.levy', { actor: s.hero.id }), 'serve');
+    }
+    const r = at(s.ctx, s.proc);
+    if (r.events.length > 1) multi++;
+    for (const e of r.events) {
+      kinds.set(`${mode}:${e.event}`, (kinds.get(`${mode}:${e.event}`) ?? 0) + 1);
+      if (!viewOk(s.ctx, prepareEvent(s.ctx, e.event, e.bindings, e.vars))) badText++;
+    }
+  }
+  if (multi) problems.push(`วันขบวนได้หลายเรื่องพร้อมกัน ${multi} ครั้ง`);
+  if (badText) problems.push(`ข้อความ event ขบวนไม่ครบ ${badText} ครั้ง`);
+  if (!kinds.get('official:barge.official')) problems.push('ขุนนางไม่ได้หมายเข้ากระบวน');
+  if (!kinds.get('rower:barge.rowing')) problems.push('ไพร่ที่ไปพายเองไม่ได้ event พายเรือ');
+  if (!kinds.get('other:festival.barge_watch')) problems.push('คนทั่วไปไม่ได้ไปดูกระบวน');
+  if ([...kinds.keys()].some((k) => (k.startsWith('official:') && k !== 'official:barge.official') || (k.startsWith('rower:') && k !== 'rower:barge.rowing'))) problems.push(`ได้เรื่องผิดฐานะ: ${[...kinds.keys()].join(', ')}`);
+  // ปีงดไม่มีอะไรเลย
+  {
+    const s = setup(77);
+    s.ctx.state.meta.day = yearStart(s.ctx, 2315);
+    const proc = findDay(s.ctx, 2315, B.month, true, B.day);
+    if (at(s.ctx, proc).events.length) problems.push('ปี 2315 (ธนบุรี) มีขบวน');
+  }
+  // คนหัวเรือ: พูดจา 40 + เคยพายแล้วขอได้ · ขอแล้วปีหลังได้ตัวเลือกนั่งหัวเรือ (ติดตัว)
+  {
+    const s = setup(88);
+    s.hero.skills.speech = 45;
+    const opts = () => prepareEvent(s.ctx, 'barge.rowing', { actor: s.hero.id }).options.map((o) => o.id);
+    if (opts().includes('ask_lead')) problems.push('ยังไม่เคยพายแต่เห็นตัวเลือกขอนั่งหัวเรือ');
+    chooseOption(s.ctx, prepareEvent(s.ctx, 'barge.rowing', { actor: s.hero.id }), 'steady');
+    if (!opts().includes('ask_lead')) problems.push('เคยพายแล้ว พูดจา 45 แต่ไม่เห็นตัวเลือกขอนั่งหัวเรือ');
+    chooseOption(s.ctx, prepareEvent(s.ctx, 'barge.rowing', { actor: s.hero.id }), 'ask_lead');
+    const after = opts();
+    if (after.includes('ask_lead') || !after.includes('lead_he')) problems.push(`ขอนั่งหัวเรือแล้วปีหลังไม่ได้ตัวเลือกคนหัวเรือ (${after.join(',')})`);
+  }
+  // หลบถูกจับราว 25% · ขุนนางประหยัดเรือตามไม่ทันราว 30%
+  let caught = 0;
+  let late = 0;
+  for (let i = 0; i < 200; i++) {
+    const s = setup(3000 + i);
+    s.ctx.state.meta.day = s.levy;
+    const w0 = s.hero.social.wealth;
+    chooseOption(s.ctx, prepareEvent(s.ctx, 'barge.levy', { actor: s.hero.id }), 'dodge');
+    if (s.hero.social.wealth < w0) caught++;
+    const o = setup(3000 + i, { office: true });
+    o.ctx.state.meta.day = o.proc;
+    const f0 = o.hero.office?.favor ?? 0;
+    chooseOption(o.ctx, prepareEvent(o.ctx, 'barge.official', { actor: o.hero.id }, { boat: 'x' } as never), 'frugal');
+    if ((o.hero.office?.favor ?? 0) < f0) late++;
+  }
+  if (caught < 30 || caught > 75) problems.push(`หลบหมายฝีพายถูกจับ ${caught}/200 (ควรราว 25%)`);
+  if (late < 40 || late > 85) problems.push(`ขุนนางประหยัดแล้วเรือตามไม่ทัน ${late}/200 (ควรราว 30%)`);
+  check('ขบวนเรือหลวงเดือน 12', problems);
+  if (failed === before) console.log(`  ✓ งด 2308–2324 และปีศึก · หมายฝีพาย ${levied}/200 (หญิง/ขุนนางไม่ได้) · ปีละเรื่องตามฐานะ ข้อความครบ · คนหัวเรือติดตัว · หลบถูกจับ ${caught}/200 · ประหยัดตามไม่ทัน ${late}/200`);
+}
+
 // [5h4c] ข้าหลวงเดิม 2367 (docs/design-eras.md หัวข้อ 7b): มาหลัง shock ผลัดแผ่นดิน · เฉพาะผู้มีตำแหน่ง · ฝากตัวเลื่อนขั้นราว 45% · ข้อความครบ
 {
   const before = failed;
@@ -2078,7 +2195,9 @@ if (LONG) {
   // ฝึกวิชาและปลดล็อกขั้นวิชา
   setSkillFocus(ctx, hero, 'martial');
   if (hero.focus !== 'martial') problems.push('ตั้งใจฝึกวิชาต่อสู้ไม่สำเร็จ');
-  for (let i = 0; i < 26; i++) skillsMonthTick(ctx);
+  // บรรทัด "พร้อมสำเร็จวิชา" ออกครั้งเดียวตอนแต้มเต็ม และแยกจากบรรทัดทั่วไป (UI แสดงเด่นในหมวดวิชา)
+  const readyLines = Array.from({ length: 26 }, () => skillsMonthTick(ctx)).flatMap((r) => r.ready);
+  if (readyLines.length !== 1) problems.push(`บรรทัดพร้อมสำเร็จวิชาควรออกครั้งเดียว ออก ${readyLines.length} ครั้ง`);
   if ((hero.skills['combat'] ?? 0) <= 0) problems.push('ฝึกวิชาต่อสู้รายเดือนแล้วค่าวิชาไม่เพิ่ม');
   if ((hero.skillXp?.martial ?? 0) < 100) problems.push(`ฝึกวิชา 26 เดือนแต่ความก้าวหน้ายังไม่เต็ม (${hero.skillXp?.martial})`);
   unlockNextPerk(hero, 'martial');

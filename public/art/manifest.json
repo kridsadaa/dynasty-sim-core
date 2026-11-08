@@ -1,5 +1,5 @@
 {
-  "styleVersion": "0.8",
+  "styleVersion": "0.9",
   "images": [
     {
       "id": "scene.compound",
@@ -1527,6 +1527,40 @@
         "event:war2376.front"
       ],
       "alt": "ทัพเรือไทยขึ้นบกที่ปากน้ำบันทายมาศ ทหารลุยน้ำจากเรือยาวเข้าหาค่ายดินริมคลอง",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.barge_rowers",
+      "file": "art/scene.barge_rowers.webp",
+      "style": "reality",
+      "tags": [
+        "event:barge.rowing",
+        "event:barge.levy"
+      ],
+      "alt": "กลางลำเรือดั้งยาว ฝีพายนั่งขัดสมาธิเป็นคู่จ้วงพายพร้อมกัน คนหัวเรือยกพายโห่",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.barge_official",
+      "file": "art/scene.barge_official.webp",
+      "style": "reality",
+      "tags": [
+        "event:barge.official"
+      ],
+      "alt": "ขุนนางนั่งใต้ร่มกลางเรือของตัว ฝีพายหยุดพายก้มหมอบ ขณะกระบวนเรือหลวงผ่านไปไกล ๆ",
+      "width": 1024,
+      "height": 572
+    },
+    {
+      "id": "scene.barge_watch",
+      "file": "art/scene.barge_watch.webp",
+      "style": "reality",
+      "tags": [
+        "event:festival.barge_watch"
+      ],
+      "alt": "ชาวบ้านริมน้ำหมอบดู เรือปิดทองหัวรูปสัตว์แล่นผ่านไปกลางแม่น้ำ",
       "width": 1024,
       "height": 572
     }
