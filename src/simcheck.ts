@@ -29,7 +29,7 @@ import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, ski
 import { jealousyEvent, livingWives, minorWifeProblem, takeMinorWife } from './systems/wives';
 import { advanceDay, lifeMilestones } from './systems/world';
 import { allowedAt, whereabouts } from './systems/whereabouts';
-import { eraConditions, eventView, playerView } from './engine/views';
+import { eraConditions, eraPins, eventView, playerView } from './engine/views';
 import { settlePlayerDeath } from './engine/death';
 import { buryValuables, unearthBuried, warBadges, warDeathMult } from './systems/war';
 import { riskChance } from './systems/will';
@@ -1960,6 +1960,35 @@ if (LONG) {
   }
   check('ตัวเลือกแพ้ขาด', problems);
   if (failed === before) console.log(`  ✓ event ที่เจอ ≥ 1% (${frequent.length} ชนิด) ไม่มีตัวเลือกแพ้ขาด · ตั้งชื่อลูก/หลานไม่มีบุญฟรี`);
+}
+
+// [5h4p] หมุดบนหลอดยุค: เหตุการณ์ที่ผ่านแล้วมีชื่อ ที่ยังไม่ถึงไม่บอกชื่อ/ชนิด (กันสปอยล์เสียกรุง), ชื่อซ้ำเป็นหมุดเดียว, นับวันที่ shock ลง
+{
+  const before = failed;
+  console.log('หมุดบนหลอดยุค:');
+  const problems: string[] = [];
+  const ctx = makeCtx(emptyState(78), content);
+  bootstrapScenario(ctx);
+  const at = (year: number, day = 0) => { ctx.state.meta.day = yearStart(ctx, year) + day; return eraPins(ctx); };
+  const tags = new Set(content.history.filter((h) => h.year <= END_YEAR).map((h) => h.tag));
+  const start = at(2290);
+  if (start.pins.length !== tags.size) problems.push(`หมุด ${start.pins.length} อัน ไม่ตรงกับเหตุการณ์ ${tags.size} ชื่อ (ชื่อซ้ำควรเป็นหมุดเดียว)`);
+  if (start.pins.some((p) => p.label || p.tone || p.state !== 'future')) problems.push('ปี 2290 มีหมุดที่บอกชื่อหรือชนิดก่อนเกิด');
+  if (start.note?.includes('เสียกรุง') || start.note?.includes('ล่าสุด')) problems.push(`บรรทัดใต้หลอดตอนต้นเกมสปอยล์: ${start.note}`);
+  const mid = at(2330, 200);
+  const named = mid.pins.filter((p) => p.label);
+  if (!named.some((p) => p.label!.includes('2310')) || mid.pins.some((p) => p.label?.includes('2336'))) problems.push('ปี 2330: หมุดที่ผ่านแล้ว/ยังไม่ถึงไม่ถูก');
+  if (!mid.note?.includes('ล่าสุด') || !mid.note.includes('ยังมีเหตุการณ์ใหญ่อีก')) problems.push(`ปี 2330: บรรทัดใต้หลอดไม่บอกเหตุการณ์ล่าสุด/ที่เหลือ (${mid.note})`);
+  // ผลัดแผ่นดิน 2325 shock วันที่ 120 — ก่อนวันนั้นยังไม่บอกชื่อ
+  const succ = content.history.find((h) => h.tag === 'history:thonburi_succession')!;
+  const pinOf = (r: ReturnType<typeof eraPins>) => r.pins.find((p) => Math.abs(p.pos - ((succ.year - 2288) / (END_YEAR - 2288)) * 100) < 0.11 && (p.label?.includes(String(succ.year)) ?? true));
+  if (pinOf(at(succ.year, (succ.day ?? 0) - 5))?.label) problems.push('ผลัดแผ่นดิน 2325 บอกชื่อก่อนวันที่เกิด');
+  if (!pinOf(at(succ.year, (succ.day ?? 0) + 5))?.label) problems.push('ผลัดแผ่นดิน 2325 ผ่านวันที่เกิดแล้วยังไม่บอกชื่อ');
+  const late = at(END_YEAR + 5);
+  if (late.pins.some((p) => p.state === 'future') || late.note?.includes('ยังมี')) problems.push('หลัง 2400 ยังมีหมุดที่ยังไม่ถึง');
+  if (start.pins.some((p) => p.pos < 0 || p.pos > 100)) problems.push('หมุดอยู่นอกหลอด');
+  check('หมุดบนหลอดยุค', problems);
+  if (failed === before) console.log(`  ✓ ${start.pins.length} หมุด · ที่ยังไม่ถึงไม่บอกชื่อ · นับวันที่ shock ลง · บรรทัดใต้หลอดปี 2330: ${mid.note}`);
 }
 
 // [5h4] ชั้นยุค (docs/design-eras.md): ยุคต่อกันครบช่วงเกม, เงื่อนไขปี/ยุค, สถาบันยังมีผลตลอด 2288–2400 (ช่องเสียบ),

@@ -126,7 +126,8 @@ function renderDates(solar: string, lunar: string) {
 }
 
 /** หลอดยุคสมัย: ความกว้างตามจำนวนปี ยุคที่ยังไม่ถึงไม่บอกชื่อ */
-function eraBarEl(segs: CharacterView['eraBar'], year: number): HTMLElement {
+function eraBarEl(segs: CharacterView['eraBar'], year: number, pins: CharacterView['eraPins'] = [], note: string | null = null): HTMLElement {
+  const wrap = el('div', '', 'era-wrap');
   const bar = el('div', '', 'era-bar');
   for (const g of segs) {
     const seg = el('div', g.name ?? '?', 'era-seg ' + g.state);
@@ -135,7 +136,18 @@ function eraBarEl(segs: CharacterView['eraBar'], year: number): HTMLElement {
     if (g.state === 'now') seg.style.setProperty('--pos', String(Math.round(((year - g.from) / (g.to - g.from)) * 100)) + '%');
     bar.append(seg);
   }
-  return bar;
+  // หมุดเหตุการณ์ใหญ่: ผ่านมาแล้วมีสีและชื่อ (ชี้ค้างดู) · ยังไม่ถึงเป็นหมุดกลวงไม่บอกว่าอะไร
+  const row = el('div', '', 'era-pins');
+  for (const p of pins) {
+    const pin = el('span', '', `era-pin ${p.state}${p.tone ? ' ' + p.tone : ''}`);
+    pin.style.left = p.pos + '%';
+    pin.title = p.label ?? 'เหตุการณ์ใหญ่ที่ยังมาไม่ถึง';
+    pin.setAttribute('aria-label', pin.title);
+    row.append(pin);
+  }
+  wrap.append(bar, row);
+  if (note) wrap.append(el('div', note, 'era-note muted'));
+  return wrap;
 }
 
 function statusPills(badges: readonly StatusBadge[] | undefined): HTMLElement[] {
@@ -538,7 +550,7 @@ function renderPlayer(v: CharacterView) {
   const who = el('div');
   who.append(button(`${v.title ? v.title + ' ' : ''}${v.name}`, () => void inspect(v.nodeId), 'who'), ` อายุ ${v.age} ปี (พ.ศ. ${v.year})`);
   box.append(who, ...statusPills(v.statuses));
-  box.append(eraBarEl(v.eraBar, v.year));
+  box.append(eraBarEl(v.eraBar, v.year, v.eraPins, v.eraNote));
   if (v.conditions.length) box.append(el('div', 'บ้านเมืองตอนนี้', 'muted'), ...statusPills(v.conditions));
   box.append(el('div', `ชนชั้น: ${v.estate} · ${v.purse > v.wealth ? `เงินใช้ในเรือน ${v.purse} ตำลึง (ของตัวเอง ${v.wealth})` : `ทรัพย์ ${v.wealth} ตำลึง`}`));
   if (v.office) box.append(el('h2', 'ราชการ'), el('div', v.office, 'lifestyle'));

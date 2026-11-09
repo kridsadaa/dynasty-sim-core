@@ -258,6 +258,18 @@ export interface EraSegment {
   state: 'past' | 'now' | 'future';
 }
 
+/**
+ * หมุดเหตุการณ์ใหญ่บนหลอดยุค (rules.json › history) — เหตุการณ์ที่ยังไม่ถึงไม่บอกชื่อและชนิด (กันสปอยล์ เช่น เสียกรุง)
+ * pos = ตำแหน่งบนหลอดทั้งเส้น 0..100 (%)
+ */
+export interface EraPin {
+  pos: number;
+  /** ผ่านมาแล้ว: "ศึกเก้าทัพ พ.ศ. 2329" · ยังไม่ถึง: null */
+  label: string | null;
+  tone: 'bad' | 'warn' | null;
+  state: 'past' | 'now' | 'future';
+}
+
 export interface CharacterView {
   name: string;
   nodeId: string; // เปิดหน้าดูตัวละคร/ผังตระกูลจากชื่อผู้เล่น
@@ -278,6 +290,9 @@ export interface CharacterView {
   conditions: StatusBadge[];
   /** หลอดยุคสมัย 2288–2400 — ยุคที่ยังไม่ถึงซ่อนชื่อไว้ (ไม่สปอยล์) คำนวณจากปี ไม่เก็บใน state */
   eraBar: EraSegment[];
+  eraPins: EraPin[];
+  /** บรรทัดใต้หลอด: เหตุการณ์ล่าสุด และเหลืออีกกี่ครั้งก่อนสิ้นเรื่อง (อ่านได้บนมือถือที่ไม่มี hover) */
+  eraNote: string | null;
   traits: string[];
   scars: string[];
   wounds: string[];

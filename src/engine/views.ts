@@ -1,5 +1,5 @@
 import { formatLunar, formatSolar } from '../core/calendar';
-import { ageOf, isAlive, isNovice, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
+import { ageOf, dayOfYear, isAlive, isNovice, lunarOf, must, solarOf, yearOf, type Ctx } from '../core/ctx';
 import type { CapabilityId, Character, FamilyNode, Item, Parentage, Personality, Trait } from '../core/types';
 import { DISTANCE_TH, familiarity, isSingle, knownLocals, localOrigin, relationStrength, tradeOf } from '../systems/acquaintance';
 import { capability } from '../systems/body';
@@ -31,7 +31,7 @@ import type {
   MatchView,
   ChoiceResult,
   CharacterView, DeathNotice, DynastyView, EndingView, EndReason, EventView, InspectView, IntentPlanView, IntentStatusView, KnownPersonView,
-  EraSegment, OddsFactorView, SkillsView, StatusBadge, TreeView,
+  EraPin, EraSegment, OddsFactorView, SkillsView, StatusBadge, TreeView,
 } from './protocol';
 
 // แปลง state → view model (plain data) ก่อนส่งข้ามเธรด
@@ -198,6 +198,41 @@ export function eraBar(ctx: Ctx): EraSegment[] {
   });
 }
 
+/**
+ * หมุดบนหลอดยุคจาก rules.json › history — ปีเดียวกันชื่อเดียวกัน (ข้าวยาก 2311–2312) เป็นหมุดเดียว
+ * ผ่านแล้ว = ถึงปีและถึงวันที่ shock ลงแล้ว · ปีนี้ที่ยังมีผลอยู่ (lasts) = now · ยังไม่ถึง = ไม่บอกชื่อ/ชนิด
+ */
+export function eraPins(ctx: Ctx): { pins: EraPin[]; note: string | null } {
+  const eras = ctx.content.eras;
+  const start = eras[0]!.from, end = eras[eras.length - 1]!.to;
+  const now = yearOf(ctx, ctx.state.meta.day);
+  const doy = dayOfYear(ctx, ctx.state.meta.day);
+  const seen = new Set<string>();
+  const pins: Array<EraPin & { year: number; name: string }> = [];
+  for (const h of [...ctx.content.history].sort((a, b) => a.year - b.year || (a.day ?? 0) - (b.day ?? 0))) {
+    if (h.year < start || h.year > end || seen.has(h.tag)) continue;
+    seen.add(h.tag);
+    const happened = now > h.year || (now === h.year && doy >= (h.day ?? 0));
+    const ongoing = happened && now < h.year + (h.lasts ?? 1);
+    const name = ctx.tags.label(h.tag);
+    pins.push({
+      year: h.year, name,
+      pos: Math.round(((h.year - start) / (end - start)) * 1000) / 10,
+      label: happened ? `${name} พ.ศ. ${h.year}` : null,
+      tone: happened ? (h.kind === 'succession' ? 'warn' : 'bad') : null,
+      state: ongoing ? 'now' : happened ? 'past' : 'future',
+    });
+  }
+  const done = pins.filter((p) => p.state !== 'future');
+  const ahead = pins.length - done.length;
+  const last = done[done.length - 1];
+  const parts = [
+    last ? `เหตุการณ์ใหญ่ล่าสุด: ${last.name} (พ.ศ. ${last.year})` : null,
+    ahead > 0 && now < end ? `ยังมีเหตุการณ์ใหญ่อีก ${ahead} ครั้งก่อน พ.ศ. ${end}` : null,
+  ].filter(Boolean);
+  return { pins: pins.map(({ year: _y, name: _n, ...p }) => p), note: parts.length ? parts.join(' · ') : null };
+}
+
 /** UI ไม่ควรเห็นคีย์ภายใน ("noble", "finger.index.l", "manipulation.fine") — แปลงเป็นคำไทยที่นี่ */
 export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
   const ch = must(ctx.state.characters[ctx.state.meta.playerCharacterId], 'player');
@@ -217,6 +252,7 @@ export function playerView(ctx: Ctx, text: TextTable = {}): CharacterView {
     statuses: statusBadges(ctx, ch, text),
     conditions: [...eraConditions(ctx), ...warBadges(ctx)],
     eraBar: eraBar(ctx),
+    ...(({ pins, note }) => ({ eraPins: pins, eraNote: note }))(eraPins(ctx)),
     traits: ch.traitIds.map((id) => ctx.state.traits[id]).filter((t) => !!t && !t.latent).map((t) => describeTrait(ctx, t!)),
     scars: scarLines(ctx, ch, text),
     wounds: woundLines(ctx, ch, text),
