@@ -1045,5 +1045,32 @@
     "reliability": 2,
     "url": "https://so10.tci-thaijo.org/index.php/HSEdutrujo/article/download/1957/1581/17853",
     "notes": "ใช้เฉพาะช่วงปีแต่งและโอกาส (ตามเสด็จไปพระพุทธบาท) — บอกช่วง 2294–2301 แต่เจ้าฟ้าธรรมธิเบศรสิ้นพระชนม์ 2298 (หัวเรื่องวิทยานิพนธ์จุฬาฯ ระบุพระชนม์ 2258–2298) จึงใช้ปลายช่วง 2298; ยังไม่ได้อ่านตัวบทความเต็ม"
+  },
+  {
+    "id": "src.bowring_1857_v2",
+    "title": "The Kingdom and People of Siam (1857) เล่ม 2",
+    "author": "John Bowring",
+    "kind": "primary",
+    "composedYear": 2400,
+    "describesPeriod": [
+      2398,
+      2400
+    ],
+    "reliability": 4,
+    "url": "https://archive.org/details/kingdompeoplesi2bowr",
+    "notes": "เล่ม 2 มีบันทึกการเดินทางของคณะทูต 2398 ตัวบทสนธิสัญญาเบาริงฉบับภาษาอังกฤษ (หน้า 215–222) พิกัดภาษีขาออก (หน้า 223–226) และข้อตกลงเพิ่มเติมของ Parkes 2399 (ราวหน้า 230–240); ตัวบทสัญญาเชื่อถือได้สูง ส่วนความเห็นของ Bowring เองเอียงไปทางการค้าเสรี; text จาก djvu OCR https://archive.org/download/kingdompeoplesi2bowr/kingdompeoplesi2bowr_djvu.txt"
+  },
+  {
+    "id": "src.prachum_prakat_r4",
+    "title": "ประชุมประกาศรัชกาลที่ ๔ พ.ศ. ๒๓๙๔–๒๔๐๔ (ฉบับพิมพ์ 2511)",
+    "kind": "primary",
+    "composedYear": 2399,
+    "describesPeriod": [
+      2394,
+      2404
+    ],
+    "reliability": 5,
+    "url": "https://archive.org/details/4238424040000unse",
+    "notes": "ตัวบทประกาศของรัชกาลที่ ๔ เรียงตามปี; composedYear 2399 คือปีของประกาศที่อ้างในรอบนี้ (ประกาศแต่ละฉบับออกปีต่างกัน 2394–2404) — ฉบับพิมพ์ 2511 โรงพิมพ์ดำรงธรรม พิมพ์ในงานพระราชทานเพลิงศพพระมหาโพธิวงศาจารย์ (สาลี อินทโชตเถระ) มีคำนำกรมศิลปากร; metadata ของ archive.org เขียนปีเป็น 2384 ซึ่งพิมพ์ผิด; OCR ภาษาไทยเพี้ยนมาก (สระ/วรรณยุกต์หายหรือสลับ เช่น ข้าว→ขาว/ขไว) จึงต้องเทียบภาพหน้ากระดาษก่อนตั้ง verified; text https://archive.org/download/4238424040000unse/4238424040000unse_djvu.txt"
   }
 ]

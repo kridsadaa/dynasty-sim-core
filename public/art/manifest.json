@@ -1008,7 +1008,8 @@
         "event:war.news_tenasserim",
         "event:war2328.news",
         "place:market",
-        "event:riot2391.news"
+        "event:riot2391.news",
+        "event:trade.junk_offer"
       ],
       "alt": "ข่าวศึกที่ท่าน้ำและตลาด",
       "width": 1024,
@@ -1044,7 +1045,8 @@
         "event:war2336.levy_old",
         "event:war2376.levy",
         "event:war2376.levy_f",
-        "event:war2376.levy_old"
+        "event:war2376.levy_old",
+        "event:city2326.levy"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "width": 1024,
@@ -1077,7 +1079,8 @@
       "file": "art/scene.war_siege.webp",
       "style": "reality",
       "tags": [
-        "event:war.siege_begins"
+        "event:war.siege_begins",
+        "event:city2326.wall"
       ],
       "alt": "ชาวกรุงตั้งรับการล้อมบนกำแพงเมืองฉาบปูน ผู้หญิงและเด็กขนดินและน้ำขึ้นเนินดินด้านในกำแพง",
       "width": 1024,

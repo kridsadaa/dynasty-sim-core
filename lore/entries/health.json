@@ -329,5 +329,90 @@
     "rationale": "ความเห็นผู้เล่น 2026-11-05 ว่าลูกตายตลอดโดยทำอะไรไม่ได้และหดหู่ (docs/design-sick-child.md); ผู้ใช้ตัดสิน: เฉพาะลูกของผู้เล่น ทำขวัญเท่ายาที่เรือน หมอยา 3 ตำลึง",
     "citations": [],
     "verified": false
+  },
+  {
+    "id": "health.missionary_vaccination_2390s",
+    "domain": "health",
+    "title": "ปลูกฝีวัวกับหมอมิชชันนารีในกรุง (2383–2400): มีบ้างขาดบ้าง คนสยามส่วนน้อยอยากให้ลูกปลูก",
+    "period": [
+      2383,
+      2400
+    ],
+    "region": "กรุงเทพฯ",
+    "appliesAs": "fact",
+    "claim": {
+      "availability": "เชื้อฝีวัว (vaccine virus) ต้องส่งสะเก็ดแผลมาทางไกลจากบอสตัน ทำต่อได้ไม่กี่เดือนก็หมดเชื้อ มาแล้วก็หายไป เว้นช่วงครั้งละ 1–2 ปี จนหมอแคมป์เบลล์ (ศัลยแพทย์กงสุลอังกฤษ แต่งตั้ง 29 ม.ค. 1857 คือหลังวันจบเกม) รักษาเชื้อไว้ได้เกือบตลอด",
+      "history": "ครั้งที่ได้ผลครั้งแรก ม.ค. 1840 (2383) ปลูกให้เด็ก 75 คนที่สมเด็จองค์ใหญ่ (ขณะนั้นเป็นเสนาบดี) จัดมาจากทาสของท่าน ขึ้นแค่ 3–4 ตุ่ม แล้วต่อเชื้อได้ราว 3 เดือน; ส.ค. 1844 (2387) ได้เชื้อใหม่ ปลูกสำเร็จราว 1,300 คนจากที่ลองราว 2,000 คนในราว 10 เดือน",
+      "attitude": "มิชชันนารีว่าคนสยามเฉยต่อโรคติดต่อ ตอบว่า 'ตามบุญตามกรรม'; มีส่วนน้อยที่อยากให้ลูกปลูกฝี และถ้าถามแล้วไม่มีเชื้อก็ยอมรับชะตา",
+      "earlyFailureRumour": "ช่วงที่ลองแล้วไม่ติด คนลือกันว่าปลูกฝีแบบนี้กันไข้ทรพิษไม่ได้ และเป็นกลของมารหลอกคนให้พินาศ — ความกลัวที่คนในครัวเรือนของเกมมีได้",
+      "doctor": "หมอบรัดเลย์ (D. B. Bradley) อยู่กรุงเทพฯ ตั้งแต่ 1833 (2376) รักษาโรคได้ผลดี (รายงานใน Bowring 2400); เขาเขียนเองว่ารักษาคนไข้ทุกชนชั้นที่โอสถศาลา (Dispensary) ที่เปิดมานาน",
+      "bowring": "Bowring (2400) เขียนสั้น ๆ ว่ามีการปลูกฝีวัวแล้ว",
+      "gameMapping": "ต่อยอด health.inoculation_choice: ในกรุงหลังราว 2383 อาจมีทางเลือกที่สอง 'พาลูกไปปลูกฝีวัวกับหมอฝรั่ง' แต่บางปีหาเชื้อไม่ได้ (ความน่าจะเป็นที่มีเชื้อและความเสี่ยงเป็นของเกม แหล่งไม่ให้ตัวเลข); คนในบ้านอาจคัดค้านเพราะข่าวลือ"
+    },
+    "summary": "ทางเลือก 'ปรึกษาหมอฝรั่ง/ปลูกฝีวัว' ให้ครัวเรือนในกรุงช่วงปลายเกม — มีจริงแต่ขาดเป็นช่วง ๆ และคนส่วนใหญ่ยังไม่ไว้ใจ",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 93 (Introduction of Vaccination)",
+        "quote": "thus did it came and departed, with intervals varying from one year to two"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 90",
+        "quote": "a small proportion of them, manifest considerable desire to have their little ones guarded"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 90",
+        "quote": "if after some enquiry, they find that the vaccine virus is not to be had"
+      },
+      {
+        "sourceId": "src.bangkok_calendar",
+        "locator": "ฉบับ 1865 หน้า 93–94 (Venomous Snakes; ผู้เขียนพูดถึงโอสถศาลาของตน)",
+        "quote": "engaged in treating the sick of all classes"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "เล่ม 1 หน้า 382 (รายงานคณะ American Missionary Association)",
+        "quote": "He has laboured very successfully in his medical profession"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "เล่ม 1 หน้า 146",
+        "quote": "Vaccination has been introduced."
+      }
+    ],
+    "verified": true,
+    "aiCheck": {
+      "date": "2026-11-09",
+      "result": "supported",
+      "checked": "อ่าน djvu OCR ของ Bangkok Calendar 1865 หน้า 90–94 และ Bowring เล่ม 1 หน้า 146, 382 — ข้อความที่ยกมาตรง 6/6 (ต่างเฉพาะช่องว่าง/ขึ้นบรรทัด); https://archive.org/download/b24862010/b24862010_djvu.txt · https://archive.org/download/kingdompeoplesi1bowr/kingdompeoplesi1bowr_djvu.txt",
+      "notes": "Bangkok Calendar 1865 พิมพ์ห่างจากเหตุการณ์ 2383–2387 ราว 21–25 ปี; ตัวเลข 75 คนและ 1,300 คนอยู่หน้า 92–93 ตรวจในชุดรวม bangkokcalendar1861 (OCR หัวข้อหนึ่งพิมพ์ปี 1849 แต่หน้า 90 ของฉบับ 1865 เขียน 1840 จึงถือ 1840); 'ตามบุญตามกรรม' ต้นฉบับถอดเสียงว่า tam boon tam kam"
+    },
+    "contested": "ผู้เขียนเป็นมิชชันนารีที่มองธรรมเนียมสยามในแง่ลบ คำว่า 'เฉย' เป็นมุมมองของเขา; health.inoculation_choice ครอบคลุมการปลูกฝีหนองคน 2381–82 แล้ว รายการนี้เพิ่มเฉพาะฝีวัวกับความไม่แน่นอนของเชื้อ",
+    "gameRefs": {
+      "tags": [
+        "situation:smallpox"
+      ]
+    }
+  },
+  {
+    "id": "health.cowpox_option",
+    "domain": "health",
+    "title": "ทางเลือกปลูกฝีวัวกับหมอฝรั่งในเกม (กลไกเกม)",
+    "period": [
+      2383,
+      2400
+    ],
+    "claim": {
+      "from": "ตั้งแต่ 2383 (ครั้งแรกที่ได้ผลตาม health.missionary_vaccination_2390s)",
+      "option": "ค่าเดินทาง/ของฝาก 0.5 ตำลึง · ไม่มีเชื้อ 40% (เสียเที่ยว) · มีเชื้อ = ปลูกฝีสำเร็จ ไม่มีความเสี่ยงตายแบบฝีหนอง"
+    },
+    "summary": "โอกาสมีเชื้อและราคาเป็นของเกม แหล่งบอกแค่ว่าเชื้อมาๆ หายๆ เว้นครั้งละ 1–2 ปี",
+    "status": "invented",
+    "rationale": "แหล่งไม่ให้ตัวเลขความถี่ที่มีเชื้อ ค่ารักษา หรืออัตราไข้หลังปลูกฝีวัว",
+    "citations": [],
+    "verified": false
   }
 ]

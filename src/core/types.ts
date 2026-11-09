@@ -640,6 +640,8 @@ export type Condition =
   | { type: 'warPrep'; min: number }
   /** มีตำแหน่งราชการระดับ minRank..maxRank (0 = มหาดเล็ก) */
   | { type: 'office'; minRank?: number; maxRank?: number }
+  /** ไม่มีตำแหน่งราชการ (ไพร่ได้หมายเกณฑ์แรงงาน ขุนนางได้หน้าที่คุมแทน — เช่น ก่อกำแพงพระนคร 2326) */
+  | { type: 'noOffice' }
   /** ทักษะอย่างน้อย min (เช่น อ่านออกเขียนได้ literacy) */
   | { type: 'skill'; skill: string; min: number }
   /** ความหนักใจของ actor อยู่ในช่วงนี้ (0..1) */
@@ -750,7 +752,9 @@ export type Effect =
   | { op: 'war'; role: string; action: 'taksin' }
   /** หมายฝีพายขบวนเรือหลวง (systems/barge.ts): serve/pay/dodge · send = ส่งคนใน role rower ไปพายแทน */
   | { op: 'barge'; role: string; action: 'serve' | 'pay' | 'dodge' }
-  | { op: 'barge'; role: string; action: 'send'; rower: string };
+  | { op: 'barge'; role: string; action: 'send'; rower: string }
+  /** ลงหุ้นสำเภา / รับค้ำประกันผู้คุมสินค้า (systems/junk.ts) — ผลมาต้นปีถัดไป */
+  | { op: 'junk'; role: string; action: 'big' | 'small' | 'guarantee' };
 
 /**
  * แรงต้านในใจตัวละครต่อตัวเลือก — บวกกันทุกข้อ (เฉพาะส่วนที่เป็นบวก)
@@ -1013,6 +1017,12 @@ export interface BargeState {
   rower?: CharacterId;
 }
 
+export interface JunkState {
+  year: number;
+  action: 'big' | 'small' | 'guarantee';
+  stake: number;
+}
+
 export interface CampaignState {
   mode?: 'self' | 'send' | 'servant' | 'pay' | 'dodge';
   soldier?: CharacterId;
@@ -1252,6 +1262,16 @@ export interface Balance {
    * งานบุญ/งานประจำปีของผู้เล่น — เดือนและวันพระตามปฏิทินจันทรคติ (core/calendar.ts)
    * (lore: ritual.holy_days_1680s, ritual.temple_festival_1680s, ritual.floating_lanterns_1680s, ritual.fifth_month_bathing_1680s)
    */
+  /**
+   * ลงหุ้นสำเภา (systems/junk.ts, lore social.junk_venture_options — invented): ช่วงปี years, ชวนวันที่ offerDay ของปี (โอกาส offerChance)
+   * ผลวันที่ resolveDay ของปีถัดไป: loss = เสียหายหมด, even = เท่าทุน, ที่เหลือ = กำไร × profitMult · stake = ทุนต่อหุ้น
+   * ค้ำประกัน: ได้ค่าค้ำทันที (ในตัวเลือก) ถ้าเรือเสียหายต้องเสีย guaranteeFine และหนักใจ guaranteeStress
+   */
+  junk: {
+    years: [number, number]; offerDay: number; offerChance: Unit; minAge: number; resolveDay: number;
+    stake: { big: number; small: number }; loss: Unit; even: Unit; profitMult: number;
+    guaranteeFine: number; guaranteeStress: Unit;
+  };
   /** ขบวนเรือหลวงเดือน 12 (docs/design-barge-procession.md) — ตัวเลขทุกตัวเป็นของเกม */
   barge: {
     /** หมายฝีพายมาวันแรม levyDay ค่ำ เดือน levyMonth · ขบวนวันขึ้น day ค่ำ เดือน month */
@@ -1548,6 +1568,8 @@ export interface GameState {
     campaigns?: Record<string, CampaignState>;
     /** ขบวนเรือหลวงเดือน 12 ของปีนี้ (systems/barge.ts) — หมายฝีพายที่ผู้เล่นได้และตัดสินใจ; เซฟเก่าไม่มี */
     barge?: BargeState;
+    /** หุ้นสำเภาที่ลงไว้ (systems/junk.ts) — รู้ผลต้นปีถัดไป; เซฟเก่าไม่มี */
+    junk?: JunkState;
   };
   characters: Table<Character>;
   bodyParts: Table<BodyPart>;

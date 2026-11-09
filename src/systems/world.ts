@@ -24,6 +24,7 @@ import { arrangedMatchEvent, awayLabor, tickIntents } from './intent';
 import { withArmy } from './campaign';
 import { allowedAt, whereabouts } from './whereabouts';
 import { bargeToday } from './barge';
+import { junkToday } from './junk';
 import { settleNpcSinsot, tickMarriage } from './marriage';
 import { householdYearTick } from './socialLearning';
 import { frailty, hardToRaiseEvent, inoculationEvent, mortalityYearTick, unattendedChildIllness } from './mortality';
@@ -251,6 +252,10 @@ export function advanceDay(ctx: Ctx): WorldSignal[] {
   for (const prepared of historyEventsToday(ctx)) out.push({ type: 'event', prepared });
   // งานบุญ/งานประจำปี: วันพระ งานวัด ลอยโคม รดน้ำพ่อแม่ — ที่ทำจนเป็นนิสัยแล้วเลือกให้เอง
   // ขบวนเรือหลวงเดือน 12 (barge.ts) — ผ่านทางเดียวกับงานบุญ: festival.barge_watch ทำจนเป็นนิสัยแล้วเลือกให้เอง
+  // ลงหุ้นสำเภา ร.2–3 (junk.ts): ชวนต้นปี รู้ผลต้นปีถัดไป
+  const junk = junkToday(ctx);
+  for (const line of junk.lines) out.push({ type: 'log', kind: 'household', line });
+  for (const prepared of junk.events) out.push({ type: 'event', prepared });
   const barge = bargeToday(ctx);
   for (const line of barge.lines) out.push({ type: 'log', kind: 'family', line });
   for (const req of [...(player && atHome ? tickFestivals(ctx, awayLabor(ctx, player)) : []), ...barge.events]) {

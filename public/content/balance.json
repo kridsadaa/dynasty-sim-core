@@ -67,6 +67,7 @@
     "outingAge": [13, 20],
     "outingsPerYear": 0.5
   },
+  "junk": { "years": [2352, 2398], "offerDay": 30, "offerChance": 0.3, "minAge": 20, "resolveDay": 45, "stake": { "big": 20, "small": 8 }, "loss": 0.25, "even": 0.25, "profitMult": 1.8, "guaranteeFine": 15, "guaranteeStress": 0.1 },
   "barge": { "levyMonth": 11, "levyDay": 8, "month": 12, "day": 5, "levyAge": [18, 50], "levyChance": 0.4, "watchMinAge": 5, "watchChance": 0.6 },
   "festivals": {
     "minAge": 5,

@@ -32,12 +32,12 @@ type Policy = (typeof ALL_POLICIES)[number];
 const FIXED_CHOICE: Record<'careful' | 'reckless', Record<string, string>> = {
   careful: { 'war2328.news': 'store', 'war2328.levy': 'pay', 'war2328.levy_f': 'pay', 'war2328.levy_old': 'pay', 'war2328.front': 'orders', 'war2328.rice_dear': 'stock',
     'war2330.levy': 'pay', 'war2330.levy_f': 'pay', 'war2330.levy_old': 'pay', 'war2330.front': 'orders',
-    'war2336.levy': 'pay', 'war2336.levy_f': 'pay', 'war2336.levy_old': 'pay', 'war2336.march': 'share', 'war2376.muster': 'steady', 'war2376.levy': 'pay', 'war2376.levy_f': 'pay', 'war2376.levy_old': 'pay', 'war2376.front': 'orders', 'riot2391.news': 'shut', 'court2394.watch': 'shift',
+    'war2336.levy': 'pay', 'war2336.levy_f': 'pay', 'war2336.levy_old': 'pay', 'war2336.march': 'share', 'war2376.muster': 'steady', 'war2376.levy': 'pay', 'war2376.levy_f': 'pay', 'war2376.levy_old': 'pay', 'war2376.front': 'orders', 'riot2391.news': 'shut', 'court2394.watch': 'shift', 'city2326.levy': 'pay', 'city2326.wall': 'steady', 'trade.junk_offer': 'decline',
     'war.prepare': 'bury_most', 'war.decide_leave': 'east_all', 'war.levy': 'pay', 'war.siege_begins': 'home', 'war.rice_gone': 'surrender', 'war.news_tenasserim': 'store', 'plague.news': 'flee', 'health.inoculation': 'inoculate', 'feud.revenge': 'move', 'body.grave_illness': 'physician', 'scheme.assassin': 'cancel' },
   reckless: { 'war2328.news': 'ignore', 'war2328.levy': 'serve', 'war2328.levy_f': 'plead', 'war2328.levy_old': 'plead', 'war2328.front': 'front', 'war2328.rice_dear': 'wait',
     'war2330.levy': 'serve', 'war2330.levy_f': 'plead', 'war2330.levy_old': 'plead', 'war2330.front': 'front',
     'war2336.levy': 'serve', 'war2336.levy_f': 'plead', 'war2336.levy_old': 'plead', 'war2336.march': 'seize', 'war2376.muster': 'rush', 'war2376.levy': 'serve', 'war2376.levy_f': 'plead', 'war2376.levy_old': 'plead', 'war2376.front': 'front', 'riot2391.news': 'suppress', 'court2394.watch': 'slip',
-    'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore', 'body.grave_illness': 'endure' },
+    'city2326.levy': 'dodge', 'city2326.wall': 'rush', 'trade.junk_offer': 'big', 'war.prepare': 'none', 'war.decide_leave': 'stay', 'war.levy': 'serve', 'war.siege_begins': 'wall', 'war.rice_gone': 'endure', 'war.news_tenasserim': 'ignore', 'plague.news': 'none', 'health.inoculation': 'decline', 'feud.revenge': 'ignore', 'body.grave_illness': 'endure' },
 };
 /** โอกาสต่อปีที่ผู้เล่นกดปุ่ม "จ้างคนลอบฆ่า" กับคนที่รู้จัก (ข้อสมมุติของนโยบาย: ประมาท 35%, สุ่ม 5%, อื่น ๆ ไม่กด) */
 const ASSASSIN_PER_YEAR: Record<Policy, number> = { careful: 0, reckless: 0.35, random: 0.05, first: 0 };

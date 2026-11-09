@@ -1206,7 +1206,8 @@
         "event:war.news_tenasserim",
         "event:war2328.news",
         "place:market",
-        "event:riot2391.news"
+        "event:riot2391.news",
+        "event:trade.junk_offer"
       ],
       "alt": "ข่าวศึกที่ท่าน้ำและตลาด",
       "subject": "A busy river landing and market at midday: a travelling boatman, still standing in his boat, speaking urgently to a small crowd of merchants, porters and women who have stopped their trading; baskets of fruit and fish forgotten on the ground, one old man with a hand over his mouth, a child holding a woman's lower cloth; covered boats and a canal lined with raised houses behind. The mood is uneasy murmuring, not panic."
@@ -1238,7 +1239,8 @@
         "event:war2336.levy_old",
         "event:war2376.levy",
         "event:war2376.levy_f",
-        "event:war2376.levy_old"
+        "event:war2376.levy_old",
+        "event:city2326.levy"
       ],
       "alt": "การเกณฑ์ไพร่พลที่ศาลาว่าการแขวง",
       "subject": "Morning in the open yard of a pillared hall at a district office: a row of village men in plain lower cloths and head cloths standing in line, bare-chested, some with spears or long knives; a clerk seated on a mat writing names in a palm-leaf register with a stylus, an officer in a plain white lower cloth and a simple sash standing over him pointing along the line; wives and mothers watching quietly from beyond a bamboo fence. No crowns, no gold regalia."
@@ -1265,7 +1267,8 @@
       "id": "scene.war_siege",
       "style": "reality",
       "tags": [
-        "event:war.siege_begins"
+        "event:war.siege_begins",
+        "event:city2326.wall"
       ],
       "alt": "ชาวกรุงตั้งรับการล้อมบนกำแพงเมืองฉาบปูน ผู้หญิงและเด็กขนดินและน้ำขึ้นเนินดินด้านในกำแพง",
       "subject": "Inside the walled city of Ayutthaya on an overcast day during the long siege of 1766–67, seen from a distance so that the wall dominates and the people are small. The city wall is about eight metres high, its brick faced with weathered off-white lime plaster, stained and cracked, with patches of brick showing where the plaster has fallen; along the top runs a plain plastered parapet with simple battlements. Against the inner face of the wall a broad sloping bank of packed earth rises from the ground up to the top of the wall, and on its flat top sits one old iron cannon on a wooden carriage. Men of the city stand along the wall top behind the parapet holding spears and bows; up the earthen slope women and boys climb upward toward the defenders carrying baskets of earth on their heads and clay water jars; a bare-chested officer standing on the earthen bank points and calls out an order. Beyond the wall thin columns of grey smoke rise into the sky. The wall is a plain city rampart: no European castle crenellations, no square stone towers, no drawbridge, no gatehouse, no brick-built ramp or staircase, no bare red brick wall.",

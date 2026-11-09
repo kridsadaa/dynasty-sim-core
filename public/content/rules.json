@@ -91,7 +91,10 @@
     { "year": 2377, "day": 90, "resolve": "annam" },
     { "year": 2391, "day": 99, "event": "riot2391.news", "minAge": 16 },
     { "year": 2367, "day": 215, "event": "rama3.old_retainers", "minAge": 18 },
-    { "year": 2394, "day": 75, "event": "court2394.watch", "minAge": 13 }
+    { "year": 2394, "day": 75, "event": "court2394.watch", "minAge": 13 },
+    { "year": 2326, "day": 60, "event": "city2326.wall", "minAge": 18 },
+    { "year": 2326, "day": 60, "event": "city2326.levy", "minAge": 18 },
+    { "year": 2328, "day": 100, "event": "festival.city_celebration", "minAge": 8 }
   ],
   "eras": [
     { "id": "late_ayutthaya", "name": "ปลายกรุงศรีอยุธยา", "from": 2288, "to": 2308, "capital": "ayutthaya", "theme": "ความสงบ ราชการ งานบุญ การค้ากับต่างชาติ" },

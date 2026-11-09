@@ -374,5 +374,122 @@
       "notes": "task: invented (as stated); no source | support: partial — the quote is accurate but describes the temporary lodgings built for the French embassy along the river (bamboo hurdle floors covered with rush mats): \"The Floors were cover'd with Rushmats... Neatness appeared every where, but no Magnificence\". It is not a general remark about Siamese or nobles' timber houses, and it says nothing about plank floors.",
       "fixed": true
     }
+  },
+  {
+    "id": "material.sugar_cane_boom_chinese",
+    "domain": "material",
+    "title": "ไร่อ้อยของไทย โรงทำน้ำตาลของจีน (บางปลาสร้อย นครไชยศรี แปดริ้ว)",
+    "period": [
+      2353,
+      2400
+    ],
+    "estates": [
+      "phrai_som",
+      "phrai_luang",
+      "merchant"
+    ],
+    "region": "บางปลาสร้อย, นครไชยศรี, แปดริ้ว (ฉะเชิงเทรา)",
+    "claim": {
+      "start": "ปลูกอ้อยทำน้ำตาลเป็นการใหญ่เริ่มราว ๑๒ ปีก่อน 2365 (ราว 2353) จากแรงริเริ่มของจีนที่มาตั้งถิ่นฐาน",
+      "districtsCrawfurd": [
+        "Bam-pa-soi (บางปลาสร้อย)",
+        "La-kon-chai-se (นครไชยศรี)",
+        "Bang-kong (ยังระบุไม่ได้)",
+        "Pe-triu (น่าจะแปดริ้ว — การถอดชื่อเป็นของผู้ลงข้อมูล)"
+      ],
+      "calendar": "ปลูกเดือน ๗ ตัดเดือนอ้าย น้ำตาลเข้าตลาดกรุงเทพฯ เดือนยี่",
+      "division": "คนปลูกอ้อยเป็นไทยเสมอ คนทำน้ำตาลเป็นจีนเสมอ (2365)",
+      "mills1850s": "นครไชยศรีมีโรงน้ำตาลกว่า ๓๐ โรง โรงละ ๒๐๐–๓๐๐ คน เกือบทั้งหมดจีน (ปัลเลอกัวซ์ผ่านบาวริง)",
+      "taxRama3": "ร.3 ตั้งภาษีน้ำตาลทราย น้ำตาลหม้อ น้ำอ้อย ขึ้นใหม่"
+    },
+    "summary": "บ้านไพร่ในเขตอ้อยปลูกอ้อยขายโรงจีนได้ทุกปี (ปลูกเดือน ๗ ตัดเดือนอ้าย) แต่ต้องเจอภาษีน้ำตาลใหม่สมัย ร.3 และโรงน้ำตาลรวมคนจีนไว้มาก (โยงกับตั้วเหี่ยฉะเชิงเทรา 2391)",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "เล่ม 2 น. 177",
+        "quote": "does not date beyond twelve years before the period of our visit to the country"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "เล่ม 2 น. 177",
+        "quote": "in the industry and enterprise of the Chinese settlers"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "เล่ม 2 น. 177",
+        "quote": "the sugar-cane is raised are Bam-pa-soi, La-kon-chai-se"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "เล่ม 2 น. 177",
+        "quote": "cut in the first month, or December"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "เล่ม 2 น. 177",
+        "quote": "The cultivators of the cane are always"
+      },
+      {
+        "sourceId": "src.crawfurd_1830",
+        "locator": "เล่ม 2 น. 178",
+        "quote": "Siamese ; but the manufacturers of sugar"
+      },
+      {
+        "sourceId": "src.bowring_1857",
+        "locator": "เล่ม 1 น. 203",
+        "quote": "Pallegoix counted more than thirty manufactories, each employing from two to three hundred workmen, almost all Chinese."
+      },
+      {
+        "sourceId": "src.phongsawadan_r3_thiphakorawong",
+        "locator": "วชิรญาณ บทที่ ๒๖๒ ภาษีอากรที่เกิดมีขึ้นใหม่",
+        "quote": "ภาษีน้ำตาลทราย ภาษีน้ำตาลหม้อ ภาษีน้ำอ้อย"
+      }
+    ],
+    "verified": true,
+    "aiCheck": {
+      "date": "2026-11-09",
+      "result": "supported",
+      "checked": "ข้อความที่ยกมาตรงต้นฉบับ 8/8; https://archive.org/details/b29350815_0002 (djvu.txt); https://archive.org/details/kingdompeoplesi1bowr (djvu.txt); https://vajirayana.org/พระราชพงศาวดาร-กรุงรัตนโกสินทร์-รัชชกาลที่-๓/๒๖๒-ภาษีอากรที่เกิดมีขึ้นใหม่",
+      "notes": "ปฏิทินอ้อย: OCR ตัดคำ 'se-venth' และ 'mar-ket' จึงยกเฉพาะ 'cut in the first month, or December' — ในข้อความ OCR อ่านได้ว่าปลูก 'in the seventh month, or June' และน้ำตาลเข้าตลาดกรุงเทพฯ 'in the second month'; ชื่อ Bang-kong และ Pe-triu ถูกตัดบรรทัดจึงไม่ได้ยกมา; 'cultivators ... always Siamese' ขาดข้ามหน้า 177/178 จึงยกเป็นสองท่อน; ผลผลิต >60,000 หาบ (2365) อยู่ น. 177 แต่เป็นคำบอกเล่า; ภาษีน้ำตาล ร.3 มาจากพงศาวดารชำระ 2412 (ชั้นอนุมาน)"
+    },
+    "gameRefs": {
+      "tags": [
+        "estate:merchant"
+      ]
+    }
+  },
+  {
+    "id": "material.foreign_ships_silver_dollars_2399",
+    "domain": "material",
+    "title": "เรือต่างประเทศ 103 ลำกับเงินเหรียญนอก (ประกาศให้ใช้เงินเหรียญนอก ครั้งที่ ๑ ปีมะโรง 2399)",
+    "period": [
+      2399,
+      2400
+    ],
+    "region": "กรุงเทพฯ",
+    "appliesAs": "fact",
+    "claim": {
+      "ships": "ตั้งแต่เซอร์จอห์น เบาริงเข้ามาทำสัญญาจนถึงเดือนอ้าย ปีมะโรง อัฐศก (ราวปลาย 2399) มีเรือลูกค้าต่างประเทศเข้ามาค้าขายที่กรุงเทพฯ 103 ลำ เรือลูกค้ากรุงเทพฯ แต่งออกไปค้าต่างประเทศ 37 ลำ",
+      "silverDollars": "เรือนำเงินเหรียญเข้ามาซื้อสินค้า ลำละสองหมื่นบ้าง หมื่นหนึ่งบ้าง น้อยกว่านั้นบ้าง แต่ลูกค้าในกรุงเทพฯ ไม่มีใครรับเงินเหรียญเพราะไม่เคยใช้",
+      "mintBottleneck": "นายห้างต้องเอาเงินเหรียญไปจ้างช่างในพระคลังมหาสมบัติทำเป็นเงินตรา (พดด้วง) ด้วยเครื่องมือไทย ได้วันละสามสิบชั่งเศษ ไม่ทันใจลูกค้า; ผู้ว่าการแทนกงสุลอังกฤษ (OCR: มิศแบล) ทูลขอให้ประกาศให้ใช้เงินเหรียญ",
+      "exchangeRate": "ที่ประชุมพระคลังมหาสมบัติเห็นชอบให้เงินเหรียญ 100 แลกเงินตราบาท 2 ชั่ง ตำลึงกึ่ง (คิดเป็น 166 บาท ถ้า 1 ชั่ง = 80 บาท 1 ตำลึง = 4 บาท); ก่อนหน้านี้คนข้างนอกแลกกันเหรียญละ 6 สลึง 7 ทศางค์",
+      "kingsView": "เงินเข้ามาเป็นคุณแก่แผ่นดิน ราษฎรจะมั่งมีขึ้น; ใครจะใช้เงินเหรียญก็ตามใจ อย่ากลัวว่าจะมีโทษ; ทุกวันนี้ลูกค้าพาณิชเข้ามาค้าขายเจริญกว่าแต่ก่อนหลายสิบเท่า",
+      "gameMapping": "ปลายเกมครัวเรือนที่ขายของให้ฝรั่งอาจได้ค่าของเป็นเงินเหรียญนอก — รับไว้ตามอัตราหลวง หรือขอเป็นเงินบาท"
+    },
+    "summary": "รายละเอียดฉากท่าเรือกรุงเทพฯ ปี 2399: เรือฝรั่งร้อยกว่าลำ เงินเหรียญนอกที่คนยังไม่กล้ารับ — ใช้ในข้อความ event การค้า (เช่น fiction:trade_boom)",
+    "status": "attested",
+    "citations": [
+      {
+        "sourceId": "src.prachum_prakat_r4",
+        "locator": "ประกาศที่ ๙๖ ประกาศให้ใช้เงินเหรียญนอก (ครั้งที่ ๑) วันพุธ เดือนยี่ ขึ้น ๑๒ ค่ำ ปีมะโรง อัฐศก หน้า ๑๗๘–๑๗๙ (ตามสารบัญ)"
+      },
+      {
+        "sourceId": "src.prachum_prakat_r4",
+        "locator": "ประกาศที่ ๙๖ ราวหน้า ๑๘๑"
+      }
+    ],
+    "verified": false,
+    "contested": "quote ภาษาไทยคัดตรงจาก OCR ของ archive.org ตามตัวอักษร (รวมช่องว่างและตัวสะกดเพี้ยนของ OCR) — ยังไม่ได้เทียบกับภาพหน้ากระดาษ; เลขหน้าเอาจากสารบัญของเล่ม เพราะเลขหน้าใน OCR เพี้ยน; ประกาศลงวันเดือนยี่ปีมะโรง ซึ่งอาจตกต้น ค.ศ. 1857 (หลังวันจบเกม) แต่ตัวเลขเรือนับถึงเดือนอ้าย (ราวปลาย 2399) · ข้อความภาษาไทยในฉบับนี้ได้จาก OCR ของ archive.org ซึ่งอ่านเพี้ยน จึงไม่ยกคำพูด เหลือแค่ตำแหน่ง (เลขประกาศ/หน้าตามสารบัญ) — ต้องเทียบภาพสแกนเฉพาะหน้าที่อ้าง 1–2 หน้าก่อนตั้ง verified"
   }
 ]

@@ -11,6 +11,7 @@ import { applyChore } from './chores';
 import { applyMarriageStep, canPay, purse, settleNpcSinsot, spend } from './marriage';
 import { buryValuables, joinTaksin, leaveCity, stayInCity, warWhere } from './war';
 import { applyBarge } from './barge';
+import { applyJunk } from './junk';
 import { applyCampaign, campaignIs } from './campaign';
 import { resolveTrauma, type TraumaResult } from './trauma';
 import { adjustBond, resistance, riskChance, type Resistance } from './will';
@@ -190,6 +191,8 @@ function checkCondition(ctx: Ctx, ch: Character, c: Condition, bindings: Record<
       const rank = officeRank(ctx, ch);
       return rank !== undefined && rank >= (c.minRank ?? 0) && rank <= (c.maxRank ?? Infinity);
     }
+    case 'noOffice':
+      return officeRank(ctx, ch) === undefined;
     case 'skill':
       return (ch.skills[c.skill] ?? 0) >= c.min;
     case 'stress':
@@ -550,6 +553,9 @@ export function chooseOption(ctx: Ctx, p: PreparedEvent, optionId: string, input
         break;
       case 'barge':
         report.notes.push(...applyBarge(ctx, ch, e, e.action === 'send' ? who(e.rower) : undefined));
+        break;
+      case 'junk':
+        report.notes.push(...applyJunk(ctx, e));
         break;
       case 'war':
         if (e.action === 'prep') ctx.state.meta.war = { ...ctx.state.meta.war, prep: (ctx.state.meta.war?.prep ?? 0) + e.delta };

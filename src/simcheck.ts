@@ -36,6 +36,7 @@ import { riskChance } from './systems/will';
 import { activeFiction, drawFictionEvents, isFictionYear } from './systems/fiction';
 import { eraAt, institutionActive } from './systems/eras';
 import { historyEventsToday } from './systems/historyEvents';
+import { junkToday } from './systems/junk';
 import { END_YEAR } from './systems/scenario';
 
 const load = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', f), 'utf8'));
@@ -1989,6 +1990,119 @@ if (LONG) {
   if (start.pins.some((p) => p.pos < 0 || p.pos > 100)) problems.push('หมุดอยู่นอกหลอด');
   check('หมุดบนหลอดยุค', problems);
   if (failed === before) console.log(`  ✓ ${start.pins.length} หมุด · ที่ยังไม่ถึงไม่บอกชื่อ · นับวันที่ shock ลง · บรรทัดใต้หลอดปี 2330: ${mid.note}`);
+}
+
+// [5h4r] เนื้อหายุครอบ 3 (design-eras.md หัวข้อ 8): ก่อกำแพงพระนคร 2326 (ขุนนาง/ไพร่คนละ event), สมโภชพระนคร 2328,
+//  ลงหุ้นสำเภา (ผลมาต้นปีถัดไป ตามอัตราใน balance.junk), ปลูกฝีวัวตั้งแต่ 2383
+{
+  const before = failed;
+  console.log('เนื้อหายุครอบ 3 (กำแพง สมโภช สำเภา ฝีวัว):');
+  const problems: string[] = [];
+  const J = content.balance.junk;
+  const fresh = (seed: number) => {
+    const ctx = makeCtx(emptyState(seed), content);
+    const hero = bootstrapScenario(ctx);
+    hero.sex = 'm'; hero.social.estate = 'noble'; delete hero.office;
+    return { ctx, hero };
+  };
+  const at = (ctx: Ctx, hero: Character, year: number, day: number, age = 30) => {
+    ctx.state.meta.day = yearStart(ctx, year) + day;
+    hero.birthDay = ctx.state.meta.day - yearsToDays(age) - 30;
+    return historyEventsToday(ctx).map((p) => p.def.id);
+  };
+  // ก. ก่อกำแพง: ไม่มีตำแหน่ง → หมายไพร่ · มีตำแหน่งขั้น 1 ขึ้นไป → คุมช่วงกำแพง · หญิงไม่ได้
+  {
+    const { ctx, hero } = fresh(81);
+    const plain = at(ctx, hero, 2326, 60);
+    if (!plain.includes('city2326.levy') || plain.includes('city2326.wall')) problems.push(`ชายไม่มีตำแหน่ง 2326: ${plain.join(',')}`);
+    applyCareer(ctx, hero, 'enter_dept', 'patrol');
+    const off = at(ctx, hero, 2326, 60);
+    if (!off.includes('city2326.wall') || off.includes('city2326.levy')) problems.push(`ขุนนาง 2326: ${off.join(',')}`);
+    delete hero.office; hero.sex = 'f';
+    if (at(ctx, hero, 2326, 60).some((id) => id.startsWith('city2326.'))) problems.push('หญิงได้หมายก่อกำแพง');
+  }
+  // ข. สมโภช 2328: ทุกคนอายุ 8 ขึ้นไป · ทำข้าวกระทงเฉพาะผู้มีตำแหน่ง
+  {
+    const { ctx, hero } = fresh(82);
+    hero.social.wealth = 50;
+    const ids = (official: boolean) => {
+      delete hero.office;
+      if (official) applyCareer(ctx, hero, 'enter_dept', 'patrol');
+      ctx.state.meta.day = yearStart(ctx, 2328) + 100;
+      const p = historyEventsToday(ctx).find((x) => x.def.id === 'festival.city_celebration');
+      return p ? p.options.map((o) => o.id) : null;
+    };
+    at(ctx, hero, 2328, 100);
+    const plain = ids(false), off = ids(true);
+    if (!plain || plain.includes('kathong')) problems.push(`สมโภช (ไม่มีตำแหน่ง): ${plain}`);
+    if (!off?.includes('kathong')) problems.push(`สมโภช (ขุนนาง): ไม่มีตัวเลือกข้าวกระทง ${off}`);
+  }
+  // ง. สำเภา: ลงหุ้นแล้วรู้ผลต้นปีถัดไป อัตราตาม balance · ค้ำประกันแล้วเรือเสียหายต้องเสียเงิน
+  let lossRate = 0, meanBack = 0;
+  {
+    const N = 400;
+    let losses = 0, back = 0, fines = 0, guaranteeLosses = 0;
+    const saved = J.offerChance;
+    (J as { offerChance: number }).offerChance = 1;
+    for (let i = 0; i < N; i++) {
+      const { ctx, hero } = fresh(1000 + i);
+      const option = i % 4 === 0 ? 'guarantee' : 'big';
+      ctx.state.meta.day = yearStart(ctx, 2360) + J.offerDay;
+      hero.birthDay = ctx.state.meta.day - yearsToDays(30);
+      const offer = junkToday(ctx).events[0];
+      if (!offer) { problems.push('ปี 2360 วันชวน ไม่มี event ลงหุ้นสำเภา'); break; }
+      hero.social.wealth = 100;
+      chooseOption(ctx, offer, option);
+      const afterPay = hero.social.wealth;
+      if (option === 'big' && afterPay !== 80) problems.push(`ลงหุ้นใหญ่แล้วเงินเหลือ ${afterPay} (ควร 80)`);
+      ctx.state.meta.day = yearStart(ctx, 2360) + J.resolveDay;
+      if (junkToday(ctx).lines.length) problems.push('รู้ผลสำเภาในปีเดียวกับที่ลงหุ้น');
+      ctx.state.meta.day = yearStart(ctx, 2361) + J.resolveDay;
+      const r = junkToday(ctx);
+      if (!r.lines.length || ctx.state.meta.junk) problems.push('ต้นปีถัดไปไม่มีผลสำเภา');
+      const got = hero.social.wealth - afterPay;
+      if (option === 'big') { if (got === 0) losses++; back += got; }
+      else if (got < 0) { guaranteeLosses++; fines += -got; }
+      if (problems.length > 3) break;
+    }
+    (J as { offerChance: number }).offerChance = saved;
+    const bigN = N - N / 4;
+    lossRate = losses / bigN; meanBack = back / bigN / J.stake.big;
+    if (Math.abs(lossRate - J.loss) > 0.07) problems.push(`สำเภาเสียหาย ${lossRate.toFixed(2)} ห่างจาก ${J.loss}`);
+    const expect = J.even + (1 - J.loss - J.even) * J.profitMult;
+    if (Math.abs(meanBack - expect) > 0.15) problems.push(`ได้คืนเฉลี่ย ${meanBack.toFixed(2)} เท่า ห่างจาก ${expect.toFixed(2)}`);
+    if (guaranteeLosses === 0 || fines / guaranteeLosses !== J.guaranteeFine) problems.push(`ค้ำประกันแล้วเรือเสียหาย: ${guaranteeLosses} ครั้ง เสียเฉลี่ย ${guaranteeLosses ? fines / guaranteeLosses : 0}`);
+    // นอกช่วงปีไม่ชวน
+    const { ctx, hero } = fresh(99);
+    (J as { offerChance: number }).offerChance = 1;
+    ctx.state.meta.day = yearStart(ctx, 2340) + J.offerDay;
+    hero.birthDay = ctx.state.meta.day - yearsToDays(30);
+    if (junkToday(ctx).events.length) problems.push('ชวนลงหุ้นสำเภาก่อน 2352');
+    (J as { offerChance: number }).offerChance = saved;
+  }
+  // ฉ. ปลูกฝีวัว: มีตั้งแต่ 2383 · มีเชื้อแล้วเด็กพ้นไข้ทรพิษ ไม่มีความเสี่ยงตาย
+  let cowOk = 0;
+  {
+    const N = 200;
+    for (let i = 0; i < N; i++) {
+      const { ctx, hero } = fresh(3000 + i);
+      const kid = spawnCharacter(ctx, { name: 'ทดลอง', sex: 'm', birthYear: 2380, estate: 'noble', father: hero });
+      hero.social.wealth = 20;
+      ctx.state.meta.day = yearStart(ctx, i === 0 ? 2382 : 2385);
+      const p = prepareEvent(ctx, 'health.inoculation', { actor: hero.id, child: kid.id });
+      const has = p.options.some((o) => o.id === 'cowpox');
+      if (i === 0) { if (has) problems.push('มีตัวเลือกฝีวัวก่อน 2383'); continue; }
+      if (!has) { problems.push('ปี 2385 ไม่มีตัวเลือกฝีวัว'); break; }
+      p.locked.clear();
+      chooseOption(ctx, p, 'cowpox');
+      if (!isAlive(kid)) problems.push('ปลูกฝีวัวแล้วเด็กตาย');
+      if (kid.hadSmallpox) cowOk++;
+    }
+    const rate = cowOk / (N - 1);
+    if (Math.abs(rate - 0.6) > 0.1) problems.push(`ปลูกฝีวัวมีเชื้อ ${rate.toFixed(2)} (ควรราว 0.6)`);
+  }
+  check('เนื้อหายุครอบ 3', problems);
+  if (failed === before) console.log(`  ✓ กำแพง 2326 ขุนนาง/ไพร่คนละ event · สมโภช 2328 ข้าวกระทงเฉพาะขุนนาง · สำเภาเสียหาย ${Math.round(lossRate * 100)}% ได้คืนเฉลี่ย ${meanBack.toFixed(2)} เท่า · ค้ำประกันเสีย ${J.guaranteeFine} · ฝีวัวตั้งแต่ 2383 มีเชื้อ ${Math.round((cowOk / 199) * 100)}%`);
 }
 
 // [5h4] ชั้นยุค (docs/design-eras.md): ยุคต่อกันครบช่วงเกม, เงื่อนไขปี/ยุค, สถาบันยังมีผลตลอด 2288–2400 (ช่องเสียบ),
