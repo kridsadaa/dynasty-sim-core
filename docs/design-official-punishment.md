@@ -31,5 +31,20 @@
 - `sim:check 30` และโหมด `invest` อยู่ในช่วงเดิม: ภาคทัณฑ์ทำให้ลดขั้นน้อยลงเล็กน้อย ส่วนการถอดครั้งที่ 5 น่าจะเกิดได้ยาก
 - เพิ่มตัวตรวจใน `simcheck`: ภาคทัณฑ์ใช้ได้ครั้งเดียว · ครั้งที่ 5 ถูกถอดและติด `disgrace` · ค่าปรับครั้งที่ 2 เป็นสองเท่าของครั้งแรก
 
+## 6. รอบ 2 (2026-11-09): ขอพระราชทานอภัยโทษ
+ผู้เล่นควรรู้สึก: ถูกถอดแล้วมีทางกลับ แต่ต้องใช้คนหรือใช้เงิน และขอแล้วอาจไม่โปรด
+- ตัวบทไม่ให้ตัวเลขเรื่องกลับเข้ารับราชการ การคืนตำแหน่งและการโปรดลดโทษเป็นพระราชอำนาจล้วน ๆ ส่วนผู้มีบรรดาศักดิ์ที่จะขอไถ่โทษต้องเอาชื่อขึ้นกราบบังคมทูล (`social.official_pardon_and_reappointment` ม.60) → ทุกทางเป็นตัวเลือกเสี่ยง
+- เลิกอภัยโทษอัตโนมัติ (`pardonChance` 0.25/ปี) → event `career.seek_pardon` ปีละ `pardonOfferChance` 0.35 หลังปีที่ถูกถอด (invented)
+
+| ตัวเลือก | เงื่อนไข | ถ้าโปรด | ถ้าไม่โปรด (โอกาสพลาด) |
+|---|---|---|---|
+| ทูลผ่านผู้ใหญ่ที่ฝากตัว | มีผู้ใหญ่ที่ยังเอ็นดู | กลับเข้ากรมเดิมขั้นแรก (`career: pardon`) | 0.35 − ทักษะพูดจา×0.2 · ผู้ใหญ่ผูกพัน −0.1 (ผู้ทูลรับรองเสียหน้า `social.official_sponsor_and_kin_liability`) |
+| ทูลผ่านเพื่อนบ้านขุนนาง | มีเพื่อนสนิทบ้านขุนนาง | กลับเข้ากรมเดิม | 0.55 − ทักษะพูดจา×0.2 · เพื่อน −0.1 ทั้งสองทาง |
+| ไถ่โทษ 15 ตำลึง | มีเงินถึง | พ้นโทษ ไม่ได้ตำแหน่ง (`career: absolve`) ต้องรอโอกาสฝากตัวเข้ากรมเอง | 0.4 · เงินหายเปล่า |
+| รอ | — | — | — |
+
+- คงไว้: ผลัดแผ่นดินและครบ `disgraceYears` 20 ปีล้างโทษ (invented)
+- ตัวเลขทั้งหมดในตารางเป็นของเกม
+
 ## lore ที่ใช้
 `social.official_punishment_scale_three_seals`, `social.official_probation_first_offence`, `social.official_repeat_offence_escalation`, `social.official_merit_mitigation`, `social.official_sponsor_and_kin_liability`, `social.official_pardon_and_reappointment`, `social.palace_law_removal_and_bar`, `social.palace_law_confession_and_merit`, `social.palace_law_kin_and_descendants`, `social.appointment_qualifications_2283`, `social.removal_case_luang_chaimontri_2280`, `social.drink_gamble_removal_2325`, `social.court_punishments_1680s`

@@ -504,7 +504,8 @@ function everydayHint(effects: PreparedEvent['options'][number]['effects'], vars
       continue;
     }
     if (e.op === 'relation' && e.role === 'actor' && e.kind === 'patron') {
-      parts.push(`เป็นคนของ${vars[e.toward] ?? e.toward}`);
+      // ความผูกพันกับผู้ใหญ่ลดลง (เช่น ทูลขออภัยโทษแล้วไม่โปรด) — ไม่ใช่ได้เป็นคนของท่าน
+      parts.push((e.delta ?? 0) < 0 ? `${vars[e.toward] ?? e.toward}ไม่ค่อยอยากช่วยเหมือนก่อน` : `เป็นคนของ${vars[e.toward] ?? e.toward}`);
       continue;
     }
     if (e.op === 'relation' && e.role === 'actor') {

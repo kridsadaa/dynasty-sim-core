@@ -966,6 +966,85 @@ if (LONG) {
   if (failed === before) console.log(`  ✓ ฝากตัวเข้ากรม ${Math.round(alone.rate * 100)}% → ${Math.round(helped.rate * 100)}% ต่อปี · พูดให้ทุกปี · คู่ขัดไม่นับ · ต้องโทษแล้วเพื่อนห่างเหิน · คำใบ้เฉพาะคนบ้านขุนนาง`);
 }
 
+// [5h2d] ขอพระราชทานอภัยโทษ: ติดความผิดแล้วผู้เล่นเดินเรื่องเอง (ผู้ใหญ่ที่ฝากตัว / เพื่อนบ้านขุนนาง / ไถ่โทษ) ไม่มีการอภัยโทษอัตโนมัติ
+{
+  const before = failed;
+  console.log('ขอพระราชทานอภัยโทษ:');
+  const C = content.balance.career;
+  const ctx = makeCtx(emptyState(48), content);
+  const hero = bootstrapScenario(ctx);
+  const S = ctx.state;
+  S.meta.day += yearsToDays(25);
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  delete hero.office;
+  const problems: string[] = [];
+  const nobleTrade = content.trades.find((t) => t.estate === 'noble')!;
+  const patron = spawnLocal(ctx, hero, { sex: 'm', age: 55, distance: 'near', trade: nobleTrade });
+  const friend = spawnLocal(ctx, hero, { sex: 'm', age: 30, distance: 'near', trade: nobleTrade });
+  const disgraced = () => {
+    delete hero.office; delete hero.disgrace;
+    applyCareer(ctx, hero, 'enter_dept', 'patrol');
+    applyCareer(ctx, hero, 'remove');
+  };
+  const strength = (from: Character, to: Character, kind: 'patron' | 'friend') => S.relations[`${from.id}|${to.id}|${kind}`]?.strength ?? 0;
+  const setPatron = () => { setRelation(ctx, hero.id, patron.id, 'patron', 0.8); setRelation(ctx, patron.id, hero.id, 'gratitude', 0.5); };
+  const setFriend = () => { setRelation(ctx, hero.id, friend.id, 'friend', 0.8); setRelation(ctx, friend.id, hero.id, 'friend', 0.8); };
+  const offered = () => careerYearTick(ctx).events.find((e) => e.event === 'career.seek_pardon');
+  const year = () => yearOf(ctx, S.meta.day);
+
+  // ไม่มีผู้ใหญ่/เพื่อน: เห็นแค่ไถ่โทษกับรอ · ปีที่ถูกถอดยังไม่มี event · ผู้ใหญ่ไม่กราบทูลให้เองแล้ว
+  disgraced();
+  hero.social.wealth = 100;
+  if (offered()) problems.push('ได้ event ขออภัยโทษในปีเดียวกับที่ถูกถอด');
+  setPatron(); setFriend();
+  let offers = 0;
+  const start = year();
+  for (let i = 0; i < 10; i++) {
+    S.meta.day += yearsToDays(1);
+    if (ctx.content.history.some((h) => h.kind === 'succession' && h.year === year())) continue;
+    const ev = offered();
+    if (ev) {
+      offers++;
+      if (ev.bindings.patron !== patron.id || ev.bindings.friend !== friend.id) problems.push('event ไม่ผูกผู้ใหญ่ที่ฝากตัวหรือเพื่อนบ้านขุนนาง');
+    }
+  }
+  if (hero.office || !hero.disgrace) problems.push(`ผู้ใหญ่ยังกราบทูลขออภัยให้เองโดยผู้เล่นไม่ได้เลือก (ปี ${start}–${year()})`);
+  if (offers === 0) problems.push('10 ปีไม่ได้ event ขออภัยโทษเลย');
+  const ids = (b: Record<string, Character['id']>) => prepareEvent(ctx, 'career.seek_pardon', b).options.map((o) => o.id).sort().join(',');
+  if (ids({ actor: hero.id }) !== 'redeem,wait') problems.push(`ไม่มีผู้ช่วย: ตัวเลือก ${ids({ actor: hero.id })} (ควรมีแค่ไถ่โทษกับรอ)`);
+  if (ids({ actor: hero.id, patron: patron.id, friend: friend.id }) !== 'friend,patron,redeem,wait') problems.push('มีผู้ใหญ่และเพื่อนแต่ตัวเลือกไม่ครบ');
+
+  // ผลของแต่ละทาง: ทูลผ่านผู้ใหญ่สำเร็จ → กลับกรมเดิม; พลาด → ผู้ใหญ่ผูกพันลด · ไถ่โทษ → พ้นโทษไม่มีตำแหน่ง เสียเงิน
+  const tally = (option: 'patron' | 'friend' | 'redeem', n: number) => {
+    let ok = 0, hurt = 0, paid = 0, absolved = 0;
+    for (let i = 0; i < n; i++) {
+      disgraced(); setPatron(); setFriend(); hero.social.wealth = 100;
+      const p0 = strength(hero, patron, 'patron'), f0 = strength(friend, hero, 'friend');
+      const p = prepareEvent(ctx, 'career.seek_pardon', { actor: hero.id, patron: patron.id, friend: friend.id });
+      p.locked.clear();
+      chooseOption(ctx, p, option);
+      if (hero.office?.deptId === 'patrol' && !hero.disgrace) ok++;
+      if (!hero.office && !hero.disgrace) absolved++;
+      if (strength(hero, patron, 'patron') < p0 || strength(friend, hero, 'friend') < f0) hurt++;
+      if (hero.social.wealth < 100) paid++;
+    }
+    return { ok: ok / n, hurt: hurt / n, paid: paid / n, absolved: absolved / n };
+  };
+  const viaPatron = tally('patron', 200), viaFriend = tally('friend', 200), viaRedeem = tally('redeem', 200);
+  if (!(viaPatron.ok > 0.5 && viaPatron.ok < 0.8 && Math.abs(viaPatron.ok + viaPatron.hurt - 1) < 1e-9)) problems.push(`ทูลผ่านผู้ใหญ่: สำเร็จ ${viaPatron.ok} เสียหน้า ${viaPatron.hurt} (ควรราว 0.65 และรวมกันเป็น 1)`);
+  if (!(viaFriend.ok > 0.3 && viaFriend.ok < viaPatron.ok && viaFriend.hurt > 0)) problems.push(`ทูลผ่านเพื่อน: สำเร็จ ${viaFriend.ok} (ควรน้อยกว่าผ่านผู้ใหญ่) เสียหน้า ${viaFriend.hurt}`);
+  if (!(viaRedeem.absolved > 0.4 && viaRedeem.absolved < 0.8 && viaRedeem.ok === 0 && viaRedeem.paid === 1)) problems.push(`ไถ่โทษ: พ้นโทษ ${viaRedeem.absolved} ได้ตำแหน่ง ${viaRedeem.ok} เสียเงิน ${viaRedeem.paid}`);
+
+  // ผลัดแผ่นดินหรือครบ disgraceYears ยังล้างโทษเหมือนเดิม
+  disgraced();
+  S.meta.day += yearsToDays(C.disgraceYears);
+  careerYearTick(ctx);
+  if (hero.disgrace) problems.push(`ครบ ${C.disgraceYears} ปีแล้วยังติดความผิด`);
+  check('ขอพระราชทานอภัยโทษ', problems);
+  if (failed === before) console.log(`  ✓ ไม่มีอภัยโทษอัตโนมัติ · ได้ event ${offers}/10 ปี · ผ่านผู้ใหญ่สำเร็จ ${Math.round(viaPatron.ok * 100)}% ผ่านเพื่อน ${Math.round(viaFriend.ok * 100)}% ไถ่โทษ ${Math.round(viaRedeem.absolved * 100)}% · พลาดแล้วคนช่วยเสียหน้า`);
+}
+
 // [5h2b] ขั้นยศเชิงภาพ (ใช้เลือกภาพตัวละคร): มหาดเล็ก = page, ขั้นบนสุดของกรม = head, ขั้นที่ 1 = low, ขั้นที่ 2 = mid, ที่เหลือ = high
 {
   const before = failed;

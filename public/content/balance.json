@@ -118,7 +118,7 @@
     "skillFavorPerTier": 0.025,
     "factionByEra": [{ "from": 2311, "to": 2324, "faction": "faction:taksin_loyalist" }],
     "disgraceYears": 20,
-    "pardonChance": 0.25,
+    "pardonOfferChance": 0.35,
     "probationAge": 38,
     "removeAtOffence": 5,
     "removedWealthShare": 0.5,

@@ -1164,6 +1164,53 @@
     ]
   },
 
+  "career.seek_pardon": {
+    "id": "career.seek_pardon",
+    "textKey": "event.seek_pardon",
+    "loreRefs": ["social.official_pardon_and_reappointment", "social.official_sponsor_and_kin_liability"],
+    "contextTags": [],
+    "roles": { "actor": {}, "patron": {}, "friend": {} },
+    "trigger": { "weight": 0 },
+    "percepts": [],
+    "options": [
+      { "id": "patron", "textKey": "event.seek_pardon.patron",
+        "conditions": [ { "type": "hasRole", "role": "patron" } ],
+        "risk": {
+          "base": 0.35,
+          "factors": [ { "source": "skill", "skill": "speech", "weight": -0.2, "reasonKey": "speech" } ],
+          "hintKey": "risk.seek_pardon",
+          "successKey": "outcome.seek_pardon.granted",
+          "fail": { "textKey": "outcome.seek_pardon.patron_refused",
+            "effects": [ { "op": "relation", "role": "actor", "toward": "patron", "kind": "patron", "delta": -0.1 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] }
+        },
+        "effects": [ { "op": "career", "role": "actor", "action": "pardon" } ] },
+      { "id": "friend", "textKey": "event.seek_pardon.friend",
+        "conditions": [ { "type": "hasRole", "role": "friend" } ],
+        "risk": {
+          "base": 0.55,
+          "factors": [ { "source": "skill", "skill": "speech", "weight": -0.2, "reasonKey": "speech" } ],
+          "hintKey": "risk.seek_pardon",
+          "successKey": "outcome.seek_pardon.granted",
+          "fail": { "textKey": "outcome.seek_pardon.friend_refused",
+            "effects": [ { "op": "relation", "role": "actor", "toward": "friend", "kind": "friend", "delta": -0.1 }, { "op": "relation", "role": "friend", "toward": "actor", "kind": "friend", "delta": -0.1 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] }
+        },
+        "effects": [ { "op": "career", "role": "actor", "action": "pardon" } ] },
+      { "id": "redeem", "textKey": "event.seek_pardon.redeem",
+        "conditions": [ { "type": "purse", "min": 15 } ],
+        "risk": {
+          "base": 0.4,
+          "hintKey": "risk.seek_pardon_redeem",
+          "successKey": "outcome.seek_pardon.redeemed",
+          "fail": { "textKey": "outcome.seek_pardon.redeem_refused",
+            "effects": [ { "op": "wealth", "role": "actor", "delta": -15 }, { "op": "stress", "role": "actor", "delta": 0.03 } ] }
+        },
+        "effects": [ { "op": "wealth", "role": "actor", "delta": -15 }, { "op": "career", "role": "actor", "action": "absolve" } ] },
+      { "id": "wait", "textKey": "event.seek_pardon.wait",
+        "hintKey": "event.seek_pardon.wait.hint",
+        "effects": [] }
+    ]
+  },
+
   "career.page_duty": {
     "id": "career.page_duty",
     "textKey": "event.page_duty",

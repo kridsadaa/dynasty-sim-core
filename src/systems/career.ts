@@ -1,6 +1,6 @@
 import { DAYS_PER_YEAR } from '../core/calendar';
 import { ageOf, isAlive, must, yearOf, type Ctx } from '../core/ctx';
-import type { Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
+import type { CareerAction, Character, CharacterId, DepartmentDef, OfficePostDef } from '../core/types';
 import type { OfficeTier } from '../art/select';
 import { livingParents } from './factory';
 import { opinion } from './opinion';
@@ -170,9 +170,7 @@ function removalFine(ctx: Ctx, ch: Character): number {
 }
 
 /** ทำ action ราชการจาก effect ของ event — คืนบรรทัด log */
-export function applyCareer(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove' | 'restore' | 'decline', deptId?: string,
-): string[] {
+export function applyCareer(ctx: Ctx, ch: Character, action: CareerAction, deptId?: string): string[] {
   const C = ctx.content.balance.career;
   const post = postOf(ctx, ch);
   const dept = deptOf(ctx, ch);
@@ -192,6 +190,18 @@ export function applyCareer(
     case 'decline':
       delete ch.formerOffice;
       return [];
+    case 'pardon': {
+      // ได้พระราชทานอภัยโทษ → พ้นความผิดและกลับเข้ากรมเดิมขั้นแรก (มหาดเล็กเดิมกลับเป็นมหาดเล็ก)
+      const d = ch.disgrace;
+      if (!d || ch.office) return [];
+      delete ch.disgrace;
+      return applyCareer(ctx, ch, d.deptId ? 'enter_dept' : 'enter', d.deptId);
+    }
+    case 'absolve':
+      // ไถ่โทษ (lore: social.official_pardon_and_reappointment ม.60) → พ้นความผิด ยื่นเข้ารับราชการเองได้อีก แต่ยังไม่มีตำแหน่ง
+      if (!ch.disgrace) return [];
+      delete ch.disgrace;
+      return [`${ch.name}พ้นโทษแล้ว ยื่นเข้ารับราชการได้อีก`];
     case 'enter': {
       if (ch.office) return [];
       const first = must(postAt(dept, 0), 'post rank 0');
@@ -304,15 +314,13 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   }
   if (!player.office && player.disgrace) {
     // ถูกถอดเพราะความผิด (lore: social.court_punishments_1680s) — กลับเข้าได้เมื่อมีผู้ใหญ่กราบทูลขออภัย ผลัดแผ่นดิน หรือเวลาผ่านไปนาน
+    // ผู้เล่นเดินเรื่องขอพระราชทานอภัยโทษเองผ่าน event (ผู้ใหญ่ที่ฝากตัว / เพื่อนบ้านขุนนาง / ไถ่โทษ) — พ้นปีที่ถูกถอดแล้วปีละ pardonOfferChance
     const d = player.disgrace;
-    const patron = activePatron(ctx, player);
-    if (patron && ctx.rng.chance(C.pardonChance)) {
-      delete player.disgrace;
-      lines.push(`${S.characters[patron.to]!.name}กราบทูลขออภัยโทษให้${player.name}`);
-      lines.push(...applyCareer(ctx, player, d.deptId ? 'enter_dept' : 'enter', d.deptId));
-    } else if (ctx.content.history.some((h) => h.kind === 'succession' && h.year === year) || year - d.year >= C.disgraceYears) {
+    if (ctx.content.history.some((h) => h.kind === 'succession' && h.year === year) || year - d.year >= C.disgraceYears) {
       delete player.disgrace;
       lines.push(`ความผิดเก่าของ${player.name}ถูกลืมเลือนไปแล้ว`);
+    } else if (year > d.year && ctx.rng.chance(C.pardonOfferChance)) {
+      events.push({ event: 'career.seek_pardon', bindings: pardonBindings(ctx, player) });
     }
     return { lines, events };
   }
@@ -396,6 +404,13 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   return { lines, events };
 }
 
+/** คนที่ช่วยทูลขออภัยโทษได้: ผู้ใหญ่ที่ฝากตัวไว้ซึ่งยังเอ็นดู และเพื่อนสนิทบ้านขุนนาง */
+export function pardonBindings(ctx: Ctx, player: Character): Record<string, CharacterId> {
+  const patron = activePatron(ctx, player);
+  const friend = nobleFriend(ctx, player);
+  return { actor: player.id, ...(patron ? { patron: patron.to } : {}), ...(friend ? { friend: friend.id } : {}) };
+}
+
 /** ข้อความในแผงตัวละคร */
 export function officeStatus(ctx: Ctx, ch: Character): string | null {
   const post = postOf(ctx, ch);
@@ -415,12 +430,15 @@ export function officeStatus(ctx: Ctx, ch: Character): string | null {
 }
 
 /** ข้อความใต้ตัวเลือก event ราชการ — ราคา/ผลที่ตามมาให้เห็นก่อนเลือก */
-export function careerHint(
-  ctx: Ctx, ch: Character, action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove', deptId?: string,
-): string | undefined {
+export function careerHint(ctx: Ctx, ch: Character, action: CareerAction, deptId?: string): string | undefined {
   const post = postOf(ctx, ch);
   const dept = deptOf(ctx, ch);
   const C = ctx.content.balance.career;
+  if (action === 'pardon') {
+    const back = ctx.content.offices.departments.find((d) => d.id === ch.disgrace?.deptId);
+    return back ? `ถ้าโปรด: กลับเข้า${back.label.th}ขั้นแรก` : 'ถ้าโปรด: กลับเข้าถวายตัวเป็นมหาดเล็ก';
+  }
+  if (action === 'absolve') return 'ถ้าโปรด: พ้นโทษ แต่ยังไม่ได้ตำแหน่ง ต้องรอโอกาสฝากตัวเข้ากรมเอง';
   if (action === 'enter') {
     const first = postAt(dept, 0);
     return first ? `ศักดินา ${first.sakdina} · เข้าเวรในวัง ไม่ได้อยู่ช่วยงานบ้านราว ${Math.round(C.dutyLabor * 100)}%` : undefined;

@@ -654,6 +654,9 @@ export type Condition =
   /** ปีปัจจุบันอยู่ในยุคใดยุคหนึ่ง (id ใน rules.json › eras) */
   | { type: 'era'; in: string[] };
 
+/** pardon = ได้พระราชทานอภัยโทษ กลับเข้ากรมเดิม · absolve = ไถ่โทษพ้นความผิด แต่ยังไม่ได้ตำแหน่ง (ดู career.ts) */
+export type CareerAction = 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove' | 'restore' | 'decline' | 'pardon' | 'absolve';
+
 export type Effect =
   /** ตระกูลของ role ถูกนับเป็นฝ่ายนี้ (Dynasty.faction) — ใช้กับ shock.purgeFactions เช่น เลือกข้างตอนผลัดแผ่นดิน 2325 */
   | { op: 'faction'; role: string; set: TagId }
@@ -688,7 +691,7 @@ export type Effect =
    * ราชการ: enter = ถวายตัวเป็นมหาดเล็ก, assign = พ้นมหาดเล็กไปสังกัดกรม dept แล้วเลื่อนหนึ่งขั้น,
    * promote/demote = เลื่อน/ลดหนึ่งขั้น, dismiss = ถอดจากราชการ, remove = ถอดเพราะความผิด (ติด disgrace) — ดู systems/career.ts
    */
-  | { op: 'career'; role: string; action: 'enter' | 'assign' | 'enter_dept' | 'promote' | 'demote' | 'dismiss' | 'remove' | 'restore' | 'decline'; dept?: string }
+  | { op: 'career'; role: string; action: CareerAction; dept?: string }
   /** ความโปรดปรานในราชการ */
   | { op: 'favor'; role: string; delta: number }
   /** เงิน: delta ตำลึง และ/หรือ perSakdina × ศักดินาของคนนั้น (ปรับไหมตามบรรดาศักดิ์); perOffence = คูณครั้งที่ต้องโทษ (ทวีคูณ ตรีคูณ… ดู offenceMultiple ใน career.ts) */
@@ -1390,8 +1393,8 @@ export interface Balance {
     factionByEra: Array<{ from: number; to: number; faction: string }>;
     /** หลังราชสำนักล่ม: ผู้ที่เคยมีตำแหน่งถูกเรียกเข้ารับราชการคงยศเดิมในปีช่วงนี้ (lore: event.fall_of_ayutthaya_2310) */
     recallYears: [number, number];
-    /** ถูกถอดเพราะความผิดแล้ว: ต้องรอครบกี่ปีจึงยื่นเข้ารับราชการเองได้อีก; มีผู้ใหญ่ที่ฝากตัวไว้ช่วยกราบทูลขออภัยโทษปีละ pardonChance (ตัวเลขของเกม ไม่มีหลักฐานใน lore — invented) */
-    disgraceYears: number; pardonChance: Unit;
+    /** ถูกถอดเพราะความผิดแล้ว: ต้องรอครบกี่ปีจึงพ้นโทษเอง · หลังปีที่ถูกถอด ได้ event ขอพระราชทานอภัยโทษ (career.seek_pardon) ปีละ pardonOfferChance (ตัวเลขของเกม ตัวบทไม่ได้ให้เวลารอ — invented, lore: social.official_pardon_and_reappointment) */
+    disgraceYears: number; pardonOfferChance: Unit;
     /** ผิดครั้งแรกตอนอายุต่ำกว่านี้ → ภาคทัณฑ์แทนลงโทษ (lore: social.official_probation_first_offence; เส้นอายุยืมวัยวุฒิ 38 จาก social.appointment_qualifications_2283 — การใช้ตรงนี้เป็นการตีความของเกม) */
     probationAge: number;
     /** ผิดครั้งที่เท่านี้ขึ้นไป → ริบทรัพย์ (ส่วน removedWealthShare ของเงินที่มี) แล้วถอดจากราชการ (lore: social.official_repeat_offence_escalation; สัดส่วนเป็นของเกม ตัวบทว่าริบทรัพย์ไม่ได้บอกว่าเท่าไร) */
