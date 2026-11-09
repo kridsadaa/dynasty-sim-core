@@ -22,7 +22,7 @@ import { bootstrapScenario } from './systems/scenario';
 import { kinYearTick, markNursing } from './systems/lifeEvents';
 import { applyCareer, careerSkill, careerYearTick, officeRank, officeStatus, officeTier } from './systems/career';
 import { companions, habitOption } from './systems/festivals';
-import { findSlaveConcubines, performInteraction, takeSlaveConcubine } from './systems/interactions';
+import { findSlaveConcubines, interactionsFor, performInteraction, takeSlaveConcubine } from './systems/interactions';
 import { dropMatches } from './systems/matchmaking';
 import { buyHouseholdLand, buyHouseholdSlave, expandHousehold, freeHouseholdSlave, houseCapacity, householdMonth } from './systems/servants';
 import { hasPerk, legacyLevel, mortalityShield, setSkillFocus, SKILL_TRACKS, skillsMonthTick, skillsYearTick, unlockDynastyLegacy, unlockNextPerk } from './systems/skills';
@@ -889,6 +889,81 @@ if (LONG) {
   if (!officeStatus(ctx, hero)?.includes('ขั้น 2')) problems.push('แผงตัวละครไม่บอกผลของวิชาที่ปลดล็อก');
   check('วิชากับความก้าวหน้าในราชการ', problems);
   if (failed === before) console.log('  ✓ วิชาสายของกรมเพิ่มความโปรดปรานตามขั้น · สายอื่นไม่ช่วย · แผงตัวละครบอกผล');
+}
+
+// [5h2c] เพื่อนสนิทบ้านขุนนางช่วยเรื่องราชการ: ฝากฝังเข้ารับราชการบ่อยขึ้น พูดให้ทุกปี เสียหน้าเมื่อผู้เล่นต้องโทษ และบอกผู้เล่นก่อนผูกมิตร
+{
+  const before = failed;
+  console.log('เพื่อนบ้านขุนนางกับราชการ:');
+  const C = content.balance.career;
+  const ctx = makeCtx(emptyState(47), content);
+  const hero = bootstrapScenario(ctx);
+  ctx.state.meta.day += yearsToDays(25);
+  hero.sex = 'm';
+  hero.social.estate = 'noble';
+  delete hero.office;
+  const problems: string[] = [];
+  const nobleTrade = content.trades.find((t) => t.estate === 'noble')!;
+  const farmTrade = content.trades.find((t) => t.id === 'farmer')!;
+  const friend = spawnLocal(ctx, hero, { sex: 'm', age: 30, distance: 'near', trade: nobleTrade });
+  const stranger = spawnLocal(ctx, hero, { sex: 'm', age: 30, distance: 'near', trade: nobleTrade });
+  const farmer = spawnLocal(ctx, hero, { sex: 'm', age: 30, distance: 'near', trade: farmTrade });
+  for (const c of [friend, stranger, farmer]) setRelation(ctx, hero.id, c.id, 'acquaintance', 0.5);
+  const befriend = (strength: number) => {
+    setRelation(ctx, hero.id, friend.id, 'friend', strength);
+    setRelation(ctx, friend.id, hero.id, 'friend', strength);
+  };
+  const unfriend = () => {
+    delete ctx.state.relations[`${hero.id}|${friend.id}|friend`];
+    delete ctx.state.relations[`${friend.id}|${hero.id}|friend`];
+  };
+
+  // ยังไม่มีตำแหน่ง อายุเลยวัยมหาดเล็ก: นับปีที่ได้ฝากตัวเข้ากรม (career.petition) มี/ไม่มีเพื่อน
+  const petitions = (n: number) => {
+    let hits = 0, vouched = 0;
+    for (let i = 0; i < n; i++) {
+      const r = careerYearTick(ctx);
+      if (r.events.some((e) => e.event === 'career.petition')) hits++;
+      if (r.lines.some((l) => l.includes(friend.name) && l.includes('ฝากฝัง'))) vouched++;
+    }
+    return { rate: hits / n, vouched };
+  };
+  const alone = petitions(600);
+  befriend(0.7);
+  const helped = petitions(600);
+  if (!(helped.rate - alone.rate > C.friendEntryBoost * 0.5)) problems.push(`เพื่อนบ้านขุนนางไม่ช่วยให้ได้ฝากตัวเข้ากรม (${alone.rate.toFixed(2)} → ${helped.rate.toFixed(2)})`);
+  if (alone.vouched !== 0 || helped.vouched === 0) problems.push('บันทึกไม่บอกว่าเพื่อนช่วยฝากฝัง (หรือบอกทั้งที่ไม่มีเพื่อน)');
+
+  // รับราชการแล้ว: เพื่อนพูดให้ทุกปี
+  applyCareer(ctx, hero, 'enter_dept', 'patrol');
+  const yearFavor = () => { hero.office!.favor = 0; careerYearTick(ctx); return hero.office!.favor; };
+  const withFriend = yearFavor();
+  unfriend();
+  const without = yearFavor();
+  if (Math.abs(withFriend - without - C.friendFavor * C.favorDecay) > 0.001) problems.push(`ความโปรดปรานจากเพื่อนไม่ตรง friendFavor (${without.toFixed(3)} → ${withFriend.toFixed(3)})`);
+  befriend(0.7);
+  if (!officeStatus(ctx, hero)?.includes(friend.name)) problems.push('แผงตัวละครไม่บอกว่าเพื่อนบ้านขุนนางช่วยพูดให้');
+  // คู่ขัดในกรมไม่นับเป็นเพื่อนที่ช่วย
+  setRelation(ctx, hero.id, friend.id, 'rival', 0.3);
+  if (Math.abs(yearFavor() - without) > 0.001) problems.push('คู่ขัดในกรมยังช่วยพูดให้เหมือนเพื่อน');
+  delete ctx.state.relations[`${hero.id}|${friend.id}|rival`];
+
+  // ต้องโทษ: เพื่อนเสียหน้า ห่างเหินจนไม่ช่วยแล้ว
+  befriend(0.6);
+  hero.office!.favor = 0;
+  const demoted = applyCareer(ctx, hero, 'demote');
+  const after = ctx.state.relations[`${hero.id}|${friend.id}|friend`]?.strength ?? 0;
+  if (!(after < 0.5) || !demoted.some((l) => l.includes(friend.name))) problems.push(`ถูกลดขั้นแล้วเพื่อนที่ฝากฝังไม่เสียหน้า (${after.toFixed(2)})`);
+
+  // คำใบ้ก่อนผูกมิตร: คนบ้านขุนนางมี คนบ้านอื่นไม่มี · ผู้หญิงไม่ได้รับราชการจึงไม่บอก
+  const hintFor = (t: Character) => interactionsFor(ctx, hero, t).find((a) => a.id === 'befriend')?.hint;
+  if (!hintFor(stranger)?.includes('ราชการ')) problems.push('ปุ่มผูกมิตรกับคนบ้านขุนนางไม่บอกว่าช่วยเรื่องราชการ');
+  if (hintFor(farmer)) problems.push('ปุ่มผูกมิตรกับชาวนาบอกว่าช่วยเรื่องราชการ');
+  hero.sex = 'f';
+  if (hintFor(stranger)) problems.push('ตัวละครหญิงได้คำใบ้เรื่องราชการ (ยังรับราชการไม่ได้)');
+  hero.sex = 'm';
+  check('เพื่อนบ้านขุนนางกับราชการ', problems);
+  if (failed === before) console.log(`  ✓ ฝากตัวเข้ากรม ${Math.round(alone.rate * 100)}% → ${Math.round(helped.rate * 100)}% ต่อปี · พูดให้ทุกปี · คู่ขัดไม่นับ · ต้องโทษแล้วเพื่อนห่างเหิน · คำใบ้เฉพาะคนบ้านขุนนาง`);
 }
 
 // [5h2b] ขั้นยศเชิงภาพ (ใช้เลือกภาพตัวละคร): มหาดเล็ก = page, ขั้นบนสุดของกรม = head, ขั้นที่ 1 = low, ขั้นที่ 2 = mid, ที่เหลือ = high

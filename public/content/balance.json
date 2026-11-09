@@ -123,6 +123,9 @@
     "removeAtOffence": 5,
     "removedWealthShare": 0.5,
     "patronBlame": 0.2,
+    "friendFavor": 0.03,
+    "friendEntryBoost": 0.15,
+    "friendBlame": 0.2,
     "recallYears": [2311, 2313]
   },
   "marriage": {

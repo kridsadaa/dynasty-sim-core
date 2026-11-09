@@ -6,6 +6,7 @@ import { livingParents } from './factory';
 import { opinion } from './opinion';
 import { hasPerk, legacyLevel, SKILL_TRACKS } from './skills';
 import { institutionActive } from './eras';
+import { relationStrength, tradeOf } from './acquaintance';
 
 // ============================================================================
 // Career — รับราชการ (บันไดจากทำเนียบศักดินาจริง ตำแหน่งนาพลเรือน)
@@ -97,6 +98,52 @@ function activePatron(ctx: Ctx, ch: Character) {
     && isAlive(ctx.state.characters[r.to]) && opinion(ctx, r.to, ch.id) > 0);
 }
 
+/** ch อยู่ในฐานะที่เข้ารับราชการได้ (ระบบราชการตอนนี้มีแต่ชายในตระกูลขุนนาง) */
+export const canServe = (ch: Character) => ch.sex === 'm' && ch.social.estate === 'noble';
+
+/**
+ * other เป็นคนบ้านขุนนางที่ช่วยเรื่องราชการให้ได้ถ้าสนิทกัน — คนนอกอาชีพขุนนาง ไม่ใช่คู่ขัดหรือผู้ใหญ่ที่ฝากตัวไว้แล้ว
+ * (ผู้ใหญ่ที่ฝากตัวช่วยอยู่แล้วทาง activePatron)
+ */
+export function nobleHouse(ctx: Ctx, ch: Character, other: Character): boolean {
+  return tradeOf(ctx, other)?.estate === 'noble'
+    && relationStrength(ctx, ch.id, other.id, 'rival') <= 0 && relationStrength(ctx, ch.id, other.id, 'patron') <= 0;
+}
+
+/**
+ * เพื่อนสนิทจากบ้านขุนนางที่ยังมีชีวิตและยังชอบพอ — ช่วยฝากฝังเข้ารับราชการและพูดให้ในกรม
+ * (ผู้ทูลรับรองฝากคนเข้ารับราชการ lore: social.official_sponsor_and_kin_liability; ตัวเลขของเกม) · มีหลายคนนับคนที่สนิทที่สุดคนเดียว
+ */
+export function nobleFriend(ctx: Ctx, ch: Character): Character | undefined {
+  let best: Character | undefined;
+  let bestStrength = 0;
+  for (const r of Object.values(ctx.state.relations)) {
+    if (r.from !== ch.id || r.kind !== 'friend' || r.strength < 0.5 || r.strength <= bestStrength) continue;
+    const other = ctx.state.characters[r.to];
+    if (!isAlive(other) || !nobleHouse(ctx, ch, other) || opinion(ctx, other.id, ch.id) <= 0) continue;
+    best = other;
+    bestStrength = r.strength;
+  }
+  return best;
+}
+
+/** คำใบ้ตอนผูกมิตรกับคนบ้านขุนนาง — ให้ผู้เล่นรู้ก่อนว่าคบแล้วได้อะไร */
+export const FRIEND_HELP_HINT = 'ถ้าสนิทกัน บ้านขุนนางของเขาจะช่วยฝากฝังเข้ารับราชการและพูดให้ในกรม (ถ้าต้องโทษ เขาเสียหน้าด้วย)';
+
+/**
+ * เพื่อนที่ฝากฝังไว้เสียหน้าเมื่อผู้เล่นต้องโทษ — ความเป็นเพื่อนลดทั้งสองทาง (ตัวเลขของเกม)
+ */
+function blameFriend(ctx: Ctx, ch: Character): string[] {
+  const f = nobleFriend(ctx, ch);
+  if (!f) return [];
+  const B = ctx.content.balance.career.friendBlame;
+  for (const [from, to] of [[ch.id, f.id], [f.id, ch.id]] as const) {
+    const rel = ctx.state.relations[`${from}|${to}|friend`];
+    if (rel) rel.strength = Math.max(0, rel.strength - B);
+  }
+  return [`${f.name}เสียหน้าที่เคยช่วยพูดให้${ch.name} จึงห่างเหินไป`];
+}
+
 /**
  * ค่าปรับคูณตามครั้งที่ต้องโทษ: ครั้งแรกลาหนึ่ง ครั้งที่สองทวีคูณ … สูงสุดจัตุรคูณ
  * (lore: social.official_repeat_offence_escalation) — offences นับครั้งปัจจุบันแล้วตอนเกิด event
@@ -184,7 +231,7 @@ export function applyCareer(
       addPrestige(ctx, ch, -C.promotePrestige * post.rank * 0.5);
       if (!prev) return applyCareer(ctx, ch, 'remove');
       setPost(ctx, ch, prev);
-      return [`${ch.name}ถูกลดลงเป็น${ch.social.title ?? prev.label.th} ศักดินา ${prev.sakdina}`, ...blamePatron(ctx, ch)];
+      return [`${ch.name}ถูกลดลงเป็น${ch.social.title ?? prev.label.th} ศักดินา ${prev.sakdina}`, ...blamePatron(ctx, ch), ...blameFriend(ctx, ch)];
     }
     case 'remove': {
       // ถอดเพราะความผิด (ต่างจาก dismiss ที่ใช้ตอนพ้นวัยมหาดเล็ก) → ติดความผิด ยื่นเข้ากรมเองไม่ได้จนกว่าจะพ้น
@@ -193,7 +240,7 @@ export function applyCareer(
       const fine = removalFine(ctx, ch);
       ch.social.wealth = Math.max(0, ch.social.wealth - fine);
       ch.disgrace = { year: yearOf(ctx, ctx.state.meta.day), ...(ch.office.deptId ? { deptId: ch.office.deptId } : {}) };
-      return [...(fine > 0 ? [`${ch.name}ถูกริบทรัพย์ ${fine} ตำลึง`] : []), ...applyCareer(ctx, ch, 'dismiss'), ...blamePatron(ctx, ch)];
+      return [...(fine > 0 ? [`${ch.name}ถูกริบทรัพย์ ${fine} ตำลึง`] : []), ...applyCareer(ctx, ch, 'dismiss'), ...blamePatron(ctx, ch), ...blameFriend(ctx, ch)];
     }
     case 'dismiss': {
       if (!ch.office) return [];
@@ -272,13 +319,19 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   if (!player.office) {
     const age = ageOf(ctx, player);
     const courtLvl = legacyLevel(ctx, player, 'court');
-    const chance = C.entryChance + (courtLvl >= 1 ? 0.25 : 0);
-    if (player.sex === 'm' && player.social.estate === 'noble' && elder && age >= C.entryAge[0] && age <= C.entryAge[1]
+    // เพื่อนสนิทบ้านขุนนางช่วยฝากฝัง → ได้โอกาสเข้ารับราชการบ่อยขึ้น และบอกในบันทึกว่าใครช่วย
+    const friend = canServe(player) ? nobleFriend(ctx, player) : undefined;
+    const boost = friend ? C.friendEntryBoost : 0;
+    const vouched = () => friend && lines.push(`${friend.name}เพื่อนจากบ้านขุนนางช่วยฝากฝัง${player.name}กับผู้ใหญ่ในวัง`);
+    const chance = C.entryChance + (courtLvl >= 1 ? 0.25 : 0) + boost;
+    if (canServe(player) && elder && age >= C.entryAge[0] && age <= C.entryAge[1]
       && ctx.rng.chance(chance)) {
+      vouched();
       events.push({ event: 'career.present_page', bindings: bind });
-    } else if (player.sex === 'm' && player.social.estate === 'noble' && age > C.entryAge[1] && age >= C.lateEntryAge[0] && age <= C.lateEntryAge[1]
-      && ctx.rng.chance(C.lateEntryChance + (courtLvl >= 1 ? 0.1 : 0))) {
+    } else if (canServe(player) && age > C.entryAge[1] && age >= C.lateEntryAge[0] && age <= C.lateEntryAge[1]
+      && ctx.rng.chance(C.lateEntryChance + (courtLvl >= 1 ? 0.1 : 0) + boost)) {
       // ผู้สืบที่เป็นผู้ใหญ่แล้วไม่มีทางถวายตัวเป็นมหาดเล็ก — ฝากตัวเข้ากรมโดยตรง (ตัวเลขเป็นของเกม; ขั้นตอนอนุมานจาก social.royal_pages_1680s)
+      vouched();
       events.push({ event: 'career.petition', bindings: { actor: player.id } });
     }
     return { lines, events };
@@ -304,6 +357,11 @@ export function careerYearTick(ctx: Ctx): { lines: string[]; events: CareerEvent
   if (patron) {
     player.office.favor = Math.min(1, player.office.favor + C.patronFavor);
     lines.push(`${S.characters[patron.to]!.name}ช่วยพูดถึง${player.name}ให้เจ้ากรมฟัง`);
+  }
+  const friend = nobleFriend(ctx, player);
+  if (friend) {
+    player.office.favor = Math.min(1, player.office.favor + C.friendFavor);
+    lines.push(`${friend.name}เพื่อนจากบ้านขุนนางช่วยพูดถึง${player.name}ในหมู่ขุนนาง`);
   }
   const skill = careerSkill(ctx, player);
   if (skill.favor > 0) {
@@ -351,7 +409,9 @@ export function officeStatus(ctx: Ctx, ch: Character): string | null {
     ? `วิชา${skill.track.name} ขั้น ${skill.tier} ช่วยให้เป็นที่โปรดปรานขึ้น ${+(skill.favor * 100).toFixed(1)}% ต่อปี`
     : `ฝึกวิชา${skill.track.name}จะช่วยให้เลื่อนยศเร็วขึ้น`;
   const record = ch.offences ? ` · เคยต้องโทษ ${ch.offences} ครั้ง` : '';
-  return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood}${record} · ${help}`;
+  const friend = nobleFriend(ctx, ch);
+  const friendHelp = friend ? ` · ${friend.name}เพื่อนจากบ้านขุนนางช่วยพูดให้ ${+(ctx.content.balance.career.friendFavor * 100).toFixed(1)}% ต่อปี` : '';
+  return `${ch.social.title ?? post.label.th} ${where} · ศักดินา ${post.sakdina} · อยู่ในตำแหน่ง ${years} ปี · ${mood}${record} · ${help}${friendHelp}`;
 }
 
 /** ข้อความใต้ตัวเลือก event ราชการ — ราคา/ผลที่ตามมาให้เห็นก่อนเลือก */

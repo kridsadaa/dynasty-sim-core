@@ -1398,6 +1398,13 @@ export interface Balance {
     removeAtOffence: number; removedWealthShare: Unit;
     /** ผู้เล่นถูกลดขั้น/ถอด → ความผูกพันกับผู้ใหญ่ที่ฝากตัวไว้ลดลงเท่านี้ (lore: social.official_sponsor_and_kin_liability; ตัวเลขของเกม) */
     patronBlame: number;
+    /**
+     * เพื่อนสนิทจากบ้านขุนนาง (คนนอกอาชีพขุนนาง ความเป็นเพื่อน ≥ 0.5 ไม่ใช่คู่ขัดหรือผู้ใหญ่ที่ฝากตัว):
+     * friendFavor = ความโปรดปรานที่ได้เพิ่มทุกปีระหว่างรับราชการ, friendEntryBoost = โอกาสถวายตัว/ฝากเข้ากรมต่อปีที่เพิ่ม,
+     * friendBlame = ความเป็นเพื่อนที่ลดเมื่อผู้เล่นถูกลดขั้น/ถอด
+     * (ทางที่ผู้ทูลรับรองฝากคนเข้ารับราชการ lore: social.official_sponsor_and_kin_liability; ตัวเลขทั้งหมดเป็นของเกม)
+     */
+    friendFavor: number; friendEntryBoost: Unit; friendBlame: number;
   };
   /** ตัวเลขเงินเป็นค่าของเกม ไม่ใช่ราคาจริงในเอกสาร (lore มีแค่เพดาน 100 ชั่งของลา ลูแบร์) */
   marriage: {

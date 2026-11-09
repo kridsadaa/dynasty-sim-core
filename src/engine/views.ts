@@ -6,7 +6,7 @@ import { capability } from '../systems/body';
 import type { EventReport, PreparedEvent } from '../systems/events';
 import { displayName, livingChildren, livingParents, livingSpouse, singleLabel } from '../systems/factory';
 import { activeIntent, intentStatus, planIntent, targetProblem, type OddsFactor } from '../systems/intent';
-import { careerHint, offenceMultiple, officeRank, officeStatus, officeTier } from '../systems/career';
+import { canServe, careerHint, FRIEND_HELP_HINT, nobleFriend, nobleHouse, offenceMultiple, officeRank, officeStatus, officeTier } from '../systems/career';
 import { warBadges } from '../systems/war';
 import { whereabouts } from '../systems/whereabouts';
 import { activeFiction, isFictionYear } from '../systems/fiction';
@@ -336,6 +336,7 @@ export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
       actions: [], focus: false,
     };
   });
+  const helper = canServe(me) ? nobleFriend(ctx, me) : undefined;
   const locals: KnownPersonView[] = knownLocals(ctx, me)
     .sort((a, b) => familiarity(ctx, me.id, b.id) - familiarity(ctx, me.id, a.id))
     .map((c) => {
@@ -347,7 +348,8 @@ export function knownView(ctx: Ctx, text: TextTable): KnownPersonView[] {
           : relationStrength(ctx, me.id, c.id, 'friend') >= 0.5 ? 'เพื่อนสนิท' : 'คนรู้จัก',
         kin: false, inHousehold: false,
         statuses: statusBadges(ctx, c, text),
-        detail: [localOrigin(ctx, c), DISTANCE_TH[c.local!.distance], status, closeness(familiarity(ctx, me.id, c.id))].filter(Boolean).join(' · '),
+        detail: [localOrigin(ctx, c), DISTANCE_TH[c.local!.distance], status, closeness(familiarity(ctx, me.id, c.id)),
+          c.id === helper?.id ? 'ช่วยพูดให้ในราชการ' : null].filter(Boolean).join(' · '),
         actions: Object.values(ctx.content.intents)
           // สิ่งที่กำลังทำกับคนนี้อยู่แล้วไม่ต้องมีปุ่มซ้ำ (เลิก/ดูความคืบหน้าที่แผงตัวละคร)
           .filter((def) => !targetProblem(ctx, def, me, c) && !(current?.targetId === c.id && current.kind === def.id))
@@ -369,7 +371,8 @@ export function intentPlanView(ctx: Ctx, text: TextTable, targetId: string, kind
   return {
     kind, targetId,
     title: `${text[def.textKey] ?? def.id}${target.name}`,
-    text: fill(text[`${def.textKey}.desc`] ?? '', { target: target.name }),
+    text: [fill(text[`${def.textKey}.desc`] ?? '', { target: target.name }),
+      def.target === 'befriend' && canServe(me) && nobleHouse(ctx, me, target) ? FRIEND_HELP_HINT : ''].filter(Boolean).join(' '),
     replaces: cur ? `จะเลิก${text[cur.def.textKey] ?? cur.def.id}${cur.target.name}ที่ทำอยู่ (คืบหน้า ${pct(cur.intent.progress)}%)` : undefined,
     approaches: planIntent(ctx, kind, me, target).map((p) => ({
       id: p.def.id,

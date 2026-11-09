@@ -4,6 +4,7 @@ import { familiarity, isSingle, setRelation, spawnLocal } from './acquaintance';
 import { prepareEvent, type PreparedEvent } from './events';
 import { inLawNames, livingSpouse } from './factory';
 import { activeIntent, targetProblem } from './intent';
+import { canServe, FRIEND_HELP_HINT, nobleHouse } from './career';
 import { purse, spend } from './marriage';
 import { minorWifeProposal } from './matchmaking';
 import { houseCapacity, houseMembersCount } from './servants';
@@ -54,7 +55,10 @@ export function interactionsFor(ctx: Ctx, me: Character, target: Character): Int
   const busy = (kind: string) => activeIntent(ctx, me.id)?.targetId === target.id && activeIntent(ctx, me.id)?.kind === kind ? 'กำลังทำอยู่' : undefined;
 
   if (target.local && intents['befriend']) {
-    out.push({ id: 'befriend', label: 'ผูกมิตร', problem: busy('befriend') ?? reason(targetProblem(ctx, intents['befriend'], me, target)) });
+    out.push({
+      id: 'befriend', label: 'ผูกมิตร', problem: busy('befriend') ?? reason(targetProblem(ctx, intents['befriend'], me, target)),
+      ...(canServe(me) && nobleHouse(ctx, me, target) ? { hint: FRIEND_HELP_HINT } : {}),
+    });
   }
   if (target.local && intents['court'] && target.sex !== me.sex) {
     const married = !!livingSpouse(ctx, me);
