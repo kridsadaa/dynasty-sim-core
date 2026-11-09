@@ -1950,8 +1950,16 @@ if (LONG) {
       if (keys.every((k) => b.v![k]! >= a.v![k]! - 1e-9) && keys.some((k) => b.v![k]! > a.v![k]! + 1e-9)) problems.push(`${id}: "${b.id}" ดีกว่า "${a.id}" ทุกด้าน`);
     }
   }
+  // ตั้งชื่อลูก/หลาน (design-tradeoffs.md หัวข้อ 8): ไม่มีตัวเลือกได้บุญฟรี (เดิม "ให้พระตั้งชื่อ" ไม่มีหลักฐาน lore naming.naming_customs)
+  //  และให้หมอดูตั้งต้องเสียเงิน — ตัวตรวจแพ้ขาดข้างบนข้าม event ตั้งชื่อเพราะมี op name
+  for (const id of ['family.newborn', 'family.grandchild_naming']) {
+    const opts = content.events[id]!.options;
+    if (opts.some((o) => o.effects.some((e) => e.op === 'merit') && !o.effects.some((e) => e.op === 'wealth'))) problems.push(`${id}: มีตัวเลือกได้บุญฟรี`);
+    const astro = opts.find((o) => o.id === 'astrologer');
+    if (!astro?.effects.some((e) => e.op === 'wealth' && (e.delta ?? 0) < 0)) problems.push(`${id}: ให้หมอดูตั้งชื่อไม่เสียเงิน`);
+  }
   check('ตัวเลือกแพ้ขาด', problems);
-  if (failed === before) console.log(`  ✓ event ที่เจอ ≥ 1% (${frequent.length} ชนิด) ไม่มีตัวเลือกแพ้ขาด`);
+  if (failed === before) console.log(`  ✓ event ที่เจอ ≥ 1% (${frequent.length} ชนิด) ไม่มีตัวเลือกแพ้ขาด · ตั้งชื่อลูก/หลานไม่มีบุญฟรี`);
 }
 
 // [5h4] ชั้นยุค (docs/design-eras.md): ยุคต่อกันครบช่วงเกม, เงื่อนไขปี/ยุค, สถาบันยังมีผลตลอด 2288–2400 (ช่องเสียบ),

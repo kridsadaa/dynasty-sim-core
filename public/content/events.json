@@ -349,6 +349,7 @@
   "family.newborn": {
     "id": "family.newborn",
     "textKey": "event.newborn",
+    "loreRefs": ["naming.naming_customs"],
     "contextTags": [],
     "roles": { "actor": {}, "child": {}, "spouse": {}, "elder": {} },
     "trigger": { "weight": 0 },
@@ -361,10 +362,11 @@
           { "op": "name", "role": "child", "by": "pick" },
           { "op": "bond", "role": "spouse", "toward": "actor", "affection": 0.05 }
         ] },
-      { "id": "monk", "textKey": "event.newborn.monk",
+      { "id": "astrologer", "textKey": "event.newborn.astrologer", "conditions": [ { "type": "purse", "min": 1 } ],
         "effects": [
           { "op": "name", "role": "child", "by": "pick" },
-          { "op": "merit", "role": "actor", "delta": 1 }
+          { "op": "wealth", "role": "actor", "delta": -1 },
+          { "op": "stress", "role": "actor", "delta": -0.03 }
         ] },
       { "id": "elder", "textKey": "event.newborn.elder", "conditions": [ { "type": "hasRole", "role": "elder" } ],
         "effects": [
@@ -376,6 +378,7 @@
   "family.grandchild_naming": {
     "id": "family.grandchild_naming",
     "textKey": "event.grandchild_naming",
+    "loreRefs": ["naming.naming_customs"],
     "contextTags": [],
     "roles": { "actor": {}, "parent": {}, "child": {} },
     "trigger": { "weight": 0 },
@@ -388,10 +391,12 @@
         ] },
       { "id": "parent", "textKey": "event.grandchild_naming.parent",
         "effects": [ { "op": "name", "role": "child", "by": "pick" } ] },
-      { "id": "monk", "textKey": "event.grandchild_naming.monk",
+      { "id": "astrologer", "textKey": "event.grandchild_naming.astrologer", "conditions": [ { "type": "purse", "min": 1 } ],
         "effects": [
           { "op": "name", "role": "child", "by": "pick" },
-          { "op": "merit", "role": "parent", "delta": 1 }
+          { "op": "wealth", "role": "actor", "delta": -1 },
+          { "op": "stress", "role": "actor", "delta": -0.03 },
+          { "op": "bond", "role": "parent", "toward": "actor", "affection": 0.02 }
         ] }
     ]
   },
