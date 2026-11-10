@@ -3,7 +3,7 @@
 อ่านก่อนเพิ่มระบบหรือ event ใหม่ จะได้ไม่ต้องไล่โครงสร้างโค้ดทุกครั้ง · เปิด [PARKED.md](PARKED.md) ด้วยว่าเคยตัดสินใจเรื่องนั้นไว้หรือยัง
 ย้ายมาจาก [BACKLOG.md](../BACKLOG.md) เมื่อ 2026-11-02 ส่วนข้อจำกัดด้านล่างคือ "ระบบนี้ทำแล้วแต่ยังไม่ได้ทำอะไร" ไม่ใช่งานค้าง
 
-**ที่มาของตารางด้านล่าง:** เขียนจากคอมเมนต์หัวไฟล์ของ `src/` และการอ่านโค้ดบางส่วนเมื่อ 2026-11-02 ไม่ได้อ่านทุกบรรทัด — ถ้าพบว่าไม่ตรงโค้ดให้แก้ที่นี่
+**ที่มาของตารางด้านล่าง:** เขียนจากคอมเมนต์หัวไฟล์ของ `src/` และการอ่านโค้ดบางส่วนเมื่อ 2026-11-02 ไม่ได้อ่านทุกบรรทัด — ถ้าพบว่าไม่ตรงโค้ดให้แก้ที่นี่ · เทียบรายชื่อไฟล์ใน `src/` กับตารางอีกรอบเมื่อ 2026-11-10 (เติมไฟล์ที่ตกหล่น ไม่ได้ตรวจคำอธิบายของแถวเดิม)
 
 ---
 
@@ -69,8 +69,19 @@
 | `src/simcheck.ts` | `npm run sim:check` — เล่นหลาย seed ตรวจ invariant + ตารางชีพ + `balanceCheck` ของผู้เล่น |
 | `src/simpolicy.ts` | `npm run sim:policy` — ผู้เล่นอัตโนมัติ 4 แบบ (รอบคอบ/ประมาท/สุ่ม/ตัวเลือกแรก) วัดว่าการเลือกมีผลต่อการรอดของตัวละครแรกแค่ไหน (รายงานเฉยๆ) — ดู `docs/design-choice-risk.md` |
 | `src/demo.ts` | `npm run demo` — เล่นสั้นๆ ดูผลใน terminal |
+| `src/engine/persistence.test.ts`, `src/art/select.test.ts`, `src/release.test.ts` | เทสต์หน่วย (node:test ผ่าน `tsx --test`) — รายชื่อไฟล์เขียนตายตัวใน script `test` ของ package.json เพิ่มไฟล์ใหม่ต้องเติมที่นั่นด้วย |
 | `src/lore/` | `validate.ts` (`npm run lore:check` — ตรวจคลัง lore และการเชื่อมกับ content; error ทำ build ล้ม), `compile.ts` (`npm run lore:compile` — สร้าง `public/content/names.json` ห้ามแก้มือ), `types.ts` (schema ของ lore) |
 | `src/art/` | `select.ts` (เลือกภาพจากคลังด้วย tag — ส่วนเดียวที่เกมใช้ตอนรัน), `spec.ts` (อ่าน `art/assets.spec.json`), `prompts.ts` (`npm run art:prompts` → `art/prompts.md`), `ingest.ts` (`npm run art:ingest` → `public/art/*.webp` + `manifest.json`) — ดู `art/README.md` |
+
+### เอกสารออกแบบ (`docs/design-*.md`)
+| เอกสาร | เรื่อง |
+|---|---|
+| [design-war-2308.md](design-war-2308.md), [design-war-2328.md](design-war-2328.md) | ศึกพม่า 2308–2310; ศึกหลังเสียกรุงและระบบหมายเกณฑ์ |
+| [design-eras.md](design-eras.md) | ชั้นยุค สถาบัน และเนื้อหาเฉพาะยุค (รอบ 1–3) |
+| [design-choice-risk.md](design-choice-risk.md), [design-tradeoffs.md](design-tradeoffs.md) | ความเสี่ยงที่ผูกกับตัวเลือก; ข้อแลกเปลี่ยนได้อย่างเสียอย่างใน event |
+| [design-official-punishment.md](design-official-punishment.md), [design-rank-portraits.md](design-rank-portraits.md) | โทษขุนนางและการขออภัยโทษ; ภาพตัวละครตามขั้นยศ |
+| [design-sick-child.md](design-sick-child.md), [design-barge-procession.md](design-barge-procession.md) | ลูกไข้หนัก; ขบวนเรือหลวงเดือน 12 |
+| [design-travel.md](design-travel.md) | ร่าง: เมือง สายน้ำ การเดินทาง (PLAN 4b ยังไม่ได้ทำ) |
 
 ### วิธีต่อยอดที่ใช้บ่อย
 - **เพิ่ม event:** `events.json` + ข้อความใน `text.th.json`; event เฉพาะปี/ยุคใช้เงื่อนไข `year`/`era` (ดูข้อด้านล่าง) · เช็กด้วย `sim:check`
