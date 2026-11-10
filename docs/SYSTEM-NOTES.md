@@ -40,6 +40,9 @@
 | `servants.ts` | เรือน ที่ดิน บ่าวไพร่ |
 | `legend.ts` `traits.ts` `trauma.ts` `socialLearning.ts` `will.ts` `opinion.ts` `body.ts` | ตำนานที่บิดเบือน; ปมในใจ; บาดแผลทางใจ; ซึมซับนิสัยจากคนรอบตัว; นิสัยกับการยอม/ต้าน; ความรู้สึก −100..100; ร่างกาย/แผล |
 | `prune.ts` `factory.ts` `scenario.ts` | ยุบคนตาย/ญาติห่างไกล; สร้างตัวละครและครอบครัว; ฉากเริ่มปี 2288 |
+| `whereabouts.ts` | `whereabouts(ctx, ch)` — ตัวละครอยู่เรือน/วัด/ทัพ และ event เกิดที่ไหนได้ (`trigger.at`) — รายละเอียดในหัวข้อ "ศึกหลังเสียกรุง" ด้านล่าง |
+| `barge.ts` | ขบวนเรือหลวงเดือน 12 (`meta.barge`) — ดูหัวข้อ "ขบวนเรือหลวงเดือน 12" ด้านล่าง และ [design-barge-procession.md](design-barge-procession.md) |
+| `junk.ts` | ลงหุ้นสำเภา ร.2–3 (2352–2398): event `trade.junk_offer` ผลมาปีถัดไป เก็บใน `meta.junk` ตัวเลขใน `balance.junk` — ดู [design-eras.md](design-eras.md) หัวข้อ 8 |
 
 ### Engine และ UI
 | ไฟล์ | หน้าที่ |
@@ -49,13 +52,16 @@
 | `src/engine/views.ts` | แปลง state → view model (`playerView`, `eraConditions`, `deathNotice`, `heirChoiceView`) |
 | `src/engine/death.ts` | `settlePlayerDeath` — แจ้งการตายของผู้เล่นและส่งต่อผู้สืบ (ใช้ทั้งตายตามวัยในลูปเวลาและตายเพราะผลของตัวเลือกเสี่ยงใน event) |
 | `src/engine/persistence.ts` | IndexedDB เซฟ/โหลด |
+| `src/engine/client.ts` | `EngineClient` — ฝั่ง main thread เรียก Worker แบบ promise โดย UI ไม่ต้องรู้ว่ามี Worker |
+| `src/content.ts` | `buildContentDB` — ประกอบ `ContentDB` จาก JSON ดิบ (เว็บใช้ fetch, Node ใช้ fs) และตรวจเนื้อหาตอนโหลด |
+| `src/release.ts`, `src/changelog.json` | ข้อมูลรุ่นและหน้าต่าง "รุ่นใหม่" — เลขรุ่นจาก package.json (`release.test.ts` เช็กว่าตรงกัน) |
 | `src/main.ts` | UI ฝั่ง main thread (modal, log, แผงตัวละคร); ไม่ถือ state |
 | `src/pwa.ts`, `public/sw.js`, `public/manifest.webmanifest` | ติดตั้งเป็นแอป (PWA): จับ `beforeinstallprompt`, ลงทะเบียน SW เฉพาะ build จริง (`sw.js?v=<รุ่น>` รุ่นเปลี่ยนล้างแคชเก่า; assets แคชก่อน ที่เหลือเน็ตก่อน); หน้าต่างแนะนำ + ปุ่มในหน้าเกี่ยวกับอยู่ท้าย `main.ts` (pref `installNever`, `pwaInstalled`); ไอคอนใน `public/icons/` |
 
 ### เนื้อหาและเครื่องมือ
 | ที่อยู่ | หน้าที่ |
 |---|---|
-| `public/content/events.json` | event ทั้งหมด (71 event) — ผล (`effects`) ชนิดเช่น `bond` `relation` `stress` `merit` `wealth` `favor` `skill` `career` |
+| `public/content/events.json` | event ทั้งหมด (123 event ณ 2026-11-10) — ผล (`effects`) ชนิดเช่น `bond` `relation` `stress` `merit` `wealth` `favor` `skill` `career` |
 | `public/content/rules.json` | `history` (เหตุการณ์ประวัติศาสตร์ + shock; ฟิลด์ `lasts` กำหนดปีของ badge) และกติกาอื่น |
 | `public/content/balance.json` | ตัวเลขสมดุล (ตายรายปี, มรดก, เทศกาล, ราชการ ฯลฯ) |
 | `public/content/` อื่นๆ | `offices` `chores` `intents` `tags` `names` `anatomy` `traitKinds` และข้อความไทย (`text.th.json`) |
@@ -63,6 +69,8 @@
 | `src/simcheck.ts` | `npm run sim:check` — เล่นหลาย seed ตรวจ invariant + ตารางชีพ + `balanceCheck` ของผู้เล่น |
 | `src/simpolicy.ts` | `npm run sim:policy` — ผู้เล่นอัตโนมัติ 4 แบบ (รอบคอบ/ประมาท/สุ่ม/ตัวเลือกแรก) วัดว่าการเลือกมีผลต่อการรอดของตัวละครแรกแค่ไหน (รายงานเฉยๆ) — ดู `docs/design-choice-risk.md` |
 | `src/demo.ts` | `npm run demo` — เล่นสั้นๆ ดูผลใน terminal |
+| `src/lore/` | `validate.ts` (`npm run lore:check` — ตรวจคลัง lore และการเชื่อมกับ content; error ทำ build ล้ม), `compile.ts` (`npm run lore:compile` — สร้าง `public/content/names.json` ห้ามแก้มือ), `types.ts` (schema ของ lore) |
+| `src/art/` | `select.ts` (เลือกภาพจากคลังด้วย tag — ส่วนเดียวที่เกมใช้ตอนรัน), `spec.ts` (อ่าน `art/assets.spec.json`), `prompts.ts` (`npm run art:prompts` → `art/prompts.md`), `ingest.ts` (`npm run art:ingest` → `public/art/*.webp` + `manifest.json`) — ดู `art/README.md` |
 
 ### วิธีต่อยอดที่ใช้บ่อย
 - **เพิ่ม event:** `events.json` + ข้อความใน `text.th.json`; event เฉพาะปี/ยุคใช้เงื่อนไข `year`/`era` (ดูข้อด้านล่าง) · เช็กด้วย `sim:check`
@@ -124,6 +132,9 @@
 
 ### ฉากไปค้างเรือนเมีย เกี้ยวเมียน้อย ช่วยคนตกน้ำ
 - [ ] **ฉากไปค้างเรือนเมีย เกี้ยวเมียน้อย และช่วยคนตกน้ำ (2026-11-01) — ฉากและบทพูดเป็นของแต่งเพื่อเกม** — `marriage.visit_first` / `visit_pregnant` / `visit_cold` ขึ้นตอนกด "ไปค้างเรือน" (`visitScene` ใน `interactions.ts`: ครั้งแรกขึ้นเสมอ ครั้งต่อไปขึ้นเฉพาะเมื่อนางน้อยใจ (`balance.interactions.visitColdAt` 0.35) หรือท้องแก่ (ครั้งเดียวต่อท้อง) ที่เหลือไม่มีฉาก), `intent.court.minor` เป็น midEvent ของการเกี้ยวเมื่อผู้เกี้ยวมีเมียแล้ว (`married: true`), `life.drowning` ขึ้นปีละ 5% (`balance.life.drownChance`) เด็กในละแวกตกน้ำ ไม่มีใครตาย; ไม่มีหลักฐานเรื่องที่นอนของคู่ผัวเมีย (แท่นไม้ยกเตี้ย ที่นอนบาง หมอนสามเหลี่ยม มุ้ง ในภาพเป็นการอนุมาน) และบทพูดของเมีย; ผู้หญิงยังไม่มีฉากเทียบเท่า (ฝ่ายหญิงกด "ดูแลเอาใจ" ไม่ขึ้นฉาก); ฉากครั้งแรกยังไม่แยกเมียหลวง/เมียน้อย/เมียทาส; ภาพ 5 ภาพ (`art/gemini-batch-small.md`) สร้างและเพิ่มเข้าคลังแล้ว (2026-11-02 ผู้ใช้ยืนยัน; อยู่ใน `public/art/manifest.json`)
+
+### ภาพประกอบ — ข้อด้อยที่รับไว้
+- **ข้อด้อยของภาพเณรที่รับไว้ (2026-11-09, ชุด art/gemini-batch-novice.md 4 ภาพ รับทั้งหมด รอบเดียว; ย้ายจาก BACKLOG 2026-11-10):** `scene.novice_alms` เด็กชาวบ้านไว้จุก**ท้ายทอย**ไม่ใช่กลางกระหม่อม, บันไดเรือนพิงพื้น (style สั่งแขวนเชือกปลายลอย), บาตรพระถือด้วยมือ (มีสายสะพายแต่ไม่อยู่ในถุง), เด็กที่ควรยิ้มไม่เห็นยิ้ม · `scene.novice_lessons` ของที่ใช้เขียนออกมาเป็นกระดานชนวนสีดำกับแท่งเขียน (prompt เขียนว่า "board" กว้าง ๆ เพราะไม่มี lore — ถ้าค้นเจอว่าเณรสมัยนั้นหัดเขียนบนอะไรค่อยแก้) · พระ/เณรในภาพ 1–3 ยังเห็นคิ้วจาง ๆ (lore `attire.monks_1680s` ว่าโกนคิ้ว) · ที่ผ่าน: เณรหัวโกนไม่มีจุกครบทุกภาพ จีวรเปิดไหล่ขวา ผมหญิงสั้นไม่เกล้ามวย — กฎ NOVICE RULE แยกบรรทัดก่อน style block ได้ผลในรอบเดียว
 
 ## เล่นต่อหลัง 2400 — ผลวัด (2026-11-03, ย้ายจาก BACKLOG)
 `sim:check -- 12 long` (ผู้เล่นอัตโนมัติไม่บริหารอะไร) เงินต่อคนมัธยฐาน 31 → 26 → 17 ตำลึงที่ 2400/2500/2590 เซฟไม่เกิน ~350 KB ตระกูลยังอยู่ 8/12 ที่ 2590 จึงยังไม่เพิ่มรายจ่ายสม่ำเสมอกันเงินพุ่ง — เพิ่มถ้าพบผู้เล่นจริงที่รวยผิดปกติ; ปีดี 3 ใบ (`kind: boon`) ยังไม่มีภาพของตัวเอง ใช้ภาพสำรองตามชนิด; เล่นต่อได้ทีละ 200 ปี (`CONTINUE_YEARS`) · รายละเอียดเดิมของข้อเสนอ:
